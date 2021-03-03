@@ -1,0 +1,67 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\huawenm\\workspace\\encoreplugin\\src\\PortingAssistantPlugin\\PortingAssistantVSExtension\\PortingAssistantVSExtensionClient\\PortingAssistantVSExtensionClient.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\huawenm\\workspace\\encoreplugin\\src\\PortingAssistantPlugin\\PortingAssistantVSExtension\\PortingAssistantVSExtensionClient\\PortingAssistantVSExtensionClient.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\huawenm\\workspace\\encoreplugin\\src\\PortingAssistantPlugin\\PortingAssistantVSExtension\\PortingAssistantVSExtensionClient\\PortingAssistantVSExtensionClient.csproj",
+        "projectName": "PortingAssistantVSExtensionClient",
+        "projectPath": "C:\\Users\\huawenm\\workspace\\encoreplugin\\src\\PortingAssistantPlugin\\PortingAssistantVSExtension\\PortingAssistantVSExtensionClient\\PortingAssistantVSExtensionClient.csproj",
+        "packagesPath": "C:\\Users\\huawenm\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\huawenm\\workspace\\encoreplugin\\src\\PortingAssistantPlugin\\PortingAssistantVSExtension\\PortingAssistantVSExtensionClient\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "D:\\Users\\huawenm\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://s3-us-west-2.amazonaws.com/aws.portingassistant.dotnet.download/nuget/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "dependencies": {
+            "Microsoft.VSSDK.BuildTools": {
+              "target": "Package",
+              "version": "[16.8.3038, )"
+            },
+            "Microsoft.VisualStudio.SDK": {
+              "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[16.0.206, )"
+            },
+            "System.ComponentModel.Composition": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <_OutputCopyLocation>$(OutputPath)..\PortingAssistantVSExtension\PortingAssistantLanguageServer\</_OutputCopyLocation>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.18.3" />
+    <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.18.3" />
+    <PackageReference Include="PortingAssistant.Client.Client" Version="1.4.16" />
+    <PackageReference Include="PortingAssistant.Client.Common" Version="1.5.10-alpha-g0bce462880" />
+    <PackageReference Include="PortingAssistant.Client.NuGet" Version="1.5.10-alpha-g0bce462880" />
+    <PackageReference Include="PortingAssistant.Client.Porting" Version="1.5.10-alpha-g0bce462880" />
+    <PackageReference Include="System.IO.Pipes.AccessControl" Version="5.0.0" />
+  </ItemGroup>
+  <Target Name="CustomAfterBuild" AfterTargets="Build">
+    <ItemGroup>
+      <_FilesToCopy Include="$(OutputPath)**\*" />
+    </ItemGroup>
+    <Message Text="_FilesToCopy: @(_FilesToCopy)" Importance="high" />
+    <Message Text="DestFiles:&#xD;&#xA;      @(_FilesToCopy->'$(_OutputCopyLocation)%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(_FilesToCopy)" DestinationFiles="@(_FilesToCopy->'$(_OutputCopyLocation)%(RecursiveDir)%(Filename)%(Extension)')" />
+  </Target>
+</Project>

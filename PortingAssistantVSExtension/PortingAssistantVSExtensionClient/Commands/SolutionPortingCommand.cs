@@ -1,5 +1,9 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using EnvDTE;
+using EnvDTE80;
+using Microsoft;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.ComponentModel.Design;
 using System.Globalization;
@@ -28,6 +32,8 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// VS Package that provides this command, not null.
         /// </summary>
         private readonly AsyncPackage package;
+
+        private IVsThreadedWaitDialog4 _dialog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SolutionPortingCommand"/> class.
@@ -86,20 +92,47 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void Execute(object sender, EventArgs e)
+        private async void Execute(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "SolutionPortingCommand";
-
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var dte = (DTE2)await ServiceProvider.GetServiceAsync(typeof(DTE));
+            try
+            {
+                string SolutionFile = await SolutionUtils.GetSolutionPathAsync(dte);
+                var ProjectFiles = SolutionUtils.GetProjectPath(SolutionFile);
+                _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
+                using (var ted = (IDisposable)_dialog)
+                {
+                    _dialog.StartWaitDialog("Porting Assistant", "Porting the solution........", "", null, "", 1, true, true);
+                    CommandUtils.EnableCommand(this.package, CommandId, false);
+                    await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<Models.ProjectFilePortingResponse>("applyPortingProjectFileChanges", new { ProjectPaths = ProjectFiles, SolutionPath = SolutionFile, TargetFramework = "netcoreapp3.1", RecommendedActions = Array.Empty<string>() });
+                    _dialog.EndWaitDialog();
+                }
+                // Show a message box to prove we were here
+                VsShellUtilities.ShowMessageBox(
+                    this.package,
+                    "Porting success!",
+                    "",
+                    OLEMSGICON.OLEMSGICON_INFO,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                // Show a message box to prove we were here
+                VsShellUtilities.ShowMessageBox(
+                    this.package,
+                    "Porting failed!",
+                    "",
+                    OLEMSGICON.OLEMSGICON_INFO,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            }
+            finally
+            {
+                CommandUtils.EnableCommand(this.package, CommandId, true);
+            }
         }
     }
 }

@@ -1,0 +1,6 @@
+PortingAssistantExtensionServer/bin/
+PortingAssistantExtensionServer/obj/
+PortingAssistantVSExtensionClient/bin/
+PortingAssistantVSExtensionClient/obj/
+.DS_Store
+.vs/

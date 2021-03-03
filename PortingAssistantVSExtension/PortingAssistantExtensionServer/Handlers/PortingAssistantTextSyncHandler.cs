@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using PortingAssistantExtensionServer.TextDocumentModels;
 
-namespace PortingAssistantExtensionServer
+namespace PortingAssistantExtensionServer.Handlers
 {
     class PortingAssistantTextSyncHandler : ITextDocumentSyncHandler
     {
@@ -27,15 +27,16 @@ namespace PortingAssistantExtensionServer
 
         private readonly ILanguageServerFacade languageServer;
 
+        private readonly SolutionAnalysisService _solutionAnalysisService;
+
         private SynchronizationCapability _capability;
 
-        private ImmutableDictionary<DocumentUri, CodeFileDocument> _openDocuments = ImmutableDictionary<DocumentUri, CodeFileDocument>.Empty.WithComparers(DocumentUri.Comparer);
 
         private ImmutableDictionary<DocumentUri, SemanticTokensDocument> _tokenDocuments = ImmutableDictionary<DocumentUri, SemanticTokensDocument>.Empty.WithComparers(DocumentUri.Comparer);
 
 
 
-        public PortingAssistantTextSyncHandler(ILanguageServerFacade languageServer)
+        public PortingAssistantTextSyncHandler(ILanguageServerFacade languageServer, SolutionAnalysisService solutionAnalysisService)
 
         {
 
@@ -60,6 +61,7 @@ namespace PortingAssistantExtensionServer
             };
 
             this.languageServer = languageServer;
+            this._solutionAnalysisService = solutionAnalysisService;
 
         }
 
@@ -69,7 +71,7 @@ namespace PortingAssistantExtensionServer
 
         {
 
-            return _openDocuments.TryGetValue(documentUri, out var value) ? value : null;
+            return _solutionAnalysisService._openDocuments.TryGetValue(documentUri, out var value) ? value : null;
 
         }
 
@@ -79,7 +81,7 @@ namespace PortingAssistantExtensionServer
 
         {
 
-            return _openDocuments.TryGetValue(documentUri, out document);
+            return _solutionAnalysisService._openDocuments.TryGetValue(documentUri, out document);
 
         }
 
@@ -89,7 +91,7 @@ namespace PortingAssistantExtensionServer
 
         {
 
-            if (_openDocuments.TryGetValue(documentUri, out _))
+            if (_solutionAnalysisService._openDocuments.TryGetValue(documentUri, out _))
 
             {
 
@@ -131,27 +133,7 @@ namespace PortingAssistantExtensionServer
 
         {
 
-            if (!_openDocuments.TryGetValue(request.TextDocument.Uri, out var value)) return Unit.Task;
-
-            var changes = request.ContentChanges.ToArray();
-
-            // full text change;
-
-            if (changes.Length == 1 && changes[0].Range == default)
-
-            {
-
-                value.Load(changes[0].Text);
-
-            }
-
-            else
-
-            {
-
-                value.Update(changes);
-
-            }
+            if (!_solutionAnalysisService._openDocuments.TryGetValue(request.TextDocument.Uri, out var value)) return Unit.Task;
 
 
 
@@ -229,29 +211,25 @@ namespace PortingAssistantExtensionServer
 
         {
 
-            lock (_openDocuments)
+            lock (_solutionAnalysisService._openDocuments)
 
             {
 
                 var document = new CodeFileDocument(request.TextDocument.Uri);
 
-                _openDocuments = _openDocuments.Add(request.TextDocument.Uri, document);
+                _solutionAnalysisService._openDocuments = _solutionAnalysisService._openDocuments.Add(request.TextDocument.Uri, document);
 
                 document.Load(request.TextDocument.Text);
 
-
-
-                languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams()
-
+                if (_solutionAnalysisService.HasSolutionAnalysisResult())
                 {
-
-                    Diagnostics = new Container<Diagnostic>(document.GetDiagnostics()),
-
-                    Uri = document.DocumentUri,
-
-                    Version = document.Version
-
-                });
+                    var diagnostics = _solutionAnalysisService.GetDiagnostics(document.DocumentUri);
+                    languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams()
+                    {
+                        Diagnostics = new Container<Diagnostic>(diagnostics),
+                        Uri = document.DocumentUri,
+                    });
+                }
 
             }
 
@@ -267,11 +245,11 @@ namespace PortingAssistantExtensionServer
 
         {
 
-            lock (_openDocuments)
+            lock (_solutionAnalysisService._openDocuments)
 
             {
 
-                _openDocuments = _openDocuments.Remove(request.TextDocument.Uri);
+                _solutionAnalysisService._openDocuments = _solutionAnalysisService._openDocuments.Remove(request.TextDocument.Uri);
 
             }
 
@@ -289,7 +267,7 @@ namespace PortingAssistantExtensionServer
 
             if (!_capability.DidSave) return Unit.Task;
 
-            if (_openDocuments.TryGetValue(request.TextDocument.Uri, out var value))
+            if (_solutionAnalysisService._openDocuments.TryGetValue(request.TextDocument.Uri, out var value))
 
             {
 

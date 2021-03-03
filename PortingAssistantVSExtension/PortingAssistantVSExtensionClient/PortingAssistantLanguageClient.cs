@@ -60,7 +60,7 @@ namespace PortingAssistantVSExtensionClient
         {
             var stdInPipeName = @"clientreadpipe";
             var stdOutPipeName = @"clientwritepipe";
-            var readerPipe = new NamedPipeClientStream(serverName: ".", pipeName:  stdInPipeName, direction: PipeDirection.In, options: PipeOptions.Asynchronous);
+            var readerPipe = new NamedPipeClientStream(serverName: ".", pipeName: stdInPipeName, direction: PipeDirection.In, options: PipeOptions.Asynchronous);
             var writerPipe = new NamedPipeClientStream(serverName: ".", pipeName: stdOutPipeName, direction: PipeDirection.Out, options: PipeOptions.Asynchronous);
             var serverPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "PortingAssistantLanguageServer", @"PortingAssistantExtensionServer.exe");
             if (File.Exists(serverPath))

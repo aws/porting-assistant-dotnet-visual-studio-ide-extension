@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PortingAssistantExtensionServer.Models
 {
-    class AnalyzeSolutionRequest : IRequest<SolutionAnalysisResult>
+    class AnalyzeSolutionRequest : IRequest<AnalyzeSolutionResponse>
     {
         public string solutionFilePath { get; set; }
         public AnalyzerSettings settings { get; set; }

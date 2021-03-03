@@ -13,18 +13,13 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System.Security.AccessControl;
 using Microsoft.Extensions.DependencyInjection;
 using Nerdbank.Streams;
-using CTA.Rules.PortCore;
 
-using CTA.Rules.Config;
-
-using System.Collections.Generic;
-
-using CTA.Rules.Models;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
+using PortingAssistantExtensionServer.Handlers;
 
 namespace PortingAssistantExtensionServer
 {
@@ -52,35 +47,27 @@ namespace PortingAssistantExtensionServer
                 .WithOutput(output)
                 .WithServices(service => {
                     service.AddAssessment(config);
+                    service.AddSingleton<SolutionAnalysisService>();
+                    service.AddSingleton<PortingService>();
                     service.AddSingleton(new ConfigurationItem() { Section = "csharp" });
                 })
                 .WithHandler<PortingAssistantTextSyncHandler>()
+                .WithHandler<SolutionAssessmentHandler>()
+                .WithHandler<SolutionPortingHandler>()
                 .ConfigureLogging(
                     x => x
                         .ClearProviders()
                         .AddLanguageProtocolLogging()
                         .SetMinimumLevel(LogLevel.Debug)
                 )
-                .WithHandler<AssessmentSolutionHandler>()
-                .OnInitialize(
-                async(languageServer, request, cancellationToken) =>
-                {
-                    var test = request.RootUri;
-                    Console.WriteLine(test);
-                    
-                })
                 .OnInitialized((instance, client, server, ct) =>
                 {
-                    //var serviceProvider = instance.Services;
-                    //var b = serviceProvider.GetRequiredService<IPortingAssistantClient>();
-                    //var res =  b.AnalyzeSolutionAsync("C:\\testsolutions\\nopCommerce-release-3.80\\src\\NopCommerce.sln",  new AnalyzerSettings(){ TargetFramework = "netcoreapp3.1" });
-                    //res.Wait();
-                    //Console.WriteLine(res.Result.ToString());
-                    // Bug in visual studio support where CodeActionKind.Empty is not supported, and throws (instead of gracefully ignoring it)
+                  
                     if (server?.Capabilities?.CodeActionProvider?.Value?.CodeActionKinds != null)
                     {
                         server.Capabilities.CodeActionProvider.Value.CodeActionKinds = server.Capabilities.CodeActionProvider.Value.CodeActionKinds.ToImmutableArray().Remove(CodeActionKind.Empty).ToArray();
                     }
+                    Console.WriteLine("Initialized ! We should use initialzed message to enable commands in client");
                     return Task.CompletedTask;
                 });
         }

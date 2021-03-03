@@ -1,5 +1,9 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using EnvDTE;
+using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using PortingAssistantVSExtensionClient.Models;
+using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.ComponentModel.Design;
 using System.Globalization;
@@ -86,21 +90,31 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void Execute(object sender, EventArgs e)
+        private async void Execute(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<string>("analyzeSolution", new { solutionFilePath = "C:\\testsolutions\\nopCommerce-release-3.80\\src\\NopCommerce.sln", settings = new { targetFramework = "netcoreapp3.1", ignoredProjects = Array.Empty<string>() } });
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "SolutionAssessmentCommand";
-
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            var dte = (DTE2)await ServiceProvider.GetServiceAsync(typeof(DTE));
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            
+            try
+            {
+                string SolutionFile = await SolutionUtils.GetSolutionPathAsync(dte);
+                CommandUtils.EnableCommand(this.package, CommandId, false);
+                await NotificationUtils.LockStatusBarAsync(ServiceProvider, "Porting Assistant is assessing the solution.....");
+                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>("analyzeSolution", new { solutionFilePath = SolutionFile, settings = new { targetFramework = "netcoreapp3.1", ignoredProjects = Array.Empty<string>() } });
+                await NotificationUtils.ShowInfoBarAsync(ServiceProvider,"solution has been assessed successfully!");
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+                await NotificationUtils.ShowInfoBarAsync(ServiceProvider, "solution solution failed");
+            }
+            finally
+            {
+                await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider);
+                CommandUtils.EnableCommand(this.package, CommandId, true);
+            }
         }
+
+        
     }
 }

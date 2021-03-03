@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using PortingAssistantVSExtensionClient.Options;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -28,6 +29,8 @@ namespace PortingAssistantVSExtensionClient
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid("89507157-95b2-4fa0-beac-c5d42bdaa734")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideOptionPage(typeof(PortingAssistantOptions),
+    "Porting Assistan Extension", "General", 0, 0, true)]
     public sealed class PortingAssistantVSExtensionClientPackage : AsyncPackage
     {
 
@@ -48,6 +51,7 @@ namespace PortingAssistantVSExtensionClient
             await PortingAssistantVSExtensionClient.Commands.SolutionAssessmentCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.SolutionPortingCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.ProjectPortingCommand.InitializeAsync(this);
+            await PortingAssistantVSExtensionClient.Commands.AutoAssessmentCommand.InitializeAsync(this);
         }
 
         #endregion

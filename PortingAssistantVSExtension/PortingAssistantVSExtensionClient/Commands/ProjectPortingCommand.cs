@@ -2,11 +2,14 @@
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 using PortingAssistantVSExtensionClient.Models;
+using EnvDTE;
+using EnvDTE80;
+using PortingAssistantVSExtensionClient.Utils;
+using System.Collections.Generic;
+using PortingAssistantVSExtensionClient.Options;
+using Microsoft.VisualStudio.PlatformUI;
 
 namespace PortingAssistantVSExtensionClient.Commands
 {
@@ -29,6 +32,8 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// VS Package that provides this command, not null.
         /// </summary>
         private readonly AsyncPackage package;
+
+        private IVsThreadedWaitDialog4 _dialog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectPortingCommand"/> class.
@@ -87,20 +92,79 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void Execute(object sender, EventArgs e)
+        private async void Execute(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-            string title = "ProjectPortingCommand";
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var dte = (DTE2)await ServiceProvider.GetServiceAsync(typeof(DTE));
+            try
+            {
+                string SolutionFile = await SolutionUtils.GetSolutionPathAsync(dte);
+                string SelectedProjectPath = SolutionUtils.GetSelectedProjectPath();
+                
+                if (UserSettings.Instance.TargetFramework == TargetFrameworkType.no_selection)
+                {
+                    //selection
+                }
+                var PortingRequest = new ProjectFilePortingRequest()
+                {
+                    SolutionPath = SolutionFile,
+                    ProjectPaths = new List<string>() { SelectedProjectPath },
+                    TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
+                    InludeCodeFix = true
+                };
+                TestDialogWindow testDialog = new TestDialogWindow();
+                testDialog.ShowModal();
+                VsShellUtilities.ShowMessageBox(
+                    this.package,
+                    String.Format("Porting  project {0} to {1}", SelectedProjectPath, UserSettings.Instance.TargetFramework.ToString()),
+                    "",
+                    OLEMSGICON.OLEMSGICON_INFO,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
+                using (var ted = (IDisposable)_dialog)
+                {
+                    _dialog.StartWaitDialog("Porting Assistant", "Porting the Project........", "", null, "", 1, true, true);
+                    CommandUtils.EnableCommand(this.package, CommandId, false);
+                    await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<Models.ProjectFilePortingResponse>("applyPortingProjectFileChanges", PortingRequest);
+                    _dialog.EndWaitDialog();
+                }
+                // Show a message box to prove we were here
+                VsShellUtilities.ShowMessageBox(
+                    this.package,
+                    "Porting success!",
+                    "",
+                    OLEMSGICON.OLEMSGICON_INFO,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                // Show a message box to prove we were here
+                VsShellUtilities.ShowMessageBox(
+                    this.package,
+                    "Porting failed!",
+                    "",
+                    OLEMSGICON.OLEMSGICON_INFO,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
 
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.package,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            }
+            finally
+            {
+                CommandUtils.EnableCommand(this.package, CommandId, true);
+            }
+
+        }
+    }
+
+    class TestDialogWindow : DialogWindow
+    {
+        internal TestDialogWindow()
+        {
+            this.HasMaximizeButton = true;
+            this.HasMinimizeButton = true;
         }
     }
 }

@@ -14,11 +14,11 @@ namespace PortingAssistantExtensionServer.Handlers
     [Serial, Method("applyPortingProjectFileChanges")]
 
     internal interface ISolutionPortingHandler : IJsonRpcRequestHandler<ProjectFilePortingRequest, ProjectFilePortingResponse> { }
-    internal class SolutionPortingHandler : ISolutionPortingHandler 
+    internal class PortingHandler : ISolutionPortingHandler 
     {
         private readonly ILogger _logger;
         private readonly PortingService _portingService;
-        public SolutionPortingHandler(ILogger<SolutionPortingHandler> logger,
+        public PortingHandler(ILogger<PortingHandler> logger,
             PortingService portingService)
         {
             _logger = logger;

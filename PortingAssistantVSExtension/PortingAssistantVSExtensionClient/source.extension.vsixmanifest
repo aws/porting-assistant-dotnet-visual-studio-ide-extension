@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="PortingAssistantVSExtensionClient.400d378a-df6c-41a1-b7d0-dc9a4812765c" Version="1.0" Language="en-US" Publisher="Huawen Mi" />
+        <Identity Id="PortingAssistantVSExtensionClient.400d378a-df6c-41a1-b7d0-dc9a4812765c" Version="0.1" Language="en-US" Publisher="AWS" />
         <DisplayName>PortingAssistantVSExtensionClient</DisplayName>
         <Description xml:space="preserve">Porting Assistant  Visual Studio IDE extension</Description>
     </Metadata>

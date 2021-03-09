@@ -1,10 +1,12 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -36,6 +38,32 @@ namespace PortingAssistantVSExtensionClient.Utils
             }
 
             return Projects;
+        }
+
+        public static string GetSelectedProjectPath()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            IntPtr hierarchyPointer, selectionContainerPointer;
+            Object selectedObject = null;
+            IVsMultiItemSelect multiItemSelect;
+            uint projectItemId;
+            IVsMonitorSelection monitorSelection = (IVsMonitorSelection)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
+            monitorSelection.GetCurrentSelection(out hierarchyPointer,
+                                     out projectItemId,
+                                     out multiItemSelect,
+                                     out selectionContainerPointer);
+            IVsHierarchy selectedHierarchy = Marshal.GetTypedObjectForIUnknown(
+                                     hierarchyPointer,
+                                     typeof(IVsHierarchy)) as IVsHierarchy;
+            if (selectedHierarchy != null)
+            {
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(selectedHierarchy.GetProperty(
+                                                  projectItemId,
+                                                  (int)__VSHPROPID.VSHPROPID_ExtObject,
+                                                  out selectedObject));
+            }
+            Project selectedProject = selectedObject as Project;
+            return selectedProject.FileName;
         }
     }
 }

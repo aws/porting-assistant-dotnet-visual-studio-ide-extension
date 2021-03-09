@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="PortingAssistantVSExtensionClient.Options.OptionPageControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Options"
+             mc:Ignorable="d" Height="383.7" Width="486.8">
+    <Grid Margin="0,0,-0.6,0">
+        <CheckBox x:Name="EnableMetricCheck" Content="I agree to share my usage data with Porting Assistant&#xD;&#xA;for .NET and receive emails regarding  feedback on the tool.&#xD;&#xA;" HorizontalAlignment="Left" Margin="8,153,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" RenderTransformOrigin="-1.024,-1.743" Width="351"/>
+        <TextBox x:Name="CustomerEmailText" HorizontalAlignment="Left" Height="23" Margin="10,339,0,0" TextWrapping="Wrap" Text="customer@email.com" VerticalAlignment="Top" Width="235"/>
+        <Label Content="Porting Assistant Extension&#xD;&#xA;" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold" Height="59"/>
+        <Label Content="This is a description of the extension" HorizontalAlignment="Left" Margin="8,69,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.12,0.601"/>
+        <Label Content="When you shar eyour usage data.......&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,221,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.742,0.145"/>
+        <Label Content="Email" HorizontalAlignment="Left" Margin="10,308,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.19,-0.066" FontWeight="Bold"/>
+        <Button Content="Cache location....." HorizontalAlignment="Left" Margin="217,281,0,0" VerticalAlignment="Top" Width="118" Height="27" Click="Button_Click_1"/>
+        <ComboBox x:Name="TargeFrameworks" HorizontalAlignment="Left" Margin="10,281,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="ComboBox_SelectionChanged"/>
+
+    </Grid>
+</UserControl>

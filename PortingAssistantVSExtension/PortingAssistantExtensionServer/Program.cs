@@ -53,7 +53,7 @@ namespace PortingAssistantExtensionServer
                 })
                 .WithHandler<PortingAssistantTextSyncHandler>()
                 .WithHandler<SolutionAssessmentHandler>()
-                .WithHandler<SolutionPortingHandler>()
+                .WithHandler<PortingHandler>()
                 .ConfigureLogging(
                     x => x
                         .ClearProviders()

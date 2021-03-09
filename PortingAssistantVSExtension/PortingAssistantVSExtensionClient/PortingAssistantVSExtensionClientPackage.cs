@@ -29,8 +29,8 @@ namespace PortingAssistantVSExtensionClient
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid("89507157-95b2-4fa0-beac-c5d42bdaa734")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideOptionPage(typeof(PortingAssistantOptions),
-    "Porting Assistan Extension", "General", 0, 0, true)]
+    [ProvideOptionPage(typeof(OptionPage),
+    Common.Constants.ApplicationName, "General", 0, 0, true)]
     public sealed class PortingAssistantVSExtensionClientPackage : AsyncPackage
     {
 
@@ -48,10 +48,12 @@ namespace PortingAssistantVSExtensionClient
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            UserSettings.Create(this);
             await PortingAssistantVSExtensionClient.Commands.SolutionAssessmentCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.SolutionPortingCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.ProjectPortingCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.AutoAssessmentCommand.InitializeAsync(this);
+           
         }
 
         #endregion

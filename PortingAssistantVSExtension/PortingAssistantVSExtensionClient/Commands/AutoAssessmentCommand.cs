@@ -40,17 +40,17 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
-
             var menuCommandID = new CommandID(CommandSet, CommandId);
             var menuItem = new OleMenuCommand(this.Execute, menuCommandID);
             menuItem.BeforeQueryStatus += MenuItem_BeforeQueryStatus;
             commandService.AddCommand(menuItem);
+            
         }
 
         private static void MenuItem_BeforeQueryStatus(object sender, EventArgs e)
         {
             var button = (OleMenuCommand)sender;
-            button.Checked = GeneralOptions.Instance.Enabled;
+            button.Checked = UserSettings.Instance.EnableAutoAssessment;
         }
 
 
@@ -98,8 +98,8 @@ namespace PortingAssistantVSExtensionClient.Commands
         private void Execute(object sender, EventArgs e)
         {
             var button = (OleMenuCommand)sender;
-            GeneralOptions.Instance.Enabled = !button.Checked;
-            GeneralOptions.Instance.Save();
+            UserSettings.Instance.EnableAutoAssessment = !button.Checked;
+            UserSettings.Instance.SaveAllSettings();
         }
     }
 }

@@ -3,6 +3,8 @@ using EnvDTE80;
 using Microsoft;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using PortingAssistantVSExtensionClient.Models;
+using PortingAssistantVSExtensionClient.Options;
 using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.ComponentModel.Design;
@@ -100,6 +102,17 @@ namespace PortingAssistantVSExtensionClient.Commands
             {
                 string SolutionFile = await SolutionUtils.GetSolutionPathAsync(dte);
                 var ProjectFiles = SolutionUtils.GetProjectPath(SolutionFile);
+                if (UserSettings.Instance.TargetFramework == TargetFrameworkType.no_selection)
+                {
+                    //selection
+                }
+                var PortingRequest = new ProjectFilePortingRequest()
+                {
+                    SolutionPath = SolutionFile,
+                    ProjectPaths = ProjectFiles,
+                    TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
+                    InludeCodeFix = true
+                };
                 _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
                 using (var ted = (IDisposable)_dialog)
                 {

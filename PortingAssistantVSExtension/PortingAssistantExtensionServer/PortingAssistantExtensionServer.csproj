@@ -13,14 +13,10 @@
     <PackageReference Include="PortingAssistant.Client.Common" Version="1.5.10-alpha-g0bce462880" />
     <PackageReference Include="PortingAssistant.Client.NuGet" Version="1.5.10-alpha-g0bce462880" />
     <PackageReference Include="PortingAssistant.Client.Porting" Version="1.5.10-alpha-g0bce462880" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
+	<PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+	<PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="System.IO.Pipes.AccessControl" Version="5.0.0" />
   </ItemGroup>
-  <Target Name="CustomAfterBuild" AfterTargets="Build">
-    <ItemGroup>
-      <_FilesToCopy Include="$(OutputPath)**\*" />
-    </ItemGroup>
-    <Message Text="_FilesToCopy: @(_FilesToCopy)" Importance="high" />
-    <Message Text="DestFiles:&#xD;&#xA;      @(_FilesToCopy->'$(_OutputCopyLocation)%(RecursiveDir)%(Filename)%(Extension)')" />
-    <Copy SourceFiles="@(_FilesToCopy)" DestinationFiles="@(_FilesToCopy->'$(_OutputCopyLocation)%(RecursiveDir)%(Filename)%(Extension)')" />
-  </Target>
 </Project>

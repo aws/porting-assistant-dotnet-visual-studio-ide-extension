@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortingAssistantVSExtensionClient", "PortingAssistantVSExtensionClient\PortingAssistantVSExtensionClient.csproj", "{9DCE8A66-0BAC-455D-BB16-FB238AE5B8BB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionServerUnitTest", "PortingAssistantExtensionServerUnitTest\PortingAssistantExtensionServerUnitTest.csproj", "{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9DCE8A66-0BAC-455D-BB16-FB238AE5B8BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DCE8A66-0BAC-455D-BB16-FB238AE5B8BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DCE8A66-0BAC-455D-BB16-FB238AE5B8BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

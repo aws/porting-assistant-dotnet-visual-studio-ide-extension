@@ -1,5 +1,4 @@
-﻿using Autofac.Features.OwnedInstances;
-using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Shell;
 using PortingAssistantVSExtensionClient.Models;
 using System;
 using System.ComponentModel;

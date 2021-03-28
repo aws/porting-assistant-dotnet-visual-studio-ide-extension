@@ -12,6 +12,8 @@ namespace PortingAssistantExtensionServer.Common
 
         static string _customerEmail { get; set; }
 
+        static string _rootCacheFolder { get; set; }
+
         public static bool EnabledContinuousAssessment
         {
             get
@@ -45,6 +47,18 @@ namespace PortingAssistantExtensionServer.Common
             set
             {
                 _customerEmail = value;
+            }
+        }
+
+        public static string RootCacheFolder
+        {
+            get
+            {
+                return _rootCacheFolder;
+            }
+            set
+            {
+                _rootCacheFolder = value;
             }
         }
 

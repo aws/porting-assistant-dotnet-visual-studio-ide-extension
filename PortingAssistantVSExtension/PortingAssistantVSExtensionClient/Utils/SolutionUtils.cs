@@ -61,9 +61,14 @@ namespace PortingAssistantVSExtensionClient.Utils
                                                   projectItemId,
                                                   (int)__VSHPROPID.VSHPROPID_ExtObject,
                                                   out selectedObject));
+                Project selectedProject = selectedObject as Project;
+                return selectedProject.FileName;
             }
-            Project selectedProject = selectedObject as Project;
-            return selectedProject.FileName;
+            else
+            {
+                return "";
+            }
+            
         }
     }
 }

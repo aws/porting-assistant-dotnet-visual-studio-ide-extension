@@ -58,22 +58,23 @@ namespace PortingAssistantVSExtensionClient
 
         public async Task<Connection> ActivateAsync(CancellationToken token)
         {
-            var stdInPipeName = @"clientreadpipe";
-            var stdOutPipeName = @"clientwritepipe";
-            var readerPipe = new NamedPipeClientStream(serverName: ".", pipeName: stdInPipeName, direction: PipeDirection.In, options: PipeOptions.Asynchronous);
-            var writerPipe = new NamedPipeClientStream(serverName: ".", pipeName: stdOutPipeName, direction: PipeDirection.Out, options: PipeOptions.Asynchronous);
+            var stdInPipeName = @"extensionclientreadpipe";
+            var stdOutPipeName = @"extensionclientwritepipe";
+            var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.In, maxNumberOfServerInstances: 1, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
+            var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.Out, maxNumberOfServerInstances: 1, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
             var serverPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "PortingAssistantLanguageServer", @"PortingAssistantExtensionServer.exe");
             if (File.Exists(serverPath))
             {
                 ProcessStartInfo info = new ProcessStartInfo();
                 info.FileName = serverPath;
                 info.WorkingDirectory = Path.GetDirectoryName(serverPath);
+                info.Arguments = stdInPipeName + " " + stdOutPipeName;
                 Process process = new Process();
                 process.StartInfo = info;
                 if (process.Start())
                 {
-                    await readerPipe.ConnectAsync(token);
-                    await writerPipe.ConnectAsync(token);
+                    await readerPipe.WaitForConnectionAsync(token);
+                    await writerPipe.WaitForConnectionAsync(token);
                     return new Connection(readerPipe, writerPipe);
                 }
                 else
@@ -84,8 +85,8 @@ namespace PortingAssistantVSExtensionClient
             else
             {
 #if DEBUG
-                await readerPipe.ConnectAsync(token);
-                await writerPipe.ConnectAsync(token);
+                await readerPipe.WaitForConnectionAsync(token);
+                await writerPipe.WaitForConnectionAsync(token);
                 return new Connection(readerPipe, writerPipe);
 #else
                 return null;
@@ -114,23 +115,6 @@ namespace PortingAssistantVSExtensionClient
             this.PortingAssistantRpc = rpc;
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
         }
-
-        //public async Task AttachForCustomMessageAsync(JsonRpc rpc)
-        //{
-        //    this.Rpc = rpc;
-
-        //    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-        //    // Sets the UI context so the custom command will be available.
-        //    var monitorSelection = ServiceProvider.GlobalProvider.GetService(typeof(IVsMonitorSelection)) as IVsMonitorSelection;
-        //    if (monitorSelection != null)
-        //    {
-        //        if (monitorSelection.GetCmdUIContextCookie(ref this.uiContextGuid, out uint cookie) == VSConstants.S_OK)
-        //        {
-        //            monitorSelection.SetCmdUIContext(cookie, 1);
-        //        }
-        //    }
-        //}
 
 
     }

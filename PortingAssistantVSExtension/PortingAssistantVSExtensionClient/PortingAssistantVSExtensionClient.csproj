@@ -46,6 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Commands\AutoAssessmentCommand.cs" />
+    <Compile Include="Commands\DisplaySettings.cs" />
     <Compile Include="Commands\PortingAssistantVSExtensionClientPackage.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -55,7 +56,6 @@
     <Compile Include="Commands\SolutionAssessmentCommand.cs" />
     <Compile Include="Commands\SolutionPortingCommand.cs" />
     <Compile Include="Common\Constants.cs" />
-    <Compile Include="Common\SettingsStore.cs" />
     <Compile Include="ContentDefinitions\CsharpContentDefinition.cs" />
     <Compile Include="ContentDefinitions\CsprojContentDefinition.cs" />
     <Compile Include="Models\AnalyzeSolutionResponse.cs" />
@@ -95,26 +95,24 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.206" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.8.3038" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.206" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.31">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="System.ComponentModel.Composition">
       <Version>5.0.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Commands\Resources\ProjectPortingCommand.png" />
     <Content Include="Commands\Resources\SolutionAssessmentCommand.png" />
     <VSCTCompile Include="Commands\PortingAssistantVSExtensionClientPackage.vsct">
       <Generator>VsctGenerator</Generator>
       <ResourceName>Menus.ctmenu</ResourceName>
       <LastGenOutput>PortingAssistantVSExtensionClientPackage.cs</LastGenOutput>
     </VSCTCompile>
-    <Content Include="Commands\Resources\SolutionPortingCommand.png" />
-    <Content Include="PortingAssistantVSExtensionClientSettings.pkgdef">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Options\OptionPageControl.xaml">

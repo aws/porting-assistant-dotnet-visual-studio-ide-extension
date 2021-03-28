@@ -21,7 +21,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4130;
+        public const int CommandId = 0x0102;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -100,7 +100,15 @@ namespace PortingAssistantVSExtensionClient.Commands
             {
                 string SolutionFile = await SolutionUtils.GetSolutionPathAsync(dte);
                 string SelectedProjectPath = SolutionUtils.GetSelectedProjectPath();
-                
+                if (SelectedProjectPath.Equals("")) {
+                    VsShellUtilities.ShowMessageBox(
+                        this.package,
+                        "Please select or open a project!",
+                        "Porting project to dotnet core",
+                        OLEMSGICON.OLEMSGICON_INFO,
+                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                }
                 if (UserSettings.Instance.TargetFramework == TargetFrameworkType.no_selection)
                 {
                     //selection
@@ -116,10 +124,10 @@ namespace PortingAssistantVSExtensionClient.Commands
                 testDialog.ShowModal();
                 VsShellUtilities.ShowMessageBox(
                     this.package,
-                    String.Format("Porting  project {0} to {1}", SelectedProjectPath, UserSettings.Instance.TargetFramework.ToString()),
-                    "",
+                    String.Format("Porting  project {0} to {1}?", SelectedProjectPath, UserSettings.Instance.TargetFramework.ToString()),
+                    "Poring cannot be undone",
                     OLEMSGICON.OLEMSGICON_INFO,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OKCANCEL,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
                 _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
                 using (var ted = (IDisposable)_dialog)

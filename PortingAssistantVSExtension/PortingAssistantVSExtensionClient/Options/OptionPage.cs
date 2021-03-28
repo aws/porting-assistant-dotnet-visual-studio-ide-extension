@@ -42,7 +42,7 @@ namespace PortingAssistantVSExtensionClient.Options
 
         void LoadSettings()
         {
-            _optionsPageControl.EnableMetricCheck.IsChecked = _userSettings.EnableMetric;
+            _optionsPageControl.EnableMetricCheck.IsChecked = _userSettings.EnabledMetric;
             _optionsPageControl.CustomerEmailText.Text = _userSettings.CustomerEmail;
             _optionsPageControl.TargeFrameworks.SelectedItem = _userSettings.TargetFramework; 
         }
@@ -50,7 +50,7 @@ namespace PortingAssistantVSExtensionClient.Options
         void Save()
         {
             _userSettings.CustomerEmail = _optionsPageControl.CustomerEmailText.Text;
-            _userSettings.EnableMetric = _optionsPageControl.EnableMetricCheck.IsChecked ?? false;
+            _userSettings.EnabledMetric = _optionsPageControl.EnableMetricCheck.IsChecked ?? false;
             _userSettings.TargetFramework = (TargetFrameworkType)_optionsPageControl.TargeFrameworks.SelectedValue;
             _userSettings.SaveAllSettings();
         }

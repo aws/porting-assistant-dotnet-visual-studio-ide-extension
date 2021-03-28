@@ -75,8 +75,8 @@ namespace PortingAssistantExtensionServer
 
         public async Task WaitForShutdownAsync()
         {
-            await _portingAssistantServer.WaitForExit.ConfigureAwait(false);
             _started = false;
+            await _portingAssistantServer.WaitForExit.ConfigureAwait(false);
         }
 
 

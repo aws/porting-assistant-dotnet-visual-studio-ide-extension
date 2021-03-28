@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using PortingAssistantVSExtensionClient.Options;
 using System;
 using System.ComponentModel.Design;
 using System.Globalization;
@@ -13,12 +12,12 @@ namespace PortingAssistantVSExtensionClient.Commands
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class AutoAssessmentCommand
+    internal sealed class DisplaySettings
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0103;
+        public const int CommandId = 0x0104;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -31,33 +30,25 @@ namespace PortingAssistantVSExtensionClient.Commands
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AutoAssessmentCommand"/> class.
+        /// Initializes a new instance of the <see cref="DisplaySettings"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private AutoAssessmentCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private DisplaySettings(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+
             var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new OleMenuCommand(this.Execute, menuCommandID);
-            menuItem.BeforeQueryStatus += MenuItem_BeforeQueryStatus;
+            var menuItem = new MenuCommand(this.Execute, menuCommandID);
             commandService.AddCommand(menuItem);
-            
         }
-
-        private static void MenuItem_BeforeQueryStatus(object sender, EventArgs e)
-        {
-            var button = (OleMenuCommand)sender;
-            button.Checked = UserSettings.Instance.EnabledContinuousAssessment;
-        }
-
 
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static AutoAssessmentCommand Instance
+        public static DisplaySettings Instance
         {
             get;
             private set;
@@ -80,12 +71,12 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
-            // Switch to the main thread - the call to AddCommand in AutoAssessmentCommand's constructor requires
+            // Switch to the main thread - the call to AddCommand in DisplaySettings's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new AutoAssessmentCommand(package, commandService);
+            Instance = new DisplaySettings(package, commandService);
         }
 
         /// <summary>
@@ -97,9 +88,8 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="e">Event args.</param>
         private void Execute(object sender, EventArgs e)
         {
-            var button = (OleMenuCommand)sender;
-            UserSettings.Instance.EnabledContinuousAssessment = !button.Checked;
-            UserSettings.Instance.SaveAllSettings();
+            ThreadHelper.ThrowIfNotOnUIThread();
+            //VsShellUtilities.ShowToolsOptionsPage(new Guid("459594a1-6b43-4e64-a335-13b1b5581836"));
         }
     }
 }

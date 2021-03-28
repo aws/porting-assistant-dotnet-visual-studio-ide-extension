@@ -24,11 +24,13 @@ namespace PortingAssistantExtensionServer
 {
     public static class Program
     {
+
+        private static bool _isConnected = false;
         static async Task Main(string[] args)
         {
-            var stdInPipeName = @"clientwritepipe";
-            var stdOutPipeName = @"clientreadpipe";
-            var (input, output) = await CreateNamedPipe(stdInPipeName, stdOutPipeName);
+            //TODO put settings in file/constant
+            var stdInPipeName = @"extensionclientwritepipe";
+            var stdOutPipeName = @"extensionclientreadpipe";
             var configuration = new PortingAssistantConfiguration()
             {
                 DataStoreSettings = new DataStoreSettings()
@@ -37,7 +39,14 @@ namespace PortingAssistantExtensionServer
                     S3Endpoint = "aws.portingassistant.dotnet.datastore",
                     GitHubEndpoint = "https://raw.githubusercontent.com/aws/porting-assistant-dotnet-datastore/master/"
                 }
-              };
+            };
+            
+            if (args.Length != 0)
+            {
+                stdInPipeName = args[0];
+                stdOutPipeName = args[1];
+            }
+            var (input, output) = await CreateNamedPipe(stdInPipeName, stdOutPipeName);
             var outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}";
 
             if (args.Length == 4 && !args[3].Equals("--console"))
@@ -45,6 +54,7 @@ namespace PortingAssistantExtensionServer
                 outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (" + args[3] + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
             }
             Serilog.Formatting.Display.MessageTemplateTextFormatter tf = new Serilog.Formatting.Display.MessageTemplateTextFormatter(outputTemplate, CultureInfo.InvariantCulture);
+
             var portingAssisstantLanguageServer = new PortingAssistantLanguageServer(
                 loggingBuilder => loggingBuilder
                 .SetMinimumLevel(LogLevel.Debug)
@@ -53,26 +63,31 @@ namespace PortingAssistantExtensionServer
                 output,
                 configuration
                 );
+                await portingAssisstantLanguageServer.StartAsync();
+                await portingAssisstantLanguageServer.WaitForShutdownAsync();
+            //TODO properly handle exit
+            if(portingAssisstantLanguageServer.IsSeverStarted() && !_isConnected)
+            {
+                await portingAssisstantLanguageServer.WaitForShutdownAsync();
+                Environment.Exit(0);
+            }
 
-            await portingAssisstantLanguageServer.StartAsync();
-            await portingAssisstantLanguageServer.WaitForShutdownAsync();            
         }
 
         private static async Task<(PipeReader input, PipeWriter output)> CreateNamedPipe(string stdInPipeName, string stdOutPipeName)
         {
-            //shutdown server when lost connection
             Console.InputEncoding = System.Text.Encoding.UTF8;
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.In, maxNumberOfServerInstances: 1, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
-            var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.Out, maxNumberOfServerInstances: 1, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
+            var readerPipe = new NamedPipeClientStream(serverName: ".", pipeName: stdInPipeName, direction: PipeDirection.In,  options: System.IO.Pipes.PipeOptions.Asynchronous);
+            var writerPipe = new NamedPipeClientStream(serverName: ".", pipeName: stdOutPipeName, direction: PipeDirection.Out, options: System.IO.Pipes.PipeOptions.Asynchronous);
             Console.WriteLine("Waiting for client to connect on pipe...");
-            await readerPipe.WaitForConnectionAsync();
-            await writerPipe.WaitForConnectionAsync();
+            await readerPipe.ConnectAsync();
+            await writerPipe.ConnectAsync();
             var pipeline1 = readerPipe.UsePipe();
             var pipeline2 = writerPipe.UsePipe();
-            // await pipe.WaitForConnectionAsync().ConfigureAwait(false);
             if (readerPipe.IsConnected && writerPipe.IsConnected)
             {
+                _isConnected = true;
                  Console.WriteLine("Connected");
             }
             return (pipeline1.Input, pipeline2.Output);

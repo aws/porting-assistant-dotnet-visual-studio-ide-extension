@@ -1,7 +1,5 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,17 +16,18 @@ using System.Windows.Shapes;
 namespace PortingAssistantVSExtensionClient.Options
 {
     /// <summary>
-    /// Interaction logic for OptionPageControl.xaml
+    /// Interaction logic for DataSharingOptionPage.xaml
     /// </summary>
-    public partial class OptionPageControl : UserControl
+    public partial class DataSharingOptionPage : UserControl
     {
-
-
-
-        public OptionPageControl()
+        public DataSharingOptionPage()
         {
             InitializeComponent();
         }
 
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

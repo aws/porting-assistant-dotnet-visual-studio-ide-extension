@@ -20,9 +20,6 @@ namespace PortingAssistantVSExtensionClient.Commands
 
         public const string guidPortingAssistantVSExtensionClientPackageCmdSetString = "72f43848-037a-4907-98e2-e7e964271f44";
         public static Guid guidPortingAssistantVSExtensionClientPackageCmdSet = new Guid(guidPortingAssistantVSExtensionClientPackageCmdSetString);
-
-        public const string guidImagesString = "6776e3d2-6672-45f7-8cc0-5c3a9010ed45";
-        public static Guid guidImages = new Guid(guidImagesString);
     }
     /// <summary>
     /// Helper class that encapsulates all CommandIDs uses across VS Package.
@@ -41,11 +38,5 @@ namespace PortingAssistantVSExtensionClient.Commands
         public const int cmdidProjectPortingCommand = 0x0102;
         public const int cmdidAutoAssessmentCommand = 0x0103;
         public const int cmdidDisplaySettings = 0x0104;
-        public const int bmpPic1 = 0x0001;
-        public const int bmpPic2 = 0x0002;
-        public const int bmpPicSearch = 0x0003;
-        public const int bmpPicX = 0x0004;
-        public const int bmpPicArrows = 0x0005;
-        public const int bmpPicStrikethrough = 0x0006;
     }
 }

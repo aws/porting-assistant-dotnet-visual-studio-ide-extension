@@ -3,6 +3,7 @@ using EnvDTE80;
 using Microsoft;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using PortingAssistantVSExtensionClient.Dialogs;
 using PortingAssistantVSExtensionClient.Models;
 using PortingAssistantVSExtensionClient.Options;
 using PortingAssistantVSExtensionClient.Utils;
@@ -23,12 +24,12 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0101;
+        public const int CommandId = PackageIds.cmdidSolutionPortingCommand;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("72f43848-037a-4907-98e2-e7e964271f44");
+        public static readonly Guid CommandSet = new Guid(PackageGuids.guidPortingAssistantVSExtensionClientPackageCmdSetString);
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -104,21 +105,22 @@ namespace PortingAssistantVSExtensionClient.Commands
                 var ProjectFiles = SolutionUtils.GetProjectPath(SolutionFile);
                 if (UserSettings.Instance.TargetFramework == TargetFrameworkType.no_selection)
                 {
-                    //selection
+                    if (!SelectTargetDialog.EnsureExecute()) return;
                 }
+                if (!PortingDialog.EnsureExecute()) return;
                 var PortingRequest = new ProjectFilePortingRequest()
                 {
                     SolutionPath = SolutionFile,
                     ProjectPaths = ProjectFiles,
                     TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
-                    InludeCodeFix = true
+                    InludeCodeFix = UserSettings.Instance.ApplyPortAction,
                 };
                 _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
                 using (var ted = (IDisposable)_dialog)
                 {
                     _dialog.StartWaitDialog("Porting Assistant", "Porting the solution........", "", null, "", 1, true, true);
-                    CommandUtils.EnableCommand(this.package, CommandId, false);
-                    await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<Models.ProjectFilePortingResponse>("applyPortingProjectFileChanges", new { ProjectPaths = ProjectFiles, SolutionPath = SolutionFile, TargetFramework = "netcoreapp3.1", RecommendedActions = Array.Empty<string>() });
+                    CommandUtils.EnableAllCommand(this.package, false);
+                    await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>("applyPortingProjectFileChanges", PortingRequest);
                     _dialog.EndWaitDialog();
                 }
                 // Show a message box to prove we were here
@@ -132,19 +134,17 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
             catch(Exception ex)
             {
-                Console.WriteLine(ex);
-                // Show a message box to prove we were here
                 VsShellUtilities.ShowMessageBox(
                     this.package,
                     "Porting failed!",
-                    "",
+                    ex.Message,
                     OLEMSGICON.OLEMSGICON_INFO,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
             finally
             {
-                CommandUtils.EnableCommand(this.package, CommandId, true);
+                CommandUtils.EnableAllCommand(this.package, true);
             }
         }
     }

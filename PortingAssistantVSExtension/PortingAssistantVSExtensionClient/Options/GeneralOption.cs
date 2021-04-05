@@ -12,13 +12,13 @@ namespace PortingAssistantVSExtensionClient.Options
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
     [Guid("459594a1-6b43-4e64-a335-13b1b5581836")]
-    public class OptionPage : UIElementDialogPage
+    public class GeneralOption : UIElementDialogPage
     {
         private readonly OptionPageControl _optionsPageControl;
 
         private readonly UserSettings _userSettings;
 
-        public OptionPage()
+        public GeneralOption()
         {
             _optionsPageControl = new OptionPageControl();
             _userSettings = UserSettings.Instance;
@@ -42,15 +42,11 @@ namespace PortingAssistantVSExtensionClient.Options
 
         void LoadSettings()
         {
-            _optionsPageControl.EnableMetricCheck.IsChecked = _userSettings.EnabledMetric;
-            _optionsPageControl.CustomerEmailText.Text = _userSettings.CustomerEmail;
             _optionsPageControl.TargeFrameworks.SelectedItem = _userSettings.TargetFramework; 
         }
         
         void Save()
         {
-            _userSettings.CustomerEmail = _optionsPageControl.CustomerEmailText.Text;
-            _userSettings.EnabledMetric = _optionsPageControl.EnableMetricCheck.IsChecked ?? false;
             _userSettings.TargetFramework = (TargetFrameworkType)_optionsPageControl.TargeFrameworks.SelectedValue;
             _userSettings.SaveAllSettings();
         }

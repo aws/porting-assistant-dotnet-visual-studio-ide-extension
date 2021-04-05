@@ -10,6 +10,7 @@ using PortingAssistantVSExtensionClient.Utils;
 using System.Collections.Generic;
 using PortingAssistantVSExtensionClient.Options;
 using Microsoft.VisualStudio.PlatformUI;
+using PortingAssistantVSExtensionClient.Dialogs;
 
 namespace PortingAssistantVSExtensionClient.Commands
 {
@@ -21,12 +22,12 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0102;
+        public const int CommandId = PackageIds.cmdidProjectPortingCommand;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("72f43848-037a-4907-98e2-e7e964271f44");
+        public static readonly Guid CommandSet = new Guid(PackageGuids.guidPortingAssistantVSExtensionClientPackageCmdSetString);
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -111,30 +112,22 @@ namespace PortingAssistantVSExtensionClient.Commands
                 }
                 if (UserSettings.Instance.TargetFramework == TargetFrameworkType.no_selection)
                 {
-                    //selection
+                    if (!SelectTargetDialog.EnsureExecute()) return;
                 }
+                if (!PortingDialog.EnsureExecute()) return;
                 var PortingRequest = new ProjectFilePortingRequest()
                 {
                     SolutionPath = SolutionFile,
                     ProjectPaths = new List<string>() { SelectedProjectPath },
                     TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
-                    InludeCodeFix = true
+                    InludeCodeFix = UserSettings.Instance.ApplyPortAction,
                 };
-                TestDialogWindow testDialog = new TestDialogWindow();
-                testDialog.ShowModal();
-                VsShellUtilities.ShowMessageBox(
-                    this.package,
-                    String.Format("Porting  project {0} to {1}?", SelectedProjectPath, UserSettings.Instance.TargetFramework.ToString()),
-                    "Poring cannot be undone",
-                    OLEMSGICON.OLEMSGICON_INFO,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OKCANCEL,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
                 _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
                 using (var ted = (IDisposable)_dialog)
                 {
                     _dialog.StartWaitDialog("Porting Assistant", "Porting the Project........", "", null, "", 1, true, true);
-                    CommandUtils.EnableCommand(this.package, CommandId, false);
-                    await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<Models.ProjectFilePortingResponse>("applyPortingProjectFileChanges", PortingRequest);
+                    CommandUtils.EnableAllCommand(this.package, false);
+                    await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>("applyPortingProjectFileChanges", PortingRequest);
                     _dialog.EndWaitDialog();
                 }
                 // Show a message box to prove we were here
@@ -148,12 +141,10 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                // Show a message box to prove we were here
                 VsShellUtilities.ShowMessageBox(
                     this.package,
                     "Porting failed!",
-                    "",
+                    ex.Message,
                     OLEMSGICON.OLEMSGICON_INFO,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
@@ -161,18 +152,9 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
             finally
             {
-                CommandUtils.EnableCommand(this.package, CommandId, true);
+                CommandUtils.EnableAllCommand(this.package, true);
             }
 
-        }
-    }
-
-    class TestDialogWindow : DialogWindow
-    {
-        internal TestDialogWindow()
-        {
-            this.HasMaximizeButton = true;
-            this.HasMinimizeButton = true;
         }
     }
 }

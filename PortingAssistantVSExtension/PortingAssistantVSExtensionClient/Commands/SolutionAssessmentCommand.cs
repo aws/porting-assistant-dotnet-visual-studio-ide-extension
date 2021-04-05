@@ -2,9 +2,12 @@
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using PortingAssistantVSExtensionClient.Dialogs;
 using PortingAssistantVSExtensionClient.Models;
+using PortingAssistantVSExtensionClient.Options;
 using PortingAssistantVSExtensionClient.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Globalization;
 using System.Threading;
@@ -21,12 +24,12 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0100;
+        public const int CommandId = PackageIds.SolutionAssessmentCommandId;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("72f43848-037a-4907-98e2-e7e964271f44");
+        public static readonly Guid CommandSet = new Guid(PackageGuids.guidPortingAssistantVSExtensionClientPackageCmdSetString);
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -98,10 +101,25 @@ namespace PortingAssistantVSExtensionClient.Commands
             try
             {
                 string SolutionFile = await SolutionUtils.GetSolutionPathAsync(dte);
-                CommandUtils.EnableCommand(this.package, CommandId, false);
+                CommandUtils.EnableAllCommand(this.package, false);
+                if (UserSettings.Instance.TargetFramework == TargetFrameworkType.no_selection)
+                {
+                    if (!SelectTargetDialog.EnsureExecute()) return;
+                }
+                var analyzeSolutionRequest = new AnalyzeSolutionRequest()
+                {
+                    solutionFilePath = SolutionFile,
+                    settings = new AnalyzerSettings()
+                    {
+                        TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
+                        IgnoreProjects = new List<string>(),
+                    },
+                };
                 await NotificationUtils.LockStatusBarAsync(ServiceProvider, "Porting Assistant is assessing the solution.....");
-                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>("analyzeSolution", new { solutionFilePath = SolutionFile, settings = new { targetFramework = "netcoreapp3.1", ignoredProjects = Array.Empty<string>() } });
+                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>("analyzeSolution", analyzeSolutionRequest);
                 await NotificationUtils.ShowInfoBarAsync(ServiceProvider,"solution has been assessed successfully!");
+                UserSettings.Instance.EnabledContinuousAssessment = true;
+                UserSettings.Instance.SaveAllSettings();
             }
             catch(Exception ex)
             {
@@ -111,7 +129,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             finally
             {
                 await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider);
-                CommandUtils.EnableCommand(this.package, CommandId, true);
+                CommandUtils.EnableAllCommand(this.package, true);
             }
         }
 

@@ -18,12 +18,12 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0103;
+        public const int CommandId = PackageIds.cmdidAutoAssessmentCommand;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("72f43848-037a-4907-98e2-e7e964271f44");
+        public static readonly Guid CommandSet = new Guid(PackageGuids.guidPortingAssistantVSExtensionClientPackageCmdSetString);
 
         /// <summary>
         /// VS Package that provides this command, not null.

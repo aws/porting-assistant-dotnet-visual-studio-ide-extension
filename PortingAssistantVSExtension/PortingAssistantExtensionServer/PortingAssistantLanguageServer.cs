@@ -11,6 +11,7 @@ using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
 using PortingAssistantExtensionServer.Handlers;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
+using PortingAssistantExtensionServer.Common;
 
 namespace PortingAssistantExtensionServer
 {
@@ -49,8 +50,9 @@ namespace PortingAssistantExtensionServer
                     service.AddAssessment(_configuration);
                     service.AddSingleton<SolutionAnalysisService>();
                     service.AddSingleton<PortingService>();
-                    service.AddSingleton(new ConfigurationItem() { Section = "csharp" });
+                    service.ConfigureSection<PALanguageConfiguration>("paconfig");
                 })
+                .WithConfigurationSection("paconfig")
                 .WithHandler<PortingAssistantTextSyncHandler>()
                 .WithHandler<SolutionAssessmentHandler>()
                 .WithHandler<PortingHandler>()

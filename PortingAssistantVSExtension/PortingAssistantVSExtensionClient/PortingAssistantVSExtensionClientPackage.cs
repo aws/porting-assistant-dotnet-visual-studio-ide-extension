@@ -27,13 +27,15 @@ namespace PortingAssistantVSExtensionClient
     /// </remarks>
     [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid("89507157-95b2-4fa0-beac-c5d42bdaa734")]
+    [Guid(PortingAssistantVSExtensionClientPackage.PackageGuid)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideOptionPage(typeof(OptionPage),
-    Common.Constants.ApplicationName, "General", 0, 0, true)]
+    [ProvideOptionPage(typeof(GeneralOption),
+    Common.Constants.ApplicationName, Common.Constants.OptionName, 0, 0, true)]
+    [ProvideOptionPage(typeof(DataSharingOption),
+    Common.Constants.ApplicationName, Common.Constants.DataOptionName, 0, 0, true)]
     public sealed class PortingAssistantVSExtensionClientPackage : AsyncPackage
     {
-
+        const string PackageGuid = "89507157-95b2-4fa0-beac-c5d42bdaa734";
         #region Package Members
 
         /// <summary>

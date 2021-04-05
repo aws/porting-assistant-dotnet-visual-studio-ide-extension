@@ -19,6 +19,7 @@ namespace PortingAssistantVSExtensionClient.Options
 
         public bool EnabledMetric;
         public bool EnabledContinuousAssessment;
+        public bool ApplyPortAction;
         public string CustomerEmail;
         public string CacheFolder;
         public TargetFrameworkType TargetFramework;
@@ -45,7 +46,7 @@ namespace PortingAssistantVSExtensionClient.Options
             return (T)Read(property, value);
         }
 
-        public void WriteValue(string property, string value)
+        public void WriteValue(string property, object value)
         {
             Write(property, value);
         }
@@ -56,7 +57,7 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("EnabledContinuousAssessment", EnabledContinuousAssessment);
             Write("CustomerEmail", CustomerEmail);
             Write("TargetFramework", TargetFramework);
-
+            Write("ApplyPortAction", ApplyPortAction);
         }
 
         public void LoadingAllSettings()
@@ -64,6 +65,7 @@ namespace PortingAssistantVSExtensionClient.Options
             EnabledMetric = (bool)Read("EnabledMetric", true);
             EnabledContinuousAssessment = (bool)Read("EnabledContinuousAssessment", false);
             CustomerEmail = (string)Read("CustomerEmail", "customer@email.com");
+            ApplyPortAction = (bool)Read("ApplyPortAction", false);
             TargetFramework = (TargetFrameworkType)Enum.Parse(typeof(TargetFrameworkType),(string)Read("TargetFramework", TargetFrameworkType.no_selection.ToString()));
         }
 

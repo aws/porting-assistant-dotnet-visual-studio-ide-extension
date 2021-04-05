@@ -1,0 +1,18 @@
+﻿<ui:DialogWindow  x:Class="PortingAssistantVSExtensionClient.Dialogs.SelectTargetDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
+             mc:Ignorable="d" Height="183.182" Width="466.966">
+    <Grid Margin="0,0,0,0" Height="151" VerticalAlignment="Top">
+        <Label Content="Choose a Target Framework" HorizontalAlignment="Left" Margin="3,-28,0,0" VerticalAlignment="Top" Width="238" FontWeight="Bold"/>
+        <GroupBox Header="Target Framework" Height="102" Margin="0,3,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="431">
+            <ComboBox x:Name="TargetFrameWorkDropDown" HorizontalAlignment="Left" Margin="10,39,0,0" VerticalAlignment="Top" Width="263"/>
+        </GroupBox>
+        <Label x:Name="ChooseFrameworkLabel" Content="choose a target .NET framework to port your solution" HorizontalAlignment="Left" Margin="25,36,-27,0" VerticalAlignment="Top" Width="455" Opacity="0.6" FontSize="10"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="370,115,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+        <Button Content="OK" HorizontalAlignment="Left" Margin="280,115,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+    </Grid>
+</ui:DialogWindow>

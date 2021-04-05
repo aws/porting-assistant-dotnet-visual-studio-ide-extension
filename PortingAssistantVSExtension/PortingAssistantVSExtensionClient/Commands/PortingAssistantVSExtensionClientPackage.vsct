@@ -76,15 +76,16 @@
 			<!-- analyze menu -->
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="SolutionAssessmentCommandId" priority="0x0301" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PADiagGroup" />
-				<Icon guid="guidImages" id="bmpPic1" />
 				<Strings>
 					<ButtonText>Run Full Assessment</ButtonText>
+					<LocCanonicalName>.PortingAssistant.RunFullAssessment</LocCanonicalName>
 				</Strings>
 			</Button>
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidAutoAssessmentCommand" priority="0x0302" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PADiagGroup" />
 				<Strings>
 					<ButtonText>Enable Incremental Assessments</ButtonText>
+					<LocCanonicalName>.PortingAssistant.EnableIncrementalAssessment</LocCanonicalName>
 				</Strings>
 			</Button>
 
@@ -93,19 +94,20 @@
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PAProjMenuGroup" />
 				<Strings>
 					<ButtonText>Port Solution to .NET Core</ButtonText>
+					<LocCanonicalName>.PortingAssistant.PortSolution</LocCanonicalName>
 				</Strings>
 			</Button>
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidProjectPortingCommand" priority="0x0301" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PAProjMenuGroup" />
 				<Strings>
 					<ButtonText>Port Project to .NET Core</ButtonText>
+					<LocCanonicalName>.PortingAssistant.PortProject</LocCanonicalName>
 				</Strings>
 			</Button>
 
 			<!-- solution explorer menu -->
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidProjectPortingCommand" priority="0x0305" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PAProjectGroup" />
-				<Icon guid="guidImages" id="bmpPic1" />
 				<Strings>
 					<ButtonText>Port This Project to .NET Core....</ButtonText>
 				</Strings>
@@ -162,15 +164,6 @@
 			 </Button>
     </Buttons>
 
-		<!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
-		<Bitmaps>
-			<!--  The bitmap id is defined in a way that is a little bit different from the others:
-            the declaration starts with a guid for the bitmap strip, then there is the resource id of the
-            bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
-            inside a button definition. An important aspect of this declaration is that the element id
-            must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-			<Bitmap guid="guidImages" href="Resources\SolutionAssessmentCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
-    </Bitmaps>
 	</Commands>
 
 	<Symbols>
@@ -195,15 +188,6 @@
 			<IDSymbol value="0x0102" name="cmdidProjectPortingCommand" />
 			<IDSymbol value="0x0103" name="cmdidAutoAssessmentCommand" />
 			<IDSymbol value="0x0104" name="cmdidDisplaySettings" />
-		</GuidSymbol>
-
-		<GuidSymbol name="guidImages" value="{6776e3d2-6672-45f7-8cc0-5c3a9010ed45}">
-			<IDSymbol name="bmpPic1" value="1" />
-			<IDSymbol name="bmpPic2" value="2" />
-			<IDSymbol name="bmpPicSearch" value="3" />
-			<IDSymbol name="bmpPicX" value="4" />
-			<IDSymbol name="bmpPicArrows" value="5" />
-			<IDSymbol name="bmpPicStrikethrough" value="6" />
 		</GuidSymbol>
   
   </Symbols>

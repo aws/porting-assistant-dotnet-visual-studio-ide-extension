@@ -43,32 +43,35 @@ namespace PortingAssistantVSExtensionClient.Utils
         public static string GetSelectedProjectPath()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            IntPtr hierarchyPointer, selectionContainerPointer;
-            Object selectedObject = null;
-            IVsMultiItemSelect multiItemSelect;
-            uint projectItemId;
-            IVsMonitorSelection monitorSelection = (IVsMonitorSelection)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
-            monitorSelection.GetCurrentSelection(out hierarchyPointer,
-                                     out projectItemId,
-                                     out multiItemSelect,
-                                     out selectionContainerPointer);
-            IVsHierarchy selectedHierarchy = Marshal.GetTypedObjectForIUnknown(
-                                     hierarchyPointer,
-                                     typeof(IVsHierarchy)) as IVsHierarchy;
-            if (selectedHierarchy != null)
+            try
             {
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(selectedHierarchy.GetProperty(
-                                                  projectItemId,
-                                                  (int)__VSHPROPID.VSHPROPID_ExtObject,
-                                                  out selectedObject));
-                Project selectedProject = selectedObject as Project;
-                return selectedProject.FileName;
+                IntPtr hierarchyPointer, selectionContainerPointer;
+                Object selectedObject = null;
+                IVsMultiItemSelect multiItemSelect;
+                uint projectItemId;
+                IVsMonitorSelection monitorSelection = (IVsMonitorSelection)Package.GetGlobalService(typeof(SVsShellMonitorSelection));
+                monitorSelection.GetCurrentSelection(out hierarchyPointer,
+                                         out projectItemId,
+                                         out multiItemSelect,
+                                         out selectionContainerPointer);
+                IVsHierarchy selectedHierarchy = Marshal.GetTypedObjectForIUnknown(
+                                         hierarchyPointer,
+                                         typeof(IVsHierarchy)) as IVsHierarchy;
+                if (selectedHierarchy != null)
+                {
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(selectedHierarchy.GetProperty(
+                                                      projectItemId,
+                                                      (int)__VSHPROPID.VSHPROPID_ExtObject,
+                                                      out selectedObject));
+                    Project selectedProject = selectedObject as Project;
+                    if (selectedProject!=null) return selectedProject.FileName;
+                }
+                return "";
             }
-            else
+            catch(Exception e)
             {
                 return "";
             }
-            
         }
     }
 }

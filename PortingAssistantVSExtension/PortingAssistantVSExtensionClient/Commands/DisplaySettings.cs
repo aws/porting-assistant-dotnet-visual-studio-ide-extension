@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using PortingAssistantVSExtensionClient.Dialogs;
 using System;
 using System.ComponentModel.Design;
 using System.Globalization;

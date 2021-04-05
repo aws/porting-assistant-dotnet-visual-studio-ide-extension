@@ -22,9 +22,9 @@ namespace PortingAssistantVSExtensionClient
     [Export(typeof(ILanguageClient))]
     class PortingAssistantLanguageClient : ILanguageClient, ILanguageClientCustomMessage
     {
-        public string Name => "Porting Assistant Extension";
+        public string Name => Common.Constants.ApplicationName;
 
-        public IEnumerable<string> ConfigurationSections => new[] { "csharp" };
+        public IEnumerable<string> ConfigurationSections => new[] { "paconfig" };
         public object InitializationOptions => null;
         public IEnumerable<string> FilesToWatch => null;
         public object MiddleLayer => null;
@@ -37,6 +37,8 @@ namespace PortingAssistantVSExtensionClient
 
         public event AsyncEventHandler<EventArgs> StartAsync;
         public event AsyncEventHandler<EventArgs> StopAsync;
+
+        public static bool ServerStarted = false;
 
         public PortingAssistantLanguageClient()
         {
@@ -58,11 +60,11 @@ namespace PortingAssistantVSExtensionClient
 
         public async Task<Connection> ActivateAsync(CancellationToken token)
         {
-            var stdInPipeName = @"extensionclientreadpipe";
-            var stdOutPipeName = @"extensionclientwritepipe";
+            var stdInPipeName = Common.Constants.DebugInPipeName;
+            var stdOutPipeName = Common.Constants.DebugOutPipeName;
             var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.In, maxNumberOfServerInstances: 1, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
             var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.Out, maxNumberOfServerInstances: 1, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
-            var serverPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "PortingAssistantLanguageServer", @"PortingAssistantExtensionServer.exe");
+            var serverPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Common.Constants.ApplicationServerLocation, @"PortingAssistantExtensionServer.exe");
             if (File.Exists(serverPath))
             {
                 ProcessStartInfo info = new ProcessStartInfo();
@@ -102,11 +104,13 @@ namespace PortingAssistantVSExtensionClient
 
         public Task OnServerInitializedAsync()
         {
+            ServerStarted = true;
             return Task.CompletedTask;
         }
 
         public Task OnServerInitializeFailedAsync(Exception e)
         {
+            ServerStarted = false;
             return System.Threading.Tasks.Task.CompletedTask;
         }
 

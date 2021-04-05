@@ -1,16 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
+using OmniSharp.Extensions.LanguageServer.Protocol;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
+using PortingAssistantExtensionServer.Models;
+using PortingAssistantExtensionServer.TextDocumentModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
-using PortingAssistantExtensionServer.Models;
-using PortingAssistant.Client.Client;
-using OmniSharp.Extensions.LanguageServer.Protocol;
-using System.Collections.Immutable;
-using PortingAssistantExtensionServer.TextDocumentModels;
 
 namespace PortingAssistantExtensionServer
 {
@@ -36,7 +36,7 @@ namespace PortingAssistantExtensionServer
             this.SolutionAnalysisResult = SolutionAnalysisResultTask.Result;
         }
 
-        public  Task<SolutionAnalysisResult> AssessSolutionAsync(AnalyzeSolutionRequest request)
+        public Task<SolutionAnalysisResult> AssessSolutionAsync(AnalyzeSolutionRequest request)
         {
             var result = _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
             SetSolutionAnalysisResult(result);
@@ -63,11 +63,13 @@ namespace PortingAssistantExtensionServer
             {
                 Href = new Uri("https://aws.amazon.com/porting-assistant-dotnet/")
             };
+
             foreach (var i in result.ProjectAnalysisResults)
             {
 
                 var apis = i.SourceFileAnalysisResults.Where(sf => TrimFilePath(sf.SourceFilePath) == TrimFilePath(fileUri.Path)).SelectMany(sf => sf.ApiAnalysisResults).ToList();
-                foreach( var j in apis)
+                if (apis == null || apis.Count == 0) continue;
+                foreach (var j in apis)
                 {
                     if (j.CompatibilityResults["netcoreapp3.1"].Compatibility == Compatibility.INCOMPATIBLE)
                     {

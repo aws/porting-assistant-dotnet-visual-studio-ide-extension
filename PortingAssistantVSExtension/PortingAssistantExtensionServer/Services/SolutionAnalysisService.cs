@@ -11,6 +11,12 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
+using PortingAssistantExtensionServer.Models;
+using PortingAssistant.Client.Client;
+using OmniSharp.Extensions.LanguageServer.Protocol;
+using System.Collections.Immutable;
+using PortingAssistantExtensionServer.TextDocumentModels;
+using Newtonsoft.Json.Linq;
 
 namespace PortingAssistantExtensionServer
 {
@@ -93,11 +99,12 @@ namespace PortingAssistantExtensionServer
                             CodeDescription = codedescrption,
                             Tags = new Container<DiagnosticTag>(new List<DiagnosticTag>() { DiagnosticTag.Deprecated }),
                             Range = range,
-                            RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() {new DiagnosticRelatedInformation(){
+                            RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() { new DiagnosticRelatedInformation() {
                                 Location = location,
                                 Message = "related message"
                             } }),
-                            Message = message
+                            Message = message,
+                            Data = JToken.Parse("{Data:\"Test\"}", new JsonLoadSettings() { })
                         };
                         diagnostics.Add(diagnositc);
                     }

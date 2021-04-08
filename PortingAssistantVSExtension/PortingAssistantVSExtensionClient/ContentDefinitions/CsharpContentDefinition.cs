@@ -7,15 +7,15 @@ namespace PortingAssistantVSExtensionClient.ContentDefinitions
     class CsharpContentDefinition
     {
         [Export]
-        [Name("csharp")]
-        [BaseDefinition(CodeRemoteContentDefinition.CodeRemoteContentTypeName)]
+        [Name("CSharpFileType")]
+        [BaseDefinition("CSharp")]
         internal static ContentTypeDefinition CsContentTypeDefinition;
 
 
 
         [Export]
         [FileExtension(".cs")]
-        [ContentType("csharp")]
+        [ContentType("CSharpFileType")]
         internal static FileExtensionToContentTypeDefinition CsFileExtensionDefinition;
     }
 }

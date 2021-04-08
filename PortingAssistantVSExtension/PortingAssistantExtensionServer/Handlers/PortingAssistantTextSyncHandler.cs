@@ -36,7 +36,7 @@ namespace PortingAssistantExtensionServer.Handlers
         {
             _options = new TextDocumentChangeRegistrationOptions()
             {
-                DocumentSelector = new DocumentSelector(DocumentSelector.ForPattern("**/*.cs").Concat(DocumentSelector.ForScheme("csharp"))),
+                DocumentSelector = new DocumentSelector(DocumentSelector.ForPattern("**/*.cs").Concat(DocumentSelector.ForScheme("CSharpFileType"))),
                 SyncKind = TextDocumentSyncKind.Incremental
             };
             _saveOptions = new TextDocumentSaveRegistrationOptions()
@@ -61,7 +61,7 @@ namespace PortingAssistantExtensionServer.Handlers
         {
             if (uri.Path.EndsWith(".cs"))
             {
-                return new TextDocumentAttributes(uri, "csharp");
+                return new TextDocumentAttributes(uri, "CSharpFileType");
             }
             return null;
         }

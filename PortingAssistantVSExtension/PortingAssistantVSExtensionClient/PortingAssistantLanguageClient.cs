@@ -18,13 +18,13 @@ using Task = System.Threading.Tasks.Task;
 
 namespace PortingAssistantVSExtensionClient
 {
-    [ContentType("csharp")]
+    [ContentType("CSharpFileType")]
     [Export(typeof(ILanguageClient))]
     class PortingAssistantLanguageClient : ILanguageClient, ILanguageClientCustomMessage
     {
         public string Name => Common.Constants.ApplicationName;
 
-        public IEnumerable<string> ConfigurationSections => new[] { "paconfig" };
+        public IEnumerable<string> ConfigurationSections => new[] { "CSharpFileType", "paconfig" };
         public object InitializationOptions => null;
         public IEnumerable<string> FilesToWatch => null;
         public object MiddleLayer => null;
@@ -33,6 +33,10 @@ namespace PortingAssistantVSExtensionClient
             get;
             set;
         }
+
+
+        [Import]
+        internal IContentTypeRegistryService ContentTypeRegistryService { get; set; }
 
 
         public event AsyncEventHandler<EventArgs> StartAsync;

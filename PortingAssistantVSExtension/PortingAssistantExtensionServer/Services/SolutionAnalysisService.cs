@@ -24,7 +24,7 @@ namespace PortingAssistantExtensionServer
     internal class SolutionAnalysisService : IDisposable
     {
         public SolutionAnalysisResult SolutionAnalysisResult;
-        private AnalyzerSettings _settings;
+        private AnalyzeSolutionRequest _request;
         private readonly ILogger _logger;
         private readonly IPortingAssistantClient _client;
 
@@ -44,26 +44,23 @@ namespace PortingAssistantExtensionServer
             Console.WriteLine(SolutionAnalysisResult.ToString());
         }
 
-        public async Task AssessSolutionAsync(AnalyzeRequest request)
+        public async Task AssessSolutionAsync(AnalyzeSolutionRequest request)
         {
+            _request = request;
             var result = _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
             await SetSolutionAnalysisResultAsync(result);
         }
 
-        public async Task AssessFileAsync(AnalyzeRequest request)
+        public async Task AssessFileAsync(List<string> filePaths)
         {
-            if (!HasSolutionAnalysisResult())
-            {
-                await AssessSolutionAsync(request);
-            }
-
             var result = await _client.AnalyzeFileAsync(
-                request.sourceFilePaths,
-                request.solutionFilePath,
+                filePaths,
+                _request.solutionFilePath,
                 SolutionAnalysisResult.AnalyzerResults,
                 SolutionAnalysisResult.ProjectActions,
-                request.settings);
-            updateSolutionAnalysisResult(result);
+                _request.settings);
+
+            UpdateSolutionAnalysisResult(result);
         }
 
         public bool HasSolutionAnalysisResult()
@@ -163,7 +160,7 @@ namespace PortingAssistantExtensionServer
             throw new NotImplementedException();
         }
 
-        private void updateSolutionAnalysisResult(IncrementalFileAnalysisResult analysisResult)
+        private void UpdateSolutionAnalysisResult(IncrementalFileAnalysisResult analysisResult)
         {
 
             SolutionAnalysisResult.AnalyzerResults = analysisResult.analyzerResults;

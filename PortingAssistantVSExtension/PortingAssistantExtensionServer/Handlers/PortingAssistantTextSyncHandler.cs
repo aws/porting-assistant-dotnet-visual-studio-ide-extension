@@ -129,17 +129,17 @@ namespace PortingAssistantExtensionServer.Handlers
                 document.Load(request.Text);
                 if (_solutionAnalysisService.HasSolutionAnalysisResult())
                 {
-                    Process(new AnalyzeRequest(), document);
+                    Process(new List<string> { request.TextDocument.Uri.Path }, document);
                 }
             }
             return Unit.Task;
         }
 
-        private async void Process(AnalyzeRequest request, CodeFileDocument document)
+        private async void Process(List<string> filePahs, CodeFileDocument document)
         {
             try
             {
-                var task = _solutionAnalysisService.AssessFileAsync(request);
+                var task = _solutionAnalysisService.AssessFileAsync(filePahs);
                 await task.ContinueWith(t =>
                 {
                     if (t.IsCompleted)

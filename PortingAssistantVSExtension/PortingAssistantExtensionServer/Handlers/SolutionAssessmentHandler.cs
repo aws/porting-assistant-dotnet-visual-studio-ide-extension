@@ -11,7 +11,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 namespace PortingAssistantExtensionServer.Handlers
 {
     [Serial, Method("analyzeSolution")]
-    internal interface ISolutionAssessmentHandler : IJsonRpcRequestHandler<AnalyzeRequest, AnalyzeResponse> { }
+    internal interface ISolutionAssessmentHandler : IJsonRpcRequestHandler<AnalyzeSolutionRequest, AnalyzeSolutionResponse> { }
     internal class SolutionAssessmentHandler : ISolutionAssessmentHandler
     {
         private readonly ILogger _logger;
@@ -26,7 +26,7 @@ namespace PortingAssistantExtensionServer.Handlers
             _analysisService = analysisService;
         }
 
-        public async Task<AnalyzeResponse> Handle(AnalyzeRequest request, CancellationToken cancellationToken)
+        public async Task<AnalyzeSolutionResponse> Handle(AnalyzeSolutionRequest request, CancellationToken cancellationToken)
         {
             await _analysisService.AssessSolutionAsync(request);
             var diagnostics = new List<Diagnostic>();
@@ -39,7 +39,7 @@ namespace PortingAssistantExtensionServer.Handlers
                 });
             }
 
-            return new AnalyzeResponse()
+            return new AnalyzeSolutionResponse()
             {
                 incompatibleAPis = 1,
                 incompatiblePacakges = 1

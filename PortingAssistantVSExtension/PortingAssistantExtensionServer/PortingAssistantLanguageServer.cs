@@ -58,7 +58,7 @@ namespace PortingAssistantExtensionServer
                 .WithHandler<PortingAssistantCodeActionHandler>()
                 .WithHandler<SolutionAssessmentHandler>()
                 .WithHandler<PortingHandler>()
-                .ConfigureLogging(_logConfiguration)
+                .ConfigureLogging(_logConfiguration => _logConfiguration.ClearProviders().AddLanguageProtocolLogging())
                 .OnInitialized((instance, client, server, ct) =>
                 {
                     if (server?.Capabilities?.CodeActionProvider?.Value?.CodeActionKinds != null)

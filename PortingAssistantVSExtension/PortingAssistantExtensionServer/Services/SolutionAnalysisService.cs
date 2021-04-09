@@ -133,22 +133,30 @@ namespace PortingAssistantExtensionServer
                             Uri = fileUri,
                             Range = range
                         };
-                        var diagnositc = new Diagnostic()
+                        try
                         {
-                            Severity = DiagnosticSeverity.Warning,
-                            Code = new DiagnosticCode("pa-test01"),
-                            Source = "Porting Assistant",
-                            CodeDescription = codedescrption,
-                            Tags = new Container<DiagnosticTag>(new List<DiagnosticTag>() { DiagnosticTag.Deprecated }),
-                            Range = range,
-                            RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() {new DiagnosticRelatedInformation(){
+                            var data = recommendedAction.TextChanges != null ? JToken.Parse(JsonConvert.SerializeObject(recommendedAction.TextChanges.ToList())) : null;
+                            var diagnositc = new Diagnostic()
+                            {
+                                Severity = DiagnosticSeverity.Warning,
+                                Code = new DiagnosticCode("pa-test01"),
+                                Source = "Porting Assistant",
+                                CodeDescription = codedescrption,
+                                Tags = new Container<DiagnosticTag>(new List<DiagnosticTag>() { DiagnosticTag.Deprecated }),
+                                Range = range,
+                                RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() {new DiagnosticRelatedInformation(){
                                 Location = location,
                                 Message = "related message"
                             } }),
-                            Message = recommendedAction.Description,
-                            Data = JToken.Parse(JsonConvert.SerializeObject(recommendedAction.TextChanges.ToList()))
-                        };
-                        diagnostics.Add(diagnositc);
+                                Message = recommendedAction.Description,
+                                Data = data
+                            };
+                            diagnostics.Add(diagnositc);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError("failed with error", ex);
+                        }
                     }
                 }
             }

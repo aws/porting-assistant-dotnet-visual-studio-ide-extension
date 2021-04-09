@@ -1,20 +1,15 @@
-﻿using MediatR;
-using OmniSharp.Extensions.JsonRpc;
-using PortingAssistant.Client.Client;
+﻿using OmniSharp.Extensions.JsonRpc;
 using PortingAssistantExtensionServer.Models;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
-using PortingAssistant.Client.Model;
-using System;
-using System.Collections.Generic;
 
 namespace PortingAssistantExtensionServer.Handlers
 {
     [Serial, Method("applyPortingProjectFileChanges")]
 
     internal interface ISolutionPortingHandler : IJsonRpcRequestHandler<ProjectFilePortingRequest, ProjectFilePortingResponse> { }
-    internal class PortingHandler : ISolutionPortingHandler 
+    internal class PortingHandler : ISolutionPortingHandler
     {
         private readonly ILogger _logger;
         private readonly PortingService _portingService;

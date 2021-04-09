@@ -17,12 +17,14 @@ using OmniSharp.Extensions.LanguageServer.Protocol;
 using System.Collections.Immutable;
 using PortingAssistantExtensionServer.TextDocumentModels;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace PortingAssistantExtensionServer
 {
     internal class SolutionAnalysisService : IDisposable
     {
         public SolutionAnalysisResult SolutionAnalysisResult;
+        private AnalyzerSettings _settings;
         private readonly ILogger _logger;
         private readonly IPortingAssistantClient _client;
 
@@ -35,18 +37,33 @@ namespace PortingAssistantExtensionServer
             _client = client;
         }
 
-        public void SetSolutionAnalysisResult(Task<SolutionAnalysisResult> SolutionAnalysisResultTask)
+        public async Task SetSolutionAnalysisResultAsync(Task<SolutionAnalysisResult> SolutionAnalysisResultTask)
         {
-            SolutionAnalysisResultTask.Wait();
-            Console.WriteLine(SolutionAnalysisResultTask.Result.ToString());
-            this.SolutionAnalysisResult = SolutionAnalysisResultTask.Result;
+            Task<SolutionAnalysisResult> solutionAnalysisResultTask = SolutionAnalysisResultTask;
+            SolutionAnalysisResult = await solutionAnalysisResultTask;
+            Console.WriteLine(SolutionAnalysisResult.ToString());
         }
 
-        public Task<SolutionAnalysisResult> AssessSolutionAsync(AnalyzeSolutionRequest request)
+        public async Task AssessSolutionAsync(AnalyzeRequest request)
         {
             var result = _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
-            SetSolutionAnalysisResult(result);
-            return result;
+            await SetSolutionAnalysisResultAsync(result);
+        }
+
+        public async Task AssessFileAsync(AnalyzeRequest request)
+        {
+            if (!HasSolutionAnalysisResult())
+            {
+                await AssessSolutionAsync(request);
+            }
+
+            var result = await _client.AnalyzeFileAsync(
+                request.sourceFilePaths,
+                request.solutionFilePath,
+                SolutionAnalysisResult.AnalyzerResults,
+                SolutionAnalysisResult.ProjectActions,
+                request.settings);
+            updateSolutionAnalysisResult(result);
         }
 
         public bool HasSolutionAnalysisResult()
@@ -69,23 +86,22 @@ namespace PortingAssistantExtensionServer
             {
                 Href = new Uri("https://aws.amazon.com/porting-assistant-dotnet/")
             };
-
-            foreach (var i in result.ProjectAnalysisResults)
+            foreach (var projectAnalysisResult in result.ProjectAnalysisResults)
             {
+                var sourceFileAnalysisResults = projectAnalysisResult.SourceFileAnalysisResults
+                    .Where(sf => TrimFilePath(sf.SourceFilePath) == TrimFilePath(fileUri.Path));
 
-                var apis = i.SourceFileAnalysisResults.Where(sf => TrimFilePath(sf.SourceFilePath) == TrimFilePath(fileUri.Path)).SelectMany(sf => sf.ApiAnalysisResults).ToList();
-                if (apis == null || apis.Count == 0) continue;
-                foreach (var j in apis)
+                var apis = sourceFileAnalysisResults.SelectMany(sf => sf.ApiAnalysisResults).ToList();
+                var recommendedActionsList = sourceFileAnalysisResults.Select(sf => sf.RecommendedActions).ToList();
+
+                foreach (var api in apis)
                 {
-                    if (j.CompatibilityResults["netcoreapp3.1"].Compatibility == Compatibility.INCOMPATIBLE)
+                    if (api.CompatibilityResults["netcoreapp3.1"].Compatibility == Compatibility.INCOMPATIBLE)
                     {
-                        var name = j.CodeEntityDetails.OriginalDefinition;
-                        var rcommnadation = j.Recommendations.RecommendedActions.Select(r => (r.RecommendedActionType + r.Description));
+                        var name = api.CodeEntityDetails.OriginalDefinition;
+                        var rcommnadation = api.Recommendations.RecommendedActions.Select(r => (r.RecommendedActionType + r.Description));
                         var message = name + String.Join(",", rcommnadation);
-                        var span = j.CodeEntityDetails.TextSpan;
-                        var range = new Range(
-                            new Position((int)(span.StartLinePosition - 1), (int)(span.StartCharPosition - 1)),
-                    new Position((int)(span.EndLinePosition - 1), (int)(span.EndCharPosition - 1)));
+                        var range = GetRange(api.CodeEntityDetails.TextSpan);
                         var location = new Location()
                         {
                             Uri = fileUri,
@@ -109,6 +125,35 @@ namespace PortingAssistantExtensionServer
                         diagnostics.Add(diagnositc);
                     }
                 }
+
+                foreach (var recommendedActions in recommendedActionsList)
+                {
+                    foreach (var recommendedAction in recommendedActions)
+                    {
+                        var range = GetRange(recommendedAction.TextSpan);
+                        var location = new Location
+                        {
+                            Uri = fileUri,
+                            Range = range
+                        };
+                        var diagnositc = new Diagnostic()
+                        {
+                            Severity = DiagnosticSeverity.Warning,
+                            Code = new DiagnosticCode("pa-test01"),
+                            Source = "Porting Assistant",
+                            CodeDescription = codedescrption,
+                            Tags = new Container<DiagnosticTag>(new List<DiagnosticTag>() { DiagnosticTag.Deprecated }),
+                            Range = range,
+                            RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() {new DiagnosticRelatedInformation(){
+                                Location = location,
+                                Message = "related message"
+                            } }),
+                            Message = recommendedAction.Description,
+                            Data = JToken.Parse(JsonConvert.SerializeObject(recommendedAction.TextChanges.ToList()))
+                        };
+                        diagnostics.Add(diagnositc);
+                    }
+                }
             }
             return diagnostics;
         }
@@ -118,9 +163,33 @@ namespace PortingAssistantExtensionServer
             throw new NotImplementedException();
         }
 
+        private void updateSolutionAnalysisResult(IncrementalFileAnalysisResult analysisResult)
+        {
+
+            SolutionAnalysisResult.AnalyzerResults = analysisResult.analyzerResults;
+            SolutionAnalysisResult.ProjectActions = analysisResult.projectActions;
+            analysisResult.sourceFileAnalysisResults.ForEach(sourceFileAnalysisResult =>
+            {
+                var targetSourceFiles = SolutionAnalysisResult.ProjectAnalysisResults
+                    .Select(p => p.SourceFileAnalysisResults.Find(f => f.SourceFilePath == sourceFileAnalysisResult.SourceFilePath));
+                foreach (var targetFile in targetSourceFiles)
+                {
+                    var target = targetFile;
+                    target = sourceFileAnalysisResult;
+                }
+            });
+        }
+
         private string TrimFilePath(string path)
         {
             return path.Trim().Replace("\\", "").Replace("/", "");
+        }
+
+        private Range GetRange(TextSpan span)
+        {
+            return new Range(
+                new Position((int)(span.StartLinePosition - 1), (int)(span.StartCharPosition - 1)),
+                new Position((int)(span.EndLinePosition - 1), (int)(span.EndCharPosition - 1)));
         }
     }
 }

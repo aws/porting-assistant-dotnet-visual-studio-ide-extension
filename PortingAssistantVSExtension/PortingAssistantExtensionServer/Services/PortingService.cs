@@ -20,16 +20,16 @@ namespace PortingAssistantExtensionServer
             _client = client;
         }
 
-        public ProjectFilePortingResponse  PortingProjects(ProjectFilePortingRequest request)
+        public ProjectFilePortingResponse PortingProjects(ProjectFilePortingRequest request)
         {
             var portingRequst = new PortingRequest
             {
-                ProjectPaths = request.ProjectPaths,
+                Projects = request.Projects,
                 SolutionPath = request.SolutionPath,
                 RecommendedActions = new List<RecommendedAction>(),
                 TargetFramework = request.TargetFramework
             };
-            var results =  _client.ApplyPortingChanges(portingRequst);
+            var results = _client.ApplyPortingChanges(portingRequst);
             return new ProjectFilePortingResponse()
             {
                 Success = results.All(r => r.Success),

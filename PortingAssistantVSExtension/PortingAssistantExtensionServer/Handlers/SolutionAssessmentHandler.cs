@@ -1,11 +1,8 @@
-﻿using MediatR;
-using OmniSharp.Extensions.JsonRpc;
+﻿using OmniSharp.Extensions.JsonRpc;
 using PortingAssistantExtensionServer.Models;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
-using PortingAssistant.Client.Model;
-using System;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using System.Collections.Generic;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
@@ -14,7 +11,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 namespace PortingAssistantExtensionServer.Handlers
 {
     [Serial, Method("analyzeSolution")]
-    internal interface ISolutionAssessmentHandler : IJsonRpcRequestHandler<AnalyzeSolutionRequest, AnalyzeSolutionResponse> { }
+    internal interface ISolutionAssessmentHandler : IJsonRpcRequestHandler<AnalyzeRequest, AnalyzeResponse> { }
     internal class SolutionAssessmentHandler : ISolutionAssessmentHandler
     {
         private readonly ILogger _logger;
@@ -27,10 +24,9 @@ namespace PortingAssistantExtensionServer.Handlers
             _logger = logger;
             _languageServer = languageServer;
             _analysisService = analysisService;
-            
         }
 
-        public async Task<AnalyzeSolutionResponse> Handle(AnalyzeSolutionRequest request, CancellationToken cancellationToken)
+        public async Task<AnalyzeResponse> Handle(AnalyzeRequest request, CancellationToken cancellationToken)
         {
             await _analysisService.AssessSolutionAsync(request);
             var diagnostics = new List<Diagnostic>();
@@ -43,7 +39,7 @@ namespace PortingAssistantExtensionServer.Handlers
                 });
             }
 
-            return new AnalyzeSolutionResponse()
+            return new AnalyzeResponse()
             {
                 incompatibleAPis = 1,
                 incompatiblePacakges = 1

@@ -1,14 +1,13 @@
 ﻿using MediatR;
 using PortingAssistant.Client.Model;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PortingAssistantExtensionServer.Models
 {
-    class AnalyzeSolutionRequest : IRequest<AnalyzeSolutionResponse>
+    class AnalyzeRequest : IRequest<AnalyzeResponse>
     {
         public string solutionFilePath { get; set; }
+        public List<string> sourceFilePaths { get; set; }
         public AnalyzerSettings settings { get; set; }
     }
 }

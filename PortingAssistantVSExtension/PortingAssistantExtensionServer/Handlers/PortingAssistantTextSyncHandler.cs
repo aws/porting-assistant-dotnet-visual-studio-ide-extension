@@ -7,14 +7,13 @@ using System.Threading;
 using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.Capabilities;
 using System.Linq;
-using System.Collections.Immutable;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
-using OmniSharp.Extensions.LanguageServer.Protocol.Document.Proposals;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models.Proposals;
-using System.Buffers;
-using System.Collections.Generic;
 using System.IO;
 using PortingAssistantExtensionServer.TextDocumentModels;
+using PortingAssistantExtensionServer.Models;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace PortingAssistantExtensionServer.Handlers
 {
@@ -25,6 +24,7 @@ namespace PortingAssistantExtensionServer.Handlers
         private readonly TextDocumentSaveRegistrationOptions _saveOptions;
         private readonly ILanguageServerFacade languageServer;
         private readonly SolutionAnalysisService _solutionAnalysisService;
+        private readonly ILogger<PortingAssistantTextSyncHandler> _logger;
         private SynchronizationCapability _capability;
 
         public void SetCapability(SynchronizationCapability capability) { _capability = capability; }
@@ -32,7 +32,7 @@ namespace PortingAssistantExtensionServer.Handlers
         TextDocumentRegistrationOptions IRegistration<TextDocumentRegistrationOptions>.GetRegistrationOptions() { return _options; }
         TextDocumentSaveRegistrationOptions IRegistration<TextDocumentSaveRegistrationOptions>.GetRegistrationOptions() { return _saveOptions; }
 
-        public PortingAssistantTextSyncHandler(ILanguageServerFacade languageServer, SolutionAnalysisService solutionAnalysisService)
+        public PortingAssistantTextSyncHandler(ILanguageServerFacade languageServer, SolutionAnalysisService solutionAnalysisService, ILogger<PortingAssistantTextSyncHandler> logger)
         {
             _options = new TextDocumentChangeRegistrationOptions()
             {
@@ -45,7 +45,8 @@ namespace PortingAssistantExtensionServer.Handlers
                 IncludeText = true
             };
             this.languageServer = languageServer;
-            this._solutionAnalysisService = solutionAnalysisService;
+            _solutionAnalysisService = solutionAnalysisService;
+            _logger = logger;
         }
 
         public CodeFileDocument? GetDocument(DocumentUri documentUri)
@@ -128,18 +129,34 @@ namespace PortingAssistantExtensionServer.Handlers
                 document.Load(request.Text);
                 if (_solutionAnalysisService.HasSolutionAnalysisResult())
                 {
-                    var diagnostics = _solutionAnalysisService.GetDiagnostics(document.DocumentUri);
-                    languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams()
-                    {
-                        Diagnostics = new Container<Diagnostic>(diagnostics),
-                        Uri = document.DocumentUri,
-                    });
+                    Process(new AnalyzeRequest(), document);
                 }
             }
             return Unit.Task;
         }
 
-        
-
+        private async void Process(AnalyzeRequest request, CodeFileDocument document)
+        {
+            try
+            {
+                var task = _solutionAnalysisService.AssessFileAsync(request);
+                await task.ContinueWith(t =>
+                {
+                    if (t.IsCompleted)
+                    {
+                        var diagnostics = _solutionAnalysisService.GetDiagnostics(document.DocumentUri);
+                        languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams()
+                        {
+                            Diagnostics = new Container<Diagnostic>(diagnostics),
+                            Uri = document.DocumentUri,
+                        });
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Incremental assessment failed with error:", ex);
+            }
+        }
     }
 }

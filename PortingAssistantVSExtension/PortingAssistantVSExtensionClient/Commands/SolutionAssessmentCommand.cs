@@ -97,7 +97,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             var dte = (DTE2)await ServiceProvider.GetServiceAsync(typeof(DTE));
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            
+
             try
             {
                 string SolutionFile = await SolutionUtils.GetSolutionPathAsync(dte);
@@ -116,12 +116,12 @@ namespace PortingAssistantVSExtensionClient.Commands
                     },
                 };
                 await NotificationUtils.LockStatusBarAsync(ServiceProvider, "Porting Assistant is assessing the solution.....");
-                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>("analyzeSolution", analyzeSolutionRequest);
-                await NotificationUtils.ShowInfoBarAsync(ServiceProvider,"solution has been assessed successfully!");
+                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>("analyzeSolution", new { solutionFilePath = SolutionFile, sourceFilePaths = new List<string>(), settings = new { targetFramework = "netcoreapp3.1", ignoredProjects = Array.Empty<string>(), ContiniousEnabled = true } }); ;
+                await NotificationUtils.ShowInfoBarAsync(ServiceProvider, "solution has been assessed successfully!");
                 UserSettings.Instance.EnabledContinuousAssessment = true;
                 UserSettings.Instance.SaveAllSettings();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
                 await NotificationUtils.ShowInfoBarAsync(ServiceProvider, "solution solution failed");
@@ -133,6 +133,6 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
         }
 
-        
+
     }
 }

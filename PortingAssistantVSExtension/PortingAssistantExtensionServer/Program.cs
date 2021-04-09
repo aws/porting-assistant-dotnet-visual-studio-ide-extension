@@ -1,23 +1,12 @@
 ﻿using System;
-using OmniSharp.Extensions.LanguageServer.Server;
 using System.IO.Pipes;
 using System.IO.Pipelines;
-using System.Linq;
-using System.Collections.Immutable;
-using System.Windows;
 using Task = System.Threading.Tasks.Task;
-using System.IO;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using System.Security.AccessControl;
-using Microsoft.Extensions.DependencyInjection;
 using Nerdbank.Streams;
-
-using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
 using System.Threading.Tasks;
-using PortingAssistantExtensionServer.Handlers;
 using System.Globalization;
 
 namespace PortingAssistantExtensionServer
@@ -40,7 +29,7 @@ namespace PortingAssistantExtensionServer
                     GitHubEndpoint = "https://raw.githubusercontent.com/aws/porting-assistant-dotnet-datastore/master/"
                 }
             };
-            
+
             if (args.Length != 0)
             {
                 stdInPipeName = args[0];
@@ -63,10 +52,10 @@ namespace PortingAssistantExtensionServer
                 output,
                 configuration
                 );
-                await portingAssisstantLanguageServer.StartAsync();
-                await portingAssisstantLanguageServer.WaitForShutdownAsync();
+            await portingAssisstantLanguageServer.StartAsync();
+            await portingAssisstantLanguageServer.WaitForShutdownAsync();
             //TODO properly handle exit
-            if(portingAssisstantLanguageServer.IsSeverStarted() && !_isConnected)
+            if (portingAssisstantLanguageServer.IsSeverStarted() && !_isConnected)
             {
                 await portingAssisstantLanguageServer.WaitForShutdownAsync();
                 Environment.Exit(0);
@@ -78,7 +67,7 @@ namespace PortingAssistantExtensionServer
         {
             Console.InputEncoding = System.Text.Encoding.UTF8;
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            var readerPipe = new NamedPipeClientStream(serverName: ".", pipeName: stdInPipeName, direction: PipeDirection.In,  options: System.IO.Pipes.PipeOptions.Asynchronous);
+            var readerPipe = new NamedPipeClientStream(serverName: ".", pipeName: stdInPipeName, direction: PipeDirection.In, options: System.IO.Pipes.PipeOptions.Asynchronous);
             var writerPipe = new NamedPipeClientStream(serverName: ".", pipeName: stdOutPipeName, direction: PipeDirection.Out, options: System.IO.Pipes.PipeOptions.Asynchronous);
             Console.WriteLine("Waiting for client to connect on pipe...");
             await readerPipe.ConnectAsync();
@@ -88,7 +77,7 @@ namespace PortingAssistantExtensionServer
             if (readerPipe.IsConnected && writerPipe.IsConnected)
             {
                 _isConnected = true;
-                 Console.WriteLine("Connected");
+                Console.WriteLine("Connected");
             }
             return (pipeline1.Input, pipeline2.Output);
         }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Options;
 using System;
 using System.Runtime.InteropServices;
@@ -49,8 +50,8 @@ namespace PortingAssistantVSExtensionClient
         {
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
+            PAGlobalService.Create(this, this);
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            UserSettings.Create(this);
             await PortingAssistantVSExtensionClient.Commands.SolutionAssessmentCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.SolutionPortingCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.ProjectPortingCommand.InitializeAsync(this);

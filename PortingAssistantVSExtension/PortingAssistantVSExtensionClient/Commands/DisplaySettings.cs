@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using PortingAssistantVSExtensionClient.Dialogs;
+using PortingAssistantVSExtensionClient.Options;
 using System;
 using System.ComponentModel.Design;
 using System.Globalization;
@@ -18,12 +19,12 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0104;
+        public const int CommandId = PackageIds.cmdidDisplaySettings;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("72f43848-037a-4907-98e2-e7e964271f44");
+        public static readonly Guid CommandSet = new Guid(PackageGuids.guidPortingAssistantVSExtensionClientPackageCmdSetString);
 
         /// <summary>
         /// VS Package that provides this command, not null.
@@ -87,10 +88,10 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void Execute(object sender, EventArgs e)
+        private async void Execute(object sender, EventArgs e)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            //VsShellUtilities.ShowToolsOptionsPage(new Guid("459594a1-6b43-4e64-a335-13b1b5581836"));
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            VsShellUtilities.ShowToolsOptionsPage(new Guid(GeneralOption.GeneralOptionGuidString));
         }
     }
 }

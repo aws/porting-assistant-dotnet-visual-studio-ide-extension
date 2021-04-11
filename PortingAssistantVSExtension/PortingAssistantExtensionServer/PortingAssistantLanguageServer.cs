@@ -50,10 +50,7 @@ namespace PortingAssistantExtensionServer
                     service.AddAssessment(_configuration);
                     service.AddSingleton<SolutionAnalysisService>();
                     service.AddSingleton<PortingService>();
-                    service.AddSingleton(new ConfigurationItem() { Section = "CSharpFileType" });
-                    service.ConfigureSection<PALanguageConfiguration>("paconfig");
                 })
-                .WithConfigurationSection("paconfig")
                 .WithHandler<PortingAssistantTextSyncHandler>()
                 .WithHandler<PortingAssistantCodeActionHandler>()
                 .WithHandler<SolutionAssessmentHandler>()

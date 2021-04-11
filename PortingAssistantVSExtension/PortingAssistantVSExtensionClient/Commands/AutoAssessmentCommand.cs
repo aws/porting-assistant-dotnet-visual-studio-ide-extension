@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using PortingAssistantVSExtensionClient.Options;
+using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.ComponentModel.Design;
 using System.Globalization;
@@ -97,9 +98,15 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="e">Event args.</param>
         private void Execute(object sender, EventArgs e)
         {
-            var button = (OleMenuCommand)sender;
-            UserSettings.Instance.EnabledContinuousAssessment = !button.Checked;
-            UserSettings.Instance.SaveAllSettings();
+            try {
+                CommandsCommon.CheckWelcomePage();
+                var button = (OleMenuCommand)sender;
+                UserSettings.Instance.EnabledContinuousAssessment = !button.Checked;
+                UserSettings.Instance.SaveAllSettings();
+            }catch(Exception ex)
+            {
+                NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Setting failed!");
+            }
         }
     }
 }

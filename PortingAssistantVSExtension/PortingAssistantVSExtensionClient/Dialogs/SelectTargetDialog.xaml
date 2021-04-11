@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
-             mc:Ignorable="d" Height="183.182" Width="466.966">
+             mc:Ignorable="d" Height="180" Width="470">
     <Grid Margin="0,0,0,0" Height="151" VerticalAlignment="Top">
         <Label Content="Choose a Target Framework" HorizontalAlignment="Left" Margin="3,-28,0,0" VerticalAlignment="Top" Width="238" FontWeight="Bold"/>
         <GroupBox Header="Target Framework" Height="102" Margin="0,3,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="431">

@@ -15,31 +15,39 @@ namespace PortingAssistantVSExtensionClient.Options
 {
     public sealed class UserSettings
     {
-        private static UserSettings instance = null;
+        private static readonly UserSettings instance = new UserSettings();
 
+        private bool _isLoaded;
+        public bool ShowWelcomePage;
         public bool EnabledMetric;
         public bool EnabledContinuousAssessment;
         public bool ApplyPortAction;
         public string CustomerEmail;
         public string CacheFolder;
-        public TargetFrameworkType TargetFramework;
+        public string TargetFramework;
 
         readonly WritableSettingsStore _settingStore;
 
-        public UserSettings(IServiceProvider serviceProvider)
+        private UserSettings()
         {
-            var sm = new ShellSettingsManager(serviceProvider);
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var sm = new ShellSettingsManager(ServiceProvider.GlobalProvider);
             _settingStore = sm.GetWritableSettingsStore(SettingsScope.UserSettings);
         }
 
-        public static void Create(IServiceProvider serviceProvider)
-        {
-            if (instance != null) return;
-            instance = new UserSettings(serviceProvider);
-            instance.LoadingAllSettings();
-        }
 
-        public static UserSettings Instance => instance;
+        public static UserSettings Instance
+        {
+            get
+            {
+                if (!instance._isLoaded)
+                {
+                    instance.LoadingAllSettings();
+                    instance._isLoaded = true;
+                }
+                return instance;
+            }
+        }
 
         public T ReadValue<T>(string property, string value)
         {
@@ -53,6 +61,7 @@ namespace PortingAssistantVSExtensionClient.Options
 
         public void SaveAllSettings()
         {
+            Write("ShowWelcomePage", ShowWelcomePage);
             Write("EnabledMetric", EnabledMetric);
             Write("EnabledContinuousAssessment", EnabledContinuousAssessment);
             Write("CustomerEmail", CustomerEmail);
@@ -62,11 +71,12 @@ namespace PortingAssistantVSExtensionClient.Options
 
         public void LoadingAllSettings()
         {
+            ShowWelcomePage = (bool)Read("ShowWelcomePage", true);
             EnabledMetric = (bool)Read("EnabledMetric", true);
             EnabledContinuousAssessment = (bool)Read("EnabledContinuousAssessment", false);
             CustomerEmail = (string)Read("CustomerEmail", "customer@email.com");
             ApplyPortAction = (bool)Read("ApplyPortAction", false);
-            TargetFramework = (TargetFrameworkType)Enum.Parse(typeof(TargetFrameworkType),(string)Read("TargetFramework", TargetFrameworkType.no_selection.ToString()));
+            TargetFramework = (string)Read("TargetFramework", TargetFrameworkType.NO_SELECTION);
         }
 
         private object Read(string property, object defaultValue)

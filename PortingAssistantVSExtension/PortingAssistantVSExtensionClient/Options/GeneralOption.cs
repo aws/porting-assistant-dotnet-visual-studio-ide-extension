@@ -1,19 +1,20 @@
 ﻿using Microsoft.VisualStudio.Shell;
-using PortingAssistantVSExtensionClient.Models;
+using PortingAssistantVSExtensionClient.Common;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Forms;
 
 namespace PortingAssistantVSExtensionClient.Options
 {
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
-    [Guid("459594a1-6b43-4e64-a335-13b1b5581836")]
+    [Guid(GeneralOption.GeneralOptionGuidString)]
     public class GeneralOption : UIElementDialogPage
     {
+        public const string GeneralOptionGuidString = "459594a1-6b43-4e64-a335-13b1b5581836";
+
         private readonly OptionPageControl _optionsPageControl;
 
         private readonly UserSettings _userSettings;
@@ -22,7 +23,7 @@ namespace PortingAssistantVSExtensionClient.Options
         {
             _optionsPageControl = new OptionPageControl();
             _userSettings = UserSettings.Instance;
-            foreach (TargetFrameworkType framwork in Enum.GetValues(typeof(TargetFrameworkType)))
+            foreach (string framwork in TargetFrameworkType.ALL_SElECTION)
             {
                 _optionsPageControl.TargeFrameworks.Items.Add(framwork);
             }
@@ -47,7 +48,7 @@ namespace PortingAssistantVSExtensionClient.Options
         
         void Save()
         {
-            _userSettings.TargetFramework = (TargetFrameworkType)_optionsPageControl.TargeFrameworks.SelectedValue;
+            _userSettings.TargetFramework = (string)_optionsPageControl.TargeFrameworks.SelectedValue;
             _userSettings.SaveAllSettings();
         }
     }

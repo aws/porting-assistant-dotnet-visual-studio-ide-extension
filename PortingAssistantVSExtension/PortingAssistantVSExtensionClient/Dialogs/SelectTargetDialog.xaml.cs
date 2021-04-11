@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
-using PortingAssistantVSExtensionClient.Models;
+using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Options;
 using System;
 
@@ -13,11 +13,11 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
             _userSettings = UserSettings.Instance;
             InitializeComponent();
-            foreach (TargetFrameworkType framwork in Enum.GetValues(typeof(TargetFrameworkType)))
+            foreach (string framwork in TargetFrameworkType.ALL_SElECTION)
             {
                 TargetFrameWorkDropDown.Items.Add(framwork);
             }
-            TargetFrameWorkDropDown.SelectedValue = TargetFrameworkType.no_selection;
+            TargetFrameWorkDropDown.SelectedValue = TargetFrameworkType.NO_SELECTION;
         }
 
         public static bool EnsureExecute()
@@ -29,13 +29,13 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (TargetFrameWorkDropDown.SelectedValue.Equals(TargetFrameworkType.no_selection))
+            if (TargetFrameWorkDropDown.SelectedValue.Equals(TargetFrameworkType.NO_SELECTION))
             {
                 ChooseFrameworkLabel.Content = "Please make a selection of target framework!";
             }
             else
             {
-                _userSettings.TargetFramework = (TargetFrameworkType)TargetFrameWorkDropDown.SelectedValue;
+                _userSettings.TargetFramework = (string)TargetFrameWorkDropDown.SelectedValue;
                 _userSettings.SaveAllSettings();
                 ClickResult = true;
                 Close();

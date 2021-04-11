@@ -19,5 +19,9 @@ namespace PortingAssistantVSExtensionClient.Common
         public const string DebugInPipeName = "extensionclientreadpipe";
 
         public const string DebugOutPipeName = "extensionclientwritepipe";
+
+        public const string LogoName = "PortingAssistantLogo.png";
+
+        public const string ResourceFolder = "Resources";
     }
 }

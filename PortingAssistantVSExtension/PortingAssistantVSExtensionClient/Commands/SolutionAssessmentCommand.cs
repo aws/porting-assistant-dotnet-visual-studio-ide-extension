@@ -1,7 +1,5 @@
-﻿using EnvDTE;
-using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+﻿using Microsoft.VisualStudio.Shell;
+using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Dialogs;
 using PortingAssistantVSExtensionClient.Models;
 using PortingAssistantVSExtensionClient.Options;
@@ -9,9 +7,6 @@ using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace PortingAssistantVSExtensionClient.Commands
@@ -95,31 +90,18 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="e">Event args.</param>
         private async void Execute(object sender, EventArgs e)
         {
-            var dte = (DTE2)await ServiceProvider.GetServiceAsync(typeof(DTE));
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
             try
             {
-                string SolutionFile = await SolutionUtils.GetSolutionPathAsync(dte);
-                CommandUtils.EnableAllCommand(this.package, false);
-                if (UserSettings.Instance.TargetFramework == TargetFrameworkType.no_selection)
+                CommandsCommon.CheckWelcomePage();
+                CommandsCommon.EnableAllCommand(false);
+                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
+                string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+                if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
-                var analyzeSolutionRequest = new AnalyzeSolutionRequest()
-                {
-                    solutionFilePath = SolutionFile,
-                    settings = new AnalyzerSettings()
-                    {
-                        TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
-                        IgnoreProjects = new List<string>(),
-                    },
-                };
-                await NotificationUtils.LockStatusBarAsync(ServiceProvider, "Porting Assistant is assessing the solution.....");
-                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>("analyzeSolution", new { solutionFilePath = SolutionFile, sourceFilePaths = new List<string>(), settings = new { targetFramework = "netcoreapp3.1", ignoredProjects = Array.Empty<string>(), ContiniousEnabled = true } }); ;
-                await NotificationUtils.ShowInfoBarAsync(ServiceProvider, "solution has been assessed successfully!");
-                UserSettings.Instance.EnabledContinuousAssessment = true;
-                UserSettings.Instance.SaveAllSettings();
+                await RunAssessmentAsync(SolutionFile);
             }
             catch (Exception ex)
             {
@@ -129,10 +111,28 @@ namespace PortingAssistantVSExtensionClient.Commands
             finally
             {
                 await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider);
-                CommandUtils.EnableAllCommand(this.package, true);
+                CommandsCommon.EnableAllCommand(true);
             }
         }
 
-
+        private async Task RunAssessmentAsync(string SolutionFile)
+        {
+            var analyzeSolutionRequest = new AnalyzeSolutionRequest()
+            {
+                solutionFilePath = SolutionFile,
+                settings = new AnalyzerSettings()
+                {
+                    TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
+                    IgnoreProjects = new List<string>(),
+                },
+            };
+            await NotificationUtils.LockStatusBarAsync(ServiceProvider, "Porting Assistant is assessing the solution.....");
+            await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>(
+                "analyzeSolution", 
+                analyzeSolutionRequest);
+            await NotificationUtils.ShowInfoBarAsync(ServiceProvider, "solution has been assessed successfully!");
+            UserSettings.Instance.EnabledContinuousAssessment = true;
+            UserSettings.Instance.SaveAllSettings();
+        }
     }
 }

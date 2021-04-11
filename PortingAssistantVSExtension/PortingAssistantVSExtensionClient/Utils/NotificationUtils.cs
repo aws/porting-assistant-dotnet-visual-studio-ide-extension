@@ -3,11 +3,34 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft;
 using Microsoft.VisualStudio.Imaging;
+using PortingAssistantVSExtensionClient.Common;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
     public static class NotificationUtils
     {
+        public static void ShowInfoMessageBox(IServiceProvider serviceProvider, string message, string title)
+        {
+            VsShellUtilities.ShowMessageBox(
+                serviceProvider,
+                message,
+                title,
+                Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_INFO,
+                Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+
+        public static void ShowErrorMessageBox(IServiceProvider serviceProvider, string message, string title)
+        {
+            VsShellUtilities.ShowMessageBox(
+                serviceProvider,
+                message,
+                title,
+                Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_CRITICAL,
+                Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+
         public static async System.Threading.Tasks.Task LockStatusBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string massage)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();

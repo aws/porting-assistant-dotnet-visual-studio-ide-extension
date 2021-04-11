@@ -46,6 +46,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Commands\AutoAssessmentCommand.cs" />
+    <Compile Include="Commands\CommandsCommon.cs" />
     <Compile Include="Commands\DisplaySettings.cs" />
     <Compile Include="Commands\PortingAssistantVSExtensionClientPackage.cs">
       <AutoGen>True</AutoGen>
@@ -56,19 +57,22 @@
     <Compile Include="Commands\SolutionAssessmentCommand.cs" />
     <Compile Include="Commands\SolutionPortingCommand.cs" />
     <Compile Include="Common\Constants.cs" />
-    <Compile Include="ContentDefinitions\CsharpContentDefinition.cs" />
-    <Compile Include="ContentDefinitions\CsprojContentDefinition.cs" />
+    <Compile Include="Common\LanguageServerStatus.cs" />
+    <Compile Include="Common\PAGlobalService.cs" />
+    <Compile Include="Common\TargetFrameWorkType.cs" />
     <Compile Include="Dialogs\PortingDialog.xaml.cs">
       <DependentUpon>PortingDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\SelectTargetDialog.xaml.cs">
       <DependentUpon>SelectTargetDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\WelcomeDialog.xaml.cs">
+      <DependentUpon>WelcomeDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Models\AnalyzeSolutionRequest.cs" />
     <Compile Include="Models\AnalyzeSolutionResponse.cs" />
     <Compile Include="Models\ProjectFilePortingRequest.cs" />
     <Compile Include="Models\ProjectFilePortingResponse.cs" />
-    <Compile Include="Models\TargetFrameworkType.cs" />
     <Compile Include="Options\DataSharingOption.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -85,19 +89,10 @@
     <Compile Include="PortingAssistantLanguageClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PortingAssistantVSExtensionClientPackage.cs" />
-    <Compile Include="Utils\CommandUtils.cs" />
     <Compile Include="Utils\NotificationUtils.cs" />
     <Compile Include="Utils\SolutionUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Commands\Resources\warning.png.jpg">
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PortingAssistantVSExtensionSettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -119,7 +114,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.206" ExcludeAssets="runtime">
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServer.Client">
+      <Version>16.9.1180</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.9.31025.194 " ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.31">
@@ -128,11 +126,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Commands\Resources\SolutionAssessmentCommand.png" />
-    <Content Include="PortingAssistantVSExtensionSettings.pkgdef">
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <VSCTCompile Include="Commands\PortingAssistantVSExtensionClientPackage.vsct">
       <Generator>VsctGenerator</Generator>
       <ResourceName>Menus.ctmenu</ResourceName>
@@ -148,6 +141,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\WelcomeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Options\DataSharingOptionPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -156,6 +153,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\PortingAssistantLogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <VSIXSubPath>Resources</VSIXSubPath>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

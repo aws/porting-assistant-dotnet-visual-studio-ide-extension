@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using PortingAssistantVSExtensionClient.Options;
 using Microsoft.VisualStudio.PlatformUI;
 using PortingAssistantVSExtensionClient.Dialogs;
+using PortingAssistantVSExtensionClient.Common;
 
 namespace PortingAssistantVSExtensionClient.Commands
 {
@@ -96,65 +97,53 @@ namespace PortingAssistantVSExtensionClient.Commands
         private async void Execute(object sender, EventArgs e)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var dte = (DTE2)await ServiceProvider.GetServiceAsync(typeof(DTE));
             try
             {
-                string SolutionFile = await SolutionUtils.GetSolutionPathAsync(dte);
+                CommandsCommon.CheckWelcomePage();
+                CommandsCommon.EnableAllCommand(false);
+                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 string SelectedProjectPath = SolutionUtils.GetSelectedProjectPath();
-                if (SelectedProjectPath.Equals("")) {
-                    VsShellUtilities.ShowMessageBox(
-                        this.package,
-                        "Please select or open a project!",
-                        "Porting project to dotnet core",
-                        OLEMSGICON.OLEMSGICON_INFO,
-                        OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                        OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                if (SelectedProjectPath.Equals(""))
+                {
+                    NotificationUtils.ShowInfoMessageBox(this.package, "Please select or open a project!", "Porting project to dotnet core");
                 }
-                if (UserSettings.Instance.TargetFramework == TargetFrameworkType.no_selection)
+                string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+                if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
                 if (!PortingDialog.EnsureExecute()) return;
-                var PortingRequest = new ProjectFilePortingRequest()
-                {
-                    SolutionPath = SolutionFile,
-                    ProjectPaths = new List<string>() { SelectedProjectPath },
-                    TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
-                    InludeCodeFix = UserSettings.Instance.ApplyPortAction,
-                };
-                _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
-                using (var ted = (IDisposable)_dialog)
-                {
-                    _dialog.StartWaitDialog("Porting Assistant", "Porting the Project........", "", null, "", 1, true, true);
-                    CommandUtils.EnableAllCommand(this.package, false);
-                    await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>("applyPortingProjectFileChanges", PortingRequest);
-                    _dialog.EndWaitDialog();
-                }
-                // Show a message box to prove we were here
-                VsShellUtilities.ShowMessageBox(
-                    this.package,
-                    "Porting success!",
-                    "",
-                    OLEMSGICON.OLEMSGICON_INFO,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                await RunPortingAsync(SolutionFile, SelectedProjectPath);
+                NotificationUtils.ShowInfoMessageBox(this.package, $"The project has been ported to {UserSettings.Instance.TargetFramework}", "Porting success!");
             }
             catch (Exception ex)
             {
-                VsShellUtilities.ShowMessageBox(
-                    this.package,
-                    "Porting failed!",
-                    ex.Message,
-                    OLEMSGICON.OLEMSGICON_INFO,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-
+                NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Porting failed!");
             }
             finally
             {
-                CommandUtils.EnableAllCommand(this.package, true);
+                CommandsCommon.EnableAllCommand(true);
             }
+        }
 
+        private async Task RunPortingAsync(string SolutionFile, string SelectedProjectPath)
+        {
+            var PortingRequest = new ProjectFilePortingRequest()
+            {
+                SolutionPath = SolutionFile,
+                ProjectPaths = new List<string>() { SelectedProjectPath },
+                TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
+                InludeCodeFix = UserSettings.Instance.ApplyPortAction,
+            };
+            _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
+            using (var ted = (IDisposable)_dialog)
+            {
+                _dialog.StartWaitDialog("Porting Assistant", "Porting the Project........", "", null, "", 1, true, true);
+                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
+                    "applyPortingProjectFileChanges", 
+                    PortingRequest);
+                _dialog.EndWaitDialog();
+            }
         }
     }
 }

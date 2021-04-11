@@ -10,6 +10,7 @@ namespace PortingAssistantVSExtensionClient.Models
     {
         public string solutionFilePath { get; set; }
         public AnalyzerSettings settings { get; set; }
+        public bool ContiniousEnabled { get; set; }
     }
 	public class AnalyzerSettings
 	{

@@ -8,6 +8,8 @@ using Nerdbank.Streams;
 using PortingAssistant.Client.Model;
 using System.Threading.Tasks;
 using System.Globalization;
+using System.IO;
+using OmniSharp.Extensions.LanguageServer.Server;
 
 namespace PortingAssistantExtensionServer
 {
@@ -38,15 +40,33 @@ namespace PortingAssistantExtensionServer
             var (input, output) = await CreateNamedPipe(stdInPipeName, stdOutPipeName);
             var outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}";
 
+            var isConsole = args.Length == 4 && args[3].Equals("--console");
+
             if (args.Length == 4 && !args[3].Equals("--console"))
             {
                 outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (" + args[3] + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
             }
+            var AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var logFilePath = Path.Combine(AppData, "Porting Assistant Extension", "logs", "portingAssistantExtension-{Date}.log");
+
             Serilog.Formatting.Display.MessageTemplateTextFormatter tf = new Serilog.Formatting.Display.MessageTemplateTextFormatter(outputTemplate, CultureInfo.InvariantCulture);
+            var logConfiguration = new LoggerConfiguration().Enrich.FromLogContext()
+                .MinimumLevel.Debug()
+                .WriteTo.RollingFile(
+                    logFilePath,
+                    outputTemplate: outputTemplate);
+
+            if (isConsole)
+            {
+                logConfiguration = logConfiguration.WriteTo.Console();
+            }
+
+            Log.Logger = logConfiguration.CreateLogger();
 
             var portingAssisstantLanguageServer = new PortingAssistantLanguageServer(
                 loggingBuilder => loggingBuilder
                 .SetMinimumLevel(LogLevel.Debug)
+                .AddLanguageProtocolLogging()
                 .AddSerilog(logger: Log.Logger, dispose: true),
                 input,
                 output,

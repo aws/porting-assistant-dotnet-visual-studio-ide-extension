@@ -34,11 +34,9 @@ namespace PortingAssistantVSExtensionClient
         internal static FileExtensionToContentTypeDefinition CsFileExtensionDefinition;
     }
 
-    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ContentType("CSharpFileType")]
     [Export(typeof(ILanguageClient))]
-    [Guid(PortingAssistantLanguageClient.PackageGuidString)]
-    class PortingAssistantLanguageClient : AsyncPackage, ILanguageClient, ILanguageClientCustomMessage2
+    class PortingAssistantLanguageClient :ILanguageClient, ILanguageClientCustomMessage2
     {
         public const string PackageGuidString = "f41a71b0-3e17-4342-892d-aabc368ee8e8";
         public string Name => Common.Constants.ApplicationName;
@@ -85,6 +83,19 @@ namespace PortingAssistantVSExtensionClient
             set;
         }
 
+        public static async Task UpdateUserSettingsAsync()
+        {
+            if (Instance == null || Instance.PortingAssistantRpc == null) return;
+            var request = new Models.UpdateSettingsRequest()
+            {
+                EnabledContinuousAssessment = UserSettings.Instance.EnabledContinuousAssessment,
+                EnabledMetrics = UserSettings.Instance.EnabledMetrics,
+                CustomerEmail = UserSettings.Instance.CustomerEmail,
+                RootCacheFolder = UserSettings.Instance.RootCacheFolder
+            };
+            await Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<bool>("updateSettings", request);
+        }
+
 
         public async Task<Connection> ActivateAsync(CancellationToken token)
         {
@@ -128,6 +139,7 @@ namespace PortingAssistantVSExtensionClient
 
         public async Task OnLoadedAsync()
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             PAGlobalService.Instance.SetLanguageServerStatus(LanguageServerStatus.LOADED);
             await StartAsync?.InvokeAsync(this, EventArgs.Empty);
         }
@@ -135,9 +147,7 @@ namespace PortingAssistantVSExtensionClient
         public async Task OnServerInitializedAsync()
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            if (UserSettings.Instance.EnabledContinuousAssessment) {
-                Console.WriteLine("1123");
-            }
+            await UpdateUserSettingsAsync();
             PAGlobalService.Instance.SetLanguageServerStatus(LanguageServerStatus.INITIALIZED);
             await Task.CompletedTask;
         }

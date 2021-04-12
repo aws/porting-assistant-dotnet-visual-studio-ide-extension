@@ -38,15 +38,16 @@ namespace PortingAssistantVSExtensionClient.Options
 
         void LoadSettings()
         {
-            _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked = _userSettings.EnabledMetric;
+            _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked = _userSettings.EnabledMetrics;
             _dataSharingoptionsPageControl.CustomerEmailText.Text = _userSettings.CustomerEmail;
         }
 
         void Save()
         {
             _userSettings.CustomerEmail = _dataSharingoptionsPageControl.CustomerEmailText.Text;
-            _userSettings.EnabledMetric = _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked ?? false;
+            _userSettings.EnabledMetrics = _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked ?? false;
             _userSettings.SaveAllSettings();
+            PortingAssistantLanguageClient.UpdateUserSettingsAsync();
         }
     }
 }

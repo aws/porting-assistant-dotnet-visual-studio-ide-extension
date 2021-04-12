@@ -19,11 +19,11 @@ namespace PortingAssistantVSExtensionClient.Options
 
         private bool _isLoaded;
         public bool ShowWelcomePage;
-        public bool EnabledMetric;
+        public bool EnabledMetrics;
         public bool EnabledContinuousAssessment;
         public bool ApplyPortAction;
         public string CustomerEmail;
-        public string CacheFolder;
+        public string RootCacheFolder;
         public string TargetFramework;
 
         readonly WritableSettingsStore _settingStore;
@@ -62,7 +62,7 @@ namespace PortingAssistantVSExtensionClient.Options
         public void SaveAllSettings()
         {
             Write("ShowWelcomePage", ShowWelcomePage);
-            Write("EnabledMetric", EnabledMetric);
+            Write("EnabledMetrics", EnabledMetrics);
             Write("EnabledContinuousAssessment", EnabledContinuousAssessment);
             Write("CustomerEmail", CustomerEmail);
             Write("TargetFramework", TargetFramework);
@@ -72,11 +72,12 @@ namespace PortingAssistantVSExtensionClient.Options
         public void LoadingAllSettings()
         {
             ShowWelcomePage = (bool)Read("ShowWelcomePage", true);
-            EnabledMetric = (bool)Read("EnabledMetric", true);
+            EnabledMetrics = (bool)Read("EnabledMetrics", true);
             EnabledContinuousAssessment = (bool)Read("EnabledContinuousAssessment", false);
             CustomerEmail = (string)Read("CustomerEmail", "customer@email.com");
             ApplyPortAction = (bool)Read("ApplyPortAction", false);
             TargetFramework = (string)Read("TargetFramework", TargetFrameworkType.NO_SELECTION);
+            RootCacheFolder = Path.GetTempPath();
         }
 
         private object Read(string property, object defaultValue)

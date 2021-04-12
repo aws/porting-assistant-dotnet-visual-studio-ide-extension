@@ -73,6 +73,7 @@
     <Compile Include="Models\AnalyzeSolutionResponse.cs" />
     <Compile Include="Models\ProjectFilePortingRequest.cs" />
     <Compile Include="Models\ProjectFilePortingResponse.cs" />
+    <Compile Include="Models\UpdateSettingsRequest.cs" />
     <Compile Include="Options\DataSharingOption.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -25,7 +25,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            _userSettings.EnabledMetric = AgreeToShare.IsChecked ?? false;
+            _userSettings.EnabledMetrics = AgreeToShare.IsChecked ?? false;
             _userSettings.CustomerEmail = CustomerEmail.Text;
             _userSettings.ShowWelcomePage = false;
             _userSettings.SaveAllSettings();

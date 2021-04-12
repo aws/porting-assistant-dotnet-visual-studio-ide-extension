@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PortingAssistantExtensionServer.Common
 {
-    public static class LanguageServerConfiguration
+    public static class PALanguageServerConfiguration
     {
         static bool _enabledContinuousAssessment { get; set; }
 
@@ -13,6 +13,13 @@ namespace PortingAssistantExtensionServer.Common
         static string _customerEmail { get; set; }
 
         static string _rootCacheFolder { get; set; }
+        static PALanguageServerConfiguration()
+        {
+            _enabledContinuousAssessment = false;
+            _enabledMetrics = false;
+            _customerEmail = "";
+            _rootCacheFolder = "";
+        }
 
         public static bool EnabledContinuousAssessment
         {

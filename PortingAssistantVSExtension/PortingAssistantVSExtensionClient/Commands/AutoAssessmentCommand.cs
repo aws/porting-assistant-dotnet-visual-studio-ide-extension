@@ -103,7 +103,9 @@ namespace PortingAssistantVSExtensionClient.Commands
                 var button = (OleMenuCommand)sender;
                 UserSettings.Instance.EnabledContinuousAssessment = !button.Checked;
                 UserSettings.Instance.SaveAllSettings();
-            }catch(Exception ex)
+                PortingAssistantLanguageClient.UpdateUserSettingsAsync();
+            }
+            catch(Exception ex)
             {
                 NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Setting failed!");
             }

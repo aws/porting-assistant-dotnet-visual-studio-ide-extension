@@ -55,6 +55,7 @@ namespace PortingAssistantExtensionServer
                 .WithHandler<PortingAssistantCodeActionHandler>()
                 .WithHandler<SolutionAssessmentHandler>()
                 .WithHandler<PortingHandler>()
+                .WithHandler<UpdateSettingsHandler>()
                 .ConfigureLogging(_logConfiguration => _logConfiguration.ClearProviders().AddLanguageProtocolLogging())
                 .OnInitialized((instance, client, server, ct) =>
                 {

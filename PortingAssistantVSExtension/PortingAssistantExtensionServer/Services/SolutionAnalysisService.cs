@@ -15,6 +15,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace PortingAssistantExtensionServer
 {

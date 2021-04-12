@@ -12,6 +12,9 @@ using PortingAssistant.Client.Model;
 using PortingAssistantExtensionServer.Handlers;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using PortingAssistantExtensionServer.Common;
+using PortingAssistantExtension.Telemetry;
+using Serilog;
+using PortingAssistantExtension.Telemetry.Interface;
 
 namespace PortingAssistantExtensionServer
 {
@@ -50,6 +53,11 @@ namespace PortingAssistantExtensionServer
                     service.AddAssessment(_configuration);
                     service.AddSingleton<SolutionAnalysisService>();
                     service.AddSingleton<PortingService>();
+                    service.AddSingleton<ITelemetryCollector>(sp =>
+                    {
+                        var logger = sp.GetService<ILogger<ITelemetryCollector>>();
+                        return new TelemetryCollector(logger, "");
+                    });
                 })
                 .WithHandler<PortingAssistantTextSyncHandler>()
                 .WithHandler<PortingAssistantCodeActionHandler>()

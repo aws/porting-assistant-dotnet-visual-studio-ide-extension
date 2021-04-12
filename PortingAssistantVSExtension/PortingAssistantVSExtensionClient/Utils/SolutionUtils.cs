@@ -21,6 +21,30 @@ namespace PortingAssistantVSExtensionClient.Utils
             return dte.Solution.FullName;
         }
 
+        public static async Task<Dictionary<string, List<string>>> GetMetadataReferencesAsync(DTE2 dte)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var metadataReferences = new Dictionary<string, List<string>>();
+
+            var projects = dte.Solution.Projects.OfType<EnvDTE.Project>();
+            foreach (var p in projects)
+            {
+                VSLangProj.VSProject vsProject = p.Object as VSLangProj.VSProject;                
+                VSLangProj.References references = vsProject.References;
+
+                var projectReferences = new List<string>();
+                foreach (VSLangProj.Reference reff in references)
+                {
+                    projectReferences.Add(reff.Path);
+                }
+
+                metadataReferences.Add(vsProject.Project.FileName, projectReferences);
+            }
+
+            return metadataReferences;
+        }
+
         public static  List<string>  GetProjectPath(string solutionPath)
         {
             var Content = File.ReadAllText(solutionPath);

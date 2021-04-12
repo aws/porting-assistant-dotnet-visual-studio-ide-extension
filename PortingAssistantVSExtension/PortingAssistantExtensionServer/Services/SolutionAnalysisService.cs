@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using PortingAssistant.Client.Client;
@@ -11,13 +13,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
-using PortingAssistantExtensionServer.Models;
-using PortingAssistant.Client.Client;
-using OmniSharp.Extensions.LanguageServer.Protocol;
-using System.Collections.Immutable;
-using PortingAssistantExtensionServer.TextDocumentModels;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 
 namespace PortingAssistantExtensionServer
 {
@@ -53,12 +48,23 @@ namespace PortingAssistantExtensionServer
 
         public async Task AssessFileAsync(List<string> filePaths)
         {
+            //var result = await _client.AnalyzeFileAsync(
+            //    filePaths,
+            //    _request.solutionFilePath,
+            //    SolutionAnalysisResult.AnalyzerResults,
+            //    SolutionAnalysisResult.ProjectActions,
+            //    _request.settings);
+
+
+            //TODO Change this
             var result = await _client.AnalyzeFileAsync(
-                filePaths,
-                _request.solutionFilePath,
-                SolutionAnalysisResult.AnalyzerResults,
-                SolutionAnalysisResult.ProjectActions,
-                _request.settings);
+                //Remove the starting /
+         filePaths.Select(f=>f.Substring(1)).ToList(),
+         _request.solutionFilePath,
+         SolutionAnalysisResult.ProjectAnalysisResults.First().PreportMetaReferences,
+         SolutionAnalysisResult.ProjectAnalysisResults.First().MetaReferences,
+         SolutionAnalysisResult.ProjectActions.Values.First().ProjectRules,
+         _request.settings);
 
             UpdateSolutionAnalysisResult(result);
         }
@@ -81,6 +87,7 @@ namespace PortingAssistantExtensionServer
             var result = GetSolutionAnalysisResult();
             var codedescrption = new CodeDescription()
             {
+                //TODO Move to a constants class
                 Href = new Uri("https://aws.amazon.com/porting-assistant-dotnet/")
             };
             foreach (var projectAnalysisResult in result.ProjectAnalysisResults)
@@ -93,6 +100,7 @@ namespace PortingAssistantExtensionServer
 
                 foreach (var api in apis)
                 {
+                    //TODO Change hardcoded values
                     if (api.CompatibilityResults["netcoreapp3.1"].Compatibility == Compatibility.INCOMPATIBLE)
                     {
                         var name = api.CodeEntityDetails.OriginalDefinition;

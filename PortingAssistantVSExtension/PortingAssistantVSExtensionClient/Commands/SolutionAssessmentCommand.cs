@@ -97,6 +97,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                 CommandsCommon.EnableAllCommand(false);
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+                var metadataReferences = await SolutionUtils.GetMetadataReferencesAsync(dte);
+
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;

@@ -9,12 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortingAssistantVSExtension
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionServerUnitTest", "PortingAssistantExtensionServerUnitTest\PortingAssistantExtensionServerUnitTest.csproj", "{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistant.Client.Client", "..\..\..\..\PortingAssistant\src\PortingAssistantClient\src\PortingAssistant.Client.Client\PortingAssistant.Client.Client.csproj", "{3D95A652-E81C-457C-A638-B9D4E336A794}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB5D2654-CBDD-4510-84A9-13864AC8A302}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistant.Client.Client", "..\..\porting-assistant-dotnet-client\src\PortingAssistant.Client.Client\PortingAssistant.Client.Client.csproj", "{DEF0C90C-92B2-408D-B906-DFC191D3C65C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +34,10 @@ Global
 		{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D95A652-E81C-457C-A638-B9D4E336A794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D95A652-E81C-457C-A638-B9D4E336A794}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3D95A652-E81C-457C-A638-B9D4E336A794}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D95A652-E81C-457C-A638-B9D4E336A794}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEF0C90C-92B2-408D-B906-DFC191D3C65C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEF0C90C-92B2-408D-B906-DFC191D3C65C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEF0C90C-92B2-408D-B906-DFC191D3C65C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEF0C90C-92B2-408D-B906-DFC191D3C65C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

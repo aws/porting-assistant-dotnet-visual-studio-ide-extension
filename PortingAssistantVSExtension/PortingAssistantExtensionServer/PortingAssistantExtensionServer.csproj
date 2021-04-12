@@ -20,6 +20,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\..\..\..\PortingAssistant\src\PortingAssistantClient\src\PortingAssistant.Client.Client\PortingAssistant.Client.Client.csproj" />
+	  <ProjectReference Include="..\..\..\porting-assistant-dotnet-client\src\PortingAssistant.Client.Client\PortingAssistant.Client.Client.csproj" />
 	</ItemGroup>
 </Project>

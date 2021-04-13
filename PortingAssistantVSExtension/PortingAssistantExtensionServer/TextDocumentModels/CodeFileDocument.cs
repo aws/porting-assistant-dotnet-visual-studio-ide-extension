@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
+using System.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
@@ -27,6 +29,28 @@ namespace PortingAssistantExtensionServer.TextDocumentModels
             _content = content;
             _isParsed = false;
             _version++;
+        }
+
+        public string NormalizedPath => documentUri.Path.StartsWith("/") ? documentUri.Path.Substring(1) : documentUri.Path;
+
+        public string GetProjectFile()
+        {
+            var currentDir = Directory.GetParent(this.NormalizedPath).FullName;
+            var projectFile = "";
+
+            while (!string.IsNullOrEmpty(currentDir))
+            {
+                projectFile = Directory.EnumerateFiles(currentDir, "*.csproj").FirstOrDefault();
+                if (projectFile != null)
+                {
+                    return projectFile;
+                }
+                else
+                {
+                    currentDir = Directory.GetParent(currentDir).FullName;
+                }
+            }
+            return projectFile;
         }
 
         public int Version => _version;

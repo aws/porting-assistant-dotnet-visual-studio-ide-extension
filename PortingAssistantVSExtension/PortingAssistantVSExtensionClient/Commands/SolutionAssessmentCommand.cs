@@ -93,11 +93,11 @@ namespace PortingAssistantVSExtensionClient.Commands
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             try
             {
-                CommandsCommon.CheckWelcomePage();
+                //CommandsCommon.CheckWelcomePage();
                 CommandsCommon.EnableAllCommand(false);
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
-                var metadataReferences = await SolutionUtils.GetMetadataReferencesAsync(dte);
+                var metaReferences = await CommandsCommon.GetMetaReferencesAsync();
 
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {

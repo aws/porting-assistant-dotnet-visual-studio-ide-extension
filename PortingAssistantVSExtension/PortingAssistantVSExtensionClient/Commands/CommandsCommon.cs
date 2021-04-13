@@ -82,5 +82,10 @@ namespace PortingAssistantVSExtensionClient.Commands
             var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
             return await SolutionUtils.GetSolutionPathAsync(dte);
         }
+        public static async System.Threading.Tasks.Task<Dictionary<string, List<string>>> GetMetaReferencesAsync()
+        {
+            var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
+            return await SolutionUtils.GetMetadataReferencesAsync(dte);
+        }
     }
 }

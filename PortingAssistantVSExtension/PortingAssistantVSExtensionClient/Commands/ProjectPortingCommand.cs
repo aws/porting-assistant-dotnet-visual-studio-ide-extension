@@ -108,6 +108,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                     NotificationUtils.ShowInfoMessageBox(this.package, "Please select or open a project!", "Porting project to dotnet core");
                 }
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;

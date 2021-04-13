@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CTA.Rules.Models;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol;
@@ -22,6 +23,7 @@ namespace PortingAssistantExtensionServer
         private AnalyzeSolutionRequest _request;
         private readonly ILogger _logger;
         private readonly IPortingAssistantClient _client;
+        public Dictionary<int, IList<TextChange>> CodeActions;
 
         public ImmutableDictionary<DocumentUri, CodeFileDocument> _openDocuments = ImmutableDictionary<DocumentUri, CodeFileDocument>.Empty.WithComparers(DocumentUri.Comparer);
 
@@ -30,13 +32,13 @@ namespace PortingAssistantExtensionServer
         {
             _logger = logger;
             _client = client;
+            CodeActions = new Dictionary<int, IList<TextChange>>();
         }
 
         public async Task SetSolutionAnalysisResultAsync(Task<SolutionAnalysisResult> SolutionAnalysisResultTask)
         {
             Task<SolutionAnalysisResult> solutionAnalysisResultTask = SolutionAnalysisResultTask;
             SolutionAnalysisResult = await solutionAnalysisResultTask;
-            Console.WriteLine(SolutionAnalysisResult.ToString());
         }
 
         public async Task AssessSolutionAsync(AnalyzeSolutionRequest request)
@@ -46,25 +48,13 @@ namespace PortingAssistantExtensionServer
             await SetSolutionAnalysisResultAsync(result);
         }
 
-        public async Task AssessFileAsync(List<string> filePaths)
+        public async Task AssessFileAsync(CodeFileDocument codeFile)
         {
-            //var result = await _client.AnalyzeFileAsync(
-            //    filePaths,
-            //    _request.solutionFilePath,
-            //    SolutionAnalysisResult.AnalyzerResults,
-            //    SolutionAnalysisResult.ProjectActions,
-            //    _request.settings);
+            var projectFile = codeFile.GetProjectFile();
+            var projectAnalysisResult = SolutionAnalysisResult.ProjectAnalysisResults.FirstOrDefault(p => p.ProjectFilePath == projectFile);
 
-
-            //TODO Change this
-            var result = await _client.AnalyzeFileAsync(
-                //Remove the starting /
-         filePaths.Select(f=>f.Substring(1)).ToList(),
-         _request.solutionFilePath,
-         SolutionAnalysisResult.ProjectAnalysisResults.First().PreportMetaReferences,
-         SolutionAnalysisResult.ProjectAnalysisResults.First().MetaReferences,
-         SolutionAnalysisResult.ProjectActions.Values.First().ProjectRules,
-         _request.settings);
+            var result = await _client.AnalyzeFileAsync(codeFile.NormalizedPath, projectFile, _request.solutionFilePath,
+                projectAnalysisResult.PreportMetaReferences, projectAnalysisResult.MetaReferences, projectAnalysisResult.ProjectRules, _request.settings);
 
             UpdateSolutionAnalysisResult(result);
         }
@@ -85,6 +75,7 @@ namespace PortingAssistantExtensionServer
             var diagnostics = new List<Diagnostic>();
             if (!HasSolutionAnalysisResult()) return diagnostics;
             var result = GetSolutionAnalysisResult();
+            
             var codedescrption = new CodeDescription()
             {
                 //TODO Move to a constants class
@@ -160,6 +151,7 @@ namespace PortingAssistantExtensionServer
                                 Data = data
                             };
                             diagnostics.Add(diagnositc);
+                            CodeActions.Add(HashDiagnostic(diagnositc, fileUri.Path), recommendedAction.TextChanges);
                         }
                         catch (Exception ex)
                         {
@@ -170,6 +162,9 @@ namespace PortingAssistantExtensionServer
             }
             return diagnostics;
         }
+
+        public int HashDiagnostic(Diagnostic diagnostic, string documentPath) => HashCode.Combine(diagnostic.Message, diagnostic.Range, documentPath);
+        
 
         public void Dispose()
         {
@@ -193,7 +188,7 @@ namespace PortingAssistantExtensionServer
             });
         }
 
-        private string TrimFilePath(string path)
+        public string TrimFilePath(string path)
         {
             return path.Trim().Replace("\\", "").Replace("/", "");
         }

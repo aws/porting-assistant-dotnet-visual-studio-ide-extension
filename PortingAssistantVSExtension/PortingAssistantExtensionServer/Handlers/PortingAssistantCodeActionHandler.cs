@@ -8,6 +8,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
 using PortingAssistantExtensionServer.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +40,7 @@ namespace PortingAssistantExtensionServer.Handlers
         {
             _portingAssistantTextSyncHandler = portingAssistantTextSyncHandler;
             _languageServer = languageServer;
+            _solutionAnalysisService = solutionAnalysisService;
             _registrationOptions = new CodeActionRegistrationOptions
             {
                 DocumentSelector = _portingAssistantTextSyncHandler.GetRegistrationOptions().DocumentSelector,
@@ -58,42 +60,48 @@ namespace PortingAssistantExtensionServer.Handlers
         public async Task<CommandOrCodeActionContainer> Handle(CodeActionParams request, CancellationToken cancellationToken)
         {
             var codeActions = new List<CommandOrCodeAction>();
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 foreach (var diagnostic in request.Context.Diagnostics)
-                { 
-                    codeActions.Add(new CodeAction
+                {
+                    var diagnosticHash = _solutionAnalysisService.HashDiagnostic(diagnostic, request.TextDocument.Uri.Path);
+
+                    if (_solutionAnalysisService.CodeActions.ContainsKey(diagnosticHash))
                     {
-                        Title = "Test code action",
-                        Kind = CodeActionKind.QuickFix,
-                        Diagnostics = new List<Diagnostic>() { diagnostic },
-                        Edit = new WorkspaceEdit
+                        //Selecting changes for this file only
+                        var textEdits = _solutionAnalysisService.CodeActions[diagnosticHash]
+                            .Where(t => _solutionAnalysisService.TrimFilePath(t.FileLinePositionSpan.Path) == _solutionAnalysisService.TrimFilePath(request.TextDocument.Uri.Path))
+                            .Select(t => new TextEdit() { NewText = t.NewText, 
+                                Range = new OmniSharp.Extensions.LanguageServer.Protocol.Models.Range(
+                                    t.FileLinePositionSpan.StartLinePosition.Line,
+                                    t.FileLinePositionSpan.StartLinePosition.Character,
+                                    t.FileLinePositionSpan.EndLinePosition.Line,
+                                    t.FileLinePositionSpan.EndLinePosition.Character)
+                                    });
+                            ;
+                        
+                        codeActions.Add(new CodeAction
                         {
-                            DocumentChanges = new Container<WorkspaceEditDocumentChange>(
-                new WorkspaceEditDocumentChange(
-                    new TextDocumentEdit
-                    {
-                        TextDocument = new VersionedTextDocumentIdentifier
+                            Title = diagnostic.Message,
+                            Kind = CodeActionKind.QuickFix,
+                            Diagnostics = new List<Diagnostic>() { diagnostic },
+                            Edit = new WorkspaceEdit
+                            {
+                                DocumentChanges = new Container<WorkspaceEditDocumentChange>(
+                    new WorkspaceEditDocumentChange(
+                        new TextDocumentEdit
                         {
-                            Uri = request.TextDocument.Uri
-                        },
-                        Edits = new TextEditContainer(
-                                        new TextEdit()
-                                        {
-                                            NewText = "",
-                                            Range = new OmniSharp.Extensions.LanguageServer.Protocol.Models.Range((1, 0), (1, 3))
-                                        }
-                            )
-                    }))
-                        },
-                        //Command = Command.Create("fix-whitespace")
-                        //    .WithArguments(
-                        //        new Location()
-                        //        {
-                        //            Range = request.Range,
-                        //            Uri = request.TextDocument.Uri
-                        //        }
-                        //    )
-                    });
+                            TextDocument = new VersionedTextDocumentIdentifier
+                            {
+                                Uri = request.TextDocument.Uri
+                            },
+                            Edits = new TextEditContainer(
+                                            textEdits
+                                )
+                        }))
+                            }
+                        });
+                    }
                 }
             });
             return codeActions;

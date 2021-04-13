@@ -54,7 +54,7 @@ namespace PortingAssistantExtensionServer
             var projectAnalysisResult = SolutionAnalysisResult.ProjectAnalysisResults.FirstOrDefault(p => p.ProjectFilePath == projectFile);
 
             var result = await _client.AnalyzeFileAsync(codeFile.NormalizedPath, projectFile, _request.solutionFilePath,
-                projectAnalysisResult.PreportMetaReferences, projectAnalysisResult.MetaReferences, projectAnalysisResult.ProjectRules, _request.settings);
+                projectAnalysisResult.PreportMetaReferences, projectAnalysisResult.MetaReferences, projectAnalysisResult.ProjectRules, projectAnalysisResult.ExternalReferences, _request.settings);
 
             UpdateSolutionAnalysisResult(result);
         }
@@ -151,6 +151,11 @@ namespace PortingAssistantExtensionServer
                                 Data = data
                             };
                             diagnostics.Add(diagnositc);
+                            var hashDiagnostics = HashDiagnostic(diagnositc, fileUri.Path);
+                            if (CodeActions.ContainsKey(hashDiagnostics))
+                            {
+                                CodeActions.Remove(hashDiagnostics);
+                            }
                             CodeActions.Add(HashDiagnostic(diagnositc, fileUri.Path), recommendedAction.TextChanges);
                         }
                         catch (Exception ex)
@@ -176,15 +181,18 @@ namespace PortingAssistantExtensionServer
 
             SolutionAnalysisResult.AnalyzerResults = analysisResult.analyzerResults;
             SolutionAnalysisResult.ProjectActions = analysisResult.projectActions;
+
+            
+
             analysisResult.sourceFileAnalysisResults.ForEach(sourceFileAnalysisResult =>
             {
-                var targetSourceFiles = SolutionAnalysisResult.ProjectAnalysisResults
-                    .Select(p => p.SourceFileAnalysisResults.Find(f => f.SourceFilePath == sourceFileAnalysisResult.SourceFilePath));
-                foreach (var targetFile in targetSourceFiles)
-                {
-                    var target = targetFile;
-                    target = sourceFileAnalysisResult;
-                }
+                var projectResult = SolutionAnalysisResult.ProjectAnalysisResults
+                    .First(p => p.SourceFileAnalysisResults.Any(f => TrimFilePath(f.SourceFilePath) == TrimFilePath(sourceFileAnalysisResult.SourceFilePath)));
+
+                var oldFile = projectResult.SourceFileAnalysisResults.FirstOrDefault(s => TrimFilePath(s.SourceFilePath) == TrimFilePath(sourceFileAnalysisResult.SourceFilePath));
+
+                projectResult.SourceFileAnalysisResults.Remove(oldFile);
+                projectResult.SourceFileAnalysisResults.Add(sourceFileAnalysisResult);
             });
         }
 

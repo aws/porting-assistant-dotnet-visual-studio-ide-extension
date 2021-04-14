@@ -13,6 +13,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         private readonly UserSettings _userSettings;
         public WelcomeDialog()
         {
+            _userSettings = UserSettings.Instance;
             InitializeComponent();
             var logoPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Constants.ResourceFolder, Constants.LogoName);
             BitmapImage bitmap = new BitmapImage();

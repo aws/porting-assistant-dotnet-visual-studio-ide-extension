@@ -12,6 +12,8 @@ namespace PortingAssistantVSExtensionClient.Common
 
         public const string ApplicationServerLocation = "PortingAssistantLanguageServer";
 
+        public const string ApplicationServerName = "PortingAssistantExtensionServer.exe";
+
         public const string OptionName = "General";
 
         public const string DataOptionName = "Data usage sharing";
@@ -19,6 +21,10 @@ namespace PortingAssistantVSExtensionClient.Common
         public const string DebugInPipeName = "extensionclientreadpipe";
 
         public const string DebugOutPipeName = "extensionclientwritepipe";
+
+        public const string InPipeName = "paclientreadpipe";
+
+        public const string OutPipeName = "paclientwritepipe";
 
         public const string LogoName = "PortingAssistantLogo.png";
 

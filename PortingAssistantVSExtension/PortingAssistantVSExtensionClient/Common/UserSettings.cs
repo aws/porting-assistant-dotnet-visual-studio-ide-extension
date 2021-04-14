@@ -10,6 +10,7 @@ using PortingAssistantVSExtensionClient.Models;
 using System.Globalization;
 using System.IO;
 using PortingAssistantVSExtensionClient.Utils;
+using System.Threading.Tasks;
 
 namespace PortingAssistantVSExtensionClient.Options
 {
@@ -25,6 +26,7 @@ namespace PortingAssistantVSExtensionClient.Options
         public string CustomerEmail;
         public string RootCacheFolder;
         public string TargetFramework;
+        private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
 
         readonly WritableSettingsStore _settingStore;
 
@@ -33,6 +35,24 @@ namespace PortingAssistantVSExtensionClient.Options
             ThreadHelper.ThrowIfNotOnUIThread();
             var sm = new ShellSettingsManager(ServiceProvider.GlobalProvider);
             _settingStore = sm.GetWritableSettingsStore(SettingsScope.UserSettings);
+            this._languageServerStatus = new TaskCompletionSource<LanguageServerStatus>();
+            this._languageServerStatus.SetResult(LanguageServerStatus.NOT_RUNNING);
+        }
+
+        public void SetLanguageServerStatus(LanguageServerStatus status)
+        {
+            if (status != LanguageServerStatus.NOT_RUNNING && status != LanguageServerStatus.INITIALIZED)
+            {
+                this._languageServerStatus = new TaskCompletionSource<LanguageServerStatus>();
+            }
+            else
+            {
+                this._languageServerStatus.SetResult(status);
+            }
+        }
+        public async Task<LanguageServerStatus> GetLanguageServerStatusAsync()
+        {
+            return await this._languageServerStatus.Task;
         }
 
 

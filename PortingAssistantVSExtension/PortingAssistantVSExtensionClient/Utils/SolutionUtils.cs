@@ -30,7 +30,8 @@ namespace PortingAssistantVSExtensionClient.Utils
             var projects = dte.Solution.Projects.OfType<EnvDTE.Project>();
             foreach (var p in projects)
             {
-                VSLangProj.VSProject vsProject = p.Object as VSLangProj.VSProject;                
+                VSLangProj.VSProject vsProject = p.Object as VSLangProj.VSProject;
+                if (vsProject == null) continue;
                 VSLangProj.References references = vsProject.References;
 
                 var projectReferences = new List<string>();

@@ -107,8 +107,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                await NotificationUtils.ShowInfoBarAsync(ServiceProvider, "solution solution failed");
+                await NotificationUtils.ShowInfoBarAsync(ServiceProvider, ex.Message);
             }
             finally
             {

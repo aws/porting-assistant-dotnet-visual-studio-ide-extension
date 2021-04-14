@@ -157,8 +157,13 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Resources\PortingAssistantLogo.png">
+    <Content Include="PortingAssistantLanguageServer\PortingAssistantExtensionServer.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <VSIXSubPath>PortingAssistantLanguageServer</VSIXSubPath>
+    </Content>
+    <Content Include="Resources\PortingAssistantLogo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>Resources</VSIXSubPath>
     </Content>

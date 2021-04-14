@@ -11,6 +11,7 @@ using PortingAssistantExtensionServer.TextDocumentModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
@@ -55,7 +56,16 @@ namespace PortingAssistantExtensionServer
 
             var result = await _client.AnalyzeFileAsync(codeFile.NormalizedPath, projectFile, _request.solutionFilePath,
                 projectAnalysisResult.PreportMetaReferences, projectAnalysisResult.MetaReferences, projectAnalysisResult.ProjectRules, projectAnalysisResult.ExternalReferences, _request.settings);
-
+            if (!result.sourceFileAnalysisResults.Any())
+            {
+                result.sourceFileAnalysisResults.Add(new SourceFileAnalysisResult()
+                {
+                    SourceFilePath = codeFile.NormalizedPath,
+                    RecommendedActions = new List<RecommendedAction>(),
+                    ApiAnalysisResults = new List<ApiAnalysisResult>(),
+                    SourceFileName = Path.GetFileNameWithoutExtension(codeFile.NormalizedPath)
+                });
+            }
             UpdateSolutionAnalysisResult(result);
         }
 

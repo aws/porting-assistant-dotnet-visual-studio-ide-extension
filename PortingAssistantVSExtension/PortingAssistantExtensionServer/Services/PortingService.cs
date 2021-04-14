@@ -24,10 +24,11 @@ namespace PortingAssistantExtensionServer
         {
             var portingRequst = new PortingRequest
             {
-                Projects = request.Projects,
+                Projects = request.ProjectPaths.Select(p=>new ProjectDetails() {ProjectFilePath = p }).ToList(),
                 SolutionPath = request.SolutionPath,
                 RecommendedActions = new List<RecommendedAction>(),
-                TargetFramework = request.TargetFramework
+                TargetFramework = request.TargetFramework,
+                IncludeCodeFix = request.IncludeCodeFix
             };
             var results = _client.ApplyPortingChanges(portingRequst);
             return new ProjectFilePortingResponse()

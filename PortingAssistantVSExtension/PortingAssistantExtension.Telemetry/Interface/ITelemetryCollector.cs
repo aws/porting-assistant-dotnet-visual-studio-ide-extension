@@ -8,7 +8,7 @@ namespace PortingAssistantExtension.Telemetry.Interface
 {
     public interface ITelemetryCollector
     {
-        public void SolutionAssessmentCollect(SolutionAnalysisResult result);
-        public void FileAssessmentCollect(SourceFileAnalysisResult result);
+        public void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework);
+        public void FileAssessmentCollect(SourceFileAnalysisResult result, string targetFramework);
     }
 }

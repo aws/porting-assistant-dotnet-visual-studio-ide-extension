@@ -7,6 +7,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
 using PortingAssistantExtension.Telemetry.Interface;
+using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionServer.TextDocumentModels;
 using System;
@@ -45,7 +46,7 @@ namespace PortingAssistantExtensionServer
         {
             Task<SolutionAnalysisResult> solutionAnalysisResultTask = SolutionAnalysisResultTask;
             SolutionAnalysisResult = await solutionAnalysisResultTask;
-            _telemetry.SolutionAssessmentCollect(SolutionAnalysisResult);
+            _telemetry.SolutionAssessmentCollect(SolutionAnalysisResult, _request.settings.TargetFramework);
         }
 
         public async Task AssessSolutionAsync(AnalyzeSolutionRequest request)
@@ -95,7 +96,7 @@ namespace PortingAssistantExtensionServer
             var codedescrption = new CodeDescription()
             {
                 //TODO Move to a constants class
-                Href = new Uri("https://aws.amazon.com/porting-assistant-dotnet/")
+                Href = new Uri(Constant.PortingAssitantHelpUrl)
             };
             foreach (var projectAnalysisResult in result.ProjectAnalysisResults)
             {
@@ -107,8 +108,7 @@ namespace PortingAssistantExtensionServer
 
                 foreach (var api in apis)
                 {
-                    //TODO Change hardcoded values
-                    if (api.CompatibilityResults["netcoreapp3.1"].Compatibility == Compatibility.INCOMPATIBLE)
+                    if (api.CompatibilityResults[_request.settings.TargetFramework].Compatibility == Compatibility.INCOMPATIBLE)
                     {
                         var name = api.CodeEntityDetails.OriginalDefinition;
                         var rcommnadation = api.Recommendations.RecommendedActions.Select(r => (r.RecommendedActionType + r.Description));
@@ -122,8 +122,8 @@ namespace PortingAssistantExtensionServer
                         var diagnositc = new Diagnostic()
                         {
                             Severity = DiagnosticSeverity.Warning,
-                            Code = new DiagnosticCode("pa-test01"),
-                            Source = "Porting Assistant",
+                            Code = new DiagnosticCode(Constant.DiagnosticCode),
+                            Source = Constant.DiagnosticSource,
                             CodeDescription = codedescrption,
                             Tags = new Container<DiagnosticTag>(new List<DiagnosticTag>() { DiagnosticTag.Deprecated }),
                             Range = range,
@@ -154,8 +154,8 @@ namespace PortingAssistantExtensionServer
                             var diagnositc = new Diagnostic()
                             {
                                 Severity = DiagnosticSeverity.Warning,
-                                Code = new DiagnosticCode("pa-test01"),
-                                Source = "Porting Assistant",
+                                Code = new DiagnosticCode(Constant.DiagnosticCode),
+                                Source = Constant.DiagnosticSource,
                                 CodeDescription = codedescrption,
                                 Tags = new Container<DiagnosticTag>(new List<DiagnosticTag>() { DiagnosticTag.Deprecated }),
                                 Range = range,
@@ -189,7 +189,8 @@ namespace PortingAssistantExtensionServer
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            SolutionAnalysisResult = null;
+            _request = null;
         }
 
         private void UpdateSolutionAnalysisResult(IncrementalFileAnalysisResult analysisResult)
@@ -209,7 +210,7 @@ namespace PortingAssistantExtensionServer
 
                 projectResult.SourceFileAnalysisResults.Remove(oldFile);
                 projectResult.SourceFileAnalysisResults.Add(sourceFileAnalysisResult);
-                _telemetry.FileAssessmentCollect(sourceFileAnalysisResult);
+                _telemetry.FileAssessmentCollect(sourceFileAnalysisResult, _request.settings.TargetFramework);
             });
         }
 

@@ -36,7 +36,7 @@ namespace PortingAssistantExtension.Telemetry
 
         }
 
-        public void SolutionAssessmentCollect(SolutionAnalysisResult result)
+        public void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace PortingAssistantExtension.Telemetry
                 {
                     MetricsType = MetricsType.solution,
                     PortingAssistantExtensionVersion = "1.0.0",
-                    TargetFramework = "netcore3.0",
+                    TargetFramework = targetFramework,
                     TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                     SolutionPath = solutionDetail.SolutionFilePath,
                 };
@@ -60,7 +60,7 @@ namespace PortingAssistantExtension.Telemetry
                     {
                         MetricsType = MetricsType.solution,
                         PortingAssistantExtensionVersion = "1.0.0",
-                        TargetFramework = "netcore3.0",
+                        TargetFramework = targetFramework,
                         TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                         projectGuid = project.ProjectGuid,
                         projectType = project.ProjectType,
@@ -81,18 +81,18 @@ namespace PortingAssistantExtension.Telemetry
                         {
                             MetricsType = MetricsType.solution,
                             PortingAssistantExtensionVersion = "1.0.0",
-                            TargetFramework = "netcore3.0",
+                            TargetFramework = targetFramework,
                             TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                             pacakgeName = nuget.Value.Result.PackageVersionPair.PackageId,
                             packageVersion = nuget.Value.Result.PackageVersionPair.Version,
-                            compatibility = nuget.Value.Result.CompatibilityResults["netcore3.0"].Compatibility,
+                            compatibility = nuget.Value.Result.CompatibilityResults[targetFramework].Compatibility,
                         };
                         WriteToFile(JsonConvert.SerializeObject(nugetMetrics));
                     }
 
                     foreach (var sourceFile in project.SourceFileAnalysisResults)
                     {
-                        FileAssessmentCollect(sourceFile);
+                        FileAssessmentCollect(sourceFile, targetFramework);
                     }
                 });
 
@@ -104,7 +104,7 @@ namespace PortingAssistantExtension.Telemetry
             }
         }
 
-        public void FileAssessmentCollect(SourceFileAnalysisResult result)
+        public void FileAssessmentCollect(SourceFileAnalysisResult result, string targetFramework)
         {
             var date = DateTime.Now;
             foreach (var api in result.ApiAnalysisResults)
@@ -113,12 +113,12 @@ namespace PortingAssistantExtension.Telemetry
                 {
                     MetricsType = MetricsType.api,
                     PortingAssistantExtensionVersion = "1.0.0",
-                    TargetFramework = "netcore3.0",
+                    TargetFramework = targetFramework,
                     TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                     name = api.CodeEntityDetails.Name,
                     nameSpace = api.CodeEntityDetails.Namespace,
                     originalDefinition = api.CodeEntityDetails.OriginalDefinition,
-                    compatibility = api.CompatibilityResults["netcore3.0"].Compatibility,
+                    compatibility = api.CompatibilityResults[targetFramework].Compatibility,
                     packageId = api.CodeEntityDetails.Package.PackageId,
                     packageVersion = api.CodeEntityDetails.Package.Version
                 };

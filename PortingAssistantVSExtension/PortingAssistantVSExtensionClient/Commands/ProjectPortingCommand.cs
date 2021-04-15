@@ -12,6 +12,7 @@ using PortingAssistantVSExtensionClient.Options;
 using Microsoft.VisualStudio.PlatformUI;
 using PortingAssistantVSExtensionClient.Dialogs;
 using PortingAssistantVSExtensionClient.Common;
+using System.Threading;
 
 namespace PortingAssistantVSExtensionClient.Commands
 {
@@ -96,7 +97,6 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="e">Event args.</param>
         private async void Execute(object sender, EventArgs e)
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             try
             {
                 CommandsCommon.CheckWelcomePage();
@@ -108,19 +108,20 @@ namespace PortingAssistantVSExtensionClient.Commands
                     NotificationUtils.ShowInfoMessageBox(this.package, "Please select or open a project!", "Porting project to dotnet core");
                     return;
                 }
-                string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
-
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
                 if (!PortingDialog.EnsureExecute()) return;
-                await RunPortingAsync(SolutionFile, SelectedProjectPath);
-                NotificationUtils.ShowInfoMessageBox(this.package, $"The project has been ported to {UserSettings.Instance.TargetFramework}", "Porting success!");
+                string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+                if(await RunPortingAsync(SolutionFile, SelectedProjectPath))
+                {
+                    NotificationUtils.ShowInfoMessageBox(this.package, $"The project has been ported to {UserSettings.Instance.TargetFramework}", "Porting success!");
+                }
             }
             catch (Exception ex)
             {
-                NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Porting failed!");
+                await NotificationUtils.ShowInfoBarAsync(this.ServiceProvider, ex.Message);
             }
             finally
             {
@@ -128,8 +129,9 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
         }
 
-        private async Task RunPortingAsync(string SolutionFile, string SelectedProjectPath)
+        private async System.Threading.Tasks.Task<bool> RunPortingAsync(string SolutionFile, string SelectedProjectPath)
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var PortingRequest = new ProjectFilePortingRequest()
             {
                 SolutionPath = SolutionFile,
@@ -140,11 +142,21 @@ namespace PortingAssistantVSExtensionClient.Commands
             _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
             using (var ted = (IDisposable)_dialog)
             {
-                _dialog.StartWaitDialog("Porting Assistant", "Porting the Project........", "", null, "", 1, true, true);
-                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
-                    "applyPortingProjectFileChanges", 
-                    PortingRequest);
-                _dialog.EndWaitDialog();
+                try {
+                    _dialog.StartWaitDialog("Porting Assistant", "Porting the Project........", "", null, "", 1, false, true);
+                    await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
+                        "applyPortingProjectFileChanges",
+                        PortingRequest);
+                    return true;
+                } catch (Exception ex)
+                {
+                    NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Porting failed!");
+                    return false;
+                }
+                finally
+                {
+                    _dialog.EndWaitDialog();
+                }
             }
         }
     }

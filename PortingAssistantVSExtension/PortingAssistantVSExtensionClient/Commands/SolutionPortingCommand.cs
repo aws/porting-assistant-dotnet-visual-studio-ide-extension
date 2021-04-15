@@ -95,25 +95,26 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="e">Event args.</param>
         private async void Execute(object sender, EventArgs e)
         {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             try
             {
                 CommandsCommon.CheckWelcomePage();
                 CommandsCommon.EnableAllCommand(false);
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
-                string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
-                var ProjectFiles = SolutionUtils.GetProjectPath(SolutionFile);
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
                 if (!PortingDialog.EnsureExecute()) return;
-                await RunPortingAsync(SolutionFile, ProjectFiles);
-                NotificationUtils.ShowInfoMessageBox(this.package, $"The solution has been ported to {UserSettings.Instance.TargetFramework}", "Porting success!");
+                string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+                var ProjectFiles = SolutionUtils.GetProjectPath(SolutionFile);
+                if(await RunPortingAsync(SolutionFile, ProjectFiles))
+                {
+                    NotificationUtils.ShowInfoMessageBox(this.package, $"The solution has been ported to {UserSettings.Instance.TargetFramework}", "Porting success!");
+                }          
             }
             catch (Exception ex)
             {
-                NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Porting failed!");
+                await NotificationUtils.ShowInfoBarAsync(this.ServiceProvider, ex.Message);
             }
             finally
             {
@@ -121,8 +122,9 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
         }
 
-        private async Task RunPortingAsync(string SolutionFile, List<string> ProjectFiles)
+        private async System.Threading.Tasks.Task<bool> RunPortingAsync(string SolutionFile, List<string> ProjectFiles)
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var PortingRequest = new ProjectFilePortingRequest()
             {
                 SolutionPath = SolutionFile,
@@ -133,9 +135,21 @@ namespace PortingAssistantVSExtensionClient.Commands
             _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
             using (var ted = (IDisposable)_dialog)
             {
-                _dialog.StartWaitDialog("Porting Assistant", "Porting the solution........", "", null, "", 1, true, true);
-                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>("applyPortingProjectFileChanges", PortingRequest);
-                _dialog.EndWaitDialog();
+                try
+                {
+                    _dialog.StartWaitDialog("Porting Assistant", "Porting the solution........", "", null, "", 1, false, true);
+                    await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>("applyPortingProjectFileChanges", PortingRequest);
+                    return true;
+                }
+                catch(Exception ex)
+                {
+                    NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Porting failed!");
+                    return false;
+                }
+                finally
+                {
+                    _dialog.EndWaitDialog();
+                }
             }
         }
     }

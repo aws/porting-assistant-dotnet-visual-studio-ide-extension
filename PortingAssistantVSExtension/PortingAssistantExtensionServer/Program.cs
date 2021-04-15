@@ -24,6 +24,8 @@ namespace PortingAssistantExtensionServer
             var stdInPipeName = @"extensionclientwritepipe";
             var stdOutPipeName = @"extensionclientreadpipe";
             var AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var logRootPath = Path.Combine(AppData, "Porting Assistant Extension", "metrics");
+            if(!Directory.Exists(logRootPath)) Directory.CreateDirectory(logRootPath);
             var logFilePath = Path.Combine(AppData, "Porting Assistant Extension", "logs", "portingAssistantExtension-{Date}.log");
             var metricsFilePath = Path.Combine(AppData, "Porting Assistant Extension", "metrics", $"portingAssistantExtension-{DateTime.Today.ToString("yyyyMMdd")}.log");
             var configuration = new PortingAssistantIDEConfiguration()

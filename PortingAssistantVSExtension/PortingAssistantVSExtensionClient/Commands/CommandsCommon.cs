@@ -65,6 +65,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             await NotificationUtils.LockStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Check Porting Assistant Status.....");
             var serverStatus = await UserSettings.Instance.GetLanguageServerStatusAsync();
+            await NotificationUtils.ReleaseStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "");
             if (serverStatus == LanguageServerStatus.NOT_RUNNING)
             {
                 NotificationUtils.ShowInfoMessageBox(PAGlobalService.Instance.Package, "Please open a .cs file in the solution", "Porting Assistant is not activated.");
@@ -72,7 +73,6 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
             else
             {
-                await NotificationUtils.LockStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Activating Porting Assistant.....");
                 return true;
             }
         }

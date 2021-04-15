@@ -108,10 +108,10 @@ namespace PortingAssistantVSExtensionClient.Commands
             catch (Exception ex)
             {
                 await NotificationUtils.ShowInfoBarAsync(ServiceProvider, ex.Message);
+                await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider, "failed to assess solution");
             }
             finally
             {
-                await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider);
                 CommandsCommon.EnableAllCommand(true);
             }
         }
@@ -132,6 +132,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 "analyzeSolution", 
                 analyzeSolutionRequest);
             await NotificationUtils.ShowInfoBarAsync(ServiceProvider, "solution has been assessed successfully!");
+            await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider, "solution has been assessed successfully!");
             UserSettings.Instance.EnabledContinuousAssessment = true;
             UserSettings.Instance.SaveAllSettings();
         }

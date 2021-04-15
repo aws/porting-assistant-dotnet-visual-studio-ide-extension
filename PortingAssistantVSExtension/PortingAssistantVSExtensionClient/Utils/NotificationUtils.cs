@@ -9,6 +9,7 @@ namespace PortingAssistantVSExtensionClient.Utils
 {
     public static class NotificationUtils
     {
+        private static object _inProcessIcon = (short)Microsoft.VisualStudio.Shell.Interop.Constants.SBAI_Build;
         public static void ShowInfoMessageBox(IServiceProvider serviceProvider, string message, string title)
         {
             VsShellUtilities.ShowMessageBox(
@@ -36,28 +37,28 @@ namespace PortingAssistantVSExtensionClient.Utils
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             IVsStatusbar StatusBar = (IVsStatusbar)await ServiceProvider.GetServiceAsync(typeof(SVsStatusbar));
             Assumes.Present(StatusBar);
-            if (StatusBar.IsFrozen(out int frozen) != 0)
+            if (StatusBar.IsFrozen(out int frozen) != 0 && frozen != 0)
             {
                 StatusBar.FreezeOutput(0);
             }
             StatusBar.SetText(massage);
-            object icon = (short)Microsoft.VisualStudio.Shell.Interop.Constants.SBAI_Build;
-            StatusBar.Animation(1, ref icon);
+            StatusBar.Animation(1, ref _inProcessIcon);
             StatusBar.FreezeOutput(1);
         }
 
-        public static async System.Threading.Tasks.Task ReleaseStatusBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider)
+        public static async System.Threading.Tasks.Task ReleaseStatusBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string massage)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             IVsStatusbar StatusBar = (IVsStatusbar)await ServiceProvider.GetServiceAsync(typeof(SVsStatusbar));
             Assumes.Present(StatusBar);
-            if (StatusBar.IsFrozen(out int frozen) != 0)
+            if (StatusBar.IsFrozen(out int frozen) != 0 && frozen != 0)
             {
                 StatusBar.FreezeOutput(0);
-            }
-            object icon = (short)Microsoft.VisualStudio.Shell.Interop.Constants.SBAI_Build;
-            StatusBar.Animation(0, ref icon);
+            }            
+            StatusBar.Animation(0, ref _inProcessIcon);
             StatusBar.Clear();
+            StatusBar.SetText(massage);
+            StatusBar.FreezeOutput(1);
         }
 
         public static async System.Threading.Tasks.Task ShowInfoBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string message)

@@ -6,6 +6,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
+using PortingAssistantExtension.Telemetry.Interface;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionServer.TextDocumentModels;
 using System;
@@ -15,8 +16,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 
 namespace PortingAssistantExtensionServer
 {
@@ -26,15 +25,19 @@ namespace PortingAssistantExtensionServer
         private AnalyzeSolutionRequest _request;
         private readonly ILogger _logger;
         private readonly IPortingAssistantClient _client;
+        private readonly ITelemetryCollector _telemetry;
         public Dictionary<int, IList<TextChange>> CodeActions;
 
         public ImmutableDictionary<DocumentUri, CodeFileDocument> _openDocuments = ImmutableDictionary<DocumentUri, CodeFileDocument>.Empty.WithComparers(DocumentUri.Comparer);
 
-        public SolutionAnalysisService(ILogger<SolutionAnalysisService> logger,
-            IPortingAssistantClient client)
+        public SolutionAnalysisService(
+            ILogger<SolutionAnalysisService> logger,
+            IPortingAssistantClient client,
+            ITelemetryCollector telemetry)
         {
             _logger = logger;
             _client = client;
+            _telemetry = telemetry;
             CodeActions = new Dictionary<int, IList<TextChange>>();
         }
 
@@ -42,6 +45,7 @@ namespace PortingAssistantExtensionServer
         {
             Task<SolutionAnalysisResult> solutionAnalysisResultTask = SolutionAnalysisResultTask;
             SolutionAnalysisResult = await solutionAnalysisResultTask;
+            _telemetry.SolutionAssessmentCollect(SolutionAnalysisResult);
         }
 
         public async Task AssessSolutionAsync(AnalyzeSolutionRequest request)
@@ -87,7 +91,7 @@ namespace PortingAssistantExtensionServer
             var diagnostics = new List<Diagnostic>();
             if (!HasSolutionAnalysisResult()) return diagnostics;
             var result = GetSolutionAnalysisResult();
-            
+
             var codedescrption = new CodeDescription()
             {
                 //TODO Move to a constants class
@@ -181,7 +185,7 @@ namespace PortingAssistantExtensionServer
         }
 
         public int HashDiagnostic(Diagnostic diagnostic, string documentPath) => HashCode.Combine(diagnostic.Message, diagnostic.Range, documentPath);
-        
+
 
         public void Dispose()
         {
@@ -194,7 +198,7 @@ namespace PortingAssistantExtensionServer
             SolutionAnalysisResult.AnalyzerResults = analysisResult.analyzerResults;
             SolutionAnalysisResult.ProjectActions = analysisResult.projectActions;
 
-            
+
 
             analysisResult.sourceFileAnalysisResults.ForEach(sourceFileAnalysisResult =>
             {
@@ -205,6 +209,7 @@ namespace PortingAssistantExtensionServer
 
                 projectResult.SourceFileAnalysisResults.Remove(oldFile);
                 projectResult.SourceFileAnalysisResults.Add(sourceFileAnalysisResult);
+                _telemetry.FileAssessmentCollect(sourceFileAnalysisResult);
             });
         }
 

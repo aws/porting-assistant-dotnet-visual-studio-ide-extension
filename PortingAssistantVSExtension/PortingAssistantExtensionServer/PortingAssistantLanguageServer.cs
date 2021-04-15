@@ -15,6 +15,7 @@ using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtension.Telemetry;
 using Serilog;
 using PortingAssistantExtension.Telemetry.Interface;
+using PortingAssistantExtensionServer.Models;
 
 namespace PortingAssistantExtensionServer
 {
@@ -25,13 +26,13 @@ namespace PortingAssistantExtensionServer
         private bool _started = false;
         private readonly Action<ILoggingBuilder> _logConfiguration;
         internal ILanguageServer _portingAssistantServer { get; private set; }
-        private readonly PortingAssistantConfiguration _configuration;
+        private readonly PortingAssistantIDEConfiguration _configuration;
 
         public PortingAssistantLanguageServer(
             Action<ILoggingBuilder> logConfiguration,
             PipeReader input,
             PipeWriter output,
-            PortingAssistantConfiguration configuration
+            PortingAssistantIDEConfiguration configuration
             )
         {
             _logConfiguration = logConfiguration;
@@ -50,13 +51,13 @@ namespace PortingAssistantExtensionServer
                 .WithOutput(_output)
                 .WithServices(service =>
                 {
-                    service.AddAssessment(_configuration);
+                    service.AddAssessment(_configuration.portingAssistantConfiguration);
                     service.AddSingleton<SolutionAnalysisService>();
                     service.AddSingleton<PortingService>();
                     service.AddSingleton<ITelemetryCollector>(sp =>
                     {
                         var logger = sp.GetService<ILogger<ITelemetryCollector>>();
-                        return new TelemetryCollector(logger, "");
+                        return new TelemetryCollector(logger, _configuration.metricsFilePath);
                     });
                 })
                 .WithHandler<PortingAssistantTextSyncHandler>()

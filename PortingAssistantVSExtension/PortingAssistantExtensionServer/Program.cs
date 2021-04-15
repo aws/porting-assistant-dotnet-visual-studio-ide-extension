@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Globalization;
 using System.IO;
 using OmniSharp.Extensions.LanguageServer.Server;
+using PortingAssistantExtensionServer.Models;
 
 namespace PortingAssistantExtensionServer
 {
@@ -22,14 +23,21 @@ namespace PortingAssistantExtensionServer
             //TODO put settings in file/constant
             var stdInPipeName = @"extensionclientwritepipe";
             var stdOutPipeName = @"extensionclientreadpipe";
-            var configuration = new PortingAssistantConfiguration()
+            var AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var logFilePath = Path.Combine(AppData, "Porting Assistant Extension", "logs", "portingAssistantExtension-{Date}.log");
+            var metricsFilePath = Path.Combine(AppData, "Porting Assistant Extension", "metrics", $"portingAssistantExtension-{DateTime.Today.ToString("yyyyMMdd")}.log");
+            var configuration = new PortingAssistantIDEConfiguration()
             {
-                DataStoreSettings = new DataStoreSettings()
+                portingAssistantConfiguration = new PortingAssistantConfiguration
                 {
-                    HttpsEndpoint = "https://s3.us-west-2.amazonaws.com/aws.portingassistant.dotnet.datastore/",
-                    S3Endpoint = "aws.portingassistant.dotnet.datastore",
-                    GitHubEndpoint = "https://raw.githubusercontent.com/aws/porting-assistant-dotnet-datastore/master/"
-                }
+                    DataStoreSettings = new DataStoreSettings()
+                    {
+                        HttpsEndpoint = "https://s3.us-west-2.amazonaws.com/aws.portingassistant.dotnet.datastore/",
+                        S3Endpoint = "aws.portingassistant.dotnet.datastore",
+                        GitHubEndpoint = "https://raw.githubusercontent.com/aws/porting-assistant-dotnet-datastore/master/"
+                    }
+                },
+                metricsFilePath = metricsFilePath
             };
 
             if (args.Length != 0)
@@ -46,8 +54,6 @@ namespace PortingAssistantExtensionServer
             {
                 outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (" + args[3] + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
             }
-            var AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var logFilePath = Path.Combine(AppData, "Porting Assistant Extension", "logs", "portingAssistantExtension-{Date}.log");
 
             Serilog.Formatting.Display.MessageTemplateTextFormatter tf = new Serilog.Formatting.Display.MessageTemplateTextFormatter(outputTemplate, CultureInfo.InvariantCulture);
             var logConfiguration = new LoggerConfiguration().Enrich.FromLogContext()

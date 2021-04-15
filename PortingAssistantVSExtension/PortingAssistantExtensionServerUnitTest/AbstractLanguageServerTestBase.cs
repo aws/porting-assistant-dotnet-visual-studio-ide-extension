@@ -17,13 +17,14 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using System.Collections.Concurrent;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using PortingAssistantExtensionServer.Models;
 
 namespace PortingAssistantExtensionServerUnitTest
 {
     public class AbstractLanguageServerTestBase : LanguageServerTestBase
     {
         private readonly ITestOutputHelper _output;
-        private PortingAssistantConfiguration portingAssistantConfiguration;
+        private PortingAssistantIDEConfiguration portingAssistantIDEConfiguration;
         private PortingAssistantLanguageServer _portingAssistantLanguageServer;
         private ILanguageClient _client;
         private readonly ConcurrentDictionary<DocumentUri, IEnumerable<Diagnostic>> _diagnostics =
@@ -32,16 +33,16 @@ namespace PortingAssistantExtensionServerUnitTest
         protected ILogger Logger { get; }
 
         public AbstractLanguageServerTestBase(ITestOutputHelper output,
-            PortingAssistantConfiguration configuration = null) : base(
+            PortingAssistantIDEConfiguration configuration = null) : base(
             new JsonRpcTestOptions()
         )
         {
             _output = output;
-            portingAssistantConfiguration = configuration;
+            portingAssistantIDEConfiguration = configuration;
             SetupServer();
             SetupClient();
         }
-        
+
         protected override (Stream clientOutput, Stream serverInput) SetupServer()
         {
             var clientPipe = new Pipe(TestOptions.DefaultPipeOptions);
@@ -50,7 +51,7 @@ namespace PortingAssistantExtensionServerUnitTest
                 logConfig => logConfig.AddConsole(),
                 clientPipe.Reader,
                 serverPipe.Writer,
-                portingAssistantConfiguration
+                portingAssistantIDEConfiguration
                 );
             return (serverPipe.Reader.AsStream(), clientPipe.Writer.AsStream());
         }

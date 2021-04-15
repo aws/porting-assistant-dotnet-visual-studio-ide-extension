@@ -106,9 +106,24 @@ namespace PortingAssistantExtension.Telemetry
 
         public void FileAssessmentCollect(SourceFileAnalysisResult result)
         {
-
-            var metrics = JsonConvert.SerializeObject(result);
-            WriteToFile(metrics);
+            var date = DateTime.Now;
+            foreach (var api in result.ApiAnalysisResults)
+            {
+                var apiMetrics = new APIMetrics
+                {
+                    MetricsType = MetricsType.api,
+                    PortingAssistantExtensionVersion = "1.0.0",
+                    TargetFramework = "netcore3.0",
+                    TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
+                    name = api.CodeEntityDetails.Name,
+                    nameSpace = api.CodeEntityDetails.Namespace,
+                    originalDefinition = api.CodeEntityDetails.OriginalDefinition,
+                    compatibility = api.CompatibilityResults["netcore3.0"].Compatibility,
+                    packageId = api.CodeEntityDetails.Package.PackageId,
+                    packageVersion = api.CodeEntityDetails.Package.Version
+                };
+                WriteToFile(JsonConvert.SerializeObject(apiMetrics));
+            }
         }
     }
 }

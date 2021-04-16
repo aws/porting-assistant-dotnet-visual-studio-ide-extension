@@ -60,26 +60,44 @@ namespace PortingAssistantExtensionServer.Handlers
         public async Task<CommandOrCodeActionContainer> Handle(CodeActionParams request, CancellationToken cancellationToken)
         {
             var codeActions = new List<CommandOrCodeAction>();
+
+            if (_solutionAnalysisService.HasSolutionAnalysisResult())
+            {
+                _solutionAnalysisService._openDocuments.TryGetValue(request.TextDocument.Uri, out var document);
+                if (document == null) return codeActions;
+                var result = await _solutionAnalysisService.AssessFileAsync(document, true);
+
+                result.sourceFileAnalysisResults.ForEach(sourceFileAnalysisResult => {
+                    sourceFileAnalysisResult.RecommendedActions.ForEach(recommendedAction => {
+                        _solutionAnalysisService.UpdateCodeAction(recommendedAction.Description, 
+                            _solutionAnalysisService.GetRange(recommendedAction.TextSpan), 
+                            document.DocumentUri.Path,
+                            recommendedAction.TextChanges);
+                    });
+                });
+            }
+
             await Task.Run(() =>
             {
                 foreach (var diagnostic in request.Context.Diagnostics)
                 {
-                    var diagnosticHash = _solutionAnalysisService.HashDiagnostic(diagnostic, request.TextDocument.Uri.Path);
+                    var diagnosticHash = _solutionAnalysisService.HashDiagnostic(diagnostic.Message, diagnostic.Range, request.TextDocument.Uri.Path);
 
                     if (_solutionAnalysisService.CodeActions.ContainsKey(diagnosticHash))
                     {
-                        //Selecting changes for this file only
                         var textEdits = _solutionAnalysisService.CodeActions[diagnosticHash]
                             .Where(t => _solutionAnalysisService.TrimFilePath(t.FileLinePositionSpan.Path) == _solutionAnalysisService.TrimFilePath(request.TextDocument.Uri.Path))
-                            .Select(t => new TextEdit() { NewText = t.NewText, 
+                            .Select(t => new TextEdit()
+                            {
+                                NewText = t.NewText,
                                 Range = new OmniSharp.Extensions.LanguageServer.Protocol.Models.Range(
                                     t.FileLinePositionSpan.StartLinePosition.Line,
                                     t.FileLinePositionSpan.StartLinePosition.Character,
                                     t.FileLinePositionSpan.EndLinePosition.Line,
                                     t.FileLinePositionSpan.EndLinePosition.Character)
-                                    });
+                            });
                             ;
-                        
+
                         codeActions.Add(new CodeAction
                         {
                             Title = diagnostic.Message,

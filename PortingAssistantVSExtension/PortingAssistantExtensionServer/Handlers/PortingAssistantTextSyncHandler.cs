@@ -37,7 +37,7 @@ namespace PortingAssistantExtensionServer.Handlers
             _options = new TextDocumentChangeRegistrationOptions()
             {
                 DocumentSelector = new DocumentSelector(DocumentSelector.ForPattern("**/*.cs").Concat(DocumentSelector.ForScheme("CSharpFileType"))),
-                SyncKind = TextDocumentSyncKind.Incremental
+                SyncKind = TextDocumentSyncKind.Full
             };
             _saveOptions = new TextDocumentSaveRegistrationOptions()
             {
@@ -71,7 +71,8 @@ namespace PortingAssistantExtensionServer.Handlers
 
         public Task<Unit> Handle(DidChangeTextDocumentParams request, CancellationToken cancellationToken)
         {
-            if (!_solutionAnalysisService._openDocuments.TryGetValue(request.TextDocument.Uri, out var value)) return Unit.Task;
+            if (!_solutionAnalysisService._openDocuments.TryGetValue(request.TextDocument.Uri, out var document)) return Unit.Task;
+            document.Load(request.ContentChanges.FirstOrDefault().Text);
             return Unit.Task;
 
         }
@@ -108,8 +109,6 @@ namespace PortingAssistantExtensionServer.Handlers
             return Unit.Task;
 
         }
-
-
         public Task<Unit> Handle(DidCloseTextDocumentParams request, CancellationToken cancellationToken)
         {
             lock (_solutionAnalysisService._openDocuments)
@@ -118,9 +117,6 @@ namespace PortingAssistantExtensionServer.Handlers
             }
             return Unit.Task;
         }
-
-
-
         public Task<Unit> Handle(DidSaveTextDocumentParams request, CancellationToken cancellationToken)
         {
             if (!_capability.DidSave) return Unit.Task;

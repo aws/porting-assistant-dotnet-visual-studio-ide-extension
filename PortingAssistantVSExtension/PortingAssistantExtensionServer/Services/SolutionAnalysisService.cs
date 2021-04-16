@@ -56,13 +56,16 @@ namespace PortingAssistantExtensionServer
             await SetSolutionAnalysisResultAsync(result);
         }
 
-        public async Task AssessFileAsync(CodeFileDocument codeFile)
+        public async Task<IncrementalFileAnalysisResult> AssessFileAsync(CodeFileDocument codeFile, bool actionsOnly = false)
         {
             var projectFile = codeFile.GetProjectFile();
             var projectAnalysisResult = SolutionAnalysisResult.ProjectAnalysisResults.FirstOrDefault(p => p.ProjectFilePath == projectFile);
 
-            var result = await _client.AnalyzeFileAsync(codeFile.NormalizedPath, projectFile, _request.solutionFilePath,
-                projectAnalysisResult.PreportMetaReferences, projectAnalysisResult.MetaReferences, projectAnalysisResult.ProjectRules, projectAnalysisResult.ExternalReferences, _request.settings);
+            _request.settings.ActionsOnly = actionsOnly;
+
+            var result = await _client.AnalyzeFileAsync(codeFile.NormalizedPath, codeFile.GetText(), projectFile, _request.solutionFilePath,
+                projectAnalysisResult.PreportMetaReferences, projectAnalysisResult.MetaReferences, projectAnalysisResult.ProjectRules, projectAnalysisResult.ExternalReferences, 
+                _request.settings);
             if (!result.sourceFileAnalysisResults.Any())
             {
                 result.sourceFileAnalysisResults.Add(new SourceFileAnalysisResult()
@@ -74,6 +77,8 @@ namespace PortingAssistantExtensionServer
                 });
             }
             UpdateSolutionAnalysisResult(result);
+
+            return result;
         }
 
         public bool HasSolutionAnalysisResult()
@@ -167,12 +172,7 @@ namespace PortingAssistantExtensionServer
                                 Data = data
                             };
                             diagnostics.Add(diagnositc);
-                            var hashDiagnostics = HashDiagnostic(diagnositc, fileUri.Path);
-                            if (CodeActions.ContainsKey(hashDiagnostics))
-                            {
-                                CodeActions.Remove(hashDiagnostics);
-                            }
-                            CodeActions.Add(HashDiagnostic(diagnositc, fileUri.Path), recommendedAction.TextChanges);
+                            UpdateCodeAction(diagnositc.Message, diagnositc.Range, fileUri.Path, recommendedAction.TextChanges);
                         }
                         catch (Exception ex)
                         {
@@ -184,7 +184,18 @@ namespace PortingAssistantExtensionServer
             return diagnostics;
         }
 
-        public int HashDiagnostic(Diagnostic diagnostic, string documentPath) => HashCode.Combine(diagnostic.Message, diagnostic.Range, documentPath);
+        public void UpdateCodeAction(string message, Range range, string documentPath, IList<TextChange> textChanges)
+        {
+            var hashDiagnostic = HashDiagnostic(message, range, documentPath);
+
+            if (CodeActions.ContainsKey(hashDiagnostic))
+            {
+                CodeActions.Remove(hashDiagnostic);
+            }
+            CodeActions.Add(hashDiagnostic, textChanges);
+        }
+
+        public int HashDiagnostic(string message, Range range, string documentPath) => HashCode.Combine(message, range, documentPath);
 
 
         public void Dispose()
@@ -219,7 +230,7 @@ namespace PortingAssistantExtensionServer
             return path.Trim().Replace("\\", "").Replace("/", "");
         }
 
-        private Range GetRange(TextSpan span)
+        public Range GetRange(TextSpan span)
         {
             return new Range(
                 new Position((int)(span.StartLinePosition - 1), (int)(span.StartCharPosition - 1)),

@@ -20,8 +20,9 @@ namespace PortingAssistantVSExtensionClient.Options
 
         public DataSharingOption()
         {
-            _dataSharingoptionsPageControl = new DataSharingOptionPage();
             _userSettings = UserSettings.Instance;
+            _dataSharingoptionsPageControl = new DataSharingOptionPage();
+            _dataSharingoptionsPageControl.InitalizeNamedProfile(_userSettings.AWSProfileName);
         }
 
         protected override UIElement Child { get { return _dataSharingoptionsPageControl; } }
@@ -39,12 +40,20 @@ namespace PortingAssistantVSExtensionClient.Options
         void LoadSettings()
         {
             _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked = _userSettings.EnabledMetrics;
-            _dataSharingoptionsPageControl.CustomerEmailText.Text = _userSettings.CustomerEmail;
+            if (_dataSharingoptionsPageControl.Profiles.Items.Contains(_userSettings.AWSProfileName))
+            {
+                _dataSharingoptionsPageControl.Profiles.SelectedItem = _userSettings.AWSProfileName;
+            }
+            else
+            {
+                _dataSharingoptionsPageControl.Profiles.SelectedItem = "";
+            }
+            
         }
 
         void Save()
         {
-            _userSettings.CustomerEmail = _dataSharingoptionsPageControl.CustomerEmailText.Text;
+            _userSettings.AWSProfileName = (string)_dataSharingoptionsPageControl.Profiles.SelectedValue;
             _userSettings.EnabledMetrics = _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked ?? false;
             _userSettings.SaveAllSettings();
             PortingAssistantLanguageClient.UpdateUserSettingsAsync();

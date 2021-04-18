@@ -10,14 +10,14 @@ namespace PortingAssistantExtensionServer.Common
 
         static bool _enabledMetrics { get; set; }
 
-        static string _customerEmail { get; set; }
+        static string _awsProfileName { get; set; }
 
         static string _rootCacheFolder { get; set; }
         static PALanguageServerConfiguration()
         {
             _enabledContinuousAssessment = false;
             _enabledMetrics = false;
-            _customerEmail = "";
+            _awsProfileName = "";
             _rootCacheFolder = "";
         }
 
@@ -45,15 +45,15 @@ namespace PortingAssistantExtensionServer.Common
             }
         }
 
-        public static string CustomerEmail
+        public static string AWSProfileName
         {
             get
             {
-                return _customerEmail;
+                return _awsProfileName;
             }
             set
             {
-                _customerEmail = value;
+                _awsProfileName = value;
             }
         }
 

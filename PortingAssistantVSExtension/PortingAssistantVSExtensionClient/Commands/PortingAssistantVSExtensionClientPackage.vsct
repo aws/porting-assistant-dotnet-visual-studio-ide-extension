@@ -156,15 +156,20 @@
 					<ButtonText>Port Project to .NET Core</ButtonText>
 				</Strings>
 			</Button>
-			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidDisplaySettings" priority="0x0305" type="Button">
+			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidDisplaySettings" priority="0x0306" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
 				<Strings>
 					<ButtonText>Porting Assistant Settings...</ButtonText>
 				</Strings>
 			 </Button>
+      <Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidContactSupportCommand" priority="0x0305" type="Button">
+        <Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
+        <Strings>
+          <ButtonText>Contact Support</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
-
-	</Commands>
+  </Commands>
 
 	<Symbols>
 		<!-- This is the package guid. -->
@@ -188,6 +193,7 @@
 			<IDSymbol value="0x0102" name="cmdidProjectPortingCommand" />
 			<IDSymbol value="0x0103" name="cmdidAutoAssessmentCommand" />
 			<IDSymbol value="0x0104" name="cmdidDisplaySettings" />
+			<IDSymbol value="0x0105" name="cmdidContactSupportCommand" />
 		</GuidSymbol>
   
   </Symbols>

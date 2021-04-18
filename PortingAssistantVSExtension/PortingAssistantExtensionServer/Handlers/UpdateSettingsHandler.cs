@@ -24,14 +24,12 @@ namespace PortingAssistantExtensionServer.Handlers
 
         public async Task<bool> Handle(UpdateSettingsRequest request, CancellationToken cancellationToken)
         {
-            if(request.CustomerEmail != null)
-                PALanguageServerConfiguration.CustomerEmail = request.CustomerEmail;
+            if(request.AWSProfileName != null)
+                PALanguageServerConfiguration.AWSProfileName = request.AWSProfileName;
             if (request.RootCacheFolder != null)
                 PALanguageServerConfiguration.RootCacheFolder = request.RootCacheFolder;
-            if (request.EnabledContinuousAssessment != null)
-                PALanguageServerConfiguration.EnabledContinuousAssessment = request.EnabledContinuousAssessment;
-            if (request.EnabledMetrics != null)
-                PALanguageServerConfiguration.EnabledMetrics = request.EnabledMetrics;
+            PALanguageServerConfiguration.EnabledContinuousAssessment = request.EnabledContinuousAssessment;
+            PALanguageServerConfiguration.EnabledMetrics = request.EnabledMetrics;
             return true;
         }
     }

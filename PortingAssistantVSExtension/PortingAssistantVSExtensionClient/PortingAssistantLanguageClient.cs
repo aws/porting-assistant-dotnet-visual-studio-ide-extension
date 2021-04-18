@@ -99,7 +99,7 @@ namespace PortingAssistantVSExtensionClient
             {
                 EnabledContinuousAssessment = UserSettings.Instance.EnabledContinuousAssessment,
                 EnabledMetrics = UserSettings.Instance.EnabledMetrics,
-                CustomerEmail = UserSettings.Instance.CustomerEmail,
+                AWSProfileName = UserSettings.Instance.AWSProfileName,
                 RootCacheFolder = UserSettings.Instance.RootCacheFolder
             };
             await Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<bool>("updateSettings", request);

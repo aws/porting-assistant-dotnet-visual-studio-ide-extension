@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PortingAssistantVSExtensionClient.Common;
+using PortingAssistantVSExtensionClient.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,11 +25,34 @@ namespace PortingAssistantVSExtensionClient.Options
         public DataSharingOptionPage()
         {
             InitializeComponent();
+            
         }
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        public void InitalizeNamedProfile(string newAddedProfile)
+        {
+            List<string> namedProfiles = PAGlobalService.Instance.ListProfiles();
+            if (namedProfiles != null && namedProfiles.Count != 0)
+            {
+                Profiles.Items.Clear();
+                foreach (var namedProfile in namedProfiles)
+                {
+                    Profiles.Items.Add(namedProfile);
+                }
+            }
+            Profiles.SelectedItem = newAddedProfile;
+        }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string newAddedProfile = AddProfileDialog.EnsureExecute();
+            if (!newAddedProfile.Equals(""))
+            {
+                InitalizeNamedProfile(newAddedProfile);
+            }
         }
     }
 }

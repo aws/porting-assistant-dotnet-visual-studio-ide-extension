@@ -15,6 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PortingAssistantVSExtensionClient</RootNamespace>
     <AssemblyName>PortingAssistantVSExtensionClient</AssemblyName>
+    <TargetVsixContainerName>PortingAssistant.Development.Kit-$(VSVSIX_VERSION).vsix</TargetVsixContainerName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
@@ -47,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Commands\AutoAssessmentCommand.cs" />
     <Compile Include="Commands\CommandsCommon.cs" />
+    <Compile Include="Commands\ContactSupportCommand.cs" />
     <Compile Include="Commands\DisplaySettings.cs" />
     <Compile Include="Commands\PortingAssistantVSExtensionClientPackage.cs">
       <AutoGen>True</AutoGen>
@@ -56,10 +58,14 @@
     <Compile Include="Commands\ProjectPortingCommand.cs" />
     <Compile Include="Commands\SolutionAssessmentCommand.cs" />
     <Compile Include="Commands\SolutionPortingCommand.cs" />
+    <Compile Include="Common\AwsCredential.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\LanguageServerStatus.cs" />
     <Compile Include="Common\PAGlobalService.cs" />
     <Compile Include="Common\TargetFrameWorkType.cs" />
+    <Compile Include="Dialogs\AddProfileDialog.xaml.cs">
+      <DependentUpon>AddProfileDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\PortingDialog.xaml.cs">
       <DependentUpon>PortingDialog.xaml</DependentUpon>
     </Compile>
@@ -115,6 +121,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AWSSDK.Core">
+      <Version>3.7.0.13</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.9.31025.194 " ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -131,6 +140,10 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Dialogs\AddProfileDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\PortingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

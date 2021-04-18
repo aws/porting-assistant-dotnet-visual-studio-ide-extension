@@ -23,7 +23,7 @@ namespace PortingAssistantVSExtensionClient.Options
         public bool EnabledMetrics;
         public bool EnabledContinuousAssessment;
         public bool ApplyPortAction;
-        public string CustomerEmail;
+        public string AWSProfileName;
         public string RootCacheFolder;
         public string TargetFramework;
         private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
@@ -84,7 +84,7 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("ShowWelcomePage", ShowWelcomePage);
             Write("EnabledMetrics", EnabledMetrics);
             Write("EnabledContinuousAssessment", EnabledContinuousAssessment);
-            Write("CustomerEmail", CustomerEmail);
+            Write("AWSProfileName", AWSProfileName);
             Write("TargetFramework", TargetFramework);
             Write("ApplyPortAction", ApplyPortAction);
         }
@@ -94,7 +94,7 @@ namespace PortingAssistantVSExtensionClient.Options
             ShowWelcomePage = (bool)Read("ShowWelcomePage", true);
             EnabledMetrics = (bool)Read("EnabledMetrics", true);
             EnabledContinuousAssessment = (bool)Read("EnabledContinuousAssessment", false);
-            CustomerEmail = (string)Read("CustomerEmail", "customer@email.com");
+            AWSProfileName = (string)Read("AWSProfileName", "");
             ApplyPortAction = (bool)Read("ApplyPortAction", false);
             TargetFramework = (string)Read("TargetFramework", TargetFrameworkType.NO_SELECTION);
             RootCacheFolder = Path.GetTempPath();

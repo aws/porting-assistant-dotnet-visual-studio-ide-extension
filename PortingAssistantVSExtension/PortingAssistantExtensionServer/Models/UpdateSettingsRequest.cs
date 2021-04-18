@@ -9,7 +9,7 @@ namespace PortingAssistantExtensionServer.Models
     {
         public bool EnabledMetrics { get; set; }
         public bool EnabledContinuousAssessment { get; set; }
-        public string CustomerEmail { get; set; }
+        public string AWSProfileName { get; set; }
         public string RootCacheFolder { get; set; }
     }
 }

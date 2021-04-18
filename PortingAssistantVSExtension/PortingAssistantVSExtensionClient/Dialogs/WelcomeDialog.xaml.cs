@@ -50,6 +50,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             _userSettings.ShowWelcomePage = false;
             _userSettings.AWSProfileName = (string)Profiles.SelectedValue;
             _userSettings.SaveAllSettings();
+            PortingAssistantLanguageClient.UpdateUserSettingsAsync();
             Close();
         }
 

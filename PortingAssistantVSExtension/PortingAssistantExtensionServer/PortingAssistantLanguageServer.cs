@@ -1,21 +1,19 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
+using OmniSharp.Extensions.LanguageServer.Protocol.Models;
+using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Server;
+using PortingAssistant.Client.Client;
+using PortingAssistantExtension.Telemetry;
+using PortingAssistantExtension.Telemetry.Interface;
+using PortingAssistantExtensionServer.Handlers;
+using PortingAssistantExtensionServer.Models;
+using System;
+using System.Collections.Immutable;
 using System.IO.Pipelines;
 using System.Linq;
-using System.Collections.Immutable;
 using Task = System.Threading.Tasks.Task;
-using Microsoft.Extensions.Logging;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using Microsoft.Extensions.DependencyInjection;
-using PortingAssistant.Client.Client;
-using PortingAssistant.Client.Model;
-using PortingAssistantExtensionServer.Handlers;
-using OmniSharp.Extensions.LanguageServer.Protocol.Server;
-using PortingAssistantExtensionServer.Common;
-using PortingAssistantExtension.Telemetry;
-using Serilog;
-using PortingAssistantExtension.Telemetry.Interface;
-using PortingAssistantExtensionServer.Models;
 
 namespace PortingAssistantExtensionServer
 {
@@ -66,13 +64,24 @@ namespace PortingAssistantExtensionServer
                 .WithHandler<PortingHandler>()
                 .WithHandler<UpdateSettingsHandler>()
                 .ConfigureLogging(_logConfiguration)
+                .OnInitialize((server, request, ct) =>
+                {
+                    if (request?.InitializationOptions is JObject initOption)
+                    {
+                        Common.PALanguageServerConfiguration.ExtensionVersion = initOption?["extensionVersion"].ToString();
+                        Common.PALanguageServerConfiguration.ExtensionType = initOption?["extensionType"].ToString();
+                        var settings = initOption?["paSettings"].ToObject<UpdateSettingsRequest>();
+                        settings.UpdateSetting();
+                    }
+                    return Task.CompletedTask;
+                })
                 .OnInitialized((instance, client, server, ct) =>
                 {
                     if (server?.Capabilities?.CodeActionProvider?.Value?.CodeActionKinds != null)
                     {
                         server.Capabilities.CodeActionProvider.Value.CodeActionKinds = server.Capabilities.CodeActionProvider.Value.CodeActionKinds.ToImmutableArray().Remove(CodeActionKind.Empty).ToArray();
                     }
-                    Console.WriteLine("Initialized ! We should use initialzed message to enable commands in client");
+                    Console.WriteLine("Initialized !");
                     return Task.CompletedTask;
                 });
             }).ConfigureAwait(false);

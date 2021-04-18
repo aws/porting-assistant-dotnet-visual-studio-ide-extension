@@ -46,7 +46,10 @@ namespace PortingAssistantExtensionServer
         {
             Task<SolutionAnalysisResult> solutionAnalysisResultTask = SolutionAnalysisResultTask;
             SolutionAnalysisResult = await solutionAnalysisResultTask;
-            _telemetry.SolutionAssessmentCollect(SolutionAnalysisResult, _request.settings.TargetFramework);
+            _telemetry.SolutionAssessmentCollect(
+                SolutionAnalysisResult, 
+                _request.settings.TargetFramework, 
+                PALanguageServerConfiguration.ExtensionVersion);
         }
 
         public async Task AssessSolutionAsync(AnalyzeSolutionRequest request)
@@ -221,7 +224,10 @@ namespace PortingAssistantExtensionServer
 
                 projectResult.SourceFileAnalysisResults.Remove(oldFile);
                 projectResult.SourceFileAnalysisResults.Add(sourceFileAnalysisResult);
-                _telemetry.FileAssessmentCollect(sourceFileAnalysisResult, _request.settings.TargetFramework);
+                _telemetry.FileAssessmentCollect(
+                    sourceFileAnalysisResult, 
+                    _request.settings.TargetFramework,
+                    PALanguageServerConfiguration.ExtensionVersion);
             });
         }
 

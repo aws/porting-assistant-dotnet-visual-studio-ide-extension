@@ -36,7 +36,7 @@ namespace PortingAssistantExtension.Telemetry
 
         }
 
-        public void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework)
+        public void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework, string extensionVersion)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace PortingAssistantExtension.Telemetry
                 var solutionMetrics = new SolutionMetrics
                 {
                     MetricsType = MetricsType.solution,
-                    PortingAssistantExtensionVersion = "1.0.0",
+                    PortingAssistantExtensionVersion = extensionVersion,
                     TargetFramework = targetFramework,
                     TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                     SolutionPath = solutionDetail.SolutionFilePath,
@@ -59,7 +59,7 @@ namespace PortingAssistantExtension.Telemetry
                     var projectMetrics = new ProjectMetrics
                     {
                         MetricsType = MetricsType.solution,
-                        PortingAssistantExtensionVersion = "1.0.0",
+                        PortingAssistantExtensionVersion = extensionVersion,
                         TargetFramework = targetFramework,
                         TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                         projectGuid = project.ProjectGuid,
@@ -80,7 +80,7 @@ namespace PortingAssistantExtension.Telemetry
                         var nugetMetrics = new NugetMetrics
                         {
                             MetricsType = MetricsType.solution,
-                            PortingAssistantExtensionVersion = "1.0.0",
+                            PortingAssistantExtensionVersion = extensionVersion,
                             TargetFramework = targetFramework,
                             TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                             pacakgeName = nuget.Value.Result.PackageVersionPair.PackageId,
@@ -92,7 +92,7 @@ namespace PortingAssistantExtension.Telemetry
 
                     foreach (var sourceFile in project.SourceFileAnalysisResults)
                     {
-                        FileAssessmentCollect(sourceFile, targetFramework);
+                        FileAssessmentCollect(sourceFile, targetFramework, extensionVersion);
                     }
                 });
 
@@ -104,7 +104,7 @@ namespace PortingAssistantExtension.Telemetry
             }
         }
 
-        public void FileAssessmentCollect(SourceFileAnalysisResult result, string targetFramework)
+        public void FileAssessmentCollect(SourceFileAnalysisResult result, string targetFramework, string extensionVersion)
         {
             var date = DateTime.Now;
             foreach (var api in result.ApiAnalysisResults)
@@ -112,7 +112,7 @@ namespace PortingAssistantExtension.Telemetry
                 var apiMetrics = new APIMetrics
                 {
                     MetricsType = MetricsType.api,
-                    PortingAssistantExtensionVersion = "1.0.0",
+                    PortingAssistantExtensionVersion = extensionVersion,
                     TargetFramework = targetFramework,
                     TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                     name = api.CodeEntityDetails.Name,

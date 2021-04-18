@@ -24,12 +24,7 @@ namespace PortingAssistantExtensionServer.Handlers
 
         public async Task<bool> Handle(UpdateSettingsRequest request, CancellationToken cancellationToken)
         {
-            if(request.AWSProfileName != null)
-                PALanguageServerConfiguration.AWSProfileName = request.AWSProfileName;
-            if (request.RootCacheFolder != null)
-                PALanguageServerConfiguration.RootCacheFolder = request.RootCacheFolder;
-            PALanguageServerConfiguration.EnabledContinuousAssessment = request.EnabledContinuousAssessment;
-            PALanguageServerConfiguration.EnabledMetrics = request.EnabledMetrics;
+            request.UpdateSetting();
             return true;
         }
     }

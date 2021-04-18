@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
+using Newtonsoft.Json.Linq;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Options;
 using StreamJsonRpc;
@@ -13,10 +14,12 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using Task = System.Threading.Tasks.Task;
 
 namespace PortingAssistantVSExtensionClient
@@ -41,6 +44,8 @@ namespace PortingAssistantVSExtensionClient
     {
         private readonly long LaunchTime;
 
+        private readonly string AssemblyPath;
+
         public readonly string LanguageServerPath;
 
         public const string PackageGuidString = "f41a71b0-3e17-4342-892d-aabc368ee8e8";
@@ -54,7 +59,18 @@ namespace PortingAssistantVSExtensionClient
             }
         }
 
-        public object InitializationOptions => null;
+        public object InitializationOptions => JObject.FromObject(new {
+            extensionType = "VisualStudio",
+            extensionVersion = GetExtensionVersion(),
+            paSettings = new Models.UpdateSettingsRequest()
+            {
+                EnabledContinuousAssessment = UserSettings.Instance.EnabledContinuousAssessment,
+                EnabledMetrics = UserSettings.Instance.EnabledMetrics,
+                AWSProfileName = UserSettings.Instance.AWSProfileName,
+                RootCacheFolder = UserSettings.Instance.RootCacheFolder
+            }
+        });
+
         public IEnumerable<string> FilesToWatch => null;
         public object MiddleLayer => null;
         public object CustomMessageTarget
@@ -73,6 +89,7 @@ namespace PortingAssistantVSExtensionClient
         public PortingAssistantLanguageClient()
         {
             this.LaunchTime = DateTime.Now.Ticks;
+            this.AssemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             this.LanguageServerPath = Path.Combine(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), 
                 Common.Constants.ApplicationServerLocation,
@@ -154,8 +171,8 @@ namespace PortingAssistantVSExtensionClient
 
         private (NamedPipeServerStream readerPipe, NamedPipeServerStream writerPipe) CreateConnectionPipe(string stdInPipeName, string stdOutPipeName)
         {
-            var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.In, maxNumberOfServerInstances: 1, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
-            var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.Out, maxNumberOfServerInstances: 1, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
+            var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.In, maxNumberOfServerInstances: 5, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
+            var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.Out, maxNumberOfServerInstances: 5, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
             return (readerPipe, writerPipe);
         }
 
@@ -168,7 +185,6 @@ namespace PortingAssistantVSExtensionClient
         {
             await Task.Yield();
             UserSettings.Instance.SetLanguageServerStatus(LanguageServerStatus.INITIALIZED);
-            await UpdateUserSettingsAsync();
         }
 
         public Task OnServerInitializeFailedAsync(Exception e)
@@ -180,6 +196,22 @@ namespace PortingAssistantVSExtensionClient
         {
             this.PortingAssistantRpc = rpc;
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+        }
+
+        private string GetExtensionVersion()
+        {
+            try
+            {
+                var doc = new XmlDocument();
+                doc.Load(Path.Combine(AssemblyPath, "extension.vsixmanifest"));
+                var metaData = doc.DocumentElement.ChildNodes.Cast<XmlElement>().First(x => x.Name == "Metadata");
+                var identity = metaData.ChildNodes.Cast<XmlElement>().First(x => x.Name == "Identity");
+                return identity.GetAttribute("Version");
+            }catch(Exception e)
+            {
+                return "0.0.1";
+            }
+           
         }
     }
 }

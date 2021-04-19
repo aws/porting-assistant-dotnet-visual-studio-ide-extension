@@ -164,6 +164,7 @@ namespace PortingAssistantVSExtensionClient
             }
             catch (Exception e)
             {
+                Trace.WriteLine($"Failed to activate server. {e}");
                 throw;
             }
 
@@ -209,6 +210,7 @@ namespace PortingAssistantVSExtensionClient
                 return identity.GetAttribute("Version");
             }catch(Exception e)
             {
+                Trace.WriteLine($"Cannot identify extension version. {e}");
                 return "0.0.1";
             }
            

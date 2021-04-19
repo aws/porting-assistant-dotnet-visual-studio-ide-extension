@@ -130,7 +130,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 SolutionPath = SolutionFile,
                 ProjectPaths = ProjectFiles,
                 TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
-                InludeCodeFix = UserSettings.Instance.ApplyPortAction,
+                IncludeCodeFix = UserSettings.Instance.ApplyPortAction,
             };
             _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
             using (var ted = (IDisposable)_dialog)

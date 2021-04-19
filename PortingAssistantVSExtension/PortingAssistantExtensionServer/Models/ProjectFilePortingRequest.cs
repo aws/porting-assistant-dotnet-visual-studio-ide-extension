@@ -7,6 +7,5 @@ namespace PortingAssistantExtensionServer.Models
     class ProjectFilePortingRequest : PortingRequest, IRequest<ProjectFilePortingResponse>
     {
         public List<string> ProjectPaths { get; set; }
-        public bool InludeCodeFix { get; set; }
     }
 }

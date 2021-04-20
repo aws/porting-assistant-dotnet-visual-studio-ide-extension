@@ -16,14 +16,15 @@ namespace PortingAssistantExtensionServer.Handlers
     internal interface IUpdateSettingsHandler : IJsonRpcRequestHandler<UpdateSettingsRequest, bool> { }
     class UpdateSettingsHandler : IUpdateSettingsHandler
     {
-        private readonly ILogger _logger;
-        public UpdateSettingsHandler(ILogger<SolutionAssessmentHandler> logger)
+        private readonly ILogger<UpdateSettingsHandler> _logger;
+        public UpdateSettingsHandler(ILogger<UpdateSettingsHandler> logger)
         {
             _logger = logger;
         }
 
         public async Task<bool> Handle(UpdateSettingsRequest request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation($"received update setting request: {request}");
             request.UpdateSetting();
             return true;
         }

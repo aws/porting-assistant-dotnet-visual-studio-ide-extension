@@ -14,7 +14,7 @@ namespace PortingAssistantExtensionServer.Handlers
     internal interface ISolutionAssessmentHandler : IJsonRpcRequestHandler<AnalyzeSolutionRequest, AnalyzeSolutionResponse> { }
     internal class SolutionAssessmentHandler : ISolutionAssessmentHandler
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<ISolutionAssessmentHandler> _logger;
         private readonly SolutionAnalysisService _analysisService;
         private readonly ILanguageServerFacade _languageServer;
         public SolutionAssessmentHandler(ILogger<SolutionAssessmentHandler> logger,

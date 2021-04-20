@@ -10,10 +10,10 @@ namespace PortingAssistantExtensionServer
 {
     class PortingService : IDisposable
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<PortingService> _logger;
         private readonly IPortingAssistantClient _client;
 
-        public PortingService(ILogger<SolutionAnalysisService> logger,
+        public PortingService(ILogger<PortingService> logger,
     IPortingAssistantClient client)
         {
             _logger = logger;
@@ -22,25 +22,39 @@ namespace PortingAssistantExtensionServer
 
         public ProjectFilePortingResponse PortingProjects(ProjectFilePortingRequest request)
         {
-            var portingRequst = new PortingRequest
+            try
             {
-                Projects = request.ProjectPaths.Select(p=>new ProjectDetails() {ProjectFilePath = p }).ToList(),
-                SolutionPath = request.SolutionPath,
-                RecommendedActions = new List<RecommendedAction>(),
-                TargetFramework = request.TargetFramework,
-                IncludeCodeFix = request.IncludeCodeFix
-            };
-            var results = _client.ApplyPortingChanges(portingRequst);
-            return new ProjectFilePortingResponse()
+                var portingRequst = new PortingRequest
+                {
+                    Projects = request.ProjectPaths.Select(p => new ProjectDetails() { ProjectFilePath = p }).ToList(),
+                    SolutionPath = request.SolutionPath,
+                    RecommendedActions = new List<RecommendedAction>(),
+                    TargetFramework = request.TargetFramework,
+                    IncludeCodeFix = request.IncludeCodeFix
+                };
+                _logger.LogInformation($"start porting ${request.SolutionPath} .....");
+                var results = _client.ApplyPortingChanges(portingRequst);
+                _logger.LogInformation($"porting success ${request.SolutionPath}");
+                return new ProjectFilePortingResponse()
+                {
+                    Success = results.All(r => r.Success),
+                    messages = results.Select(r => r.Message).ToList(),
+                    SolutionPath = request.SolutionPath
+                };
+            }
+            catch (Exception ex)
             {
-                Success = results.All(r => r.Success),
-                messages = results.Select(r => r.Message).ToList(),
-                SolutionPath = request.SolutionPath
-            };
+                _logger.LogError($" failed to port projects: {ex.Message}");
+                return new ProjectFilePortingResponse()
+                {
+                    Success = false,
+                    messages = new List<string>() { ex.Message },
+                    SolutionPath = request.SolutionPath
+                };
+            }
         }
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
     }
 }

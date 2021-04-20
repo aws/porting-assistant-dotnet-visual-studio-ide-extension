@@ -12,8 +12,6 @@ namespace PortingAssistantExtensionServer.Common
 
         static string _awsProfileName { get; set; }
 
-        static string _rootCacheFolder { get; set; }
-
         static string _extensionVersion { get; set; }
 
         static string _extensionType { get; set; }
@@ -23,7 +21,6 @@ namespace PortingAssistantExtensionServer.Common
             _enabledContinuousAssessment = false;
             _enabledMetrics = false;
             _awsProfileName = "";
-            _rootCacheFolder = "";
             _extensionVersion = "";
         }
 
@@ -60,18 +57,6 @@ namespace PortingAssistantExtensionServer.Common
             set
             {
                 _awsProfileName = value;
-            }
-        }
-
-        public static string RootCacheFolder
-        {
-            get
-            {
-                return _rootCacheFolder;
-            }
-            set
-            {
-                _rootCacheFolder = value;
             }
         }
 

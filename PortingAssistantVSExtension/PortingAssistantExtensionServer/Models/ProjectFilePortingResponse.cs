@@ -6,7 +6,6 @@ namespace PortingAssistantExtensionServer.Models
     {
         public bool Success { get; set; }
         public string SolutionPath { get; set; }
-
         public List<string> messages { get; set; }
     }
 }

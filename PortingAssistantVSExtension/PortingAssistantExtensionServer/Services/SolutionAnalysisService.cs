@@ -24,7 +24,7 @@ namespace PortingAssistantExtensionServer
     {
         public SolutionAnalysisResult SolutionAnalysisResult;
         private AnalyzeSolutionRequest _request;
-        private readonly ILogger _logger;
+        private readonly ILogger<SolutionAnalysisService> _logger;
         private readonly IPortingAssistantClient _client;
         private readonly ITelemetryCollector _telemetry;
         public Dictionary<int, IList<TextChange>> CodeActions;

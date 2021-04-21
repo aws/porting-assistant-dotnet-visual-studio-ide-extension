@@ -127,22 +127,19 @@ namespace PortingAssistantExtensionServer
                             Uri = fileUri,
                             Range = range
                         };
-                        var diagnositc = new Diagnostic()
+                        var diagnostic = new Diagnostic()
                         {
                             Severity = DiagnosticSeverity.Warning,
                             Code = new DiagnosticCode(Constant.DiagnosticCode),
                             Source = Constant.DiagnosticSource,
                             CodeDescription = codedescrption,
-                            Tags = new Container<DiagnosticTag>(new List<DiagnosticTag>() { DiagnosticTag.Deprecated }),
                             Range = range,
                             RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() { new DiagnosticRelatedInformation() {
-                                Location = location,
-                                Message = "related message"
+                                Location = location
                             } }),
                             Message = message,
-                            Data = JToken.Parse("{Data:\"Test\"}", new JsonLoadSettings() { })
                         };
-                        diagnostics.Add(diagnositc);
+                        diagnostics.Add(diagnostic);
                     }
                 }
 
@@ -158,21 +155,17 @@ namespace PortingAssistantExtensionServer
                         };
                         try
                         {
-                            var data = recommendedAction.TextChanges != null ? JToken.Parse(JsonConvert.SerializeObject(recommendedAction.TextChanges.ToList())) : null;
                             var diagnositc = new Diagnostic()
                             {
                                 Severity = DiagnosticSeverity.Warning,
-                                Code = new DiagnosticCode(Constant.DiagnosticCode),
+                                Code = new DiagnosticCode(Constant.DiagnosticWithActionCode),
                                 Source = Constant.DiagnosticSource,
                                 CodeDescription = codedescrption,
-                                Tags = new Container<DiagnosticTag>(new List<DiagnosticTag>() { DiagnosticTag.Deprecated }),
                                 Range = range,
                                 RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() {new DiagnosticRelatedInformation(){
-                                Location = location,
-                                Message = "related message"
+                                Location = location
                             } }),
                                 Message = recommendedAction.Description,
-                                Data = data
                             };
                             diagnostics.Add(diagnositc);
                             UpdateCodeAction(diagnositc.Message, diagnositc.Range, fileUri.Path, recommendedAction.TextChanges);

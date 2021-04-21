@@ -39,6 +39,7 @@ namespace PortingAssistantVSExtensionClient
 
     [ContentType("CSharpFileType")]
     [Export(typeof(ILanguageClient))]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [Guid(PortingAssistantLanguageClient.PackageGuidString)]
     class PortingAssistantLanguageClient : AsyncPackage, ILanguageClient, ILanguageClientCustomMessage2
     {

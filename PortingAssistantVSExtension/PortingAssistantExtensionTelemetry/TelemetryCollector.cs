@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtension.Telemetry.Interface;
-using PortingAssistantExtension.Telemetry.Model;
+using PortingAssistantExtensionTelemetry.Interface;
+using PortingAssistantExtensionTelemetry.Model;
 using System;
 using System.IO;
 
-namespace PortingAssistantExtension.Telemetry
+namespace PortingAssistantExtensionTelemetry
 {
     public class TelemetryCollector : ITelemetryCollector
     {

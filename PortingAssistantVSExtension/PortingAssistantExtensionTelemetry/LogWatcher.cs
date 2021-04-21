@@ -7,34 +7,26 @@ using System.Text;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Aws4RequestSigner;
-using ElectronCgi.DotNet;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Serilog;
 
-namespace PortingAssistantExtension.Telemetry
+namespace PortingAssistantExtensionTelemetry
 {
-    class LogWatcher
+    public class LogWatcher
     {
-        private Connection _connection;
-        private Program.TelemetryConfiguration telemetryConfiguration;
-        private string profile;
-        private string userData;
-        private string serviceDescription;
+        private TelemetryConfiguration telemetryConfiguration;
+        private readonly string profile;
+        private readonly string lastReadTokenFile;
+        private readonly HttpClient client;
 
-        public LogWatcher
-            (
-            Program.TelemetryConfiguration telemetryConfiguration,
-            string profile,
-            string userData
-            )
+        public LogWatcher(
+            TelemetryConfiguration telemetryConfiguration,
+            string profile)
         {
-            _connection = new ConnectionBuilder().WithLogging().Build();
-            Log.Logger = new LoggerConfiguration().CreateLogger();
-
             this.telemetryConfiguration = telemetryConfiguration;
-            this.userData = userData;
             this.profile = profile;
+            lastReadTokenFile = Path.Combine(telemetryConfiguration.LogsPath, "lastToken.json");
+            client = new HttpClient();
         }
 
         public void Start()
@@ -44,25 +36,19 @@ namespace PortingAssistantExtension.Telemetry
                 var fileSystemWatcher = new FileSystemWatcher();
 
                 fileSystemWatcher.Changed += (s, e)
-                    => FileSystemWatcher_Changed(s, e, telemetryConfiguration, userData, profile);
+                    => FileSystemWatcher_Changed(s, e, telemetryConfiguration, profile);
                 fileSystemWatcher.Created += (s, e)
-                    => FileSystemWatcher_Changed(s, e, telemetryConfiguration, userData, profile);
+                    => FileSystemWatcher_Changed(s, e, telemetryConfiguration, profile);
                 fileSystemWatcher.Deleted += (s, e)
-                    => FileSystemWatcher_Deleted(s, e, telemetryConfiguration, userData);
+                    => FileSystemWatcher_Deleted(s, e, telemetryConfiguration);
 
-                fileSystemWatcher.Path = Path.Combine(userData, telemetryConfiguration.LogsPath);
+                fileSystemWatcher.Path = telemetryConfiguration.LogsPath;
 
                 fileSystemWatcher.EnableRaisingEvents = true;
-
-                _connection.Listen();
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Connection Ended.");
-            }
-            finally
-            {
-                Log.CloseAndFlush();
+                Console.WriteLine("metric upload failed with error", ex);
             }
 
         }
@@ -71,20 +57,17 @@ namespace PortingAssistantExtension.Telemetry
             (
             object sender,
             FileSystemEventArgs e,
-            Program.TelemetryConfiguration telemetryConfiguration,
-            string userData,
+            TelemetryConfiguration telemetryConfiguration,
             string profile
             )
         {
-            if (!Path.GetExtension(e.FullPath).Equals(".log")) return;
-
-            const string LastReadTokenFileName = "lastToken.json";
+            var fileExtension = Path.GetExtension(e.FullPath);
+            if (!telemetryConfiguration.suffix.Exists(s => fileExtension.Equals(s))) return;
 
             FileInfo fileInfo = new FileInfo(e.FullPath);
             var fileName = e.Name;
 
             // Json File to record last read log token (line number).
-            var lastReadTokenFile = Path.Combine(userData, telemetryConfiguration.LogsPath, LastReadTokenFileName);
             var initLineNumber = 0;
             Dictionary<string, int> fileLineNumberMap;
 
@@ -131,13 +114,16 @@ namespace PortingAssistantExtension.Telemetry
                         string jsonString = JsonConvert.SerializeObject(fileLineNumberMap);
                         File.WriteAllText(lastReadTokenFile, jsonString);
 
-                        PublishLogs(logs, profile, telemetryConfiguration);
+                        if (logs.Count != 0)
+                        {
+                            PutLogData(client, fileExtension.Trim().Substring(1), JsonConvert.SerializeObject(logs), profile, telemetryConfiguration);
+                        }
                     }
                 }
             }
             else
             {
-                Log.Information("File Locked");
+                Console.WriteLine("File Locked");
             }
         }
 
@@ -145,17 +131,13 @@ namespace PortingAssistantExtension.Telemetry
             (
             Object sender,
             FileSystemEventArgs e,
-            Program.TelemetryConfiguration telemetryConfiguration,
-            string userData
+            TelemetryConfiguration telemetryConfiguration
             )
         {
-            if (!Path.GetExtension(e.FullPath).Equals(".log")) return;
+            if (!telemetryConfiguration.suffix.Exists(s => Path.GetExtension(e.FullPath).Equals(s))) return;
 
             FileInfo fileInfo = new FileInfo(e.FullPath);
             var fileName = e.Name;
-
-            const string LastReadTokenFileName = "lastToken.json";
-            var lastReadTokenFile = Path.Combine(userData, telemetryConfiguration.LogsPath, LastReadTokenFileName);
 
             Dictionary<string, int> fileLineNumberMap;
 
@@ -168,9 +150,10 @@ namespace PortingAssistantExtension.Telemetry
         }
         private static void PublishLogs
             (
+            HttpClient client,
             ArrayList logs,
             string profile,
-            Program.TelemetryConfiguration telemetryConfiguration
+            TelemetryConfiguration telemetryConfiguration
             )
         {
             Dictionary<string, ArrayList> logTypeMap = new Dictionary<string, ArrayList>();
@@ -187,16 +170,17 @@ namespace PortingAssistantExtension.Telemetry
 
             foreach (KeyValuePair<string, ArrayList> entry in logTypeMap)
             {
-                PutLogData(entry.Key, JsonConvert.SerializeObject(entry.Value), profile, telemetryConfiguration);
+                PutLogData(client, entry.Key, JsonConvert.SerializeObject(entry.Value), profile, telemetryConfiguration);
             }
         }
 
         private static async void PutLogData
             (
+            HttpClient client,
             string logName,
             string logData,
             string profile,
-            Program.TelemetryConfiguration telemetryConfiguration
+            TelemetryConfiguration telemetryConfiguration
             )
         {
             const string PathTemplate = "/put-log-data";
@@ -242,8 +226,6 @@ namespace PortingAssistantExtension.Telemetry
 
                 request = await signer.Sign(request, "execute-api", region);
 
-                var client = new HttpClient();
-
                 var response = await client.SendAsync(request);
 
                 await response.Content.ReadAsStringAsync();
@@ -274,5 +256,15 @@ namespace PortingAssistantExtension.Telemetry
             }
             return false;
         }
+    }
+
+    public class TelemetryConfiguration
+    {
+        public string InvokeUrl { get; set; }
+        public string Region { get; set; }
+        public string LogsPath { get; set; }
+        public string ServiceName { get; set; }
+        public string Description { get; set; }
+        public List<string> suffix { get; set; }
     }
 }

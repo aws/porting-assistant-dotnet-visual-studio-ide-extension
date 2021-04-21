@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PortingAssistantExtension.Telemetry.Interface
+namespace PortingAssistantExtensionTelemetry.Interface
 {
     public interface ITelemetryCollector
     {

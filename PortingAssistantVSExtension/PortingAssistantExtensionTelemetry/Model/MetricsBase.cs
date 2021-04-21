@@ -1,10 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace PortingAssistantExtension.Telemetry.Model
+namespace PortingAssistantExtensionTelemetry.Model
 {
     public class MetricsBase
     {

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aws4RequestSigner" Version="1.0.1" />
+    <PackageReference Include="AWSSDK.APIGateway" Version="3.7.0.9" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\PortingAssistant\src\PortingAssistantClient\src\PortingAssistant.Client.Client\PortingAssistant.Client.Client.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -6,7 +6,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtension.Telemetry.Interface;
+using PortingAssistantExtensionTelemetry.Interface;
 using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionServer.TextDocumentModels;
@@ -47,8 +47,8 @@ namespace PortingAssistantExtensionServer
             Task<SolutionAnalysisResult> solutionAnalysisResultTask = SolutionAnalysisResultTask;
             SolutionAnalysisResult = await solutionAnalysisResultTask;
             _telemetry.SolutionAssessmentCollect(
-                SolutionAnalysisResult, 
-                _request.settings.TargetFramework, 
+                SolutionAnalysisResult,
+                _request.settings.TargetFramework,
                 PALanguageServerConfiguration.ExtensionVersion);
         }
 
@@ -67,7 +67,7 @@ namespace PortingAssistantExtensionServer
             _request.settings.ActionsOnly = actionsOnly;
 
             var result = await _client.AnalyzeFileAsync(codeFile.NormalizedPath, codeFile.GetText(), projectFile, _request.solutionFilePath,
-                projectAnalysisResult.PreportMetaReferences, projectAnalysisResult.MetaReferences, projectAnalysisResult.ProjectRules, projectAnalysisResult.ExternalReferences, 
+                projectAnalysisResult.PreportMetaReferences, projectAnalysisResult.MetaReferences, projectAnalysisResult.ProjectRules, projectAnalysisResult.ExternalReferences,
                 _request.settings);
             if (!result.sourceFileAnalysisResults.Any())
             {
@@ -218,7 +218,7 @@ namespace PortingAssistantExtensionServer
                 projectResult.SourceFileAnalysisResults.Remove(oldFile);
                 projectResult.SourceFileAnalysisResults.Add(sourceFileAnalysisResult);
                 _telemetry.FileAssessmentCollect(
-                    sourceFileAnalysisResult, 
+                    sourceFileAnalysisResult,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion);
             });

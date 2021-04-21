@@ -21,6 +21,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\..\..\PortingAssistant\src\PortingAssistantClient\src\PortingAssistant.Client.Client\PortingAssistant.Client.Client.csproj" />
-		<ProjectReference Include="..\PortingAssistantExtension.Telemetry\PortingAssistantExtension.Telemetry.csproj" />
+		<ProjectReference Include="..\PortingAssistantExtensionTelemetry\PortingAssistantExtensionTelemetry.csproj" />
 	</ItemGroup>
 </Project>

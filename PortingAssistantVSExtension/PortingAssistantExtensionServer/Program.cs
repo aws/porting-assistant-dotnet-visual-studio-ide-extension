@@ -11,6 +11,8 @@ using System.Globalization;
 using System.IO;
 using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistantExtensionServer.Models;
+using PortingAssistantExtensionTelemetry;
+using System.Collections.Generic;
 
 namespace PortingAssistantExtensionServer
 {
@@ -26,10 +28,9 @@ namespace PortingAssistantExtensionServer
                 var stdInPipeName = @"extensionclientwritepipe";
                 var stdOutPipeName = @"extensionclientreadpipe";
                 var AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                var logRootPath = Path.Combine(AppData, "Porting Assistant Extension", "metrics");
-                if (!Directory.Exists(logRootPath)) Directory.CreateDirectory(logRootPath);
-                var logFilePath = Path.Combine(AppData, "Porting Assistant Extension", "logs", "portingAssistantExtension-{Date}.log");
-                var metricsFilePath = Path.Combine(AppData, "Porting Assistant Extension", "metrics", $"portingAssistantExtension-{DateTime.Today.ToString("yyyyMMdd")}.log");
+                var metricsFolder = Path.Combine(AppData, "Porting Assistant Extension", "logs");
+                var logFilePath = Path.Combine(metricsFolder, "portingAssistantExtension-{Date}.log");
+                var metricsFilePath = Path.Combine(metricsFolder, $"portingAssistantExtension-{DateTime.Today.ToString("yyyyMMdd")}.metrics");
                 var configuration = new PortingAssistantIDEConfiguration()
                 {
                     portingAssistantConfiguration = new PortingAssistantConfiguration
@@ -42,6 +43,19 @@ namespace PortingAssistantExtensionServer
                         }
                     },
                     metricsFilePath = metricsFilePath
+                };
+
+                var telemetryConfiguration = new TelemetryConfiguration
+                {
+                    InvokeUrl = @"https://8q2itpfg51.execute-api.us-east-1.amazonaws.com/beta",
+                    Region = @"us-east-1",
+                    ServiceName = @"appmodernization-beta",
+                    LogsPath = metricsFolder,
+                    Description = "aabbcc",
+                    suffix = new List<string>
+                    {
+                        ".log", ".metrics"
+                    }
                 };
 
                 if (args.Length != 0)
@@ -61,7 +75,7 @@ namespace PortingAssistantExtensionServer
 
                 Serilog.Formatting.Display.MessageTemplateTextFormatter tf = new Serilog.Formatting.Display.MessageTemplateTextFormatter(outputTemplate, CultureInfo.InvariantCulture);
                 var logConfiguration = new LoggerConfiguration().Enrich.FromLogContext()
-                    .MinimumLevel.Debug()
+                    .MinimumLevel.Warning()
                     .WriteTo.RollingFile(
                         logFilePath,
                         outputTemplate: outputTemplate);
@@ -82,21 +96,31 @@ namespace PortingAssistantExtensionServer
                     output,
                     configuration
                     );
+                // Start Log Watcher
+
                 await portingAssisstantLanguageServer.StartAsync();
+
+                LogWatcher logWatcher = new LogWatcher(telemetryConfiguration, Common.PALanguageServerConfiguration.AWSProfileName);
+                logWatcher.Start();
+
                 await portingAssisstantLanguageServer.WaitForShutdownAsync();
+
                 //TODO properly handle exit
                 if (portingAssisstantLanguageServer.IsSeverStarted() && !_isConnected)
                 {
                     await portingAssisstantLanguageServer.WaitForShutdownAsync();
                     Environment.Exit(0);
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
-                await Console.Error.WriteLineAsync(e.ToString());
+                Log.Logger.Error("Porting Assistant Extension failed with error:", e);
                 Environment.Exit(1);
             }
-            
-
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         private static async Task<(PipeReader input, PipeWriter output)> CreateNamedPipe(string stdInPipeName, string stdOutPipeName)

@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PortingAssistant.Client.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace PortingAssistantExtension.Telemetry.Model
+namespace PortingAssistantExtensionTelemetry.Model
 {
     public class APIMetrics : MetricsBase
     {

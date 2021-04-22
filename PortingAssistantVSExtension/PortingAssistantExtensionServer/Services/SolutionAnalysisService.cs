@@ -77,6 +77,9 @@ namespace PortingAssistantExtensionServer
 
         public async Task AssessSolutionAsync(AnalyzeSolutionRequest request)
         {
+            // Clean up the existing result before run full assessment
+            Cleanup();
+
             _request = request;
             var result = _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
             await SetSolutionAnalysisResultAsync(result);
@@ -227,6 +230,13 @@ namespace PortingAssistantExtensionServer
             FileToDiagnostics = null;
             FileToProjectAnalyssiResult = null;
             CodeActions = null;
+        }
+
+        public void Cleanup()
+        {
+            FileToProjectAnalyssiResult = new Dictionary<string, ProjectAnalysisResult>();
+            FileToDiagnostics = new Dictionary<string, IList<Diagnostic>>();
+            CodeActions = new Dictionary<int, IList<TextChange>>();
         }
 
         public void UpdateSolutionAnalysisResult(IncrementalFileAnalysisResult analysisResult)

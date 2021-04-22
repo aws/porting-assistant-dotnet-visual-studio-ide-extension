@@ -1,11 +1,14 @@
 ﻿using PortingAssistant.Client.Model;
+using PortingAssistantExtensionTelemetry.Model;
+using System.Collections.Generic;
 
 namespace PortingAssistantExtensionServer.Models
 {
     public class PortingAssistantIDEConfiguration
     {
-        public PortingAssistantConfiguration portingAssistantConfiguration { get; set; }
-        public string metricsFilePath { get; set; }
+        public PortingAssistantConfiguration PortingAssistantConfiguration { get; set; }
+        
+        public TelemetryConfiguration TelemetryConfiguration { get; set; }
 
     }
 }

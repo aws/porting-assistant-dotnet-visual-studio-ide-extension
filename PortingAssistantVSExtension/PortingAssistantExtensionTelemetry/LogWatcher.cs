@@ -9,6 +9,7 @@ using Amazon.Runtime.CredentialManagement;
 using Aws4RequestSigner;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PortingAssistantExtensionTelemetry.Model;
 
 namespace PortingAssistantExtensionTelemetry
 {
@@ -61,69 +62,76 @@ namespace PortingAssistantExtensionTelemetry
             string profile
             )
         {
-            var fileExtension = Path.GetExtension(e.FullPath);
-            if (!telemetryConfiguration.suffix.Exists(s => fileExtension.Equals(s))) return;
-
-            FileInfo fileInfo = new FileInfo(e.FullPath);
-            var fileName = e.Name;
-
-            // Json File to record last read log token (line number).
-            var initLineNumber = 0;
-            Dictionary<string, int> fileLineNumberMap;
-
-            var logs = new ArrayList();
-
-            if (!IsFileLocked(fileInfo))
+            try
             {
-                if (File.Exists(lastReadTokenFile))
-                {
-                    fileLineNumberMap = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(lastReadTokenFile));
-                    initLineNumber = fileLineNumberMap.ContainsKey(fileName) ? fileLineNumberMap[fileName] : 0;
-                }
-                else
-                {
-                    fileLineNumberMap = new Dictionary<string, int>();
-                    initLineNumber = 0;
-                }
+                var fileExtension = Path.GetExtension(e.FullPath);
+                if (!telemetryConfiguration.Suffix.Exists(s => fileExtension.Equals(s))) return;
 
-                using (FileStream fs = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                FileInfo fileInfo = new FileInfo(e.FullPath);
+                var fileName = e.Name;
+
+                // Json File to record last read log token (line number).
+                var initLineNumber = 0;
+                Dictionary<string, int> fileLineNumberMap;
+
+                var logs = new ArrayList();
+
+                if (!IsFileLocked(fileInfo))
                 {
-                    using (StreamReader reader = new StreamReader(fs))
+                    if (File.Exists(lastReadTokenFile))
                     {
-                        string line = null;
-                        int currLineNumber = 0;
-                        for (; currLineNumber < initLineNumber; currLineNumber++)
+                        fileLineNumberMap = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(lastReadTokenFile));
+                        initLineNumber = fileLineNumberMap.ContainsKey(fileName) ? fileLineNumberMap[fileName] : 0;
+                    }
+                    else
+                    {
+                        fileLineNumberMap = new Dictionary<string, int>();
+                        initLineNumber = 0;
+                    }
+
+                    using (FileStream fs = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        using (StreamReader reader = new StreamReader(fs))
                         {
-                            line = reader.ReadLine();
-                            if (line == null)
+                            string line = null;
+                            int currLineNumber = 0;
+                            for (; currLineNumber < initLineNumber; currLineNumber++)
                             {
-                                return;
+                                line = reader.ReadLine();
+                                if (line == null)
+                                {
+                                    return;
+                                }
                             }
-                        }
 
-                        line = reader.ReadLine();
-
-                        while (line != null)
-                        {
-                            currLineNumber++;
-                            logs.Add(line);
                             line = reader.ReadLine();
-                        }
 
-                        fileLineNumberMap[fileName] = currLineNumber;
-                        string jsonString = JsonConvert.SerializeObject(fileLineNumberMap);
-                        File.WriteAllText(lastReadTokenFile, jsonString);
+                            while (line != null)
+                            {
+                                currLineNumber++;
+                                logs.Add(line);
+                                line = reader.ReadLine();
+                            }
 
-                        if (logs.Count != 0)
-                        {
-                            PutLogData(client, fileExtension.Trim().Substring(1), JsonConvert.SerializeObject(logs), profile, telemetryConfiguration);
+                            fileLineNumberMap[fileName] = currLineNumber;
+                            string jsonString = JsonConvert.SerializeObject(fileLineNumberMap);
+                            File.WriteAllText(lastReadTokenFile, jsonString);
+
+                            if (logs.Count != 0)
+                            {
+                                PutLogData(client, fileExtension.Trim().Substring(1), JsonConvert.SerializeObject(logs), profile, telemetryConfiguration);
+                            }
                         }
                     }
                 }
+                else
+                {
+                    Console.WriteLine("File Locked");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine("File Locked");
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -134,18 +142,27 @@ namespace PortingAssistantExtensionTelemetry
             TelemetryConfiguration telemetryConfiguration
             )
         {
-            if (!telemetryConfiguration.suffix.Exists(s => Path.GetExtension(e.FullPath).Equals(s))) return;
-
-            FileInfo fileInfo = new FileInfo(e.FullPath);
-            var fileName = e.Name;
-
-            Dictionary<string, int> fileLineNumberMap;
-
-            // If log file is deleted set Last Read Line Number to 0.
-            if (File.Exists(lastReadTokenFile))
+            try
             {
-                fileLineNumberMap = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(lastReadTokenFile));
-                if (fileLineNumberMap.ContainsKey(fileName)) fileLineNumberMap[fileName] = 0;
+
+
+                if (!telemetryConfiguration.Suffix.Exists(s => Path.GetExtension(e.FullPath).Equals(s))) return;
+
+                FileInfo fileInfo = new FileInfo(e.FullPath);
+                var fileName = e.Name;
+
+                Dictionary<string, int> fileLineNumberMap;
+
+                // If log file is deleted set Last Read Line Number to 0.
+                if (File.Exists(lastReadTokenFile))
+                {
+                    fileLineNumberMap = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(lastReadTokenFile));
+                    if (fileLineNumberMap.ContainsKey(fileName)) fileLineNumberMap[fileName] = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
         private static void PublishLogs
@@ -156,21 +173,28 @@ namespace PortingAssistantExtensionTelemetry
             TelemetryConfiguration telemetryConfiguration
             )
         {
-            Dictionary<string, ArrayList> logTypeMap = new Dictionary<string, ArrayList>();
-
-            foreach (string log in logs)
+            try
             {
-                var jsonObj = JObject.Parse(log);
-                var content = jsonObj["Content"].ToString(Formatting.None);
-                var type = jsonObj["Type"].ToString();
+                Dictionary<string, ArrayList> logTypeMap = new Dictionary<string, ArrayList>();
 
-                if (!logTypeMap.ContainsKey(type)) logTypeMap[type] = new ArrayList();
-                logTypeMap[type].Add(content);
+                foreach (string log in logs)
+                {
+                    var jsonObj = JObject.Parse(log);
+                    var content = jsonObj["Content"].ToString(Formatting.None);
+                    var type = jsonObj["Type"].ToString();
+
+                    if (!logTypeMap.ContainsKey(type)) logTypeMap[type] = new ArrayList();
+                    logTypeMap[type].Add(content);
+                }
+
+                foreach (KeyValuePair<string, ArrayList> entry in logTypeMap)
+                {
+                    PutLogData(client, entry.Key, JsonConvert.SerializeObject(entry.Value), profile, telemetryConfiguration);
+                }
             }
-
-            foreach (KeyValuePair<string, ArrayList> entry in logTypeMap)
+            catch (Exception ex)
             {
-                PutLogData(client, entry.Key, JsonConvert.SerializeObject(entry.Value), profile, telemetryConfiguration);
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -184,51 +208,59 @@ namespace PortingAssistantExtensionTelemetry
             )
         {
             const string PathTemplate = "/put-log-data";
-
-            var chain = new CredentialProfileStoreChain();
-            AWSCredentials awsCredentials;
-            var profileName = profile;
-            var region = telemetryConfiguration.Region;
-            if (chain.TryGetAWSCredentials(profileName, out awsCredentials))
+            try
             {
-                var signer = new AWS4RequestSigner
-                    (
-                    awsCredentials.GetCredentials().AccessKey,
-                    awsCredentials.GetCredentials().SecretKey
-                    );
 
-                dynamic requestMetadata = new JObject();
-                requestMetadata.version = "1.0";
-                requestMetadata.service = telemetryConfiguration.ServiceName;
-                requestMetadata.token = "12345678";
-                requestMetadata.description = telemetryConfiguration.Description;
 
-                dynamic log = new JObject();
-                log.timestamp = DateTime.Now.ToString();
-                log.logName = logName;
-                var logDataInBytes = System.Text.Encoding.UTF8.GetBytes(logData);
-                log.logData = System.Convert.ToBase64String(logDataInBytes);
-
-                dynamic body = new JObject();
-                body.requestMetadata = requestMetadata;
-                body.log = log;
-
-                var requestContent = new StringContent(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
-
-                var requestUri = new Uri(String.Join("", telemetryConfiguration.InvokeUrl, PathTemplate));
-
-                var request = new HttpRequestMessage
+                var chain = new CredentialProfileStoreChain();
+                AWSCredentials awsCredentials;
+                var profileName = profile;
+                var region = telemetryConfiguration.Region;
+                if (chain.TryGetAWSCredentials(profileName, out awsCredentials))
                 {
-                    Method = HttpMethod.Post,
-                    RequestUri = requestUri,
-                    Content = requestContent
-                };
+                    var signer = new AWS4RequestSigner
+                        (
+                        awsCredentials.GetCredentials().AccessKey,
+                        awsCredentials.GetCredentials().SecretKey
+                        );
 
-                request = await signer.Sign(request, "execute-api", region);
+                    dynamic requestMetadata = new JObject();
+                    requestMetadata.version = "1.0";
+                    requestMetadata.service = telemetryConfiguration.ServiceName;
+                    requestMetadata.token = "12345678";
+                    requestMetadata.description = telemetryConfiguration.Description;
 
-                var response = await client.SendAsync(request);
+                    dynamic log = new JObject();
+                    log.timestamp = DateTime.Now.ToString();
+                    log.logName = logName;
+                    var logDataInBytes = System.Text.Encoding.UTF8.GetBytes(logData);
+                    log.logData = System.Convert.ToBase64String(logDataInBytes);
 
-                await response.Content.ReadAsStringAsync();
+                    dynamic body = new JObject();
+                    body.requestMetadata = requestMetadata;
+                    body.log = log;
+
+                    var requestContent = new StringContent(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
+
+                    var requestUri = new Uri(String.Join("", telemetryConfiguration.InvokeUrl, PathTemplate));
+
+                    var request = new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Post,
+                        RequestUri = requestUri,
+                        Content = requestContent
+                    };
+
+                    request = await signer.Sign(request, "execute-api", region);
+
+                    var response = await client.SendAsync(request);
+
+                    await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -256,15 +288,5 @@ namespace PortingAssistantExtensionTelemetry
             }
             return false;
         }
-    }
-
-    public class TelemetryConfiguration
-    {
-        public string InvokeUrl { get; set; }
-        public string Region { get; set; }
-        public string LogsPath { get; set; }
-        public string ServiceName { get; set; }
-        public string Description { get; set; }
-        public List<string> suffix { get; set; }
     }
 }

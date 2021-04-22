@@ -126,6 +126,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             finally
             {
                 CommandsCommon.EnableAllCommand(true);
+                await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider);
             }
         }
 
@@ -147,6 +148,9 @@ namespace PortingAssistantVSExtensionClient.Commands
                     await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
                         "applyPortingProjectFileChanges",
                         PortingRequest);
+                    _dialog.UpdateProgress("Porting in process", $"reassessing the solution......", $"reassessing the solution......", 1, 2, true, out _);
+                    await CommandsCommon.RunAssessmentAsync(SolutionFile);
+                    _dialog.UpdateProgress("Porting in process", $"solution reassessed", $"solution reassessed", 2, 2, true, out _);
                     return true;
                 } catch (Exception ex)
                 {

@@ -36,7 +36,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             else
             {
                 _userSettings.TargetFramework = (string)TargetFrameWorkDropDown.SelectedValue;
-                _userSettings.SaveAllSettings();
+                _userSettings.UpdateTargetFramework();
                 ClickResult = true;
                 Close();
             }

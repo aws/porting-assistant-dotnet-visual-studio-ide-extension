@@ -79,6 +79,20 @@ namespace PortingAssistantVSExtensionClient.Options
             Write(property, value);
         }
 
+        public void UpdateContinuousAssessment()
+        {
+            Write("EnabledContinuousAssessment", EnabledContinuousAssessment);
+        }
+
+        public void UpdateApplyPortAction()
+        {
+            Write("ApplyPortAction", ApplyPortAction);
+        }
+
+        public void UpdateTargetFramework()
+        {
+            Write("TargetFramework", TargetFramework);
+        }
         public void SaveAllSettings()
         {
             Write("ShowWelcomePage", ShowWelcomePage);

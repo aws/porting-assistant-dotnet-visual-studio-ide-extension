@@ -1,0 +1,22 @@
+{
+  "PortingAssistantConfiguration": {
+    "DataStoreSettings": {
+      "HttpsEndpoint": "https://s3.us-west-2.amazonaws.com/aws.portingassistant.dotnet.datastore/",
+      "S3Endpoint": "aws.portingassistant.dotnet.datastore",
+      "GitHubEndpoint": "https://raw.githubusercontent.com/aws/porting-assistant-dotnet-datastore/master/"
+    }
+  },
+  "TelemetryConfiguration": {
+    "InvokeUrl": "https://8q2itpfg51.execute-api.us-east-1.amazonaws.com/beta",
+    "Region": "us-east-1",
+    "ServiceName": "appmodernization-beta",
+    "MaxBufferCapacity": 500000,
+    "MaxBufferCache": 1000000,
+    "FlushInterval": 120000,
+    "Description": "aabbcc",
+    "Suffix": [
+      ".log",
+      ".metrics"
+    ]
+  }
+}

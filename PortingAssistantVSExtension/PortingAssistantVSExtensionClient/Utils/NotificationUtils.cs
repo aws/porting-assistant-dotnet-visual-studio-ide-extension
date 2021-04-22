@@ -46,7 +46,7 @@ namespace PortingAssistantVSExtensionClient.Utils
             StatusBar.FreezeOutput(1);
         }
 
-        public static async System.Threading.Tasks.Task ReleaseStatusBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string massage)
+        public static async System.Threading.Tasks.Task ReleaseStatusBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             IVsStatusbar StatusBar = (IVsStatusbar)await ServiceProvider.GetServiceAsync(typeof(SVsStatusbar));
@@ -57,7 +57,6 @@ namespace PortingAssistantVSExtensionClient.Utils
             }            
             StatusBar.Animation(0, ref _inProcessIcon);
             StatusBar.Clear();
-            StatusBar.SetText(massage);
             StatusBar.FreezeOutput(1);
         }
 

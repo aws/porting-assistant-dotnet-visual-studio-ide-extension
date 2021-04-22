@@ -49,7 +49,7 @@ namespace PortingAssistantVSExtensionClient.Options
         void Save()
         {
             _userSettings.TargetFramework = (string)_optionsPageControl.TargeFrameworks.SelectedValue;
-            _userSettings.SaveAllSettings();
+            _userSettings.UpdateTargetFramework();
         }
     }
 }

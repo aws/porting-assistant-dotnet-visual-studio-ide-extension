@@ -13,6 +13,8 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionTelemetry;
 using System.Collections.Generic;
+using System.Text.Json;
+using PortingAssistantExtensionTelemetry.Model;
 
 namespace PortingAssistantExtensionServer
 {
@@ -24,69 +26,32 @@ namespace PortingAssistantExtensionServer
         {
             try
             {
-                //TODO put settings in file/constant
-                var stdInPipeName = @"extensionclientwritepipe";
-                var stdOutPipeName = @"extensionclientreadpipe";
-                var AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                var metricsFolder = Path.Combine(AppData, "Porting Assistant Extension", "logs");
-                var logFilePath = Path.Combine(metricsFolder, "portingAssistantExtension-{Date}.log");
-                var metricsFilePath = Path.Combine(metricsFolder, $"portingAssistantExtension-{DateTime.Today.ToString("yyyyMMdd")}.metrics");
-                var configuration = new PortingAssistantIDEConfiguration()
+                if (args.Length < 1)
                 {
-                    portingAssistantConfiguration = new PortingAssistantConfiguration
-                    {
-                        DataStoreSettings = new DataStoreSettings()
-                        {
-                            HttpsEndpoint = "https://s3.us-west-2.amazonaws.com/aws.portingassistant.dotnet.datastore/",
-                            S3Endpoint = "aws.portingassistant.dotnet.datastore",
-                            GitHubEndpoint = "https://raw.githubusercontent.com/aws/porting-assistant-dotnet-datastore/master/"
-                        }
-                    },
-                    metricsFilePath = metricsFilePath
-                };
-
-                var telemetryConfiguration = new TelemetryConfiguration
-                {
-                    InvokeUrl = @"https://8q2itpfg51.execute-api.us-east-1.amazonaws.com/beta",
-                    Region = @"us-east-1",
-                    ServiceName = @"appmodernization-beta",
-                    LogsPath = metricsFolder,
-                    Description = "aabbcc",
-                    suffix = new List<string>
-                    {
-                        ".log", ".metrics"
-                    }
-                };
-
-                if (args.Length != 0)
-                {
-                    stdInPipeName = args[0];
-                    stdOutPipeName = args[1];
+                    throw new ArgumentException("Must provide a config file");
                 }
-                var (input, output) = await CreateNamedPipe(stdInPipeName, stdOutPipeName);
-                var outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}";
-
+                var config = args[0];
+                var stdInPipeName = args.Length == 1 ? Common.Constants.stdDebugInPipeName : args[1];
+                var stdOutPipeName = args.Length == 1 ? Common.Constants.stdDebugOutPipeName : args[2];
+                var portingAssistantConfiguration = JsonSerializer.Deserialize<PortingAssistantIDEConfiguration>(File.ReadAllText(config));
+                var outputTemplate = Common.Constants.DefaultOutputTemplate;
                 var isConsole = args.Length == 4 && args[3].Equals("--console");
-
                 if (args.Length == 4 && !args[3].Equals("--console"))
                 {
                     outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (" + args[3] + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
                 }
-
                 Serilog.Formatting.Display.MessageTemplateTextFormatter tf = new Serilog.Formatting.Display.MessageTemplateTextFormatter(outputTemplate, CultureInfo.InvariantCulture);
                 var logConfiguration = new LoggerConfiguration().Enrich.FromLogContext()
                     .MinimumLevel.Warning()
                     .WriteTo.RollingFile(
-                        logFilePath,
+                        portingAssistantConfiguration.TelemetryConfiguration.LogFilePath,
                         outputTemplate: outputTemplate);
-
                 if (isConsole)
                 {
                     logConfiguration = logConfiguration.WriteTo.Console();
                 }
-
                 Log.Logger = logConfiguration.CreateLogger();
-
+                var (input, output) = await CreateNamedPipe(stdInPipeName, stdOutPipeName);
                 var portingAssisstantLanguageServer = new PortingAssistantLanguageServer(
                     loggingBuilder => loggingBuilder
                     .SetMinimumLevel(LogLevel.Debug)
@@ -94,13 +59,10 @@ namespace PortingAssistantExtensionServer
                     .AddSerilog(logger: Log.Logger, dispose: true),
                     input,
                     output,
-                    configuration
+                    portingAssistantConfiguration
                     );
-                // Start Log Watcher
-
                 await portingAssisstantLanguageServer.StartAsync();
-
-                LogWatcher logWatcher = new LogWatcher(telemetryConfiguration, Common.PALanguageServerConfiguration.AWSProfileName);
+                LogWatcher logWatcher = new LogWatcher(portingAssistantConfiguration.TelemetryConfiguration, Common.PALanguageServerConfiguration.AWSProfileName);
                 logWatcher.Start();
 
                 await portingAssisstantLanguageServer.WaitForShutdownAsync();

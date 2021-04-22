@@ -28,6 +28,8 @@ namespace PortingAssistantVSExtensionClient.Common
 
         public const string LogoName = "PortingAssistantLogo.png";
 
+        public const string DefaultConfigurationFile = "porting-assistant-config-dev.json";
+
         public const string ResourceFolder = "Resources";
     }
 }

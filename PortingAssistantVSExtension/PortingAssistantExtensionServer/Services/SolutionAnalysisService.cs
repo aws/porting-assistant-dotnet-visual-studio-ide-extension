@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
+using Constants = PortingAssistantExtensionServer.Common.Constants;
 
 namespace PortingAssistantExtensionServer
 {
@@ -104,7 +105,7 @@ namespace PortingAssistantExtensionServer
             var codedescrption = new CodeDescription()
             {
                 //TODO Move to a constants class
-                Href = new Uri(Constant.PortingAssitantHelpUrl)
+                Href = new Uri(Constants.PortingAssitantHelpUrl)
             };
             foreach (var projectAnalysisResult in result.ProjectAnalysisResults)
             {
@@ -130,8 +131,8 @@ namespace PortingAssistantExtensionServer
                         var diagnostic = new Diagnostic()
                         {
                             Severity = DiagnosticSeverity.Warning,
-                            Code = new DiagnosticCode(Constant.DiagnosticCode),
-                            Source = Constant.DiagnosticSource,
+                            Code = new DiagnosticCode(Constants.DiagnosticCode),
+                            Source = Constants.DiagnosticSource,
                             CodeDescription = codedescrption,
                             Range = range,
                             RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() { new DiagnosticRelatedInformation() {
@@ -158,8 +159,8 @@ namespace PortingAssistantExtensionServer
                             var diagnositc = new Diagnostic()
                             {
                                 Severity = DiagnosticSeverity.Warning,
-                                Code = new DiagnosticCode(Constant.DiagnosticWithActionCode),
-                                Source = Constant.DiagnosticSource,
+                                Code = new DiagnosticCode(Constants.DiagnosticWithActionCode),
+                                Source = Constants.DiagnosticSource,
                                 CodeDescription = codedescrption,
                                 Range = range,
                                 RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() {new DiagnosticRelatedInformation(){

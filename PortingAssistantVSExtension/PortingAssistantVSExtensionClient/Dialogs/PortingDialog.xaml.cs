@@ -34,7 +34,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         private void Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
         {
             _userSettings.ApplyPortAction = ApplyPortActionCheck.IsChecked ?? false;
-            _userSettings.SaveAllSettings();
+            _userSettings.UpdateApplyPortAction();
             ClickResult = true;
             Close();
         }

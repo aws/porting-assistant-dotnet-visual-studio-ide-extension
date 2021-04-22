@@ -97,44 +97,30 @@ namespace PortingAssistantVSExtensionClient.Commands
                 CommandsCommon.EnableAllCommand(false);
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
-                var metaReferences = await CommandsCommon.GetMetaReferencesAsync();
-
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
-                await RunAssessmentAsync(SolutionFile);
+                await CommandsCommon.RunAssessmentAsync(SolutionFile);
+                if (!UserSettings.Instance.EnabledContinuousAssessment)
+                {
+                    UserSettings.Instance.EnabledContinuousAssessment = true;
+                    UserSettings.Instance.UpdateContinuousAssessment();
+                    PortingAssistantLanguageClient.UpdateUserSettingsAsync();
+                }
+                 
             }
             catch (Exception ex)
             {
                 await NotificationUtils.ShowInfoBarAsync(ServiceProvider, ex.Message);
-                await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider, "failed to assess solution");
             }
             finally
             {
                 CommandsCommon.EnableAllCommand(true);
+                await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider);
             }
         }
 
-        private async Task RunAssessmentAsync(string SolutionFile)
-        {
-            var analyzeSolutionRequest = new AnalyzeSolutionRequest()
-            {
-                solutionFilePath = SolutionFile,
-                settings = new AnalyzerSettings()
-                {
-                    TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
-                    IgnoreProjects = new List<string>(),
-                },
-            };
-            await NotificationUtils.LockStatusBarAsync(ServiceProvider, "Porting Assistant is assessing the solution.....");
-            await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>(
-                "analyzeSolution", 
-                analyzeSolutionRequest);
-            await NotificationUtils.ShowInfoBarAsync(ServiceProvider, "solution has been assessed successfully!");
-            await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider, "solution has been assessed successfully!");
-            UserSettings.Instance.EnabledContinuousAssessment = true;
-            UserSettings.Instance.SaveAllSettings();
-        }
+        
     }
 }

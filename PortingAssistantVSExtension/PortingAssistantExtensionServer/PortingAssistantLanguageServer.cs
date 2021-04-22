@@ -49,13 +49,13 @@ namespace PortingAssistantExtensionServer
                 .WithOutput(_output)
                 .WithServices(service =>
                 {
-                    service.AddAssessment(_configuration.portingAssistantConfiguration);
+                    service.AddAssessment(_configuration.PortingAssistantConfiguration);
                     service.AddSingleton<SolutionAnalysisService>();
                     service.AddSingleton<PortingService>();
                     service.AddSingleton<ITelemetryCollector>(sp =>
                     {
                         var logger = sp.GetService<ILogger<ITelemetryCollector>>();
-                        return new TelemetryCollector(logger, _configuration.metricsFilePath);
+                        return new TelemetryCollector(logger, _configuration.TelemetryConfiguration.MetricsFilePath);
                     });
                 })
                 .WithHandler<PortingAssistantTextSyncHandler>()

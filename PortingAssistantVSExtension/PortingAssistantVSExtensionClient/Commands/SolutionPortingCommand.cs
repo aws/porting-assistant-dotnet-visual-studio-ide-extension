@@ -110,7 +110,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 if(await RunPortingAsync(SolutionFile, ProjectFiles))
                 {
                     NotificationUtils.ShowInfoMessageBox(this.package, $"The solution has been ported to {UserSettings.Instance.TargetFramework}", "Porting success!");
-                }          
+                }
             }
             catch (Exception ex)
             {
@@ -119,6 +119,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             finally
             {
                 CommandsCommon.EnableAllCommand(true);
+                await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider);
             }
         }
 
@@ -139,6 +140,9 @@ namespace PortingAssistantVSExtensionClient.Commands
                 {
                     _dialog.StartWaitDialog("Porting Assistant", "Porting the solution........", "", null, "", 1, false, true);
                     await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>("applyPortingProjectFileChanges", PortingRequest);
+                    _dialog.UpdateProgress("Porting in process", $"reassessing the solution......", $"reassessing the solution......", 1, 2, true, out _);
+                    await CommandsCommon.RunAssessmentAsync(SolutionFile);
+                    _dialog.UpdateProgress("Porting in process", $"solution reassessed", $"solution reassessed", 2, 2, true, out _);
                     return true;
                 }
                 catch(Exception ex)

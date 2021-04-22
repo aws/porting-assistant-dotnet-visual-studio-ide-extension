@@ -102,7 +102,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 CommandsCommon.CheckWelcomePage();
                 var button = (OleMenuCommand)sender;
                 UserSettings.Instance.EnabledContinuousAssessment = !button.Checked;
-                UserSettings.Instance.SaveAllSettings();
+                UserSettings.Instance.UpdateContinuousAssessment();
                 PortingAssistantLanguageClient.UpdateUserSettingsAsync();
             }
             catch(Exception ex)

@@ -39,7 +39,6 @@ namespace PortingAssistantVSExtensionClient
 
     [ContentType("CSharpFileType")]
     [Export(typeof(ILanguageClient))]
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
     [Guid(PortingAssistantLanguageClient.PackageGuidString)]
     class PortingAssistantLanguageClient : AsyncPackage, ILanguageClient, ILanguageClientCustomMessage2
     {
@@ -47,19 +46,16 @@ namespace PortingAssistantVSExtensionClient
 
         private readonly string AssemblyPath;
 
+        private readonly string ConfigurationFileName;
+
         public readonly string LanguageServerPath;
+
+        public readonly string ConfigurationPath;
 
         public const string PackageGuidString = "f41a71b0-3e17-4342-892d-aabc368ee8e8";
         public string Name => Common.Constants.ApplicationName;
 
-        public IEnumerable<string> ConfigurationSections
-        {
-            get
-            {
-                yield return "CSharpFileType";
-            }
-        }
-
+        public IEnumerable<string> ConfigurationSections => null;
         public object InitializationOptions => JObject.FromObject(new {
             extensionType = "VisualStudio",
             extensionVersion = GetExtensionVersion(),
@@ -90,10 +86,15 @@ namespace PortingAssistantVSExtensionClient
         {
             this.LaunchTime = DateTime.Now.Ticks;
             this.AssemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            this.ConfigurationFileName = Environment.GetEnvironmentVariable("ConfigurationJson") ?? Common.Constants.DefaultConfigurationFile;
             this.LanguageServerPath = Path.Combine(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), 
+                AssemblyPath, 
                 Common.Constants.ApplicationServerLocation,
                 Common.Constants.ApplicationServerName);
+            this.ConfigurationPath = "\"" + Path.Combine(
+                AssemblyPath,
+                Common.Constants.ResourceFolder,
+                ConfigurationFileName) + "\"";
             Instance = this;
         }
 
@@ -149,7 +150,7 @@ namespace PortingAssistantVSExtensionClient
                         WorkingDirectory = Path.GetDirectoryName(LanguageServerPath),
                         UseShellExecute = false,
                         CreateNoWindow = true,
-                        Arguments = $"{stdOutPipeName} {stdInPipeName}"
+                        Arguments = $"{ConfigurationPath} {stdOutPipeName} {stdInPipeName}"
                     };
                     Process process = new Process { StartInfo = info };
                     if (process.Start())

@@ -12,12 +12,14 @@ namespace PortingAssistantVSExtensionClient.Dialogs
     public partial class WelcomeDialog : DialogWindow
     {
         private readonly UserSettings _userSettings;
+        public bool ClickResult = false;
         public WelcomeDialog()
         {
             _userSettings = UserSettings.Instance;
             InitializeComponent();
             initializeUI();
             InitalizeNamedProfile(_userSettings.AWSProfileName);
+            this.Title = "Getting started";
         }
 
         private void initializeUI()
@@ -28,6 +30,13 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             bitmap.UriSource = new Uri(logoPath);
             bitmap.EndInit();
             IconHolder.Source = bitmap;
+        }
+
+        public static bool EnsureExecute()
+        {
+            WelcomeDialog welcomeDialog = new WelcomeDialog();
+            welcomeDialog.ShowModal();
+            return welcomeDialog.ClickResult;
         }
 
         private void InitalizeNamedProfile(string newAddedProfile)
@@ -51,6 +60,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             _userSettings.AWSProfileName = (string)Profiles.SelectedValue;
             _userSettings.SaveAllSettings();
             PortingAssistantLanguageClient.UpdateUserSettingsAsync();
+            ClickResult = true;
             Close();
         }
 

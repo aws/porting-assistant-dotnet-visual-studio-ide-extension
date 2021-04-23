@@ -14,13 +14,13 @@ namespace PortingAssistantVSExtensionClient.Commands
     {
         public static readonly Guid CommandSet = new Guid(PackageGuids.guidPortingAssistantVSExtensionClientPackageCmdSetString);
 
-        public static void CheckWelcomePage()
+        public static bool SetupPage()
         {
             if (UserSettings.Instance.ShowWelcomePage)
             {
-                WelcomeDialog welcomeDialog = new WelcomeDialog();
-                welcomeDialog.ShowModal();
+                return WelcomeDialog.EnsureExecute();
             }
+            else return true;
         }
 
         public static readonly List<int> CommandIDs = new List<int>
@@ -107,7 +107,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 "analyzeSolution",
                 analyzeSolutionRequest);
             await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "solution has been assessed successfully!");
-            await NotificationUtils.ReleaseStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider);
+            await NotificationUtils.LockStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "solution has been assessed successfully!");
         }
     }
 }

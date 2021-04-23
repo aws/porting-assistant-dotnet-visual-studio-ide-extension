@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
-             mc:Ignorable="d" Height="380" Width="630">
+             mc:Ignorable="d" Height="450" Width="630">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>

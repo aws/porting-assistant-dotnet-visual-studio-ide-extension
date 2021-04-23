@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
         <GroupBox Header="Porting Assistant for .NET" HorizontalAlignment="Left" Height="264" Margin="10,10,0,0" Grid.RowSpan="4" VerticalAlignment="Top" Width="465" FontSize="14"/>
         <GroupBox Header="Target Framework" HorizontalAlignment="Left" Height="79" Margin="10,137,0,0" Grid.Row="3" VerticalAlignment="Top" Width="465"/>
-        <Button Content="Clear assessment cache" HorizontalAlignment="Left" Margin="319,230,0,0" VerticalAlignment="Top" Width="139" Height="27" Grid.Row="3" RenderTransformOrigin="0.964,0.741"/>
+        <Button Content="Clear assessment cache" HorizontalAlignment="Left" Background="{x:Null}" BorderThickness="0" Cursor="Hand" Foreground="Blue" Margin="319,230,0,0" VerticalAlignment="Top" Width="139" Height="27" Grid.Row="3" RenderTransformOrigin="0.964,0.741"/>
         <ComboBox x:Name="TargeFrameworks" HorizontalAlignment="Left" Margin="20,183,0,0" VerticalAlignment="Top" Width="299" Grid.Row="3"/>
         <ScrollViewer HorizontalAlignment="Left" Height="85" Margin="2,37,0,0" Grid.Row="3" VerticalAlignment="Top" Width="455" RenderTransformOrigin="0.5,0.5">
             <ScrollViewer.RenderTransform>

@@ -93,7 +93,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             try
             {
-                CommandsCommon.CheckWelcomePage();
+                if (!CommandsCommon.SetupPage()) return;
                 CommandsCommon.EnableAllCommand(false);
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
@@ -117,7 +117,6 @@ namespace PortingAssistantVSExtensionClient.Commands
             finally
             {
                 CommandsCommon.EnableAllCommand(true);
-                await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider);
             }
         }
 

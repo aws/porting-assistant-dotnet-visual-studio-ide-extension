@@ -17,7 +17,7 @@
         <GroupBox Header="Target Framework"  Margin="10,0,10,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
             <ComboBox x:Name="TargetFrameWorkDropDown" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="260"/>
         </GroupBox>
-        <Label x:Name="ChooseFrameworkLabel" Content="choose a target .NET framework to port your solution" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" Margin="25,35,-25,0" Opacity="0.6" FontSize="10"/>
+        <Label x:Name="ChooseFrameworkLabel" Content="Choose a target .NET framework to which to port your solution. &#xD;&#xA;You can update this selection in the blue status bar at the bottom of this page. " HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" Margin="25,20,-25,0" Opacity="0.6" FontSize="10"/>
         <Button Content="Cancel" HorizontalAlignment="Right" Margin="10,10,95,20" VerticalAlignment="Top" Width="75" Grid.Column="0" Grid.Row="1" Click="Button_Click_1"/>
         <Button Content="OK" HorizontalAlignment="Right" Margin="10,10,10,20" VerticalAlignment="Top" Width="75" Grid.Column="0" Grid.Row="1" Click="Button_Click"/>
     </Grid>

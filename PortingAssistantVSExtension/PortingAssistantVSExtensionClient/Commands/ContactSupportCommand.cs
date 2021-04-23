@@ -89,6 +89,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="e">Event args.</param>
         private void Execute(object sender, EventArgs e)
         {
+            CommandsCommon.SetupPage();
             System.Diagnostics.Process.Start("mailto:aws-porting-assistant-support@amazon.com");
         }
     }

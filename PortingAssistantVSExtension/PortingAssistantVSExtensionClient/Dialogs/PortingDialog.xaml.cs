@@ -1,6 +1,11 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
+using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Models;
 using PortingAssistantVSExtensionClient.Options;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Windows.Media.Imaging;
 
 namespace PortingAssistantVSExtensionClient.Dialogs
 {
@@ -13,8 +18,14 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
             _userSettings = UserSettings.Instance;
             InitializeComponent();
+            var logoPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Constants.ResourceFolder, "StatusInformation.png");
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.UriSource = new Uri(logoPath);
+            bitmap.EndInit();
+            InfoSign.Source = bitmap;
             this.ApplyPortActionCheck.IsChecked = _userSettings.ApplyPortAction;
-            string title = $"Port selected project or solution to {_userSettings.TargetFramework}";
+            this.Title = $"Port selected project or solution to {_userSettings.TargetFramework}";
         }
 
         public static bool EnsureExecute()

@@ -99,7 +99,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             try
             {
-                CommandsCommon.CheckWelcomePage();
+                if (!CommandsCommon.SetupPage()) return;
                 CommandsCommon.EnableAllCommand(false);
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 string SelectedProjectPath = SolutionUtils.GetSelectedProjectPath();
@@ -126,7 +126,6 @@ namespace PortingAssistantVSExtensionClient.Commands
             finally
             {
                 CommandsCommon.EnableAllCommand(true);
-                await NotificationUtils.ReleaseStatusBarAsync(ServiceProvider);
             }
         }
 

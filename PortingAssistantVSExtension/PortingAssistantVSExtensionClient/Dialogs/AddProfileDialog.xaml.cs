@@ -12,6 +12,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         public AddProfileDialog()
         {
             InitializeComponent();
+            this.Title = "Add a named profile";
         }
 
         public static string EnsureExecute()

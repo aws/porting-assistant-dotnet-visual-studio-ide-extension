@@ -99,7 +99,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         private void Execute(object sender, EventArgs e)
         {
             try {
-                CommandsCommon.CheckWelcomePage();
+                CommandsCommon.SetupPage();
                 var button = (OleMenuCommand)sender;
                 UserSettings.Instance.EnabledContinuousAssessment = !button.Checked;
                 UserSettings.Instance.UpdateContinuousAssessment();

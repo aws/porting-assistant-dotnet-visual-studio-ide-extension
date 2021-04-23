@@ -5,18 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
-             mc:Ignorable="d" Height="180" Width="470">
-    <Grid Margin="0,0,0,0" Height="151" VerticalAlignment="Top">
+             mc:Ignorable="d" Height="180" Width="480">
+    <Grid Margin="0,0,0,0" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0*"/>
-            <ColumnDefinition Width="73*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <CheckBox x:Name="ApplyPortActionCheck" Content="Select check box to apply recommended source code changes &#xD;&#xA;(indicated by wavy underlines in your source code).&#xA;" HorizontalAlignment="Left" Margin="18,58,0,0" VerticalAlignment="Top" Grid.Column="1" Height="38" Width="427"/>
-        <Label Content="Porting is final and cannot be undone. &#xA;" HorizontalAlignment="Left" Margin="88,12,0,0" VerticalAlignment="Top" Width="339" Height="41" Grid.Column="1"/>
-        <Button Content="Port" HorizontalAlignment="Left" Margin="271,111,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1" Height="20" Click="Button_Click_1"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="367,111,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1" Height="20" Click="Button_Click"/>
-        <Label Grid.ColumnSpan="2" Content="Warning:" HorizontalAlignment="Left" Margin="18,10,0,0" VerticalAlignment="Top" FontSize="14" FontWeight="Bold"/>
-        <Label x:Name="Title" Grid.ColumnSpan="2" Content="Porting project or solution" HorizontalAlignment="Left" Margin="-2,-28,0,0" VerticalAlignment="Top" Width="312"/>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Grid.ColumnSpan="2" Content="Warning:" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Grid.Column="0" Grid.Row="0"/>
+        <Label Content="Porting is final and cannot be undone. &#xA;" HorizontalAlignment="Left" Margin="100,15,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0"/>
+        <CheckBox x:Name="ApplyPortActionCheck" Content="Select check box to apply recommended source code changes &#xD;&#xA;(indicated by wavy underlines in your source code).&#xA;" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="1" />
+        <Button Content="Port" HorizontalAlignment="Right" Margin="10,10,10,20" VerticalAlignment="Top" Width="75" Grid.Column="0"  Grid.Row="2" Height="20" Click="Button_Click_1"/>
+        <Button Content="Cancel" HorizontalAlignment="Right" Margin="10,10,95,20" VerticalAlignment="Top" Width="75" Grid.Column="0"  Grid.Row="2" Height="20" Click="Button_Click"/>
     </Grid>
 </ui:DialogWindow>

@@ -15,7 +15,6 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             InitializeComponent();
             this.ApplyPortActionCheck.IsChecked = _userSettings.ApplyPortAction;
             string title = $"Port selected project or solution to {_userSettings.TargetFramework}";
-            this.Title.Content = title;
         }
 
         public static bool EnsureExecute()

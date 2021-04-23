@@ -1,23 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-    <Metadata>
-        <Identity Id="PortingAssistantVSExtension.400d378a-df6c-41a1-b7d0-dc9a4812765c" Version="0.1" Language="en-US" Publisher="AWS" />
-        <DisplayName>Porting Assistant For Visual Studio</DisplayName>
-        <Description xml:space="preserve">Porting Assistant  Visual Studio IDE extension</Description>
-        <Icon>Resources\PortingAssistantLogo.png</Icon>
-        <Preview>true</Preview>
-    </Metadata>
-    <Installation>
-        <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />
-    </Installation>
-    <Dependencies>
-        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-    </Dependencies>
-    <Prerequisites>
-        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0,17.0)" DisplayName="Visual Studio core editor" />
-    </Prerequisites>
-    <Assets>
-        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-    </Assets>
+	<Metadata>
+		<Identity Id="PortingAssistantVSExtension.400d378a-df6c-41a1-b7d0-dc9a4812765c" Version="0.1" Language="en-US" Publisher="AWS" />
+		<DisplayName>Porting Assistant For Visual Studio</DisplayName>
+		<Description xml:space="preserve">Porting Assistant  Visual Studio IDE extension</Description>
+		<Icon>Resources\PortingAssistantLogo.png</Icon>
+		<Preview>true</Preview>
+	</Metadata>
+	<Installation>
+		<InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[16.0, 17.0)" />
+		<InstallationTarget Version="[16.0,17.0)" Id="Microsoft.VisualStudio.Pro" />
+		<InstallationTarget Version="[16.0,17.0)" Id="Microsoft.VisualStudio.Enterprise" />
+	</Installation>
+	<Dependencies>
+		<Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+	</Dependencies>
+	<Prerequisites>
+		<Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[16.0,17.0)" DisplayName="Visual Studio core editor" />
+		<Prerequisite Id="Microsoft.NetCore.Component.Runtime.3.1" Version="[16.0,17.0)" DisplayName=".NET Core 3.1 Runtime (LTS)" />
+	</Prerequisites>
+	<Assets>
+		<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+		<Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+	</Assets>
 </PackageManifest>

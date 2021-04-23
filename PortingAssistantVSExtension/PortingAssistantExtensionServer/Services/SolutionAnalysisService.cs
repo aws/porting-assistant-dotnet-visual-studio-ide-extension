@@ -1,7 +1,5 @@
 ﻿using CTA.Rules.Models;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using PortingAssistant.Client.Client;
@@ -16,19 +14,23 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using TextSpan = PortingAssistant.Client.Model.TextSpan;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
+using Codelyzer.Analysis.Model;
 using Constants = PortingAssistantExtensionServer.Common.Constants;
+
 
 namespace PortingAssistantExtensionServer
 {
     internal class SolutionAnalysisService : IDisposable
     {
-        public SolutionAnalysisResult SolutionAnalysisResult;
         private AnalyzeSolutionRequest _request;
         private readonly ILogger<SolutionAnalysisService> _logger;
         private readonly IPortingAssistantClient _client;
         private readonly ITelemetryCollector _telemetry;
         public Dictionary<int, IList<TextChange>> CodeActions;
+        public Dictionary<string, IList<Diagnostic>> FileToDiagnostics;
+        public Dictionary<string, ProjectAnalysisResult> FileToProjectAnalyssiResult;
 
         public ImmutableDictionary<DocumentUri, CodeFileDocument> _openDocuments = ImmutableDictionary<DocumentUri, CodeFileDocument>.Empty.WithComparers(DocumentUri.Comparer);
 
@@ -41,20 +43,45 @@ namespace PortingAssistantExtensionServer
             _client = client;
             _telemetry = telemetry;
             CodeActions = new Dictionary<int, IList<TextChange>>();
+            FileToDiagnostics = new Dictionary<string, IList<Diagnostic>>();
+            FileToProjectAnalyssiResult = new Dictionary<string, ProjectAnalysisResult>();
         }
 
         public async Task SetSolutionAnalysisResultAsync(Task<SolutionAnalysisResult> SolutionAnalysisResultTask)
         {
             Task<SolutionAnalysisResult> solutionAnalysisResultTask = SolutionAnalysisResultTask;
-            SolutionAnalysisResult = await solutionAnalysisResultTask;
+            var solutionAnalysisResult = await solutionAnalysisResultTask;
+
+            foreach (var projectAnalysisResult in solutionAnalysisResult.ProjectAnalysisResults)
+            {
+                if (!FileToProjectAnalyssiResult.ContainsKey(projectAnalysisResult.ProjectFilePath))
+                {
+                    FileToProjectAnalyssiResult.Add(projectAnalysisResult.ProjectFilePath, new ProjectAnalysisResult
+                    {
+                        PreportMetaReferences = projectAnalysisResult.PreportMetaReferences,
+                        MetaReferences = projectAnalysisResult.MetaReferences,
+                        ExternalReferences = projectAnalysisResult.ExternalReferences,
+                        ProjectRules = projectAnalysisResult.ProjectRules
+                    });
+                }
+                foreach (var sourceFileAnalysisResult in projectAnalysisResult.SourceFileAnalysisResults)
+                {
+                    UpdateDiagnostics(sourceFileAnalysisResult);
+                }
+
+            }
+
             _telemetry.SolutionAssessmentCollect(
-                SolutionAnalysisResult,
-                _request.settings.TargetFramework,
-                PALanguageServerConfiguration.ExtensionVersion);
+            solutionAnalysisResult,
+            _request.settings.TargetFramework,
+            PALanguageServerConfiguration.ExtensionVersion);
         }
 
         public async Task AssessSolutionAsync(AnalyzeSolutionRequest request)
         {
+            // Clean up the existing result before run full assessment
+            Cleanup();
+
             _request = request;
             var result = _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
             await SetSolutionAnalysisResultAsync(result);
@@ -63,13 +90,22 @@ namespace PortingAssistantExtensionServer
         public async Task<IncrementalFileAnalysisResult> AssessFileAsync(CodeFileDocument codeFile, bool actionsOnly = false)
         {
             var projectFile = codeFile.GetProjectFile();
-            var projectAnalysisResult = SolutionAnalysisResult.ProjectAnalysisResults.FirstOrDefault(p => p.ProjectFilePath == projectFile);
+            //var projectAnalysisResult = SolutionAnalysisResult.ProjectAnalysisResults.FirstOrDefault(p => p.ProjectFilePath == projectFile);
+            var projectAnalysisResult = FileToProjectAnalyssiResult.GetValueOrDefault(projectFile, new ProjectAnalysisResult
+            {
+                PreportMetaReferences = new List<string>(),
+                MetaReferences = new List<string>(),
+                ExternalReferences = new ExternalReferences(),
+                ProjectRules = new RootNodes()
+
+            });
 
             _request.settings.ActionsOnly = actionsOnly;
 
             var result = await _client.AnalyzeFileAsync(codeFile.NormalizedPath, codeFile.GetText(), projectFile, _request.solutionFilePath,
                 projectAnalysisResult.PreportMetaReferences, projectAnalysisResult.MetaReferences, projectAnalysisResult.ProjectRules, projectAnalysisResult.ExternalReferences,
                 _request.settings);
+
             if (!result.sourceFileAnalysisResults.Any())
             {
                 result.sourceFileAnalysisResults.Add(new SourceFileAnalysisResult()
@@ -80,6 +116,7 @@ namespace PortingAssistantExtensionServer
                     SourceFileName = Path.GetFileNameWithoutExtension(codeFile.NormalizedPath)
                 });
             }
+
             UpdateSolutionAnalysisResult(result);
 
             return result;
@@ -87,98 +124,92 @@ namespace PortingAssistantExtensionServer
 
         public bool HasSolutionAnalysisResult()
         {
-            return SolutionAnalysisResult != null;
+            return FileToDiagnostics.Count != 0;
         }
 
-        public SolutionAnalysisResult GetSolutionAnalysisResult()
-        {
-            return SolutionAnalysisResult;
-        }
-
-
-        public List<Diagnostic> GetDiagnostics(DocumentUri fileUri)
+        public bool UpdateDiagnostics(SourceFileAnalysisResult sourceFileAnalysisResult)
         {
             var diagnostics = new List<Diagnostic>();
-            if (!HasSolutionAnalysisResult()) return diagnostics;
-            var result = GetSolutionAnalysisResult();
-
+            var sourceFilePath = TrimFilePath(sourceFileAnalysisResult.SourceFilePath);
+            var fileUri = DocumentUri.FromFileSystemPath(sourceFileAnalysisResult.SourceFilePath);
             var codedescrption = new CodeDescription()
             {
                 //TODO Move to a constants class
                 Href = new Uri(Constants.PortingAssitantHelpUrl)
             };
-            foreach (var projectAnalysisResult in result.ProjectAnalysisResults)
+
+            foreach (var api in sourceFileAnalysisResult.ApiAnalysisResults)
             {
-                var sourceFileAnalysisResults = projectAnalysisResult.SourceFileAnalysisResults
-                    .Where(sf => TrimFilePath(sf.SourceFilePath) == TrimFilePath(fileUri.Path));
-
-                var apis = sourceFileAnalysisResults.SelectMany(sf => sf.ApiAnalysisResults).ToList();
-                var recommendedActionsList = sourceFileAnalysisResults.Select(sf => sf.RecommendedActions).ToList();
-
-                foreach (var api in apis)
+                if (api.CompatibilityResults[_request.settings.TargetFramework].Compatibility == Compatibility.INCOMPATIBLE)
                 {
-                    if (api.CompatibilityResults[_request.settings.TargetFramework].Compatibility == Compatibility.INCOMPATIBLE)
+                    var name = api.CodeEntityDetails.OriginalDefinition;
+                    var rcommnadation = api.Recommendations.RecommendedActions.Select(r => (r.RecommendedActionType + r.Description));
+                    var message = name + String.Join(",", rcommnadation);
+                    var range = GetRange(api.CodeEntityDetails.TextSpan);
+                    var location = new Location()
                     {
-                        var name = api.CodeEntityDetails.OriginalDefinition;
-                        var rcommnadation = api.Recommendations.RecommendedActions.Select(r => (r.RecommendedActionType + r.Description));
-                        var message = name + String.Join(",", rcommnadation);
-                        var range = GetRange(api.CodeEntityDetails.TextSpan);
-                        var location = new Location()
-                        {
-                            Uri = fileUri,
-                            Range = range
-                        };
-                        var diagnostic = new Diagnostic()
-                        {
-                            Severity = DiagnosticSeverity.Warning,
-                            Code = new DiagnosticCode(Constants.DiagnosticCode),
-                            Source = Constants.DiagnosticSource,
-                            CodeDescription = codedescrption,
-                            Range = range,
-                            RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() { new DiagnosticRelatedInformation() {
+                        Uri = fileUri,
+                        Range = range
+                    };
+                    var diagnostic = new Diagnostic()
+                    {
+                        Severity = DiagnosticSeverity.Warning,
+                        Code = new DiagnosticCode(Constants.DiagnosticCode),
+                        Source = Constants.DiagnosticSource,
+                        CodeDescription = codedescrption,
+                        Range = range,
+                        RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() { new DiagnosticRelatedInformation() {
                                 Location = location
                             } }),
-                            Message = message,
-                        };
-                        diagnostics.Add(diagnostic);
-                    }
-                }
-
-                foreach (var recommendedActions in recommendedActionsList)
-                {
-                    foreach (var recommendedAction in recommendedActions)
-                    {
-                        var range = GetRange(recommendedAction.TextSpan);
-                        var location = new Location
-                        {
-                            Uri = fileUri,
-                            Range = range
-                        };
-                        try
-                        {
-                            var diagnositc = new Diagnostic()
-                            {
-                                Severity = DiagnosticSeverity.Warning,
-                                Code = new DiagnosticCode(Constants.DiagnosticWithActionCode),
-                                Source = Constants.DiagnosticSource,
-                                CodeDescription = codedescrption,
-                                Range = range,
-                                RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() {new DiagnosticRelatedInformation(){
-                                Location = location
-                            } }),
-                                Message = recommendedAction.Description,
-                            };
-                            diagnostics.Add(diagnositc);
-                            UpdateCodeAction(diagnositc.Message, diagnositc.Range, fileUri.Path, recommendedAction.TextChanges);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError("failed with error", ex);
-                        }
-                    }
+                        Message = message,
+                    };
+                    diagnostics.Add(diagnostic);
                 }
             }
-            return diagnostics;
+
+            foreach (var recommendedAction in sourceFileAnalysisResult.RecommendedActions)
+            {
+                var range = GetRange(recommendedAction.TextSpan);
+                var location = new Location
+                {
+                    Uri = fileUri,
+                    Range = range
+                };
+                try
+                {
+                    var diagnositc = new Diagnostic()
+                    {
+                        Severity = DiagnosticSeverity.Warning,
+                        Code = new DiagnosticCode(Constants.DiagnosticWithActionCode),
+                        Source = Constants.DiagnosticSource,
+                        CodeDescription = codedescrption,
+                        Range = range,
+                        RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() {new DiagnosticRelatedInformation(){
+                                Location = location
+                            } }),
+                        Message = recommendedAction.Description,
+                    };
+                    diagnostics.Add(diagnositc);
+                    UpdateCodeAction(diagnositc.Message, diagnositc.Range, fileUri.Path, recommendedAction.TextChanges);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("failed with error", ex);
+                }
+            }
+
+            if (FileToDiagnostics.ContainsKey(sourceFilePath))
+            {
+                FileToDiagnostics.Remove(sourceFilePath);
+            }
+
+            return FileToDiagnostics.TryAdd(sourceFilePath, diagnostics);
+        }
+
+
+        public IList<Diagnostic> GetDiagnostics(DocumentUri fileUri)
+        {
+            return FileToDiagnostics.GetValueOrDefault(TrimFilePath(fileUri.Path), new List<Diagnostic>());
         }
 
         public void UpdateCodeAction(string message, Range range, string documentPath, IList<TextChange> textChanges)
@@ -197,27 +228,24 @@ namespace PortingAssistantExtensionServer
 
         public void Dispose()
         {
-            SolutionAnalysisResult = null;
             _request = null;
+            FileToDiagnostics = null;
+            FileToProjectAnalyssiResult = null;
+            CodeActions = null;
         }
 
-        private void UpdateSolutionAnalysisResult(IncrementalFileAnalysisResult analysisResult)
+        public void Cleanup()
         {
+            FileToProjectAnalyssiResult = new Dictionary<string, ProjectAnalysisResult>();
+            FileToDiagnostics = new Dictionary<string, IList<Diagnostic>>();
+            CodeActions = new Dictionary<int, IList<TextChange>>();
+        }
 
-            SolutionAnalysisResult.AnalyzerResults = analysisResult.analyzerResults;
-            SolutionAnalysisResult.ProjectActions = analysisResult.projectActions;
-
-
-
+        public void UpdateSolutionAnalysisResult(IncrementalFileAnalysisResult analysisResult)
+        {
             analysisResult.sourceFileAnalysisResults.ForEach(sourceFileAnalysisResult =>
             {
-                var projectResult = SolutionAnalysisResult.ProjectAnalysisResults
-                    .First(p => p.SourceFileAnalysisResults.Any(f => TrimFilePath(f.SourceFilePath) == TrimFilePath(sourceFileAnalysisResult.SourceFilePath)));
-
-                var oldFile = projectResult.SourceFileAnalysisResults.FirstOrDefault(s => TrimFilePath(s.SourceFilePath) == TrimFilePath(sourceFileAnalysisResult.SourceFilePath));
-
-                projectResult.SourceFileAnalysisResults.Remove(oldFile);
-                projectResult.SourceFileAnalysisResults.Add(sourceFileAnalysisResult);
+                UpdateDiagnostics(sourceFileAnalysisResult);
                 _telemetry.FileAssessmentCollect(
                     sourceFileAnalysisResult,
                     _request.settings.TargetFramework,

@@ -61,7 +61,7 @@ namespace PortingAssistantExtensionServer.Handlers
                 if (document == null) return codeActions;
                 var result = await _solutionAnalysisService.AssessFileAsync(document, true);
 
-                result.sourceFileAnalysisResults.ForEach(sourceFileAnalysisResult =>
+                result.ForEach(sourceFileAnalysisResult =>
                 {
                     sourceFileAnalysisResult.RecommendedActions.ForEach(recommendedAction =>
                     {

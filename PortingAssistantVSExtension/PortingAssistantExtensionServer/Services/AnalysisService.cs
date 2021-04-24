@@ -78,7 +78,7 @@ namespace PortingAssistantExtensionServer
             }
         }
 
-        public async Task<IncrementalFileAnalysisResult> AssessFileAsync(CodeFileDocument codeFile, bool actionsOnly = false)
+        public async Task<List<SourceFileAnalysisResult>> AssessFileAsync(CodeFileDocument codeFile, bool actionsOnly = false)
         {
             try
             {
@@ -98,9 +98,9 @@ namespace PortingAssistantExtensionServer
                     projectAnalysisResult.PreportMetaReferences, projectAnalysisResult.MetaReferences, projectAnalysisResult.ProjectRules, projectAnalysisResult.ExternalReferences,
                     _request.settings);
 
-                if (!result.sourceFileAnalysisResults.Any())
+                if (result.Count() == 0)
                 {
-                    result.sourceFileAnalysisResults.Add(new SourceFileAnalysisResult()
+                    result.Add(new SourceFileAnalysisResult()
                     {
                         SourceFilePath = codeFile.NormalizedPath,
                         RecommendedActions = new List<RecommendedAction>(),
@@ -109,7 +109,7 @@ namespace PortingAssistantExtensionServer
                     });
                 }
 
-                foreach (var sourceFileAnalysisResult in result.sourceFileAnalysisResults)
+                foreach (var sourceFileAnalysisResult in result)
                 {
                     _telemetry.FileAssessmentCollect(
                         sourceFileAnalysisResult,
@@ -122,9 +122,7 @@ namespace PortingAssistantExtensionServer
             catch (Exception e)
             {
                 _logger.LogError("incremental assessment failed with error: ", e);
-                return new IncrementalFileAnalysisResult
-                {
-                    sourceFileAnalysisResults = new List<SourceFileAnalysisResult>
+                return new List<SourceFileAnalysisResult>
                     {
                         new SourceFileAnalysisResult
                         {
@@ -133,9 +131,8 @@ namespace PortingAssistantExtensionServer
                             ApiAnalysisResults = new List<ApiAnalysisResult>(),
                             SourceFileName = Path.GetFileNameWithoutExtension(codeFile.NormalizedPath)
                         }
-                    }
-                };
-            };
+                    };
+            }
         }
 
         public bool HasSolutionAnalysisResult()
@@ -291,7 +288,7 @@ namespace PortingAssistantExtensionServer
         {
             _openDocuments.TryGetValue(fileUri, out var document);
             var result = await AssessFileAsync(document, false);
-            var sourceFileAnalysisResult = result.sourceFileAnalysisResults.FirstOrDefault();
+            var sourceFileAnalysisResult = result.FirstOrDefault();
             return GetDiagnostics(sourceFileAnalysisResult);
         }
 

@@ -100,15 +100,6 @@
     <Compile Include="Utils\SolutionUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\porting-assistant-config-dev.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Resources\StatusInformation.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <VSIXSubPath>Resources</VSIXSubPath>
-    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -181,7 +172,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>PortingAssistantLanguageServer</VSIXSubPath>
     </Content>
-    <Content Include="Resources\PortingAssistantLogo.png">
+    <Content Include="Resources\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>Resources</VSIXSubPath>

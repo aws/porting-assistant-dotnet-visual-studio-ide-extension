@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PortingAssistantExtensionServer.Common
+﻿namespace PortingAssistantExtensionServer.Common
 {
     public static class PALanguageServerConfiguration
     {
-        static bool _enabledContinuousAssessment { get; set; }
+        private static bool _enabledContinuousAssessment { get; set; }
 
-        static bool _enabledMetrics { get; set; }
+        private static bool _enabledMetrics { get; set; }
 
-        static string _awsProfileName { get; set; }
+        private static string _awsProfileName { get; set; }
 
-        static string _extensionVersion { get; set; }
+        private static string _extensionVersion { get; set; }
 
-        static string _extensionType { get; set; }
+        private static string _extensionType { get; set; }
 
         static PALanguageServerConfiguration()
         {

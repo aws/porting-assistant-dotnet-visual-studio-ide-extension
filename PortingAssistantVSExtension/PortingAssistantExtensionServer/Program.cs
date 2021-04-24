@@ -5,16 +5,13 @@ using Task = System.Threading.Tasks.Task;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Nerdbank.Streams;
-using PortingAssistant.Client.Model;
 using System.Threading.Tasks;
 using System.Globalization;
 using System.IO;
 using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionTelemetry;
-using System.Collections.Generic;
 using System.Text.Json;
-using PortingAssistantExtensionTelemetry.Model;
 
 namespace PortingAssistantExtensionServer
 {

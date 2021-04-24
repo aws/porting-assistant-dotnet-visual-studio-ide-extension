@@ -15,7 +15,7 @@ namespace PortingAssistantExtensionTelemetry
 {
     public class LogWatcher
     {
-        private TelemetryConfiguration telemetryConfiguration;
+        private readonly TelemetryConfiguration telemetryConfiguration;
         private readonly string profile;
         private readonly string lastReadTokenFile;
         private readonly HttpClient client;

@@ -10,8 +10,6 @@ using System.Linq;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using System.IO;
 using PortingAssistantExtensionServer.TextDocumentModels;
-using PortingAssistantExtensionServer.Models;
-using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -19,11 +17,10 @@ namespace PortingAssistantExtensionServer.Handlers
 {
     class PortingAssistantTextSyncHandler : ITextDocumentSyncHandler
     {
-
         private readonly TextDocumentChangeRegistrationOptions _options;
         private readonly TextDocumentSaveRegistrationOptions _saveOptions;
         private readonly ILanguageServerFacade languageServer;
-        private readonly SolutionAnalysisService _solutionAnalysisService;
+        private readonly AnalysisService _solutionAnalysisService;
         private readonly ILogger<PortingAssistantTextSyncHandler> _logger;
         private SynchronizationCapability _capability;
 
@@ -32,7 +29,7 @@ namespace PortingAssistantExtensionServer.Handlers
         TextDocumentRegistrationOptions IRegistration<TextDocumentRegistrationOptions>.GetRegistrationOptions() { return _options; }
         TextDocumentSaveRegistrationOptions IRegistration<TextDocumentSaveRegistrationOptions>.GetRegistrationOptions() { return _saveOptions; }
 
-        public PortingAssistantTextSyncHandler(ILanguageServerFacade languageServer, SolutionAnalysisService solutionAnalysisService, ILogger<PortingAssistantTextSyncHandler> logger)
+        public PortingAssistantTextSyncHandler(ILanguageServerFacade languageServer, AnalysisService solutionAnalysisService, ILogger<PortingAssistantTextSyncHandler> logger)
         {
             _options = new TextDocumentChangeRegistrationOptions()
             {
@@ -67,8 +64,6 @@ namespace PortingAssistantExtensionServer.Handlers
             return null;
         }
 
-
-
         public Task<Unit> Handle(DidChangeTextDocumentParams request, CancellationToken cancellationToken)
         {
             if (!_solutionAnalysisService._openDocuments.TryGetValue(request.TextDocument.Uri, out var document)) return Unit.Task;
@@ -76,7 +71,6 @@ namespace PortingAssistantExtensionServer.Handlers
             return Unit.Task;
 
         }
-
 
         public bool ComparePaths(string p1, string p2)
         {
@@ -87,25 +81,21 @@ namespace PortingAssistantExtensionServer.Handlers
                     );
         }
 
-
-
         public Task<Unit> Handle(DidOpenTextDocumentParams request, CancellationToken cancellationToken)
         {
+            var document = new CodeFileDocument(request.TextDocument.Uri);
+
             lock (_solutionAnalysisService._openDocuments)
             {
-                var document = new CodeFileDocument(request.TextDocument.Uri);
                 _solutionAnalysisService._openDocuments = _solutionAnalysisService._openDocuments.Add(request.TextDocument.Uri, document);
-                document.Load(request.TextDocument.Text);
-                if (_solutionAnalysisService.HasSolutionAnalysisResult())
-                {
-                    var diagnostics = _solutionAnalysisService.GetDiagnostics(document.DocumentUri);
-                    languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams()
-                    {
-                        Diagnostics = new Container<Diagnostic>(diagnostics),
-                        Uri = document.DocumentUri,
-                    });
-                }
             }
+
+            document.Load(request.TextDocument.Text);
+            if (_solutionAnalysisService.HasSolutionAnalysisResult())
+            {
+                Process(document);
+            }
+
             return Unit.Task;
 
         }
@@ -135,15 +125,14 @@ namespace PortingAssistantExtensionServer.Handlers
         {
             try
             {
-                var task = _solutionAnalysisService.AssessFileAsync(document);
-                await task.ContinueWith(t =>
+                var diagnostics = _solutionAnalysisService.GetDiagnosticsAsync(document.DocumentUri);
+                await diagnostics.ContinueWith(t =>
                 {
                     if (t.IsCompleted)
                     {
-                        var diagnostics = _solutionAnalysisService.GetDiagnostics(document.DocumentUri);
                         languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams()
                         {
-                            Diagnostics = new Container<Diagnostic>(diagnostics),
+                            Diagnostics = new Container<Diagnostic>(t.Result),
                             Uri = document.DocumentUri,
                         });
                     }

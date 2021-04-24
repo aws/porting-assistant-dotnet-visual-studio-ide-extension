@@ -4,9 +4,10 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using System.Collections.Generic;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace PortingAssistantExtensionServer.Handlers
 {
@@ -15,11 +16,11 @@ namespace PortingAssistantExtensionServer.Handlers
     internal class SolutionAssessmentHandler : ISolutionAssessmentHandler
     {
         private readonly ILogger<ISolutionAssessmentHandler> _logger;
-        private readonly SolutionAnalysisService _analysisService;
+        private readonly AnalysisService _analysisService;
         private readonly ILanguageServerFacade _languageServer;
         public SolutionAssessmentHandler(ILogger<SolutionAssessmentHandler> logger,
             ILanguageServerFacade languageServer,
-            SolutionAnalysisService analysisService)
+            AnalysisService analysisService)
         {
             _logger = logger;
             _languageServer = languageServer;
@@ -28,14 +29,26 @@ namespace PortingAssistantExtensionServer.Handlers
 
         public async Task<AnalyzeSolutionResponse> Handle(AnalyzeSolutionRequest request, CancellationToken cancellationToken)
         {
-            await _analysisService.AssessSolutionAsync(request);
-            var diagnostics = new List<Diagnostic>();
-            foreach (var doc in _analysisService._openDocuments.Keys)
+            var solutionAnalysisResult = _analysisService.AssessSolutionAsync(request);
+            var diagnostics = await _analysisService.GetDiagnosticsAsync(solutionAnalysisResult);
+
+            foreach (var diagnostic in diagnostics)
             {
+                IList<Diagnostic> diag = new List<Diagnostic>();
+                if (_analysisService._openDocuments.ContainsKey(diagnostic.Key))
+                {
+                    diag = diagnostic.Value;
+                }
+
+                if (!_analysisService._openDocuments.ContainsKey(diagnostic.Key) && diagnostic.Value.Count != 0)
+                {
+                    diag.Add(diagnostic.Value.FirstOrDefault());
+                }
+
                 _languageServer.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams()
                 {
-                    Diagnostics = new Container<Diagnostic>(_analysisService.GetDiagnostics(doc)),
-                    Uri = doc,
+                    Diagnostics = new Container<Diagnostic>(diag),
+                    Uri = diagnostic.Key,
                 });
             }
 

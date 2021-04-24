@@ -50,7 +50,7 @@ namespace PortingAssistantExtensionServer
                 .WithServices(service =>
                 {
                     service.AddAssessment(_configuration.PortingAssistantConfiguration);
-                    service.AddSingleton<SolutionAnalysisService>();
+                    service.AddSingleton<AnalysisService>();
                     service.AddSingleton<PortingService>();
                     service.AddSingleton<ITelemetryCollector>(sp =>
                     {
@@ -98,7 +98,5 @@ namespace PortingAssistantExtensionServer
             _started = false;
             await _portingAssistantServer.WaitForExit.ConfigureAwait(false);
         }
-
-
     }
 }

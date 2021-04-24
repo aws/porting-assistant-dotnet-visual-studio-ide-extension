@@ -1,15 +1,9 @@
-﻿using MediatR;
-using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
+﻿using OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
-using OmniSharp.Extensions.LanguageServer.Protocol.Serialization;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
-using OmniSharp.Extensions.LanguageServer.Protocol.Workspace;
-using PortingAssistantExtensionServer.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,9 +13,9 @@ namespace PortingAssistantExtensionServer.Handlers
     {
         private readonly PortingAssistantTextSyncHandler _portingAssistantTextSyncHandler;
         private readonly ILanguageServerFacade _languageServer;
-        private readonly SolutionAnalysisService _solutionAnalysisService;
-        private readonly CodeActionRegistrationOptions _registrationOptions; 
-        
+        private readonly AnalysisService _solutionAnalysisService;
+        private readonly CodeActionRegistrationOptions _registrationOptions;
+
         private CodeActionCapability _capability;
         public void SetCapability(CodeActionCapability capability)
         {
@@ -36,7 +30,7 @@ namespace PortingAssistantExtensionServer.Handlers
 
 
         public PortingAssistantCodeActionHandler(PortingAssistantTextSyncHandler portingAssistantTextSyncHandler,
-            ILanguageServerFacade languageServer, SolutionAnalysisService solutionAnalysisService)
+            ILanguageServerFacade languageServer, AnalysisService solutionAnalysisService)
         {
             _portingAssistantTextSyncHandler = portingAssistantTextSyncHandler;
             _languageServer = languageServer;
@@ -67,10 +61,12 @@ namespace PortingAssistantExtensionServer.Handlers
                 if (document == null) return codeActions;
                 var result = await _solutionAnalysisService.AssessFileAsync(document, true);
 
-                result.sourceFileAnalysisResults.ForEach(sourceFileAnalysisResult => {
-                    sourceFileAnalysisResult.RecommendedActions.ForEach(recommendedAction => {
-                        _solutionAnalysisService.UpdateCodeAction(recommendedAction.Description, 
-                            _solutionAnalysisService.GetRange(recommendedAction.TextSpan), 
+                result.sourceFileAnalysisResults.ForEach(sourceFileAnalysisResult =>
+                {
+                    sourceFileAnalysisResult.RecommendedActions.ForEach(recommendedAction =>
+                    {
+                        _solutionAnalysisService.UpdateCodeAction(recommendedAction.Description,
+                            _solutionAnalysisService.GetRange(recommendedAction.TextSpan),
                             document.DocumentUri.Path,
                             recommendedAction.TextChanges);
                     });
@@ -96,7 +92,7 @@ namespace PortingAssistantExtensionServer.Handlers
                                     t.FileLinePositionSpan.EndLinePosition.Line,
                                     t.FileLinePositionSpan.EndLinePosition.Character)
                             });
-                            ;
+                        ;
 
                         codeActions.Add(new CodeAction
                         {

@@ -24,7 +24,7 @@ namespace PortingAssistantExtensionServerUnitTest
     public class AbstractLanguageServerTestBase : LanguageServerTestBase
     {
         private readonly ITestOutputHelper _output;
-        private PortingAssistantIDEConfiguration portingAssistantIDEConfiguration;
+        private readonly PortingAssistantIDEConfiguration portingAssistantIDEConfiguration;
         private PortingAssistantLanguageServer _portingAssistantLanguageServer;
         private ILanguageClient _client;
         private readonly ConcurrentDictionary<DocumentUri, IEnumerable<Diagnostic>> _diagnostics =

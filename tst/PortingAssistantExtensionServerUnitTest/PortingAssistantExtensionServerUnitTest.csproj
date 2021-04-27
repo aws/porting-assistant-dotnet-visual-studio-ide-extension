@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PortingAssistantExtensionServer\PortingAssistantExtensionServer.csproj" />
+    <ProjectReference Include="..\..\src\PortingAssistantExtensionServer\PortingAssistantExtensionServer.csproj" />
   </ItemGroup>
 
 </Project>

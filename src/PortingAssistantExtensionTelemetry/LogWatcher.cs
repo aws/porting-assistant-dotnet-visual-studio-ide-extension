@@ -81,7 +81,14 @@ namespace PortingAssistantExtensionTelemetry
                     if (File.Exists(lastReadTokenFile))
                     {
                         fileLineNumberMap = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(lastReadTokenFile));
-                        initLineNumber = fileLineNumberMap.ContainsKey(fileName) ? fileLineNumberMap[fileName] : 0;
+                        if (fileLineNumberMap != null)
+                        {
+                            initLineNumber = fileLineNumberMap.ContainsKey(fileName) ? fileLineNumberMap[fileName] : 0;
+                        } else
+                        {
+                            fileLineNumberMap = new Dictionary<string, int>();
+                            initLineNumber = 0;
+                        }
                     }
                     else
                     {

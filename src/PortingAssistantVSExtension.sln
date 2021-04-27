@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortingAssistantVSExtensionClient", "PortingAssistantVSExtensionClient\PortingAssistantVSExtensionClient.csproj", "{9DCE8A66-0BAC-455D-BB16-FB238AE5B8BB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionServerUnitTest", "PortingAssistantExtensionServerUnitTest\PortingAssistantExtensionServerUnitTest.csproj", "{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionServerUnitTest", "..\tst\PortingAssistantExtensionServerUnitTest\PortingAssistantExtensionServerUnitTest.csproj", "{71C3EC7B-B58C-4953-95FF-0CDDCFF5240D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB5D2654-CBDD-4510-84A9-13864AC8A302}"
 	ProjectSection(SolutionItems) = preProject

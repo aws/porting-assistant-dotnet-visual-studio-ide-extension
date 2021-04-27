@@ -128,9 +128,6 @@
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.9.31025.194 " ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Threading">
-      <Version>16.9.60</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.31">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -170,7 +167,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-	<Content Include="PortingAssistantLanguageServer\**">
+    <Content Include="PortingAssistantLanguageServer\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>PortingAssistantLanguageServer</VSIXSubPath>

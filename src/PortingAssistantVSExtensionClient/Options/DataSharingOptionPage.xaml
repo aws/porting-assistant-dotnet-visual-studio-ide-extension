@@ -5,24 +5,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Options"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="465" Height="300" Width="465">
+             d:DesignHeight="310" d:DesignWidth="465" Height="310" Width="465">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <GroupBox Header="Porting Assistant For .NET" HorizontalAlignment="Left" Height="300" Margin="0,10,0,0" Grid.RowSpan="4" VerticalAlignment="Top" Width="465" FontSize="14">
         </GroupBox>
-        <CheckBox x:Name="EnableMetricCheck" Content="I agree to share my usage data with Porting Assistant for .NET and receive &#xD;&#xA;emails regarding feedback on the tool." HorizontalAlignment="Left" Margin="20,50,0,0" Grid.Row="0" VerticalAlignment="Top" Checked="CheckBox_Checked" Height="40" Width="423"/>
-        <Label Content="AWS named profile" HorizontalAlignment="Left" Margin="20,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="117"/>
-        <ComboBox x:Name="Profiles" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="266" Height="22" Margin="20,40,0,0" Grid.Row="1"/>
-        <Button Content="Add a named profile" HorizontalAlignment="Left" Margin="10,70,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="20" FontSize="12" Background="{x:Null}" BorderThickness="0" Cursor="Hand" Foreground="Blue" Click="Button_Click"/>
-        <GroupBox Header="Porting Assistant for .NET data usage sharing" HorizontalAlignment="Left" Height="120" Margin="0,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="465" FontWeight="Bold"/>
-        <ScrollViewer HorizontalAlignment="Left" Height="100" Margin="0,28,0,0" Grid.Row="2" VerticalAlignment="Top" Width="460">
-            <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" Padding="10" Height="250" ><Run BaselineAlignment="Center" Text="When you share your usage data, Porting Assistant for .NET will collect information only about the public NuGet packages, APIs, build errors and stack traces. This information is used to make the Porting Assistant for .NET product better, for example, to improve the package and API replacement recommendations. Porting Assistant for .NET does not collect any identifying information about you. "/><Hyperlink NavigateUri="https://docs.aws.amazon.com/portingassistant/latest/userguide/how-porting-assistant-works.html#porting-assistant-information-collected">To learn more, see Information Collected</Hyperlink><LineBreak/><Run BaselineAlignment="Center"/><LineBreak/><Run Text="The Porting Assistant for .NET tool is licensed as AWS Content under the terms and conditions of the AWS Customer Agreement located at Agreement and the Service Terms located at Service-Terms. By installing, using or accessing the Porting Assistant for .NET tool, you agree to such terms and conditions. The term AWS Content does not include software and assets distributed under separate license terms (such as code licensed under an open source license)."/></TextBlock>
-        </ScrollViewer>
+        <CheckBox x:Name="EnableMetricCheck" Content="I agree to share my usage data with Porting Assistant for .NET and to receive &#xD;&#xA;communications regarding my feedback about the tool." HorizontalAlignment="Left" Margin="20,50,0,0" Grid.Row="0" VerticalAlignment="Top" Checked="CheckBox_Checked" Height="40" Width="423"/>
+        <Label Content="AWS Named Profile" HorizontalAlignment="Left" Margin="20,0,0,0" Grid.Row="1" VerticalAlignment="Top" Width="117"/>
+        <ComboBox x:Name="Profiles" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="266" Height="22" Margin="20,30,0,0" Grid.Row="1" SelectionChanged="Profiles_SelectionChanged"/>
+        <Label x:Name="WarningBar" Content="" HorizontalAlignment="Left" Margin="290,30,0,0" Grid.Row="1" Foreground="Red" VerticalAlignment="Top" Width="110"/>
+        <Button Content="Add a Named Profile" HorizontalAlignment="Left" Margin="10,60,0,0" Grid.Row="1" VerticalAlignment="Top" Width="140" Height="20" FontSize="12" Background="{x:Null}" BorderThickness="0" Cursor="Hand" Foreground="Blue" Click="Button_Click"/>
+        <GroupBox Header="Porting Assistant for .NET data usage sharing" HorizontalAlignment="Left" Height="130" Margin="0,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="465" FontWeight="Bold"/>
+        <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" Padding="10" Height="140" Margin="0,28,0,0" Grid.Row="2"><Run BaselineAlignment="Center" Text="When you share your usage data, Porting Assistant for .NET collects information only about the public NuGet packages, APIs, build errors, and stack traces. This information is used to make Porting Assistant for .NET better, for example, by improving the package and API replacement recommendations. Porting Assistant for .NET does not collect any identifying information about you. "/><Hyperlink NavigateUri="https://docs.aws.amazon.com/portingassistant/latest/userguide/how-porting-assistant-works.html#porting-assistant-information-collected" Click="Hyperlink_Click">To learn more, see Information Collected</Hyperlink></TextBlock>
+        
         
 
     </Grid>

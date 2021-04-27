@@ -42,7 +42,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         public const int cmdidAutoAssessmentCommand = 0x0103;
         public const int cmdidDisplaySettings = 0x0104;
         public const int cmdidContactSupportCommand = 0x0105;
-        public const int cmdidDodumentCommand = 0x0106;
+        public const int cmdidDocumentCommand = 0x0106;
         public const int icon1 = 0x0001;
     }
 }

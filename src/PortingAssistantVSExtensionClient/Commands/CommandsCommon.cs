@@ -102,12 +102,12 @@ namespace PortingAssistantVSExtensionClient.Commands
                     IgnoreProjects = new List<string>(),
                 },
             };
-            await NotificationUtils.LockStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Porting Assistant is assessing the solution.....");
+            await NotificationUtils.LockStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Porting Assistant is assessing the solution");
             await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>(
                 "analyzeSolution",
                 analyzeSolutionRequest);
-            await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "solution has been assessed successfully!");
-            await NotificationUtils.LockStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "solution has been assessed successfully!");
+            await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Assessment Successful");
+            await NotificationUtils.LockStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Assessment Successful");
         }
     }
 }

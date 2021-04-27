@@ -90,7 +90,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         private void Execute(object sender, EventArgs e)
         {
             CommandsCommon.SetupPage();
-            System.Diagnostics.Process.Start("mailto:aws-porting-assistant-support@amazon.com");
+            System.Diagnostics.Process.Start(Common.ExternalUrls.SupportEmail);
         }
     }
 }

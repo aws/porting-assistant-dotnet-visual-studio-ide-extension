@@ -172,8 +172,8 @@ namespace PortingAssistantVSExtensionClient
 
         private (NamedPipeServerStream readerPipe, NamedPipeServerStream writerPipe) CreateConnectionPipe(string stdInPipeName, string stdOutPipeName)
         {
-            var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.In, maxNumberOfServerInstances: 5, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
-            var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.Out, maxNumberOfServerInstances: 5, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous);
+            var readerPipe = new NamedPipeServerStream(stdInPipeName, PipeDirection.In, maxNumberOfServerInstances: 5, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous, inBufferSize: 256, outBufferSize: 256);
+            var writerPipe = new NamedPipeServerStream(stdOutPipeName, PipeDirection.Out, maxNumberOfServerInstances: 5, transmissionMode: PipeTransmissionMode.Byte, options: System.IO.Pipes.PipeOptions.Asynchronous, inBufferSize:256, outBufferSize:256);
             return (readerPipe, writerPipe);
         }
 

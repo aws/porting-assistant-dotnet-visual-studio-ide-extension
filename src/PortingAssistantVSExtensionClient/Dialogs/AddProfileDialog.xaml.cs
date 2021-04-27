@@ -12,7 +12,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         public AddProfileDialog()
         {
             InitializeComponent();
-            this.Title = "Add a named profile";
+            this.Title = "Add a Named Profile";
         }
 
         public static string EnsureExecute()
@@ -26,7 +26,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
             if (String.IsNullOrEmpty(ProfileName.Text))
             {
-                WarningProfileName.Content = "Please enter the AWS profile name!";
+                WarningProfileName.Content = "Enter the AWS profile name";
                 return;
             }
             else
@@ -34,7 +34,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 WarningProfileName.Content = "";
             }
             if (String.IsNullOrEmpty(AccesskeyID.Text)) {
-                WarningAccessKeyID.Content = "Please enter the AWS Access Key ID!";
+                WarningAccessKeyID.Content = "Enter the AWS Access Key ID";
                 return;
             }
             else
@@ -43,7 +43,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
             if (String.IsNullOrEmpty(secretAccessKey.Text))
             {
-                WarningSecretKey.Content = "Please enter the AWS Secret Access Key!";
+                WarningSecretKey.Content = "Enter the AWS Secret Access Key";
                 return;
             }
             else
@@ -63,7 +63,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Hyperlink_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html#cli-quick-configuration");
+            System.Diagnostics.Process.Start(ExternalUrls.ConfigAWSCLI);
         }
     }
 }

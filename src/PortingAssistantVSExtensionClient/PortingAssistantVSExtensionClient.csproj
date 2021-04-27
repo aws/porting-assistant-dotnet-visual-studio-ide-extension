@@ -50,7 +50,7 @@
     <Compile Include="Commands\CommandsCommon.cs" />
     <Compile Include="Commands\ContactSupportCommand.cs" />
     <Compile Include="Commands\DisplaySettings.cs" />
-    <Compile Include="Commands\DodumentCommand.cs" />
+    <Compile Include="Commands\DocumentCommand.cs" />
     <Compile Include="Commands\PortingAssistantVSExtensionClientPackage.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -61,6 +61,7 @@
     <Compile Include="Commands\SolutionPortingCommand.cs" />
     <Compile Include="Common\AwsCredential.cs" />
     <Compile Include="Common\Constants.cs" />
+    <Compile Include="Common\ExternalUrls.cs" />
     <Compile Include="Common\LanguageServerStatus.cs" />
     <Compile Include="Common\PAGlobalService.cs" />
     <Compile Include="Common\TargetFrameWorkType.cs" />
@@ -174,7 +175,22 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\**">
+    <Content Include="Resources\icon.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <VSIXSubPath>Resources</VSIXSubPath>
+    </Content>
+    <Content Include="Resources\porting-assistant-config-dev.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <VSIXSubPath>Resources</VSIXSubPath>
+    </Content>
+    <Content Include="Resources\PortingAssistantLogo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <VSIXSubPath>Resources</VSIXSubPath>
+    </Content>
+    <Content Include="Resources\StatusInformation.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>Resources</VSIXSubPath>

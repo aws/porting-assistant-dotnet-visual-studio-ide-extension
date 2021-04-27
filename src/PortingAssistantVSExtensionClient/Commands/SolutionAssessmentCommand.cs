@@ -117,6 +117,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             finally
             {
                 CommandsCommon.EnableAllCommand(true);
+                
             }
         }
 

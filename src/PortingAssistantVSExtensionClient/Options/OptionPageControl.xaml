@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Options"
-             mc:Ignorable="d" Height="300" Width="465">
+             mc:Ignorable="d" Height="310" Width="465">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -12,11 +12,11 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <GroupBox Header="Porting Assistant For .NET" HorizontalAlignment="Left" Height="300" Margin="0,10,0,0" Grid.RowSpan="4" VerticalAlignment="Top" Width="465" FontSize="14"/>
-        <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="0" Margin="10,50,10,10" HorizontalAlignment="Stretch"><Run BaselineAlignment="Center" Text="Porting Assistant For .NET is a compatibility scanner that reduces the manual effort required to port Microsoft .NET Framework applications to .NET Core. The Porting Assistant for .NET assesses the .NET application source code and identifies incompatible APIs and third-party packages. Where applicable, the Porting Assistant for .NET also provides replacement suggestions that are compatible with .NET Core."/><LineBreak/><LineBreak/></TextBlock>
-        <GroupBox Header="Target Framework" HorizontalAlignment="Left" Grid.Row="1" Height="70" Margin="0,10,0,0" VerticalAlignment="Top" Width="465"/>
+        <GroupBox Header="Porting Assistant for .NET" HorizontalAlignment="Left" Height="300" Margin="0,10,0,0" Grid.RowSpan="4" VerticalAlignment="Top" Width="465" FontSize="14"/>
+        <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" Grid.Row="0" Margin="10,50,10,10" HorizontalAlignment="Stretch"><Run BaselineAlignment="Center" Text="Porting Assistant for .NET is a compatibility scanner that reduces the manual effort required to port Microsoft .NET Framework applications to .NET Core. Porting Assistant for .NET assesses the .NET application source code and identifies incompatible APIs and third-party packages. Where applicable, Porting Assistant for .NET also provides replacement suggestions that are compatible with .NET Core."/><LineBreak/><LineBreak/></TextBlock>
+        <GroupBox Header="Target Framework" HorizontalAlignment="Left" Grid.Row="1" Height="129" Grid.RowSpan="3" Margin="0,10,0,0" VerticalAlignment="Top" Width="465"/>
         <ComboBox x:Name="TargeFrameworks" HorizontalAlignment="Left" Grid.Row="1" Margin="10,50,0,0" VerticalAlignment="Top" Width="299"/>
-        <Button x:Name="ClearCache" Content="Clear assessment cache" HorizontalAlignment="Left" Grid.Row="2" Background="{x:Null}" BorderThickness="0" Cursor="Hand" Foreground="Blue" Margin="319,-10,0,0" VerticalAlignment="Top" Width="139" Height="27" RenderTransformOrigin="0.964,0.741" Click="Button_Click"/>
-        <Label Content="Choose a target .NET framework to port your solution" HorizontalAlignment="Left" Margin="5,25,0,0" Grid.Row="1" VerticalAlignment="Top" Width="455" Opacity="0.6"/>
+        <Button x:Name="ClearCache" Content="Clear assessment cache" HorizontalAlignment="Left" Grid.Row="2" Background="{x:Null}" BorderThickness="0" Cursor="Hand" Foreground="Blue" Margin="319,10,0,0" VerticalAlignment="Top" Width="139" Height="27" RenderTransformOrigin="0.964,0.741" Click="Button_Click"/>
+        <Label Content="Choose a target .NET framework to which to port your solution" HorizontalAlignment="Left" Margin="5,25,0,0" Grid.Row="1" VerticalAlignment="Top" Width="455" Opacity="0.6"/>
     </Grid>
 </UserControl>

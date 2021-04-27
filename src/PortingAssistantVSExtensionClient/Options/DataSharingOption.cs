@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.Shell;
-using PortingAssistantVSExtensionClient.Models;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -22,7 +21,7 @@ namespace PortingAssistantVSExtensionClient.Options
         {
             _userSettings = UserSettings.Instance;
             _dataSharingoptionsPageControl = new DataSharingOptionPage();
-            _dataSharingoptionsPageControl.InitalizeNamedProfile(_userSettings.AWSProfileName);
+            
         }
 
         protected override UIElement Child { get { return _dataSharingoptionsPageControl; } }
@@ -31,6 +30,11 @@ namespace PortingAssistantVSExtensionClient.Options
         {
             base.OnActivate(e);
             LoadSettings();
+            if (_dataSharingoptionsPageControl.Profiles.SelectedItem == null
+                || _dataSharingoptionsPageControl.Profiles.SelectedItem.Equals(""))
+            {
+                _dataSharingoptionsPageControl.WarningBar.Content = "Profile is required";
+            }
         }
         protected override void OnApply(PageApplyEventArgs args)
         {
@@ -40,15 +44,7 @@ namespace PortingAssistantVSExtensionClient.Options
         void LoadSettings()
         {
             _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked = _userSettings.EnabledMetrics;
-            if (_dataSharingoptionsPageControl.Profiles.Items.Contains(_userSettings.AWSProfileName))
-            {
-                _dataSharingoptionsPageControl.Profiles.SelectedItem = _userSettings.AWSProfileName;
-            }
-            else
-            {
-                _dataSharingoptionsPageControl.Profiles.SelectedItem = "";
-            }
-            
+            _dataSharingoptionsPageControl.InitalizeNamedProfile(_userSettings.AWSProfileName);
         }
 
         void Save()

@@ -19,7 +19,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             InitializeComponent();
             initializeUI();
             InitalizeNamedProfile(_userSettings.AWSProfileName);
-            this.Title = "Getting started";
+            this.Title = "Get started";
         }
 
         private void initializeUI()
@@ -55,6 +55,11 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            if(Profiles.SelectedItem == null || Profiles.SelectedItem.Equals(""))
+            {
+                WarningBar.Content = "Profile is required";
+                return;
+            }
             _userSettings.EnabledMetrics = AgreeToShare.IsChecked ?? false;
             _userSettings.ShowWelcomePage = false;
             _userSettings.AWSProfileName = (string)Profiles.SelectedValue;
@@ -75,13 +80,28 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Hyperlink_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://docs.aws.amazon.com/portingassistant/latest/userguide/what-is-porting-assistant.html");
+            System.Diagnostics.Process.Start(ExternalUrls.Documentation);
 
         }
 
         private void Hyperlink_Click_1(object sender, System.Windows.RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://docs.aws.amazon.com/portingassistant/latest/userguide/how-porting-assistant-works.html#porting-assistant-information-collected");
+            System.Diagnostics.Process.Start(ExternalUrls.CollectInfomation);
+        }
+
+        private void Profiles_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            WarningBar.Content = "";
+        }
+
+        private void Hyperlink_Click_2(object sender, System.Windows.RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(ExternalUrls.Agreement);
+        }
+
+        private void Hyperlink_Click_3(object sender, System.Windows.RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(ExternalUrls.ServiceTerms);
         }
     }
 }

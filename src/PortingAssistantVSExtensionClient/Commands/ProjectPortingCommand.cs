@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.PlatformUI;
 using PortingAssistantVSExtensionClient.Dialogs;
 using PortingAssistantVSExtensionClient.Common;
 using System.Threading;
+using System.IO;
 
 namespace PortingAssistantVSExtensionClient.Commands
 {
@@ -105,18 +106,18 @@ namespace PortingAssistantVSExtensionClient.Commands
                 string SelectedProjectPath = SolutionUtils.GetSelectedProjectPath();
                 if (SelectedProjectPath.Equals(""))
                 {
-                    NotificationUtils.ShowInfoMessageBox(this.package, "Please select or open a project!", "Porting project to dotnet core");
+                    NotificationUtils.ShowInfoMessageBox(this.package, "Please select or open a project", "Porting a Project");
                     return;
                 }
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
-                if (!PortingDialog.EnsureExecute()) return;
+                if (!PortingDialog.EnsureExecute(SelectedProjectPath)) return;
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
                 if(await RunPortingAsync(SolutionFile, SelectedProjectPath))
                 {
-                    NotificationUtils.ShowInfoMessageBox(this.package, $"The project has been ported to {UserSettings.Instance.TargetFramework}", "Porting success!");
+                    NotificationUtils.ShowInfoMessageBox(this.package, $"The project has been ported to {UserSettings.Instance.TargetFramework}", "Porting Successful");
                 }
             }
             catch (Exception ex)
@@ -143,17 +144,14 @@ namespace PortingAssistantVSExtensionClient.Commands
             using (var ted = (IDisposable)_dialog)
             {
                 try {
-                    _dialog.StartWaitDialog("Porting Assistant", "Porting the Project........", "", null, "", 1, false, true);
+                    _dialog.StartWaitDialog("Porting Assistant", $"Porting Project {Path.GetFileName(SelectedProjectPath)}", "", null, "", 1, false, true);
                     await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
                         "applyPortingProjectFileChanges",
                         PortingRequest);
-                    _dialog.UpdateProgress("Porting in process", $"reassessing the solution......", $"reassessing the solution......", 1, 2, true, out _);
-                    await CommandsCommon.RunAssessmentAsync(SolutionFile);
-                    _dialog.UpdateProgress("Porting in process", $"solution reassessed", $"solution reassessed", 2, 2, true, out _);
                     return true;
                 } catch (Exception ex)
                 {
-                    NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Porting failed!");
+                    NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Porting failed");
                     return false;
                 }
                 finally

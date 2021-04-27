@@ -55,14 +55,14 @@ namespace PortingAssistantVSExtensionClient.Options
             }
         }
 
-        private void Hyperlink_Click(object sender, RoutedEventArgs e)
+        private void Profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            WarningBar.Content = "";
         }
 
-        private void Hyperlink_Click_1(object sender, RoutedEventArgs e)
+        private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-
+            System.Diagnostics.Process.Start("https://docs.aws.amazon.com/portingassistant/latest/userguide/how-porting-assistant-works.html#porting-assistant-information-collected");
         }
     }
 }

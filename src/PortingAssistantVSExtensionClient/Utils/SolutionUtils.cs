@@ -21,6 +21,12 @@ namespace PortingAssistantVSExtensionClient.Utils
             return dte.Solution.FullName;
         }
 
+        public static string GetSolutionPath(DTE2 dte)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return dte.Solution.FullName;
+        }
+
         public static async Task<Dictionary<string, List<string>>> GetMetadataReferencesAsync(DTE2 dte)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();

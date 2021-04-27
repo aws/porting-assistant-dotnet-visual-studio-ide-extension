@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Amazon.Runtime.CredentialManagement;
 using System.Collections.Generic;
+using System;
 
 namespace PortingAssistantVSExtensionClient.Common
 {
@@ -12,6 +13,9 @@ namespace PortingAssistantVSExtensionClient.Common
     {
         private static PAGlobalService instance = null;
         private readonly SharedCredentialsFile sharedProfile = new SharedCredentialsFile();
+
+        public static Lazy<DTE> DTE = new Lazy<DTE>(() => (EnvDTE.DTE)ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE)));
+        public static Lazy<DTE2> DTE2 = new Lazy<DTE2>(() => (EnvDTE80.DTE2)ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE80.DTE2)));
 
         public readonly AsyncPackage Package;
         public readonly IAsyncServiceProvider AsyncServiceProvider;

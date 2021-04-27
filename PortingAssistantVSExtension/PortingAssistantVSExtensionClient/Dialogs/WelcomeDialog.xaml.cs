@@ -72,5 +72,16 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 InitalizeNamedProfile(newAddedProfile);
             }
         }
+
+        private void Hyperlink_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://docs.aws.amazon.com/portingassistant/latest/userguide/what-is-porting-assistant.html");
+
+        }
+
+        private void Hyperlink_Click_1(object sender, System.Windows.RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://docs.aws.amazon.com/portingassistant/latest/userguide/how-porting-assistant-works.html#porting-assistant-information-collected");
+        }
     }
 }

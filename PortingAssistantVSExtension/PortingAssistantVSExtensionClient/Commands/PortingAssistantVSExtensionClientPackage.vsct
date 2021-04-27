@@ -39,7 +39,7 @@
 			<Menu guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="TopLevelMenu" priority="0x700" type="Menu">
 				<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
 				<Strings>
-					<ButtonText>Porting Assistant</ButtonText>
+					<ButtonText>Porting Assistant For .Net</ButtonText>
 				</Strings>
 			</Menu>
 		</Menus>
@@ -134,6 +134,7 @@
 			<!-- porting assistant menu -->
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="SolutionAssessmentCommandId" priority="0x0301" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
+				<Icon guid="icons" id="icon1" />
 				<Strings>
 					<ButtonText>Run Full Assessment</ButtonText>
 				</Strings>
@@ -159,16 +160,25 @@
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidDisplaySettings" priority="0x0306" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
 				<Strings>
-					<ButtonText>Porting Assistant Settings...</ButtonText>
+					<ButtonText>Settings</ButtonText>
 				</Strings>
 			 </Button>
-      <Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidContactSupportCommand" priority="0x0305" type="Button">
-        <Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
-        <Strings>
-          <ButtonText>Contact Support</ButtonText>
-        </Strings>
-      </Button>
-    </Buttons>
+			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidContactSupportCommand" priority="0x0305" type="Button">
+				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
+				<Strings>
+					<ButtonText>Contact Support</ButtonText>
+				</Strings>
+			</Button>
+			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidDodumentCommand" priority="0x0307" type="Button">
+				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
+				<Strings>
+					<ButtonText>Documentation</ButtonText>
+				</Strings>
+			</Button>
+		</Buttons>
+		<Bitmaps>
+			<Bitmap guid="icons" href="..\Resources\icon.png" usedList="icon1" />
+		</Bitmaps>
   </Commands>
 
 	<Symbols>
@@ -194,7 +204,11 @@
 			<IDSymbol value="0x0103" name="cmdidAutoAssessmentCommand" />
 			<IDSymbol value="0x0104" name="cmdidDisplaySettings" />
 			<IDSymbol value="0x0105" name="cmdidContactSupportCommand" />
+			<IDSymbol value="0x0106" name="cmdidDodumentCommand" />
 		</GuidSymbol>
   
+		<GuidSymbol value="{65213845-3f7b-4be5-9fb5-c5a71b403032}" name="icons">
+			<IDSymbol name="icon1" value="1" />
+		</GuidSymbol>
   </Symbols>
 </CommandTable>

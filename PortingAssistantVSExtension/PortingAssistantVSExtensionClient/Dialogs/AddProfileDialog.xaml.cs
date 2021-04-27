@@ -60,5 +60,10 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             ClickResult = "";
             Close();
         }
+
+        private void Hyperlink_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html#cli-quick-configuration");
+        }
     }
 }

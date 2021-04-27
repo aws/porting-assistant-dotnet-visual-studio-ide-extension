@@ -50,6 +50,7 @@
     <Compile Include="Commands\CommandsCommon.cs" />
     <Compile Include="Commands\ContactSupportCommand.cs" />
     <Compile Include="Commands\DisplaySettings.cs" />
+    <Compile Include="Commands\DodumentCommand.cs" />
     <Compile Include="Commands\PortingAssistantVSExtensionClientPackage.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -127,6 +128,9 @@
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.9.31025.194 " ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Threading">
+      <Version>16.9.60</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.31">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -165,13 +169,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="PortingAssistantLanguageServer\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	<Content Include="PortingAssistantLanguageServer\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>PortingAssistantLanguageServer</VSIXSubPath>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Resources\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

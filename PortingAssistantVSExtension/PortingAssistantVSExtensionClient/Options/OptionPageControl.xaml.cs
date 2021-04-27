@@ -28,7 +28,14 @@ namespace PortingAssistantVSExtensionClient.Options
         public OptionPageControl()
         {
             InitializeComponent();
+            ClearCache.IsEnabled = true;
+            ClearCache.Foreground = Brushes.Blue;
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            ClearCache.IsEnabled = false;
+            ClearCache.Foreground = Brushes.Gray;
+        }
     }
 }

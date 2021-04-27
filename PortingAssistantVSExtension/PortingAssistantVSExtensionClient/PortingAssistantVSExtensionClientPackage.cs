@@ -58,11 +58,7 @@ namespace PortingAssistantVSExtensionClient
             await PortingAssistantVSExtensionClient.Commands.AutoAssessmentCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.DisplaySettings.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.ContactSupportCommand.InitializeAsync(this);
-            if (UserSettings.Instance.ShowWelcomePage)
-            {
-                Dialogs.WelcomeDialog.EnsureExecute();
-            }
-            
+            await PortingAssistantVSExtensionClient.Commands.DodumentCommand.InitializeAsync(this);
         }
 
         #endregion

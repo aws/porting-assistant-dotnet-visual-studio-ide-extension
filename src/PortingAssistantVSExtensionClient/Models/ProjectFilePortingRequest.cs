@@ -11,6 +11,7 @@ namespace PortingAssistantVSExtensionClient.Models
         public List<string> ProjectPaths { get; set; }
         public string SolutionPath { get; set; }
         public string TargetFramework { get; set; }
+        public string PipeName { get; set; }
         public bool IncludeCodeFix { get; set; }
     }
 }

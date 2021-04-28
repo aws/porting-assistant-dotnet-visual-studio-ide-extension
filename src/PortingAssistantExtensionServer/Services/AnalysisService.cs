@@ -19,10 +19,11 @@ using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 using Codelyzer.Analysis.Model;
 using Constants = PortingAssistantExtensionServer.Common.Constants;
 using System.IO.Pipes;
+using PortingAssistantExtensionServer.Services;
 
 namespace PortingAssistantExtensionServer
 {
-    internal class AnalysisService : IDisposable
+    internal class AnalysisService : BaseService, IDisposable
     {
         private AnalyzeSolutionRequest _request;
         private readonly ILogger<AnalysisService> _logger;
@@ -44,35 +45,7 @@ namespace PortingAssistantExtensionServer
             CodeActions = new Dictionary<int, IList<TextChange>>();
             FileToProjectAnalyssiResult = new Dictionary<DocumentUri, ProjectAnalysisResult>();
         }
-        private async Task CreateClientConnection(string pipeName)
-        {
-            NamedPipeClientStream client = null;
-            try
-            {
-                client = new NamedPipeClientStream(pipeName);
-                await client.ConnectAsync();
-                StreamWriter writer = new StreamWriter(client);
-                //We don't care what's being written, we just want to ping the client and tell it we're done
-                await writer.WriteLineAsync("");
-                await writer.FlushAsync();
-             
-            }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-                if (client != null)
-                {
-                    if (client.IsConnected)
-                    {
-                        client.Close();
-                    }
-                    client.Dispose();
-                }
-            }
-        }
+        
 
         public async Task<SolutionAnalysisResult> AssessSolutionAsync(AnalyzeSolutionRequest request)
         {
@@ -87,7 +60,7 @@ namespace PortingAssistantExtensionServer
                     solutionAnalysisResult,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion);
-                CreateClientConnection(request.PipeName);
+                CreateClientConnectionAsync(request.PipeName);
                 return solutionAnalysisResult;
             }
             catch (Exception e)

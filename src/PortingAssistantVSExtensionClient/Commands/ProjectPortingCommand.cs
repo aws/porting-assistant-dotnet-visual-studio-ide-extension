@@ -102,9 +102,9 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             try
             {
+                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 if (!CommandsCommon.SetupPage()) return;
                 CommandsCommon.EnableAllCommand(false);
-                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 string SelectedProjectPath = SolutionUtils.GetSelectedProjectPath();
                 selectedProject = Path.GetFileName(SelectedProjectPath);
                 if (SelectedProjectPath.Equals(""))
@@ -118,10 +118,10 @@ namespace PortingAssistantVSExtensionClient.Commands
                 }
                 if (!PortingDialog.EnsureExecute(selectedProject)) return;
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
-                if(await RunPortingAsync(SolutionFile, SelectedProjectPath))
-                {
-                    NotificationUtils.ShowInfoMessageBox(this.package, $"The project has been ported to {UserSettings.Instance.TargetFramework}", "Porting successful");
-                }
+
+                string pipeName = Guid.NewGuid().ToString();
+                RunPortingAsync(SolutionFile, SelectedProjectPath, pipeName);
+                PipeUtils.StartListenerConnection(pipeName, GetPortingCompletionTasks(this.package, selectedProject, UserSettings.Instance.TargetFramework));
             }
             catch (Exception ex)
             {
@@ -133,7 +133,29 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
         }
 
-        private async System.Threading.Tasks.Task<bool> RunPortingAsync(string SolutionFile, string SelectedProjectPath)
+
+        public Func<Task> GetPortingCompletionTasks(AsyncPackage package, string selectedProject, string targetFramework)
+        {
+            async Task CompletionTask()
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                try
+                {
+                    NotificationUtils.ShowInfoMessageBox(package, $"The project has been ported to {targetFramework}", "Porting successful");
+                }
+                catch (Exception ex)
+                {
+                    NotificationUtils.ShowErrorMessageBox(package, $"Porting failed for {selectedProject} due to {ex.Message}", "Porting failed");
+                }
+                finally
+                {
+                    CommandsCommon.EnableAllCommand(true);
+                }
+            }
+            return CompletionTask;
+        }
+
+        private async System.Threading.Tasks.Task<bool> RunPortingAsync(string SolutionFile, string SelectedProjectPath, string pipeName)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var PortingRequest = new ProjectFilePortingRequest()
@@ -142,6 +164,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 ProjectPaths = new List<string>() { SelectedProjectPath },
                 TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
                 IncludeCodeFix = UserSettings.Instance.ApplyPortAction,
+                PipeName = pipeName
             };
             _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
             using (var ted = (IDisposable)_dialog)

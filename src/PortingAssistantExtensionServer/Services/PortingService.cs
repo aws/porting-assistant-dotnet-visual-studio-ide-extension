@@ -2,13 +2,14 @@
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
 using PortingAssistantExtensionServer.Models;
+using PortingAssistantExtensionServer.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace PortingAssistantExtensionServer
 {
-    class PortingService : IDisposable
+    class PortingService : BaseService, IDisposable
     {
         private readonly ILogger<PortingService> _logger;
         private readonly IPortingAssistantClient _client;
@@ -34,6 +35,7 @@ namespace PortingAssistantExtensionServer
                 };
                 _logger.LogInformation($"start porting ${request.SolutionPath} .....");
                 var results = _client.ApplyPortingChanges(portingRequst);
+                CreateClientConnectionAsync(request.PipeName);
                 _logger.LogInformation($"porting success ${request.SolutionPath}");
                 return new ProjectFilePortingResponse()
                 {

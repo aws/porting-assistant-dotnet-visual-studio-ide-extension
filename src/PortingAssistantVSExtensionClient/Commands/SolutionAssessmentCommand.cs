@@ -98,9 +98,9 @@ namespace PortingAssistantVSExtensionClient.Commands
             
             try
             {
+                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 if (!CommandsCommon.SetupPage()) return;
                 CommandsCommon.EnableAllCommand(false);
-                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 var SolutionFile = await CommandsCommon.GetSolutionPathAsync();
                 SolutionName = Path.GetFileName(SolutionFile);
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
@@ -109,25 +109,18 @@ namespace PortingAssistantVSExtensionClient.Commands
                 }
                 string pipeName = Guid.NewGuid().ToString();
                 CommandsCommon.RunAssessmentAsync(SolutionFile, pipeName);
-                StartListenerConnection(pipeName);
+                PipeUtils.StartListenerConnection(pipeName, GetAssessmentCompletionTasks(this.package, SolutionName));
             }
             catch (Exception ex)
             {
                 NotificationUtils.ShowErrorMessageBox(this.package, $"Assessment failed for {SolutionName} due to {ex.Message}", "Assessment failed");
             }
-            finally
-            {
-                //CommandsCommon.EnableAllCommand(true);
-            }
         }
 
-        private void StartListenerConnection(string pipeName)
+        public Func<Task> GetAssessmentCompletionTasks(AsyncPackage package, string solutionName)
         {
-            Task.Factory.StartNew(async () =>
+            async Task CompletionTask()
             {
-                var server = new NamedPipeServerStream(pipeName);
-                await server.WaitForConnectionAsync();
-
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 try
                 {
@@ -141,24 +134,14 @@ namespace PortingAssistantVSExtensionClient.Commands
                 }
                 catch (Exception ex)
                 {
-                    NotificationUtils.ShowErrorMessageBox(this.package, $"Assessment failed for {SolutionName} due to {ex.Message}", "Assessment failed");
+                    NotificationUtils.ShowErrorMessageBox(package, $"Assessment failed for {solutionName} due to {ex.Message}", "Assessment failed");
                 }
                 finally
                 {
                     CommandsCommon.EnableAllCommand(true);
-                    if(server != null)
-                    {
-                        if (server.IsConnected)
-                        {
-                            server.Disconnect();
-                            server.Close();
-                        }
-                        server.Dispose();
-                    }
                 }
-            });
+            }
+            return CompletionTask;
         }
-
-
     }
 }

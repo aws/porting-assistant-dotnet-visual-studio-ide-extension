@@ -12,7 +12,6 @@ namespace PortingAssistantVSExtensionClient.Common
     public sealed class PAGlobalService
     {
         private static PAGlobalService instance = null;
-        private readonly SharedCredentialsFile sharedProfile = new SharedCredentialsFile();
 
         public static Lazy<DTE> DTE = new Lazy<DTE>(() => (EnvDTE.DTE)ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE)));
         public static Lazy<DTE2> DTE2 = new Lazy<DTE2>(() => (EnvDTE80.DTE2)ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE80.DTE2)));
@@ -36,25 +35,6 @@ namespace PortingAssistantVSExtensionClient.Common
         public async Task<DTE2> GetDTEServiceAsync()
         {
             return (DTE2)await AsyncServiceProvider.GetServiceAsync(typeof(DTE));
-        }
-
-        public List<string> ListProfiles()
-        {
-            return sharedProfile.ListProfileNames();
-        }
-
-
-        public void SaveProfile(string profileName, AwsCredential credential)
-        {
-            var profile = new CredentialProfile(
-                name: profileName,
-                profileOptions: new CredentialProfileOptions
-                {
-                    AccessKey = credential.AwsAccessKeyId,
-                    SecretKey = credential.AwsSecretKey
-                });
-            profile.Region = Amazon.RegionEndpoint.USEast1;
-            sharedProfile.RegisterProfile(profile);
         }
     }
 }

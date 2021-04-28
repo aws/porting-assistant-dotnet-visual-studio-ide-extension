@@ -59,7 +59,6 @@
     <Compile Include="Commands\ProjectPortingCommand.cs" />
     <Compile Include="Commands\SolutionAssessmentCommand.cs" />
     <Compile Include="Commands\SolutionPortingCommand.cs" />
-    <Compile Include="Common\AwsCredential.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\ExternalUrls.cs" />
     <Compile Include="Common\LanguageServerStatus.cs" />
@@ -81,6 +80,7 @@
     <Compile Include="Models\AnalyzeSolutionResponse.cs" />
     <Compile Include="Models\ProjectFilePortingRequest.cs" />
     <Compile Include="Models\ProjectFilePortingResponse.cs" />
+    <Compile Include="Models\TelemetryConfiguration.cs" />
     <Compile Include="Models\UpdateSettingsRequest.cs" />
     <Compile Include="Options\DataSharingOption.cs">
       <SubType>Component</SubType>
@@ -98,6 +98,7 @@
     <Compile Include="PortingAssistantLanguageClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PortingAssistantVSExtensionClientPackage.cs" />
+    <Compile Include="Utils\AwsUtils.cs" />
     <Compile Include="Utils\NotificationUtils.cs" />
     <Compile Include="Utils\SolutionUtils.cs" />
   </ItemGroup>
@@ -123,6 +124,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Aws4RequestSigner">
+      <Version>1.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="AWSSDK.APIGateway">
+      <Version>3.7.0.9</Version>
+    </PackageReference>
     <PackageReference Include="AWSSDK.Core">
       <Version>3.7.0.13</Version>
     </PackageReference>
@@ -132,6 +139,9 @@
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.31">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>5.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

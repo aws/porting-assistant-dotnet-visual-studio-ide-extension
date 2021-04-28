@@ -54,15 +54,16 @@
             <LineBreak></LineBreak>
             <Run Text="         downlaoded file."></Run>
         </TextBlock>
-        <Label Content="Profile Name" HorizontalAlignment="Left" Margin="50,0,0,0" VerticalAlignment="Top" Width="150" Height="30" Grid.Column="0" Grid.Row="1"/>
-        <TextBox x:Name="ProfileName" HorizontalAlignment="Left"  Margin="50,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="450" Height="30" Grid.Column="0" Grid.Row="1" IsEnabled="True" AutomationProperties.HelpText="Please enter profile name"/>
-        <Label x:Name="WarningProfileName"  Content="" HorizontalAlignment="Left" Margin="50,60,0,0" VerticalAlignment="Top" Width="450" Height="30" FontSize="10" Foreground="Red"  Grid.Column="0" Grid.Row="1"/>
-        <Label Content="AWS Access Key ID" HorizontalAlignment="Left" Margin="50,0,0,0" VerticalAlignment="Top" Width="150" Height="30" Grid.Column="0" Grid.Row="2" AutomationProperties.HelpText="Please enter AWS access key ID"/>
-        <TextBox x:Name="AccesskeyID" HorizontalAlignment="Left" Margin="50,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="450" Height="30" Grid.Column="0" Grid.Row="2"/>
-        <Label x:Name="WarningAccessKeyID"  Content="" HorizontalAlignment="Left" Margin="50,60,0,0" VerticalAlignment="Top" FontSize="10" Width="450" Foreground="Red" Height="30" Grid.Column="0" Grid.Row="2"/>
-        <Label Content="AWS Secret Access Key" HorizontalAlignment="Left" Margin="50,0,0,0" VerticalAlignment="Top" Width="150" Height="30" Grid.Column="0" Grid.Row="3"/>
-        <TextBox x:Name="secretAccessKey" HorizontalAlignment="Left"  Margin="50,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="450" Height="30" Grid.Column="0" Grid.Row="3" AutomationProperties.HelpText="Please enter AWS secret access key"/>
-        <Label x:Name="WarningSecretKey" Content="" HorizontalAlignment="Left" Margin="50,60,0,0" VerticalAlignment="Top" Width="450" Height="30" Foreground="Red" FontSize="10" Grid.Column="0" Grid.Row="3"/>
+        <Label Content="Profile Name" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Top" Width="150" Height="30" Grid.Column="0" Grid.Row="1"/>
+        <TextBox x:Name="ProfileName" HorizontalAlignment="Left"  Margin="30,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Height="30" Grid.Column="0" Grid.Row="1" IsEnabled="True" AutomationProperties.HelpText="Please enter profile name"/>
+        <Label x:Name="WarningProfileName"  Content="" HorizontalAlignment="Left" Margin="30,60,0,0" VerticalAlignment="Top" Width="480" Height="30" FontSize="10" Foreground="Red"  Grid.Column="0" Grid.Row="1"/>
+        <Label Content="AWS Access Key ID" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Top" Width="150" Height="30" Grid.Column="0" Grid.Row="2" AutomationProperties.HelpText="Please enter AWS access key ID"/>
+        <TextBox x:Name="AccesskeyID" HorizontalAlignment="Left" Margin="30,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Height="30" Grid.Column="0" Grid.Row="2"/>
+        <Label x:Name="WarningAccessKeyID"  Content="" HorizontalAlignment="Left" Margin="30,60,0,0" VerticalAlignment="Top" FontSize="10" Width="480" Foreground="Red" Height="30" Grid.Column="0" Grid.Row="2"/>
+        <Label Content="AWS Secret Access Key" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Top" Width="150" Height="30" Grid.Column="0" Grid.Row="3"/>
+        <TextBox x:Name="secretAccessKey" HorizontalAlignment="Left"  Margin="30,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Height="30" Grid.Column="0" Grid.Row="3" AutomationProperties.HelpText="Please enter AWS secret access key"/>
+        <Label x:Name="WarningSecretKey" Content="" HorizontalAlignment="Left" Margin="30,60,0,0" VerticalAlignment="Top" Width="480" Height="30" Foreground="Red" FontSize="10" Grid.Column="0" Grid.Row="3"/>
+        <Label x:Name="WarningValidation" Content="" HorizontalAlignment="Left" Margin="100,60,0,0" VerticalAlignment="Top" Width="280" Height="30" Foreground="Red" FontSize="10" Grid.Column="0" Grid.Row="3"/>
         <Button Content="Cancel" HorizontalAlignment="Right" Margin="10,10,110,10" VerticalAlignment="Bottom" Width="90" Height="30" Background="{x:Null}" BorderThickness="0" Click="Button_Click_1" Grid.Column="0" Grid.Row="4"/>
         <Button Content="Save Profile" HorizontalAlignment="Right" Margin="10,10,20,10" VerticalAlignment="Bottom" Width="90" Height="30" Click="Button_Click" Grid.Column="0" Grid.Row="4"/>
     </Grid>

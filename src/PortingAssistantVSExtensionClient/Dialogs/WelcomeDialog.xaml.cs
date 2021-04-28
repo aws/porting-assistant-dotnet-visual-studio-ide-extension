@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Options;
+using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,7 +42,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void InitalizeNamedProfile(string newAddedProfile)
         {
-            List<string> namedProfiles = PAGlobalService.Instance.ListProfiles();
+            List<string> namedProfiles = AwsUtils.ListProfiles();
             if (namedProfiles != null && namedProfiles.Count != 0)
             {
                 Profiles.Items.Clear();

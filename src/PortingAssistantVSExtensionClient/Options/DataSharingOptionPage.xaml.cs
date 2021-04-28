@@ -1,5 +1,6 @@
 ﻿using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Dialogs;
+using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace PortingAssistantVSExtensionClient.Options
 
         public void InitalizeNamedProfile(string newAddedProfile)
         {
-            List<string> namedProfiles = PAGlobalService.Instance.ListProfiles();
+            List<string> namedProfiles = AwsUtils.ListProfiles();
             if (namedProfiles != null && namedProfiles.Count != 0)
             {
                 Profiles.Items.Clear();
@@ -62,7 +63,7 @@ namespace PortingAssistantVSExtensionClient.Options
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://docs.aws.amazon.com/portingassistant/latest/userguide/how-porting-assistant-works.html#porting-assistant-information-collected");
+            System.Diagnostics.Process.Start(Common.ExternalUrls.CollectInfomation);
         }
     }
 }

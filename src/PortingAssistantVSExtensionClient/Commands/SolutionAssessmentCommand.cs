@@ -7,6 +7,7 @@ using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.IO.Pipes;
 using Task = System.Threading.Tasks.Task;
 
 namespace PortingAssistantVSExtensionClient.Commands
@@ -101,14 +102,9 @@ namespace PortingAssistantVSExtensionClient.Commands
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
-                await CommandsCommon.RunAssessmentAsync(SolutionFile);
-                if (!UserSettings.Instance.EnabledContinuousAssessment)
-                {
-                    UserSettings.Instance.EnabledContinuousAssessment = true;
-                    UserSettings.Instance.UpdateContinuousAssessment();
-                    PortingAssistantLanguageClient.UpdateUserSettingsAsync();
-                }
-                 
+                string pipeName = Guid.NewGuid().ToString();
+                CommandsCommon.RunAssessmentAsync(SolutionFile, pipeName);
+                StartListenerConnection(pipeName);
             }
             catch (Exception ex)
             {
@@ -116,11 +112,49 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
             finally
             {
-                CommandsCommon.EnableAllCommand(true);
-                
+                //CommandsCommon.EnableAllCommand(true);
             }
         }
 
-        
+        private void StartListenerConnection(string pipeName)
+        {
+            Task.Factory.StartNew(async () =>
+            {
+                var server = new NamedPipeServerStream(pipeName);
+                await server.WaitForConnectionAsync();
+
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                try
+                {
+                    if (!UserSettings.Instance.EnabledContinuousAssessment)
+                    {
+                        UserSettings.Instance.EnabledContinuousAssessment = true;
+                        UserSettings.Instance.UpdateContinuousAssessment();
+                        await PortingAssistantLanguageClient.UpdateUserSettingsAsync();
+                    }
+                    await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Assessment Successful");
+                    await NotificationUtils.UseStatusBarProgressAsync(2, 2, "Assessment Successful");
+                }
+                catch (Exception ex)
+                {
+                    await NotificationUtils.ShowInfoBarAsync(ServiceProvider, ex.Message);
+                }
+                finally
+                {
+                    CommandsCommon.EnableAllCommand(true);
+                    if(server != null)
+                    {
+                        if (server.IsConnected)
+                        {
+                            server.Disconnect();
+                            server.Close();
+                        }
+                        server.Dispose();
+                    }
+                }
+            });
+        }
+
+
     }
 }

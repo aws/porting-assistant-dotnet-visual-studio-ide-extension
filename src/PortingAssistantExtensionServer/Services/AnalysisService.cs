@@ -18,7 +18,7 @@ using TextSpan = PortingAssistant.Client.Model.TextSpan;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 using Codelyzer.Analysis.Model;
 using Constants = PortingAssistantExtensionServer.Common.Constants;
-
+using System.IO.Pipes;
 
 namespace PortingAssistantExtensionServer
 {
@@ -44,20 +44,52 @@ namespace PortingAssistantExtensionServer
             CodeActions = new Dictionary<int, IList<TextChange>>();
             FileToProjectAnalyssiResult = new Dictionary<DocumentUri, ProjectAnalysisResult>();
         }
+        private async Task StartClientAsync(string pipeName)
+        {
+            NamedPipeClientStream client = null;
+            try
+            {
+                //Client
+                //await Task.Factory.StartNew(() =>
+                //{
+                client = new NamedPipeClientStream(pipeName);
+                await client.ConnectAsync();
+                StreamWriter writer = new StreamWriter(client);
+                await writer.WriteLineAsync("nothing");
+                await writer.FlushAsync();
+                //});
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                if (client != null)
+                {
+                    if (client.IsConnected)
+                    {
+                        client.Close();
+                    }
+                    client.Dispose();
+                }
+            }
+        }
 
         public async Task<SolutionAnalysisResult> AssessSolutionAsync(AnalyzeSolutionRequest request)
         {
             try
             {
+
                 // Clean up the existing result before run full assessment
                 Cleanup();
                 _request = request;
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
-
                 _telemetry.SolutionAssessmentCollect(
                     solutionAnalysisResult,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion);
+                StartClientAsync(request.PipeName);
                 return solutionAnalysisResult;
             }
             catch (Exception e)

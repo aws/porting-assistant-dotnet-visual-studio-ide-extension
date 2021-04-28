@@ -89,13 +89,14 @@ namespace PortingAssistantVSExtensionClient.Commands
             return await SolutionUtils.GetMetadataReferencesAsync(dte);
         }
         
-        public static async System.Threading.Tasks.Task RunAssessmentAsync(string SolutionFile)
+        public static async System.Threading.Tasks.Task RunAssessmentAsync(string SolutionFile, string pipeName)
         {
             var metaReferences = await CommandsCommon.GetMetaReferencesAsync();
             var analyzeSolutionRequest = new AnalyzeSolutionRequest()
             {
                 solutionFilePath = SolutionFile,
                 metaReferences = metaReferences,
+                PipeName = pipeName,
                 settings = new AnalyzerSettings()
                 {
                     TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
@@ -106,9 +107,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             
             await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>(
                 "analyzeSolution",
-                analyzeSolutionRequest);
-            await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Assessment Successful");
-            await NotificationUtils.UseStatusBarProgressAsync(2, 2, "Assessment Successful");
+                analyzeSolutionRequest);            
         }
     }
 }

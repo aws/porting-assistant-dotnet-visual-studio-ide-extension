@@ -1,0 +1,156 @@
+==========
+References
+==========
+PortingAssistantExtensionTelemetry.Interface
+PortingAssistant.Client.Model
+PortingAssistantExtensionTelemetry
+PortingAssistantExtensionTelemetry.Model
+System.Net.Http
+System.IO
+System
+System.Collections.Generic
+System.Collections
+Newtonsoft.Json
+Newtonsoft.Json.Linq
+Amazon.Runtime.CredentialManagement
+Amazon.Runtime
+Aws4RequestSigner
+
+System.Text
+
+Microsoft.Extensions.Logging
+System.Threading.Tasks
+PortingAssistantExtensionServer.Common
+PortingAssistantExtensionServer.Handlers
+OmniSharp.Extensions.LanguageServer.Protocol.Server
+PortingAssistantExtensionServer
+OmniSharp.Extensions.LanguageServer.Protocol.Models
+OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities
+System.Threading
+System.Collections.Immutable
+System.Linq
+OmniSharp.Extensions.LanguageServer.Protocol
+PortingAssistantExtensionServer.TextDocumentModels
+OmniSharp.Extensions.LanguageServer.Protocol.Document
+MediatR
+OmniSharp.Extensions.JsonRpc
+PortingAssistantExtensionServer.Models
+System.IO.Pipelines
+OmniSharp.Extensions.LanguageServer.Server
+PortingAssistant.Client.Client
+Microsoft.Extensions.DependencyInjection
+System.Text.Json
+Serilog
+Serilog.Configuration
+System.IO.Pipes
+Nerdbank.Streams
+CTA.Rules.Models
+Codelyzer.Analysis.Model
+PortingAssistantExtensionServerUnitTest
+Xunit.Abstractions
+OmniSharp.Extensions.LanguageServer.Protocol.Client
+OmniSharp.Extensions.JsonRpc.Testing
+OmniSharp.Extensions.LanguageProtocol.Testing
+System.Collections.Concurrent
+PortingAssistantVSExtensionClient
+PortingAssistantVSExtensionClient.Models
+PortingAssistantVSExtensionClient.Options
+PortingAssistantVSExtensionClient.Commands
+PortingAssistantVSExtensionClient.Dialogs
+PortingAssistantVSExtensionClient.Common
+PortingAssistantVSExtensionClient.Utils
+project.all
+
+===============
+DownloadedFiles
+===============
+project.all.json
+
+==============
+ProjectResults
+==============
+----------------------
+Showing results for: C:\Users\markfawa\workplace\Github\PortingAssistantPlugin\tst\PortingAssistantExtensionServerUnitTest\PortingAssistantExtensionServerUnitTest.csproj
+----------------------
+---------------------------
+Target Versions:
+---------------------------
+net5.0
+---------------------------
+Upgrade packages:
+---------------------------
+---------------------------
+Action packages:
+---------------------------
+
+----------------------
+Showing results for: C:\Users\markfawa\workplace\Github\PortingAssistantPlugin\src\PortingAssistantExtensionTelemetry\PortingAssistantExtensionTelemetry.csproj
+----------------------
+---------------------------
+Target Versions:
+---------------------------
+net5.0
+---------------------------
+Upgrade packages:
+---------------------------
+---------------------------
+Action packages:
+---------------------------
+
+----------------------
+Showing results for: C:\Users\markfawa\workplace\Github\PortingAssistantPlugin\src\PortingAssistantVSExtensionClient\PortingAssistantVSExtensionClient.csproj
+----------------------
+---------------------------
+Target Versions:
+---------------------------
+net5.0
+---------------------------
+Upgrade packages:
+---------------------------
+---------------------------
+Action packages:
+---------------------------
+
+----------------------
+Showing results for: C:\Users\markfawa\workplace\Github\PortingAssistantPlugin\src\PortingAssistantExtensionServer\PortingAssistantExtensionServer.csproj
+----------------------
+---------------------------
+Target Versions:
+---------------------------
+net5.0
+---------------------------
+Upgrade packages:
+---------------------------
+---------------------------
+Action packages:
+---------------------------
+
+
+===========
+BuildErrors
+===========
+------------------
+BUILD ERRORS FOR: C:\Users\markfawa\workplace\Github\PortingAssistantPlugin\src\PortingAssistantExtensionServer\PortingAssistantExtensionServer.csproj
+------------------
+
+
+------------------
+BUILD ERRORS FOR: C:\Users\markfawa\workplace\Github\PortingAssistantPlugin\src\PortingAssistantExtensionTelemetry\PortingAssistantExtensionTelemetry.csproj
+------------------
+
+
+------------------
+BUILD ERRORS FOR: C:\Users\markfawa\workplace\Github\PortingAssistantPlugin\tst\PortingAssistantExtensionServerUnitTest\PortingAssistantExtensionServerUnitTest.csproj
+------------------
+
+
+------------------
+BUILD ERRORS FOR: C:\Users\markfawa\workplace\Github\PortingAssistantPlugin\src\PortingAssistantVSExtensionClient\PortingAssistantVSExtensionClient.csproj
+------------------
+
+BuildError: rrors: Encountered an unknown build issue. Falling back to syntax analysis
+Count: 1
+
+
+
+

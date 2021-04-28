@@ -147,7 +147,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                     _dialog.StartWaitDialog("Porting Assistant", $"Porting Project {Path.GetFileName(SelectedProjectPath)}", "", null, "", 1, false, true);
                     await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
                         "applyPortingProjectFileChanges",
-                        PortingRequest);
+                        PortingRequest);                    
                     return true;
                 } catch (Exception ex)
                 {

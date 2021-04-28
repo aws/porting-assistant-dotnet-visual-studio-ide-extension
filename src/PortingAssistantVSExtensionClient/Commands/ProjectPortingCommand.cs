@@ -64,6 +64,8 @@ namespace PortingAssistantVSExtensionClient.Commands
             private set;
         }
 
+        private string selectedProject = "";
+
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
@@ -104,25 +106,26 @@ namespace PortingAssistantVSExtensionClient.Commands
                 CommandsCommon.EnableAllCommand(false);
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 string SelectedProjectPath = SolutionUtils.GetSelectedProjectPath();
+                selectedProject = Path.GetFileName(SelectedProjectPath);
                 if (SelectedProjectPath.Equals(""))
                 {
-                    NotificationUtils.ShowInfoMessageBox(this.package, "Please select or open a project", "Porting a Project");
+                    NotificationUtils.ShowInfoMessageBox(this.package, "Please select or open a project", "Porting a project");
                     return;
                 }
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
-                if (!PortingDialog.EnsureExecute(SelectedProjectPath)) return;
+                if (!PortingDialog.EnsureExecute(selectedProject)) return;
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
                 if(await RunPortingAsync(SolutionFile, SelectedProjectPath))
                 {
-                    NotificationUtils.ShowInfoMessageBox(this.package, $"The project has been ported to {UserSettings.Instance.TargetFramework}", "Porting Successful");
+                    NotificationUtils.ShowInfoMessageBox(this.package, $"The project has been ported to {UserSettings.Instance.TargetFramework}", "Porting successful");
                 }
             }
             catch (Exception ex)
             {
-                await NotificationUtils.ShowInfoBarAsync(this.ServiceProvider, ex.Message);
+                NotificationUtils.ShowErrorMessageBox(this.package, $"Porting failed for {selectedProject} due to {ex.Message}", "Porting failed");
             }
             finally
             {
@@ -144,14 +147,14 @@ namespace PortingAssistantVSExtensionClient.Commands
             using (var ted = (IDisposable)_dialog)
             {
                 try {
-                    _dialog.StartWaitDialog("Porting Assistant", $"Porting Project {Path.GetFileName(SelectedProjectPath)}", "", null, "", 1, false, true);
+                    _dialog.StartWaitDialog("Porting Assistant", $"Porting project {Path.GetFileName(SelectedProjectPath)}", "", null, "", 1, false, true);
                     await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
                         "applyPortingProjectFileChanges",
                         PortingRequest);                    
                     return true;
                 } catch (Exception ex)
                 {
-                    NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Porting failed");
+                    NotificationUtils.ShowErrorMessageBox(this.package, $"Porting failed for {selectedProject} due to {ex.Message}", "Porting failed");
                     return false;
                 }
                 finally

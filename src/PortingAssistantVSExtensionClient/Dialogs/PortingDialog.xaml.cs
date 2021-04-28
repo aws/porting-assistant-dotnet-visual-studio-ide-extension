@@ -25,8 +25,8 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             bitmap.UriSource = new Uri(logoPath);
             bitmap.EndInit();
             InfoSign.Source = bitmap;
-            this.ApplyPortActionCheck.IsChecked = _userSettings.ApplyPortAction;
-            this.Title = $"Port {Path.GetFileName(portingFile)} to {_userSettings.TargetFramework}";
+            this.ApplyPortActionCheck.IsChecked = false;
+            this.Title = $"Port {portingFile} to {_userSettings.TargetFramework}";
         }
 
         public static bool EnsureExecute(string portingFile)

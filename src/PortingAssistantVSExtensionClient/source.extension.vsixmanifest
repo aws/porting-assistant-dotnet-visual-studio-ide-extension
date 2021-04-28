@@ -5,6 +5,7 @@
         <DisplayName>Porting Assistant For Visual Studio</DisplayName>
         <Description xml:space="preserve">Porting Assistant  Visual Studio IDE extension</Description>
         <Icon>Resources\PortingAssistantLogo.png</Icon>
+        <PreviewImage>Resources\PortingAssistantLogo.png</PreviewImage>
         <Preview>true</Preview>
     </Metadata>
     <Installation>

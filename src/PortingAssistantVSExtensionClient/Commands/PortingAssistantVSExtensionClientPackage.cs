@@ -20,9 +20,6 @@ namespace PortingAssistantVSExtensionClient.Commands
 
         public const string guidPortingAssistantVSExtensionClientPackageCmdSetString = "72f43848-037a-4907-98e2-e7e964271f44";
         public static Guid guidPortingAssistantVSExtensionClientPackageCmdSet = new Guid(guidPortingAssistantVSExtensionClientPackageCmdSetString);
-
-        public const string iconsString = "65213845-3f7b-4be5-9fb5-c5a71b403032";
-        public static Guid icons = new Guid(iconsString);
     }
     /// <summary>
     /// Helper class that encapsulates all CommandIDs uses across VS Package.
@@ -43,6 +40,5 @@ namespace PortingAssistantVSExtensionClient.Commands
         public const int cmdidDisplaySettings = 0x0104;
         public const int cmdidContactSupportCommand = 0x0105;
         public const int cmdidDocumentCommand = 0x0106;
-        public const int icon1 = 0x0001;
     }
 }

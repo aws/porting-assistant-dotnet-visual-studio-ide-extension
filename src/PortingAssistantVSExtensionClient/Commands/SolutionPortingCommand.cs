@@ -62,6 +62,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             private set;
         }
 
+        private string solutionName = "";
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
@@ -96,6 +97,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="e">Event args.</param>
         private async void Execute(object sender, EventArgs e)
         {
+            var SolutionName = "";
             try
             {
                 if (!CommandsCommon.SetupPage()) return;
@@ -106,8 +108,9 @@ namespace PortingAssistantVSExtensionClient.Commands
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+                solutionName = Path.GetFileName(SolutionFile);
                 var ProjectFiles = SolutionUtils.GetProjectPath(SolutionFile);
-                if (!PortingDialog.EnsureExecute(SolutionFile)) return;
+                if (!PortingDialog.EnsureExecute(solutionName)) return;
                 if (await RunPortingAsync(SolutionFile, ProjectFiles))
                 {
                     NotificationUtils.ShowInfoMessageBox(this.package, $"The solution has been ported to {UserSettings.Instance.TargetFramework}", "Porting Successful");
@@ -115,7 +118,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
             catch (Exception ex)
             {
-                await NotificationUtils.ShowInfoBarAsync(this.ServiceProvider, ex.Message);
+                NotificationUtils.ShowErrorMessageBox(this.package, $"Porting failed for {solutionName} due to {ex.Message}", "Porting failed");
             }
             finally
             {
@@ -144,7 +147,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 }
                 catch(Exception ex)
                 {
-                    NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Porting failed!");
+                    NotificationUtils.ShowErrorMessageBox(this.package, $"Porting failed for {solutionName} due to {ex.Message}", "Porting failed");
                     return false;
                 }
                 finally

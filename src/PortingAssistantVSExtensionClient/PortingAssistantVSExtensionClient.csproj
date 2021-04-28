@@ -185,10 +185,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\icon.bmp">
+    <Content Include="PortingAssistantLanguageServer\PortingAssistantExtensionServer.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
-      <VSIXSubPath>Resources</VSIXSubPath>
     </Content>
     <Content Include="Resources\porting-assistant-config-dev.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

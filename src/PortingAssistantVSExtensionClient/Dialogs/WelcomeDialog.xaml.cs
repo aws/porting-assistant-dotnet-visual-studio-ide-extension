@@ -104,5 +104,10 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
             System.Diagnostics.Process.Start(ExternalUrls.ServiceTerms);
         }
+
+        private void Button_Click_2(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

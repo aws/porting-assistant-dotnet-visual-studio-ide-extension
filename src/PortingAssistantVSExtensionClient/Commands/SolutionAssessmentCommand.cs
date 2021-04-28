@@ -7,6 +7,7 @@ using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.IO;
 using System.IO.Pipes;
 using Task = System.Threading.Tasks.Task;
 
@@ -57,6 +58,8 @@ namespace PortingAssistantVSExtensionClient.Commands
             private set;
         }
 
+        private string SolutionName = "";
+
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
@@ -92,12 +95,14 @@ namespace PortingAssistantVSExtensionClient.Commands
         private async void Execute(object sender, EventArgs e)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            
             try
             {
                 if (!CommandsCommon.SetupPage()) return;
                 CommandsCommon.EnableAllCommand(false);
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
-                string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+                var SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+                SolutionName = Path.GetFileName(SolutionFile);
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
@@ -108,7 +113,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
             catch (Exception ex)
             {
-                await NotificationUtils.ShowInfoBarAsync(ServiceProvider, ex.Message);
+                NotificationUtils.ShowErrorMessageBox(this.package, $"Assessment failed for {SolutionName} due to {ex.Message}", "Assessment failed");
             }
             finally
             {
@@ -132,12 +137,11 @@ namespace PortingAssistantVSExtensionClient.Commands
                         UserSettings.Instance.UpdateContinuousAssessment();
                         await PortingAssistantLanguageClient.UpdateUserSettingsAsync();
                     }
-                    await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Assessment Successful");
-                    await NotificationUtils.UseStatusBarProgressAsync(2, 2, "Assessment Successful");
+                    await NotificationUtils.UseStatusBarProgressAsync(2, 2, "Assessment successful");
                 }
                 catch (Exception ex)
                 {
-                    await NotificationUtils.ShowInfoBarAsync(ServiceProvider, ex.Message);
+                    NotificationUtils.ShowErrorMessageBox(this.package, $"Assessment failed for {SolutionName} due to {ex.Message}", "Assessment failed");
                 }
                 finally
                 {

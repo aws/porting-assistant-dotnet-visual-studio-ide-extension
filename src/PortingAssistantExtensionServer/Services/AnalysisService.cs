@@ -44,20 +44,18 @@ namespace PortingAssistantExtensionServer
             CodeActions = new Dictionary<int, IList<TextChange>>();
             FileToProjectAnalyssiResult = new Dictionary<DocumentUri, ProjectAnalysisResult>();
         }
-        private async Task StartClientAsync(string pipeName)
+        private async Task CreateClientConnection(string pipeName)
         {
             NamedPipeClientStream client = null;
             try
             {
-                //Client
-                //await Task.Factory.StartNew(() =>
-                //{
                 client = new NamedPipeClientStream(pipeName);
                 await client.ConnectAsync();
                 StreamWriter writer = new StreamWriter(client);
-                await writer.WriteLineAsync("nothing");
+                //We don't care what's being written, we just want to ping the client and tell it we're done
+                await writer.WriteLineAsync("");
                 await writer.FlushAsync();
-                //});
+             
             }
             catch (Exception ex)
             {
@@ -89,7 +87,7 @@ namespace PortingAssistantExtensionServer
                     solutionAnalysisResult,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion);
-                StartClientAsync(request.PipeName);
+                CreateClientConnection(request.PipeName);
                 return solutionAnalysisResult;
             }
             catch (Exception e)

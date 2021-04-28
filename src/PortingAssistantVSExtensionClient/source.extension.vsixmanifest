@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="PortingAssistantVSExtension.a6142ab5-7e95-4cf6-ad77-83ef54ec6341" Version="1.5.0" Language="en-US" Publisher="Amazon Web Services" />
+        <Identity Id="PortingAssistantVSExtension.c83c1cb7-0ee2-4272-ba1f-d45efe5e4fa9" Version="1.5.0" Language="en-US" Publisher="Amazon Web Services" />
         <DisplayName>Porting Assistant For .NET</DisplayName>
         <Description xml:space="preserve">Porting Assistant for .NET is an analysis tool that scans .NET Framework applications and generates a .NET Core compatibility assessment, which helps you to quickly port your applications to Linux.
 

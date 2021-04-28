@@ -1,6 +1,12 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
 using PortingAssistantVSExtensionClient.Common;
+using PortingAssistantVSExtensionClient.Models;
+using PortingAssistantVSExtensionClient.Utils;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+
 namespace PortingAssistantVSExtensionClient.Dialogs
 {
     /// <summary>
@@ -9,10 +15,20 @@ namespace PortingAssistantVSExtensionClient.Dialogs
     public partial class AddProfileDialog : DialogWindow
     {
         public string ClickResult = "";
+        private readonly string AssemblyPath;
+        private readonly string ConfigurationFileName;
+        private readonly string ConfigurationPath;
+        private TelemetryConfiguration TelemetryConfiguration;
         public AddProfileDialog()
         {
             InitializeComponent();
-            this.Title = "Add a named profile";
+            this.Title = "Add a Named Profile";
+            this.AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            this.ConfigurationFileName = Environment.GetEnvironmentVariable("ConfigurationJson") ?? Common.Constants.DefaultConfigurationFile;
+            this.ConfigurationPath = Path.Combine(
+                AssemblyPath,
+                Common.Constants.ResourceFolder,
+                ConfigurationFileName);
         }
 
         public static string EnsureExecute()
@@ -24,35 +40,52 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (String.IsNullOrEmpty(ProfileName.Text))
+
+            var errors = new Dictionary<string, string>();
+            var credentail = new AwsCredential(AccesskeyID.Text, secretAccessKey.Text);
+            try
             {
-                WarningProfileName.Content = "Please enter the AWS profile name!";
-                return;
-            }
-            else
+                this.TelemetryConfiguration = JsonSerializer.Deserialize<PortingAssistantIDEConfiguration>(File.ReadAllText(ConfigurationPath)).TelemetryConfiguration;
+                errors = AwsUtils.ValidateProfile(ProfileName.Text, credentail, TelemetryConfiguration);
+                if (errors.TryGetValue("profile", out string error1))
+                {
+                    WarningProfileName.Content = error1;
+                }
+                else
+                {
+                    WarningProfileName.Content = "";
+                }
+                if (errors.TryGetValue("accessKeyId", out string error2))
+                {
+                    WarningAccessKeyID.Content = error2;
+                }
+                else
+                {
+                    WarningAccessKeyID.Content = "";
+                }
+                if (errors.TryGetValue("secretKey", out string error3))
+                {
+                    WarningSecretKey.Content = error3;
+                }
+                else
+                {
+                    WarningSecretKey.Content = "";
+                }
+                if (errors.TryGetValue("validation", out string error4))
+                {
+                    WarningValidation.Content = error4;
+                }
+            }catch(Exception ex)
             {
-                WarningProfileName.Content = "";
+                Console.WriteLine(ex.Message);
             }
-            if (String.IsNullOrEmpty(AccesskeyID.Text)) {
-                WarningAccessKeyID.Content = "Please enter the AWS Access Key ID!";
-                return;
-            }
-            else
+            if (errors.Count == 0)
             {
-                WarningAccessKeyID.Content = "";
+                ClickResult = ProfileName.Text;
+                Close();
             }
-            if (String.IsNullOrEmpty(secretAccessKey.Text))
-            {
-                WarningSecretKey.Content = "Please enter the AWS Secret Access Key!";
-                return;
-            }
-            else
-            {
-                WarningSecretKey.Content = "";
-            }
-            PAGlobalService.Instance.SaveProfile(ProfileName.Text, new AwsCredential(AccesskeyID.Text, secretAccessKey.Text));
-            ClickResult = ProfileName.Text;
-            Close();
+            else return;
+            
         }
 
         private void Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
@@ -63,7 +96,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Hyperlink_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html#cli-quick-configuration");
+            System.Diagnostics.Process.Start(ExternalUrls.ConfigAWSCLI);
         }
     }
 }

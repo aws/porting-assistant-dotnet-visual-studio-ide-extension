@@ -4,6 +4,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft;
 using Microsoft.VisualStudio.Imaging;
 using PortingAssistantVSExtensionClient.Common;
+using Microsoft.VisualStudio.Threading;
+using EnvDTE;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
@@ -32,35 +34,22 @@ namespace PortingAssistantVSExtensionClient.Utils
                 Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
 
-        public static async System.Threading.Tasks.Task LockStatusBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string massage)
+        public static async System.Threading.Tasks.Task UseStatusBarProgressAsync(int currentSteps, int numberOfSteps, string message)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            IVsStatusbar StatusBar = (IVsStatusbar)await ServiceProvider.GetServiceAsync(typeof(SVsStatusbar));
-            Assumes.Present(StatusBar);
-            if (StatusBar.IsFrozen(out int frozen) != 0 && frozen != 0)
+            var dte = await PAGlobalService.Instance.AsyncServiceProvider.GetServiceAsync(typeof(DTE)) as DTE;
+            Assumes.Present(dte);
+            dte.StatusBar.Progress(true, message, currentSteps, numberOfSteps);
+
+            if (currentSteps == numberOfSteps)
             {
-                StatusBar.FreezeOutput(0);
+                await System.Threading.Tasks.Task.Delay(1000);
+                dte.StatusBar.Progress(false);
             }
-            StatusBar.SetText(massage);
-            StatusBar.Animation(1, ref _inProcessIcon);
-            StatusBar.FreezeOutput(1);
         }
 
-        public static async System.Threading.Tasks.Task ReleaseStatusBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider)
-        {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            IVsStatusbar StatusBar = (IVsStatusbar)await ServiceProvider.GetServiceAsync(typeof(SVsStatusbar));
-            Assumes.Present(StatusBar);
-            if (StatusBar.IsFrozen(out int frozen) != 0 && frozen != 0)
-            {
-                StatusBar.FreezeOutput(0);
-            }            
-            StatusBar.Animation(0, ref _inProcessIcon);
-            StatusBar.Clear();
-            StatusBar.FreezeOutput(1);
-        }
 
-        public static async System.Threading.Tasks.Task ShowInfoBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string message)
+        public static async System.Threading.Tasks.Task ShowInfoBarAsync2(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string message)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var shell = await ServiceProvider.GetServiceAsync(typeof(SVsShell)) as IVsShell;

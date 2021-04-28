@@ -31,7 +31,7 @@ namespace PortingAssistantExtensionServer.Handlers
         {
             var solutionAnalysisResult = _analysisService.AssessSolutionAsync(request);
             var diagnostics = await _analysisService.GetDiagnosticsAsync(solutionAnalysisResult);
-
+            
             foreach (var diagnostic in diagnostics)
             {
                 IList<Diagnostic> diag = new List<Diagnostic>();

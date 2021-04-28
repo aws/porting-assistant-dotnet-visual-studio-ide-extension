@@ -19,6 +19,7 @@ namespace PortingAssistantExtensionTelemetry
         private readonly string profile;
         private readonly string lastReadTokenFile;
         private readonly HttpClient client;
+        private readonly string prefix;
 
         public LogWatcher(
             TelemetryConfiguration telemetryConfiguration,
@@ -28,6 +29,7 @@ namespace PortingAssistantExtensionTelemetry
             this.profile = profile;
             lastReadTokenFile = Path.Combine(telemetryConfiguration.LogsPath, "lastToken.json");
             client = new HttpClient();
+            prefix = "portingassistant-ide-";
         }
 
         public void Start()
@@ -84,7 +86,8 @@ namespace PortingAssistantExtensionTelemetry
                         if (fileLineNumberMap != null)
                         {
                             initLineNumber = fileLineNumberMap.ContainsKey(fileName) ? fileLineNumberMap[fileName] : 0;
-                        } else
+                        }
+                        else
                         {
                             fileLineNumberMap = new Dictionary<string, int>();
                             initLineNumber = 0;
@@ -126,7 +129,7 @@ namespace PortingAssistantExtensionTelemetry
 
                             if (logs.Count != 0)
                             {
-                                PutLogData(client, fileExtension.Trim().Substring(1), JsonConvert.SerializeObject(logs), profile, telemetryConfiguration);
+                                PutLogData(client, prefix + fileExtension.Trim().Substring(1), JsonConvert.SerializeObject(logs), profile, telemetryConfiguration);
                             }
                         }
                     }

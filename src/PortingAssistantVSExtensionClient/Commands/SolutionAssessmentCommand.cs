@@ -7,6 +7,8 @@ using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.IO;
+using System.IO.Pipes;
 using Task = System.Threading.Tasks.Task;
 
 namespace PortingAssistantVSExtensionClient.Commands
@@ -56,6 +58,8 @@ namespace PortingAssistantVSExtensionClient.Commands
             private set;
         }
 
+        private string SolutionName = "";
+
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
@@ -91,35 +95,70 @@ namespace PortingAssistantVSExtensionClient.Commands
         private async void Execute(object sender, EventArgs e)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            
             try
             {
                 if (!CommandsCommon.SetupPage()) return;
                 CommandsCommon.EnableAllCommand(false);
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
-                string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+                var SolutionFile = await CommandsCommon.GetSolutionPathAsync();
+                SolutionName = Path.GetFileName(SolutionFile);
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
-                await CommandsCommon.RunAssessmentAsync(SolutionFile);
-                if (!UserSettings.Instance.EnabledContinuousAssessment)
-                {
-                    UserSettings.Instance.EnabledContinuousAssessment = true;
-                    UserSettings.Instance.UpdateContinuousAssessment();
-                    PortingAssistantLanguageClient.UpdateUserSettingsAsync();
-                }
-                 
+                string pipeName = Guid.NewGuid().ToString();
+                CommandsCommon.RunAssessmentAsync(SolutionFile, pipeName);
+                StartListenerConnection(pipeName);
             }
             catch (Exception ex)
             {
-                await NotificationUtils.ShowInfoBarAsync(ServiceProvider, ex.Message);
+                NotificationUtils.ShowErrorMessageBox(this.package, $"Assessment failed for {SolutionName} due to {ex.Message}", "Assessment failed");
             }
             finally
             {
-                CommandsCommon.EnableAllCommand(true);
+                //CommandsCommon.EnableAllCommand(true);
             }
         }
 
-        
+        private void StartListenerConnection(string pipeName)
+        {
+            Task.Factory.StartNew(async () =>
+            {
+                var server = new NamedPipeServerStream(pipeName);
+                await server.WaitForConnectionAsync();
+
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                try
+                {
+                    if (!UserSettings.Instance.EnabledContinuousAssessment)
+                    {
+                        UserSettings.Instance.EnabledContinuousAssessment = true;
+                        UserSettings.Instance.UpdateContinuousAssessment();
+                        await PortingAssistantLanguageClient.UpdateUserSettingsAsync();
+                    }
+                    await NotificationUtils.UseStatusBarProgressAsync(2, 2, "Assessment successful");
+                }
+                catch (Exception ex)
+                {
+                    NotificationUtils.ShowErrorMessageBox(this.package, $"Assessment failed for {SolutionName} due to {ex.Message}", "Assessment failed");
+                }
+                finally
+                {
+                    CommandsCommon.EnableAllCommand(true);
+                    if(server != null)
+                    {
+                        if (server.IsConnected)
+                        {
+                            server.Disconnect();
+                            server.Close();
+                        }
+                        server.Dispose();
+                    }
+                }
+            });
+        }
+
+
     }
 }

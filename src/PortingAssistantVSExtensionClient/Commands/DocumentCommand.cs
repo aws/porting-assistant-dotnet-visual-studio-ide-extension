@@ -12,12 +12,12 @@ namespace PortingAssistantVSExtensionClient.Commands
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class DodumentCommand
+    internal sealed class DocumentCommand
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = PackageIds.cmdidDodumentCommand;
+        public const int CommandId = PackageIds.cmdidDocumentCommand;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -30,12 +30,12 @@ namespace PortingAssistantVSExtensionClient.Commands
         private readonly AsyncPackage package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DodumentCommand"/> class.
+        /// Initializes a new instance of the <see cref="DocumentCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private DodumentCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private DocumentCommand(AsyncPackage package, OleMenuCommandService commandService)
         {
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -48,7 +48,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static DodumentCommand Instance
+        public static DocumentCommand Instance
         {
             get;
             private set;
@@ -71,12 +71,12 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
-            // Switch to the main thread - the call to AddCommand in DodumentCommand's constructor requires
+            // Switch to the main thread - the call to AddCommand in DocumentCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new DodumentCommand(package, commandService);
+            Instance = new DocumentCommand(package, commandService);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            System.Diagnostics.Process.Start("https://aws.amazon.com/porting-assistant-dotnet/");
+            System.Diagnostics.Process.Start(Common.ExternalUrls.Documentation);
         }
     }
 }

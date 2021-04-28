@@ -107,7 +107,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
             catch(Exception ex)
             {
-                NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Setting failed!");
+                NotificationUtils.ShowErrorMessageBox(this.package, ex.Message, "Setting Failed");
             }
         }
     }

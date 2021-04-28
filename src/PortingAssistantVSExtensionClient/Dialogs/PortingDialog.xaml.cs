@@ -14,7 +14,8 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         private readonly UserSettings _userSettings;
 
         public bool ClickResult = false;
-        public PortingDialog()
+        public string PortingFile = "";
+        public PortingDialog(string portingFile)
         {
             _userSettings = UserSettings.Instance;
             InitializeComponent();
@@ -24,13 +25,13 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             bitmap.UriSource = new Uri(logoPath);
             bitmap.EndInit();
             InfoSign.Source = bitmap;
-            this.ApplyPortActionCheck.IsChecked = _userSettings.ApplyPortAction;
-            this.Title = $"Port selected project or solution to {_userSettings.TargetFramework}";
+            this.ApplyPortActionCheck.IsChecked = false;
+            this.Title = $"Port {portingFile} to {_userSettings.TargetFramework}";
         }
 
-        public static bool EnsureExecute()
+        public static bool EnsureExecute(string portingFile)
         {
-            PortingDialog portingDialog = new PortingDialog();
+            PortingDialog portingDialog = new PortingDialog(portingFile);
             portingDialog.ShowModal();
             return portingDialog.ClickResult;
         }

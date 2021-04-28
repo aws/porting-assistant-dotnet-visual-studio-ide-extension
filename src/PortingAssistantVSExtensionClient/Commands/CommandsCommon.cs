@@ -64,9 +64,9 @@ namespace PortingAssistantVSExtensionClient.Commands
 
         public static async System.Threading.Tasks.Task<bool> CheckLanguageServerStatusAsync()
         {
-            await NotificationUtils.LockStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Check Porting Assistant Status.....");
+            await NotificationUtils.UseStatusBarProgressAsync(1, 2, "Check Porting Assistant Status.....");
             var serverStatus = await UserSettings.Instance.GetLanguageServerStatusAsync();
-            await NotificationUtils.ReleaseStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider);
+            await NotificationUtils.UseStatusBarProgressAsync(2, 2, "");
             if (serverStatus == LanguageServerStatus.NOT_RUNNING)
             {
                 NotificationUtils.ShowInfoMessageBox(PAGlobalService.Instance.Package, "Please open a .cs file in the solution", "Porting Assistant is not activated.");
@@ -89,25 +89,25 @@ namespace PortingAssistantVSExtensionClient.Commands
             return await SolutionUtils.GetMetadataReferencesAsync(dte);
         }
         
-        public static async System.Threading.Tasks.Task RunAssessmentAsync(string SolutionFile)
+        public static async System.Threading.Tasks.Task RunAssessmentAsync(string SolutionFile, string pipeName)
         {
             var metaReferences = await CommandsCommon.GetMetaReferencesAsync();
             var analyzeSolutionRequest = new AnalyzeSolutionRequest()
             {
                 solutionFilePath = SolutionFile,
                 metaReferences = metaReferences,
+                PipeName = pipeName,
                 settings = new AnalyzerSettings()
                 {
                     TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
                     IgnoreProjects = new List<string>(),
                 },
             };
-            await NotificationUtils.LockStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "Porting Assistant is assessing the solution.....");
+            await NotificationUtils.UseStatusBarProgressAsync(1, 2, "Porting Assistant is assessing the solution");
+            
             await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>(
                 "analyzeSolution",
-                analyzeSolutionRequest);
-            await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "solution has been assessed successfully!");
-            await NotificationUtils.LockStatusBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "solution has been assessed successfully!");
+                analyzeSolutionRequest);            
         }
     }
 }

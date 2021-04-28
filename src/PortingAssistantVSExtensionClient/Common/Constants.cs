@@ -8,7 +8,7 @@ namespace PortingAssistantVSExtensionClient.Common
 {
     public static class Constants
     {
-        public const string ApplicationName = "Porting Assistant For .NET";
+        public const string ApplicationName = "Porting Assistant for .NET";
 
         public const string ApplicationServerLocation = "PortingAssistantLanguageServer";
 

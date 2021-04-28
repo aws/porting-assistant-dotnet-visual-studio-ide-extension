@@ -18,7 +18,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 TargetFrameWorkDropDown.Items.Add(framwork);
             }
             TargetFrameWorkDropDown.SelectedValue = TargetFrameworkType.NO_SELECTION;
-            this.Title = "Choose a target framework";
+            this.Title = "Choose a Target Framework";
         }
 
         public static bool EnsureExecute()

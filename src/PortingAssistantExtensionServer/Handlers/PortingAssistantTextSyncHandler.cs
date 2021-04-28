@@ -109,7 +109,7 @@ namespace PortingAssistantExtensionServer.Handlers
         }
         public Task<Unit> Handle(DidSaveTextDocumentParams request, CancellationToken cancellationToken)
         {
-            if (!_capability.DidSave) return Unit.Task;
+            if (!_capability.DidSave || !Common.PALanguageServerConfiguration.EnabledContinuousAssessment) return Unit.Task;
             if (_solutionAnalysisService._openDocuments.TryGetValue(request.TextDocument.Uri, out var document))
             {
                 document.Load(request.Text);

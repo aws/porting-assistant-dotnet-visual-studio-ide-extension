@@ -31,7 +31,7 @@
                 <Button Content="Add a Named Profile" HorizontalAlignment="Left" Margin="0,55,0,0" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Width="140" Height="20" FontSize="12" Background="{x:Null}" BorderThickness="0" Cursor="Hand" Foreground="Blue" Click="Button_Click"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Porting Assistant for .NET data usage sharing" HorizontalAlignment="Stretch" Height="140" Margin="0,165,0,0" Grid.Row="2" Grid.Column="0" VerticalAlignment="Top" FontWeight="Bold">
+        <GroupBox Header="Porting Assistant for .NET data usage sharing" HorizontalAlignment="Stretch" Height="140" Margin="0,169,0,0" Grid.Row="2" Grid.Column="0" VerticalAlignment="Top" FontWeight="Bold">
             <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="112" Margin="5,10,0,0" Grid.Row="2" Grid.Column="0" FontWeight="Normal"><Run BaselineAlignment="TextTop" Text="When you share your usage data, Porting Assistant for .NET collects information only about the public NuGet packages, APIs, build errors, and stack traces. This information is used to make Porting Assistant for .NET better, for example, by improving the package and API replacement recommendations. Porting Assistant for .NET does not collect any identifying information about you. "/><Hyperlink NavigateUri="https://docs.aws.amazon.com/portingassistant/latest/userguide/how-porting-assistant-works.html#porting-assistant-information-collected" Click="Hyperlink_Click">To learn more, see Information Collected</Hyperlink></TextBlock>
         </GroupBox>
     </Grid>

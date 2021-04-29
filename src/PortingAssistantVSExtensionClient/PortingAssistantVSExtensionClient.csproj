@@ -17,7 +17,7 @@
     <AssemblyName>PortingAssistantVSExtensionClient</AssemblyName>
     <TargetVsixContainerName>PortingAssistant.Extension-$(VSVSIX_VERSION).vsix</TargetVsixContainerName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-	<LanguageServerPath>$(ProjectDir)\PortingAssistantLanguageServer\</LanguageServerPath>
+    <LanguageServerPath>$(ProjectDir)\PortingAssistantLanguageServer\</LanguageServerPath>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>

@@ -178,14 +178,13 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Content Include="PortingAssistantLanguageServer\**">
+    <Content Include="PortingAssistantLanguageServer\PortingAssistantExtensionServer.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>PortingAssistantLanguageServer</VSIXSubPath>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Resources\porting-assistant-config-dev.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

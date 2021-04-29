@@ -64,18 +64,32 @@ namespace PortingAssistantVSExtensionClient.Commands
 
         public static async System.Threading.Tasks.Task<bool> CheckLanguageServerStatusAsync()
         {
-            await NotificationUtils.UseStatusBarProgressAsync(1, 2, "Check Porting Assistant Status.....");
-            var serverStatus = await UserSettings.Instance.GetLanguageServerStatusAsync();
-            await NotificationUtils.UseStatusBarProgressAsync(2, 2, "");
-            if (serverStatus == LanguageServerStatus.NOT_RUNNING)
+            try
             {
-                NotificationUtils.ShowInfoMessageBox(PAGlobalService.Instance.Package, "Porting Assistant can not be activated. If you continue seeing this message, please contact support. ", "Porting Assistant can not be activated.");
+                EnableAllCommand(false);
+                await NotificationUtils.UseStatusBarProgressAsync(1, 2, "Check Porting Assistant Status.....");
+                var serverStatus = await UserSettings.Instance.GetLanguageServerStatusAsync();
+                await NotificationUtils.UseStatusBarProgressAsync(2, 2, "");
+                if (serverStatus == LanguageServerStatus.NOT_RUNNING)
+                {
+                    NotificationUtils.ShowInfoMessageBox(PAGlobalService.Instance.Package, "Porting Assistant can not be activated. If you continue seeing this message, please contact support. ", "Porting Assistant can not be activated.");
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
                 return false;
             }
-            else
+            finally
             {
-                return true;
+                EnableAllCommand(true);
             }
+            
         }
 
         public static async System.Threading.Tasks.Task<string> GetSolutionPathAsync()
@@ -108,6 +122,34 @@ namespace PortingAssistantVSExtensionClient.Commands
             await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>(
                 "analyzeSolution",
                 analyzeSolutionRequest);            
+        }
+
+        public static async System.Threading.Tasks.Task<bool> RunPortingAsync(string SolutionFile, List<string> ProjectFiles, string pipeName, string portingFile, string fileType)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var PortingRequest = new ProjectFilePortingRequest()
+            {
+                SolutionPath = SolutionFile,
+                ProjectPaths = ProjectFiles,
+                TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
+                IncludeCodeFix = UserSettings.Instance.ApplyPortAction,
+                PipeName = pipeName
+            };
+            try
+            {
+                await NotificationUtils.UseStatusBarProgressAsync(1, 2, $"Porting {fileType} {portingFile}");
+                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
+                    "applyPortingProjectFileChanges",
+                    PortingRequest);
+                await NotificationUtils.UseStatusBarProgressAsync(2, 2, $"Porting {fileType} {portingFile} successful");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await NotificationUtils.UseStatusBarProgressAsync(2, 2, $"Porting {fileType} {portingFile} failed");
+                NotificationUtils.ShowErrorMessageBox(PAGlobalService.Instance.Package, $"Porting failed for {portingFile} due to {ex.Message}", "Porting failed");
+                return false;
+            }
         }
     }
 }

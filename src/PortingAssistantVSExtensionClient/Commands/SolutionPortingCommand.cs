@@ -35,7 +35,6 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// </summary>
         private readonly AsyncPackage package;
 
-        private IVsThreadedWaitDialog4 _dialog;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SolutionPortingCommand"/> class.
@@ -97,12 +96,10 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="e">Event args.</param>
         private async void Execute(object sender, EventArgs e)
         {
-            var SolutionName = "";
             try
             {
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 if (!CommandsCommon.SetupPage()) return;
-                CommandsCommon.EnableAllCommand(false);
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
@@ -111,9 +108,9 @@ namespace PortingAssistantVSExtensionClient.Commands
                 solutionName = Path.GetFileName(SolutionFile);
                 var ProjectFiles = SolutionUtils.GetProjectPath(SolutionFile);
                 if (!PortingDialog.EnsureExecute(solutionName)) return;
-
+                CommandsCommon.EnableAllCommand(false);
                 string pipeName = Guid.NewGuid().ToString();
-                RunPortingAsync(SolutionFile, ProjectFiles, pipeName);
+                CommandsCommon.RunPortingAsync(SolutionFile, ProjectFiles, pipeName, solutionName, "solution");
                 PipeUtils.StartListenerConnection(pipeName, GetSolutionCompletionTasks(this.package, solutionName, UserSettings.Instance.TargetFramework));
             }
             catch (Exception ex)
@@ -144,36 +141,6 @@ namespace PortingAssistantVSExtensionClient.Commands
             return CompletionTask;
         }
 
-        private async System.Threading.Tasks.Task<bool> RunPortingAsync(string SolutionFile, List<string> ProjectFiles, string pipeName)
-        {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            var PortingRequest = new ProjectFilePortingRequest()
-            {
-                SolutionPath = SolutionFile,
-                ProjectPaths = ProjectFiles,
-                TargetFramework = UserSettings.Instance.TargetFramework.ToString(),
-                IncludeCodeFix = UserSettings.Instance.ApplyPortAction,
-                PipeName = pipeName
-            };
-            _dialog = await NotificationUtils.GetThreadedWaitDialogAsync(ServiceProvider, _dialog);
-            using (var ted = (IDisposable)_dialog)
-            {
-                try
-                {
-                    _dialog.StartWaitDialog("Porting Assistant", $"Porting solution {Path.GetFileName(SolutionFile)}", "", null, "", 1, false, true);
-                    await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>("applyPortingProjectFileChanges", PortingRequest);
-                    return true;
-                }
-                catch(Exception ex)
-                {
-                    NotificationUtils.ShowErrorMessageBox(this.package, $"Porting failed for {solutionName} due to {ex.Message}", "Porting failed");
-                    return false;
-                }
-                finally
-                {
-                    _dialog.EndWaitDialog();
-                }
-            }
-        }
+        
     }
 }

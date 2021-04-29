@@ -272,7 +272,7 @@ namespace PortingAssistantExtensionServer
                         RelatedInformation = new Container<DiagnosticRelatedInformation>(new List<DiagnosticRelatedInformation>() {new DiagnosticRelatedInformation(){
                                 Location = location
                             } }),
-                        Message = "When you port, Porting Assistant will make the following changes. " + recommendedAction.Description,
+                        Message = recommendedAction.Description,
                     };
                     diagnostics.Add(diagnositc);
                     UpdateCodeAction(diagnositc.Message, diagnositc.Range, fileUri.Path, recommendedAction.TextChanges);

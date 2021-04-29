@@ -18,6 +18,9 @@ namespace PortingAssistantVSExtensionClient.Commands
         public const string guidAnalyzeMenuGroupString = "cd68f8e6-2842-4f7e-af7b-5a019631ceb5";
         public static Guid guidAnalyzeMenuGroup = new Guid(guidAnalyzeMenuGroupString);
 
+        public const string uiContextGuidString = "de87fa2f-6efb-4005-9ae1-cf01be4977ae";
+        public static Guid uiContextGuid = new Guid(uiContextGuidString);
+
         public const string guidPortingAssistantVSExtensionClientPackageCmdSetString = "72f43848-037a-4907-98e2-e7e964271f44";
         public static Guid guidPortingAssistantVSExtensionClientPackageCmdSet = new Guid(guidPortingAssistantVSExtensionClientPackageCmdSetString);
     }

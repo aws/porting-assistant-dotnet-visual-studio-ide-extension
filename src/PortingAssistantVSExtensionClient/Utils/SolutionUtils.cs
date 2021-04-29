@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -103,6 +104,24 @@ namespace PortingAssistantVSExtensionClient.Utils
             {
                 return "";
             }
+        }
+
+        public static string GetTempDirectory(string pathToSolution)
+        {
+            if (pathToSolution != null)
+            {
+                string solutionId;
+                using (var sha = new SHA256Managed())
+                {
+                    byte[] textData = System.Text.Encoding.UTF8.GetBytes(pathToSolution);
+                    byte[] hash = sha.ComputeHash(textData);
+                    solutionId = BitConverter.ToString(hash);
+                }
+                var tempSolutionDirectory = Path.Combine(Path.GetTempPath(), solutionId);
+                tempSolutionDirectory = tempSolutionDirectory.Replace("-", "");
+                return tempSolutionDirectory;
+            }
+            return null;
         }
     }
 }

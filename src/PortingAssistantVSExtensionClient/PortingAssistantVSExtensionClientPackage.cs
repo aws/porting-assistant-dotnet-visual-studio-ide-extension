@@ -26,7 +26,12 @@ namespace PortingAssistantVSExtensionClient
     /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
     /// </para>
     /// </remarks>
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(PortingAssistantVSExtensionClientPackage.UIContextGuid, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideUIContextRule(PortingAssistantVSExtensionClientPackage.UIContextGuid,
+    name: "Support Csharp",
+    expression: "CSharp",
+    termNames: new[] { "CSharp" },
+    termValues: new[] { "HierSingleSelectionName:.cs$" })]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(PortingAssistantVSExtensionClientPackage.PackageGuid)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
@@ -37,6 +42,7 @@ namespace PortingAssistantVSExtensionClient
     public sealed class PortingAssistantVSExtensionClientPackage : AsyncPackage
     {
         const string PackageGuid = "89507157-95b2-4fa0-beac-c5d42bdaa734";
+        public const string UIContextGuid = "de87fa2f-6efb-4005-9ae1-cf01be4977ae";
         #region Package Members
 
         /// <summary>

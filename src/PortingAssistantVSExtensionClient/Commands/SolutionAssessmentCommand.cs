@@ -132,6 +132,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                         await PortingAssistantLanguageClient.UpdateUserSettingsAsync();
                     }
                     await NotificationUtils.UseStatusBarProgressAsync(2, 2, "Assessment successful");
+                    await NotificationUtils.ShowInfoBarAsync(this.package, "Assessment successful");
                 }
                 catch (Exception ex)
                 {

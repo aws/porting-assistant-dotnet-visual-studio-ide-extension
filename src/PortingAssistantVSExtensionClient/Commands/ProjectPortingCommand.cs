@@ -117,7 +117,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
                 CommandsCommon.EnableAllCommand(false);
                 string pipeName = Guid.NewGuid().ToString();
-                CommandsCommon.RunPortingAsync(SolutionFile, new List<string> { SelectedProjectPath }, pipeName, selectedProjectName, "project");
+                CommandsCommon.RunPortingAsync(SolutionFile, new List<string> { SelectedProjectPath }, pipeName, selectedProjectName);
                 PipeUtils.StartListenerConnection(pipeName, GetPortingCompletionTasks(this.package, selectedProjectName, UserSettings.Instance.TargetFramework));
             }
             catch (Exception ex)
@@ -136,6 +136,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                 try
                 {
                     NotificationUtils.ShowInfoMessageBox(package, $"The project has been ported to {targetFramework}", "Porting successful");
+                    await NotificationUtils.ShowInfoBarAsync(package, $"The project has been ported to { targetFramework}");
+                    await NotificationUtils.UseStatusBarProgressAsync(2, 2, $"The project has been ported to { targetFramework}");
                 }
                 catch (Exception ex)
                 {

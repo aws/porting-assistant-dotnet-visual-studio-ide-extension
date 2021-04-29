@@ -49,7 +49,7 @@ namespace PortingAssistantVSExtensionClient.Utils
         }
 
 
-        public static async System.Threading.Tasks.Task ShowInfoBarAsync2(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string message)
+        public static async System.Threading.Tasks.Task ShowInfoBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string message)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var shell = await ServiceProvider.GetServiceAsync(typeof(SVsShell)) as IVsShell;

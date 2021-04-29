@@ -124,7 +124,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 analyzeSolutionRequest);            
         }
 
-        public static async System.Threading.Tasks.Task<bool> RunPortingAsync(string SolutionFile, List<string> ProjectFiles, string pipeName, string portingFile, string fileType)
+        public static async System.Threading.Tasks.Task<bool> RunPortingAsync(string SolutionFile, List<string> ProjectFiles, string pipeName, string portingFile)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var PortingRequest = new ProjectFilePortingRequest()
@@ -137,16 +137,15 @@ namespace PortingAssistantVSExtensionClient.Commands
             };
             try
             {
-                await NotificationUtils.UseStatusBarProgressAsync(1, 2, $"Porting {fileType} {portingFile}");
+                await NotificationUtils.UseStatusBarProgressAsync(1, 2, $"Porting {portingFile} in process");
                 await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
                     "applyPortingProjectFileChanges",
                     PortingRequest);
-                await NotificationUtils.UseStatusBarProgressAsync(2, 2, $"Porting {fileType} {portingFile} successful");
                 return true;
             }
             catch (Exception ex)
             {
-                await NotificationUtils.UseStatusBarProgressAsync(2, 2, $"Porting {fileType} {portingFile} failed");
+                await NotificationUtils.UseStatusBarProgressAsync(2, 2, $"Porting {portingFile} failed");
                 NotificationUtils.ShowErrorMessageBox(PAGlobalService.Instance.Package, $"Porting failed for {portingFile} due to {ex.Message}", "Porting failed");
                 return false;
             }

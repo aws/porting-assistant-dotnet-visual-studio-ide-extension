@@ -77,12 +77,14 @@ namespace PortingAssistantVSExtensionClient.Utils
             if (errors.Count == 0)
             {
                 SaveProfile(profileName, credential);
-                //var verifyUserTask = VerifyUserAsync(profileName, telemetryConfiguration);
-                //verifyUserTask.Wait();
-                //if (!verifyUserTask.Result)
-                //{
-                //    errors.Add("validation", "Please provide a valid aws profile");
-                //}
+                var verifyUserTask = VerifyUserAsync(profileName, telemetryConfiguration);
+                if (!verifyUserTask.Wait(10000))
+                {
+                    errors.Add("validation", "AWS user verification timeout");
+                }else if(!verifyUserTask.Result)
+                {
+                    errors.Add("validation", "Please provide a valid aws profile");
+                }
             }
             return errors;
         }

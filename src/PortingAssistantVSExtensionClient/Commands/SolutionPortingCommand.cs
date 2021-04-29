@@ -110,7 +110,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 if (!PortingDialog.EnsureExecute(solutionName)) return;
                 CommandsCommon.EnableAllCommand(false);
                 string pipeName = Guid.NewGuid().ToString();
-                CommandsCommon.RunPortingAsync(SolutionFile, ProjectFiles, pipeName, solutionName, "solution");
+                CommandsCommon.RunPortingAsync(SolutionFile, ProjectFiles, pipeName, solutionName);
                 PipeUtils.StartListenerConnection(pipeName, GetSolutionCompletionTasks(this.package, solutionName, UserSettings.Instance.TargetFramework));
             }
             catch (Exception ex)
@@ -128,6 +128,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                 try
                 {
                     NotificationUtils.ShowInfoMessageBox(package, $"The solution has been ported to {targetFramework}", "Porting successful");
+                    await NotificationUtils.ShowInfoBarAsync(package, $"The solution has been ported to { targetFramework}");
+                    await NotificationUtils.UseStatusBarProgressAsync(2, 2, $"The solution has been ported to { targetFramework}");
                 }
                 catch (Exception ex)
                 {

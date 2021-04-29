@@ -5,16 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
-             mc:Ignorable="d" Height="180" Width="480">
-    <Grid Margin="0,0,0,0" VerticalAlignment="Top">
+             mc:Ignorable="d" Height="190" Width="480">
+    <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <GroupBox Header="Target Framework"  Margin="10,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Column="0" Grid.Row="0">
+        <GroupBox Header="Target Framework"  Margin="10,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Column="0" Grid.Row="0" Height="100">
             <ComboBox x:Name="TargetFrameWorkDropDown" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top" Width="260"/>
         </GroupBox>
         <Label x:Name="ChooseFrameworkLabel" Content="Choose a target .NET framework to which to port your solution. &#xD;&#xA;You can update this selection in the tools option. " HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" Margin="25,30,-25,0" Opacity="0.6" FontSize="10"/>

@@ -28,7 +28,7 @@
         <ComboBox x:Name="Profiles" HorizontalAlignment="Left" Margin="20,-100,0,0" VerticalAlignment="Center" Width="340" Grid.Row="4" Grid.Column="0" SelectionChanged="Profiles_SelectionChanged"/>
         <Label x:Name="WarningBar" Content="" HorizontalAlignment="Left" Margin="380,-100,0,0" VerticalAlignment="Center" Foreground="Red" FontSize="14" Grid.Row="4" Grid.Column="0"/>
         <Button Content="Add Named Profile" HorizontalAlignment="Left" Margin="20,-30,0,20" VerticalAlignment="Top"  Background="{x:Null}" BorderThickness="0" Cursor="Hand" Foreground="Blue" Click="Button_Click_1" Grid.Row="4" Grid.Column="0"/>
-        <Button Content=" Close " HorizontalAlignment="Right" Margin="0,141,120,0" VerticalAlignment="Top" Grid.Row="3" Grid.Column="0" FontSize="16" Width="80" Click="Button_Click_2"/>
+        <Button Content=" Close " HorizontalAlignment="Right" Margin="20,-40,120,30" VerticalAlignment="Top" Grid.Row="4" Grid.Column="0" FontSize="16" Width="80" Click="Button_Click_2"/>
         <Button Content=" Save " HorizontalAlignment="Right" Margin="20,-40,20,30" VerticalAlignment="Top" Click="Button_Click" Grid.Row="4" Grid.Column="0" FontSize="16" Width="80"/>
 
 

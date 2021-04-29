@@ -129,7 +129,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 try
                 {
-                    NotificationUtils.ShowInfoMessageBox(package, $"The solution has been ported to {targetFramework}", "Porting Successful");
+                    NotificationUtils.ShowInfoMessageBox(package, $"The solution has been ported to {targetFramework}", "Porting successful");
                 }
                 catch (Exception ex)
                 {

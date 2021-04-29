@@ -126,9 +126,6 @@ namespace PortingAssistantVSExtensionClient.Commands
             catch (Exception ex)
             {
                 NotificationUtils.ShowErrorMessageBox(this.package, $"Porting failed for {selectedProject} due to {ex.Message}", "Porting failed");
-            }
-            finally
-            {
                 CommandsCommon.EnableAllCommand(true);
             }
         }

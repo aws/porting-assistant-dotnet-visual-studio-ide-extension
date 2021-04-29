@@ -114,6 +114,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             catch (Exception ex)
             {
                 NotificationUtils.ShowErrorMessageBox(this.package, $"Assessment failed for {SolutionName} due to {ex.Message}", "Assessment failed");
+                CommandsCommon.EnableAllCommand(true);
             }
         }
 

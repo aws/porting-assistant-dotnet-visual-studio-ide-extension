@@ -33,12 +33,25 @@ namespace PortingAssistantVSExtensionClient.Utils
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             var metadataReferences = new Dictionary<string, List<string>>();
-
             var projects = dte.Solution.Projects.OfType<EnvDTE.Project>();
+            var allProjects = new List<VSLangProj.VSProject>();
+
             foreach (var p in projects)
             {
+                if (p.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+                {
+                    var allSubProjects = await LoadProjectsInFolderAsync(p);
+                    allProjects.AddRange(allSubProjects);
+                    continue;
+                }
+
                 VSLangProj.VSProject vsProject = p.Object as VSLangProj.VSProject;
-                if (vsProject == null) continue;
+                if (vsProject == null) continue;                
+                allProjects.Add(vsProject);
+            }
+
+            foreach (var vsProject in allProjects)
+            {
                 VSLangProj.References references = vsProject.References;
 
                 var projectReferences = new List<string>();
@@ -46,11 +59,46 @@ namespace PortingAssistantVSExtensionClient.Utils
                 {
                     projectReferences.Add(reff.Path);
                 }
-
                 metadataReferences.Add(vsProject.Project.FileName, projectReferences);
             }
 
             return metadataReferences;
+        }
+
+        private static async Task<List<VSLangProj.VSProject>> LoadProjectsInFolderAsync(Project projectOrProjectFolder)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            List<VSLangProj.VSProject> projects = new List<VSLangProj.VSProject>();
+            try
+            {
+                var itemCount = (projectOrProjectFolder.ProjectItems as ProjectItems).Count;
+                for (var i = 1; i <= itemCount; i++)
+                {
+                    var subProject = projectOrProjectFolder.ProjectItems.Item(i).SubProject;
+                    if (subProject.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+                    {
+                        var result = await LoadProjectsInFolderAsync(subProject);
+                        if (result.Any())
+                        {
+                            projects.AddRange(result);
+                        }
+                    }
+                    else
+                    {
+                        var vsLangSubProject = subProject.Object as VSLangProj.VSProject;
+                        if (vsLangSubProject != null)
+                        {
+                            projects.Add(vsLangSubProject);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                //TODO Log this
+            }
+            return projects;
         }
 
         public static  List<string>  GetProjectPath(string solutionPath)

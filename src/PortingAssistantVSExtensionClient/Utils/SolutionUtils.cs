@@ -76,6 +76,7 @@ namespace PortingAssistantVSExtensionClient.Utils
                 for (var i = 1; i <= itemCount; i++)
                 {
                     var subProject = projectOrProjectFolder.ProjectItems.Item(i).SubProject;
+                    if (subProject == null) continue;
                     if (subProject.Kind == ProjectKinds.vsProjectKindSolutionFolder)
                     {
                         var result = await LoadProjectsInFolderAsync(subProject);

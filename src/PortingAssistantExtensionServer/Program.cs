@@ -35,7 +35,7 @@ namespace PortingAssistantExtensionServer
                 var isConsole = args.Length == 4 && args[3].Equals("--console");
                 if (args.Length == 4 && !args[3].Equals("--console"))
                 {
-                    outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (" + args[3] + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
+                    outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (Porting Assistant IDE Extension) (" + args[3] + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
                 }
                 Serilog.Formatting.Display.MessageTemplateTextFormatter tf = new Serilog.Formatting.Display.MessageTemplateTextFormatter(outputTemplate, CultureInfo.InvariantCulture);
                 var logConfiguration = new LoggerConfiguration().Enrich.FromLogContext()
@@ -59,7 +59,7 @@ namespace PortingAssistantExtensionServer
                     portingAssistantConfiguration
                     );
                 await portingAssisstantLanguageServer.StartAsync();
-                LogWatcher logWatcher = new LogWatcher(portingAssistantConfiguration.TelemetryConfiguration, Common.PALanguageServerConfiguration.AWSProfileName);
+                LogWatcher logWatcher = new LogWatcher(portingAssistantConfiguration.TelemetryConfiguration, Common.PALanguageServerConfiguration.AWSProfileName, "portingassistant-ide-");
                 logWatcher.Start();
 
                 await portingAssisstantLanguageServer.WaitForShutdownAsync();

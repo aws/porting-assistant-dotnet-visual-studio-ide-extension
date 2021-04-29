@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using Amazon.Runtime;
@@ -23,13 +24,14 @@ namespace PortingAssistantExtensionTelemetry
 
         public LogWatcher(
             TelemetryConfiguration telemetryConfiguration,
-            string profile)
+            string profile,
+            string prefix)
         {
             this.telemetryConfiguration = telemetryConfiguration;
             this.profile = profile;
             lastReadTokenFile = Path.Combine(telemetryConfiguration.LogsPath, "lastToken.json");
             client = new HttpClient();
-            prefix = "portingassistant-ide-";
+            this.prefix = prefix;
         }
 
         public void Start()
@@ -68,6 +70,7 @@ namespace PortingAssistantExtensionTelemetry
             {
                 var fileExtension = Path.GetExtension(e.FullPath);
                 if (!telemetryConfiguration.Suffix.Exists(s => fileExtension.Equals(s))) return;
+                var logName = prefix + fileExtension.Trim().Substring(1);
 
                 FileInfo fileInfo = new FileInfo(e.FullPath);
                 var fileName = e.Name;
@@ -121,6 +124,14 @@ namespace PortingAssistantExtensionTelemetry
                                 currLineNumber++;
                                 logs.Add(line);
                                 line = reader.ReadLine();
+
+                                // send 1000 lines of logs each time when there are large files
+                                if (logs.Count >= 1000)
+                                {
+                                    logs.TrimToSize();
+                                    PutLogData(client, logName, JsonConvert.SerializeObject(logs), profile, telemetryConfiguration);
+                                    logs = new ArrayList();
+                                }
                             }
 
                             fileLineNumberMap[fileName] = currLineNumber;
@@ -129,7 +140,7 @@ namespace PortingAssistantExtensionTelemetry
 
                             if (logs.Count != 0)
                             {
-                                PutLogData(client, prefix + fileExtension.Trim().Substring(1), JsonConvert.SerializeObject(logs), profile, telemetryConfiguration);
+                                PutLogData(client, logName, JsonConvert.SerializeObject(logs), profile, telemetryConfiguration);
                             }
                         }
                     }
@@ -168,38 +179,6 @@ namespace PortingAssistantExtensionTelemetry
                 {
                     fileLineNumberMap = JsonConvert.DeserializeObject<Dictionary<string, int>>(File.ReadAllText(lastReadTokenFile));
                     if (fileLineNumberMap.ContainsKey(fileName)) fileLineNumberMap[fileName] = 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-        private static void PublishLogs
-            (
-            HttpClient client,
-            ArrayList logs,
-            string profile,
-            TelemetryConfiguration telemetryConfiguration
-            )
-        {
-            try
-            {
-                Dictionary<string, ArrayList> logTypeMap = new Dictionary<string, ArrayList>();
-
-                foreach (string log in logs)
-                {
-                    var jsonObj = JObject.Parse(log);
-                    var content = jsonObj["Content"].ToString(Formatting.None);
-                    var type = jsonObj["Type"].ToString();
-
-                    if (!logTypeMap.ContainsKey(type)) logTypeMap[type] = new ArrayList();
-                    logTypeMap[type].Add(content);
-                }
-
-                foreach (KeyValuePair<string, ArrayList> entry in logTypeMap)
-                {
-                    PutLogData(client, entry.Key, JsonConvert.SerializeObject(entry.Value), profile, telemetryConfiguration);
                 }
             }
             catch (Exception ex)

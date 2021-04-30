@@ -30,10 +30,11 @@ namespace PortingAssistantExtensionServer
                 var config = args[0];
                 var stdInPipeName = args.Length == 1 ? Common.Constants.stdDebugInPipeName : args[1];
                 var stdOutPipeName = args.Length == 1 ? Common.Constants.stdDebugOutPipeName : args[2];
+                Common.PALanguageServerConfiguration.ExtensionVersion = args.Length == 1 ? "0.0.0.0" : args[3];
                 var portingAssistantConfiguration = JsonSerializer.Deserialize<PortingAssistantIDEConfiguration>(File.ReadAllText(config));
                 var outputTemplate = Common.Constants.DefaultOutputTemplate;
-                var isConsole = args.Length == 4 && args[3].Equals("--console");
-                if (args.Length == 4 && !args[3].Equals("--console"))
+                var isConsole = args.Length == 5 && args[4].Equals("--console");
+                if (args.Length == 5 && !args[4].Equals("--console"))
                 {
                     outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (Porting Assistant IDE Extension) (" + args[3] + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
                 }
@@ -64,7 +65,6 @@ namespace PortingAssistantExtensionServer
 
                 await portingAssisstantLanguageServer.WaitForShutdownAsync();
 
-                //TODO properly handle exit
                 if (portingAssisstantLanguageServer.IsSeverStarted() && !_isConnected)
                 {
                     await portingAssisstantLanguageServer.WaitForShutdownAsync();

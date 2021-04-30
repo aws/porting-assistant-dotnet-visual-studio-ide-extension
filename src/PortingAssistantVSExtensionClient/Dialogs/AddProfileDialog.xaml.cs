@@ -1,4 +1,6 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Models;
 using PortingAssistantVSExtensionClient.Utils;
@@ -46,7 +48,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             try
             {
                 this.TelemetryConfiguration = JsonSerializer.Deserialize<PortingAssistantIDEConfiguration>(File.ReadAllText(ConfigurationPath)).TelemetryConfiguration;
-                errors = AwsUtils.ValidateProfile(ProfileName.Text, credentail, TelemetryConfiguration);
+                errors = AwsUtils.ValidateProfile(ProfileName.Text, credentail);
                 if (errors.TryGetValue("profile", out string error1))
                 {
                     WarningProfileName.Content = error1;
@@ -71,15 +73,21 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 {
                     WarningSecretKey.Content = "";
                 }
-                if (errors.TryGetValue("validation", out string error4))
+                if (errors.Count == 0)
                 {
-                    WarningValidation.Content = error4;
+                    WarningValidation.Content = "validating AWS profile, please wait";
+                    var task = AwsUtils.ValidateProfile(ProfileName.Text, credentail, TelemetryConfiguration);
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate {
+                        var result = await AwsUtils.ValidateProfile(ProfileName.Text, credentail, TelemetryConfiguration);
+                        WarningValidation.Content = result;
+                    });
                 }
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            if (errors.Count == 0)
+            if (errors.Count == 0 && WarningValidation.Content.Equals(""))
             {
                 ClickResult = ProfileName.Text;
                 Close();

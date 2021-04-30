@@ -57,8 +57,6 @@ namespace PortingAssistantVSExtensionClient
 
         public IEnumerable<string> ConfigurationSections => null;
         public object InitializationOptions => JObject.FromObject(new {
-            extensionType = "VisualStudio",
-            extensionVersion = GetExtensionVersion(),
             paSettings = new Models.UpdateSettingsRequest()
             {
                 EnabledContinuousAssessment = UserSettings.Instance.EnabledContinuousAssessment,
@@ -140,6 +138,7 @@ namespace PortingAssistantVSExtensionClient
 #endif
                 stdInPipeName = $"{Common.Constants.InPipeName}{LaunchTime}";
                 stdOutPipeName = $"{Common.Constants.OutPipeName}{LaunchTime}";
+                var extensionVersion = GetExtensionVersion();
                 var (readerPipe, writerPipe) = CreateConnectionPipe(stdInPipeName, stdOutPipeName);
                 
                 if (File.Exists(LanguageServerPath))
@@ -150,7 +149,7 @@ namespace PortingAssistantVSExtensionClient
                         WorkingDirectory = Path.GetDirectoryName(LanguageServerPath),
                         UseShellExecute = false,
                         CreateNoWindow = true,
-                        Arguments = $"{ConfigurationPath} {stdOutPipeName} {stdInPipeName}"
+                        Arguments = $"{ConfigurationPath} {stdOutPipeName} {stdInPipeName} {extensionVersion}"
                     };
                     Process process = new Process { StartInfo = info };
                     if (process.Start())

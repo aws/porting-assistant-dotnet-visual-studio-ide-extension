@@ -10,8 +10,6 @@
 
         private static string _extensionVersion { get; set; }
 
-        private static string _extensionType { get; set; }
-
         static PALanguageServerConfiguration()
         {
             _enabledContinuousAssessment = false;
@@ -65,18 +63,6 @@
             set
             {
                 _extensionVersion = value;
-            }
-        }
-
-        public static string ExtensionType
-        {
-            get
-            {
-                return _extensionType;
-            }
-            set
-            {
-                _extensionType = value;
             }
         }
 

@@ -58,8 +58,7 @@ namespace PortingAssistantVSExtensionClient.Utils
 
         public static Dictionary<string, string> ValidateProfile(
             string profileName, 
-            AwsCredential credential, 
-            TelemetryConfiguration telemetryConfiguration)
+            AwsCredential credential)
         {
             Dictionary<string, string> errors = new Dictionary<string, string>();
             if (String.IsNullOrEmpty(profileName))
@@ -74,79 +73,68 @@ namespace PortingAssistantVSExtensionClient.Utils
             {
                 errors.Add("secretKey", "Enter the AWS Secret Access Key");
             }
-            if (errors.Count == 0)
-            {
-                SaveProfile(profileName, credential);
-                var verifyUserTask = VerifyUserAsync(profileName, telemetryConfiguration);
-                if (!verifyUserTask.Wait(10000))
-                {
-                    errors.Add("validation", "AWS user verification timeout");
-                }else if(!verifyUserTask.Result)
-                {
-                    errors.Add("validation", "Please provide a valid aws profile");
-                }
-            }
             return errors;
         }
 
+        public async static Task<string> ValidateProfile(
+            string profileName,
+            AwsCredential credential,
+            TelemetryConfiguration telemetryConfiguration)
+        {
+            if (!await VerifyUserAsync(profileName, credential, telemetryConfiguration))
+            {
+                return "Please provide a valid aws profile";
+            }
+            else
+            {
+                SaveProfile(profileName, credential);
+                return "";
+            }
+        }
 
         private static async Task<bool> VerifyUserAsync
             (
             string profile,
+            AwsCredential awsCredentials,
             TelemetryConfiguration telemetryConfiguration
             )
         {
             const string PathTemplate = "/put-log-data";
             try
             {
-
                 var client = new HttpClient();
-                var chain = new CredentialProfileStoreChain();
-                AWSCredentials awsCredentials;
                 var profileName = profile;
                 var region = telemetryConfiguration.Region;
-                if (chain.TryGetAWSCredentials(profileName, out awsCredentials))
+                var signer = new AWS4RequestSigner
+                    (
+                    awsCredentials.AwsAccessKeyId,
+                    awsCredentials.AwsSecretKey
+                    );
+
+                dynamic requestMetadata = new JObject();
+                requestMetadata.version = "1.0";
+                requestMetadata.service = telemetryConfiguration.ServiceName;
+                requestMetadata.token = "12345678";
+                requestMetadata.description = telemetryConfiguration.Description;
+
+                dynamic log = new JObject();
+                log.timestamp = DateTime.Now.ToString();
+                log.logName = "verify-user-vs";
+                log.logData = "";
+                dynamic body = new JObject();
+                body.requestMetadata = requestMetadata;
+                body.log = log;
+                var requestContent = new StringContent(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
+                var requestUri = new Uri(String.Join("", telemetryConfiguration.InvokeUrl, PathTemplate));
+                var request = new HttpRequestMessage
                 {
-                    var signer = new AWS4RequestSigner
-                        (
-                        awsCredentials.GetCredentials().AccessKey,
-                        awsCredentials.GetCredentials().SecretKey
-                        );
-
-                    dynamic requestMetadata = new JObject();
-                    requestMetadata.version = "1.0";
-                    requestMetadata.service = telemetryConfiguration.ServiceName;
-                    requestMetadata.token = "12345678";
-                    requestMetadata.description = telemetryConfiguration.Description;
-
-                    dynamic log = new JObject();
-                    log.timestamp = DateTime.Now.ToString();
-                    log.logName = "verify-user-vs";
-                    var logDataInBytes = System.Text.Encoding.UTF8.GetBytes("");
-                    log.logData = System.Convert.ToBase64String(logDataInBytes);
-
-                    dynamic body = new JObject();
-                    body.requestMetadata = requestMetadata;
-                    body.log = log;
-
-                    var requestContent = new StringContent(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
-
-                    var requestUri = new Uri(String.Join("", telemetryConfiguration.InvokeUrl, PathTemplate));
-
-                    var request = new HttpRequestMessage
-                    {
-                        Method = HttpMethod.Post,
-                        RequestUri = requestUri,
-                        Content = requestContent
-                    };
-
-                    request = await signer.Sign(request, "execute-api", region);
-
-                    var response = await client.SendAsync(request);
-
-                    return response.StatusCode==System.Net.HttpStatusCode.OK;
-                }
-                return false;
+                    Method = HttpMethod.Post,
+                    RequestUri = requestUri,
+                    Content = requestContent
+                };
+                request = await signer.Sign(request, "execute-api", region);
+                var response = await client.SendAsync(request);
+                return response.StatusCode == System.Net.HttpStatusCode.OK;
             }
             catch (Exception)
             {

@@ -68,8 +68,6 @@ namespace PortingAssistantExtensionServer
                 {
                     if (request?.InitializationOptions is JObject initOption)
                     {
-                        Common.PALanguageServerConfiguration.ExtensionVersion = initOption?["extensionVersion"].ToString();
-                        Common.PALanguageServerConfiguration.ExtensionType = initOption?["extensionType"].ToString();
                         var settings = initOption?["paSettings"].ToObject<UpdateSettingsRequest>();
                         settings.UpdateSetting();
                     }

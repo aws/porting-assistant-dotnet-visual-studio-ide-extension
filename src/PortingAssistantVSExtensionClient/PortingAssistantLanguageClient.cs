@@ -84,7 +84,7 @@ namespace PortingAssistantVSExtensionClient
         {
             this.LaunchTime = DateTime.Now.Ticks;
             this.AssemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            this.ConfigurationFileName = Environment.GetEnvironmentVariable("ConfigurationJson") ?? Common.Constants.DefaultConfigurationFile;
+            this.ConfigurationFileName = Common.Constants.DefaultConfigurationFile;
             this.LanguageServerPath = Path.Combine(
                 AssemblyPath, 
                 Common.Constants.ApplicationServerLocation,

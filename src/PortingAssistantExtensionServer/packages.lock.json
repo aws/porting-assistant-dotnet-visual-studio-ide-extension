@@ -24,16 +24,6 @@
           "OmniSharp.Extensions.LanguageServer.Shared": "0.18.3"
         }
       },
-      "PortingAssistant.Client.Analysis": {
-        "type": "Direct",
-        "requested": "[1.8.4-alpha-g27b33cb889, )",
-        "resolved": "1.8.4-alpha-g27b33cb889",
-        "contentHash": "y1oktYBZi3lLoaiCEtmSAA8y5AcZAtDt7qpHmtKa6nf0rwpwmkiRwIA1pT2gLF5WhYXuEbLdTurWn9NzO9Dq8w==",
-        "dependencies": {
-          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889",
-          "PortingAssistant.Client.NuGet": "1.8.4-alpha-g27b33cb889"
-        }
-      },
       "PortingAssistant.Client.Client": {
         "type": "Direct",
         "requested": "[1.8.4-alpha-g27b33cb889, )",
@@ -51,32 +41,6 @@
           "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889",
           "PortingAssistant.Client.NuGet": "1.8.4-alpha-g27b33cb889",
           "PortingAssistant.Client.Porting": "1.8.4-alpha-g27b33cb889"
-        }
-      },
-      "PortingAssistant.Client.Common": {
-        "type": "Direct",
-        "requested": "[1.8.4-alpha-g27b33cb889, )",
-        "resolved": "1.8.4-alpha-g27b33cb889",
-        "contentHash": "Ei/Xklwoe9IcikJzmUSGnWvkiW3I3qaIFRN1kM/pv1cb2kdG7GbhKmWZ4jmflMLw/BRMpYT65RZxiJEbXzIQBQ==",
-        "dependencies": {
-          "CTA.Rules.PortCore": "1.7.14-alpha-g0443de9d79",
-          "Microsoft.Extensions.Logging": "5.0.0",
-          "NuGet.Protocol": "5.9.1",
-          "semver": "2.0.6"
-        }
-      },
-      "PortingAssistant.Client.NuGet": {
-        "type": "Direct",
-        "requested": "[1.8.4-alpha-g27b33cb889, )",
-        "resolved": "1.8.4-alpha-g27b33cb889",
-        "contentHash": "Td1Y7P74uJCRTesUfNk5OZv15LFrQ87faDOfUaTLVIrLh6u+Jhxb59QSTTXEsbozbxHHl994CfGbZxzVU+HXLQ==",
-        "dependencies": {
-          "AWSSDK.S3": "3.7.0.16",
-          "Microsoft.Extensions.Http": "5.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
-          "Newtonsoft.Json": "13.0.1",
-          "NuGet.Protocol": "5.9.1",
-          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889"
         }
       },
       "Serilog": {
@@ -1016,6 +980,39 @@
         "contentHash": "drrG+hB3pYFY7w1c3BD+lSGYvH2oIclH8GRSehgfyP5kjnFnHKQuuBhuHLv+PWyFuaTDyk/vfRpnxOzd11+J8g==",
         "dependencies": {
           "Polly": "7.1.0"
+        }
+      },
+      "PortingAssistant.Client.Analysis": {
+        "type": "Transitive",
+        "resolved": "1.8.4-alpha-g27b33cb889",
+        "contentHash": "y1oktYBZi3lLoaiCEtmSAA8y5AcZAtDt7qpHmtKa6nf0rwpwmkiRwIA1pT2gLF5WhYXuEbLdTurWn9NzO9Dq8w==",
+        "dependencies": {
+          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889",
+          "PortingAssistant.Client.NuGet": "1.8.4-alpha-g27b33cb889"
+        }
+      },
+      "PortingAssistant.Client.Common": {
+        "type": "Transitive",
+        "resolved": "1.8.4-alpha-g27b33cb889",
+        "contentHash": "Ei/Xklwoe9IcikJzmUSGnWvkiW3I3qaIFRN1kM/pv1cb2kdG7GbhKmWZ4jmflMLw/BRMpYT65RZxiJEbXzIQBQ==",
+        "dependencies": {
+          "CTA.Rules.PortCore": "1.7.14-alpha-g0443de9d79",
+          "Microsoft.Extensions.Logging": "5.0.0",
+          "NuGet.Protocol": "5.9.1",
+          "semver": "2.0.6"
+        }
+      },
+      "PortingAssistant.Client.NuGet": {
+        "type": "Transitive",
+        "resolved": "1.8.4-alpha-g27b33cb889",
+        "contentHash": "Td1Y7P74uJCRTesUfNk5OZv15LFrQ87faDOfUaTLVIrLh6u+Jhxb59QSTTXEsbozbxHHl994CfGbZxzVU+HXLQ==",
+        "dependencies": {
+          "AWSSDK.S3": "3.7.0.16",
+          "Microsoft.Extensions.Http": "5.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
+          "Newtonsoft.Json": "13.0.1",
+          "NuGet.Protocol": "5.9.1",
+          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889"
         }
       },
       "PortingAssistant.Client.Porting": {

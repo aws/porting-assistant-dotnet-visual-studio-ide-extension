@@ -2334,10 +2334,7 @@
         "dependencies": {
           "OmniSharp.Extensions.LanguageProtocol": "0.18.3",
           "OmniSharp.Extensions.LanguageServer": "0.18.3",
-          "PortingAssistant.Client.Analysis": "1.8.4-alpha-g27b33cb889",
           "PortingAssistant.Client.Client": "1.8.4-alpha-g27b33cb889",
-          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889",
-          "PortingAssistant.Client.NuGet": "1.8.4-alpha-g27b33cb889",
           "PortingAssistantExtensionTelemetry": "1.0.0",
           "Serilog": "2.10.0",
           "Serilog.Extensions.Logging": "3.0.1",

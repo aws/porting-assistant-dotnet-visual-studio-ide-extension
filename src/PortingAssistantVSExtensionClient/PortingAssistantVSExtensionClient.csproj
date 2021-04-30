@@ -30,7 +30,7 @@
     <StartArguments>/rootsuffix Exp</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
-	<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -189,7 +189,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>PortingAssistantLanguageServer</VSIXSubPath>
     </Content>
-    <Content Include="Resources\porting-assistant-config-dev.json">
+    <Content Include="Resources\porting-assistant-config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>Resources</VSIXSubPath>

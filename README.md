@@ -74,6 +74,7 @@ Find all the .NET code samples, step-by-step guides, videos, blog content, tools
 Come see what .NET developers at AWS are up to!  Learn about new .NET software announcements, guides, and how-to's.
 
 ## Thank you
+* [Omnisharp](https://github.com/OmniSharp/csharp-language-server-protocol) - Omnisharp is an implementation of the Language Server Protocol written entirely in C# for .NET.
 * [CsprojToVs2017](https://github.com/hvanbakel/CsprojToVs2017) - CsprojToVs2017 helps convert project files from from the legacy format to the Visual Studio 2017/2019 format.
 * [Buildalyzer](https://github.com/daveaglick/Buildalyzer) - Buildalyzer lets you run MSBuild from your own code and returns information about the project.
 * [Nuget.Client](https://github.com/NuGet/NuGet.Client) - Nuget.Client provides tools to interface with Nuget.org and parse Nuget configuration files.

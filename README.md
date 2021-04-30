@@ -1,6 +1,4 @@
 # Porting Assistant for .NET Visual Studio IDE Extension
-
-![Build Test](https://github.com/aws/porting-assistant-dotnet-visual-studio-ide-extension/workflows/Build%20Test/badge.svg)
  
 Porting Assistant for .NET is an analysis tool that scans .NET Framework applications and generates a .NET Core compatibility assessment, helping customers port their applications to Linux faster.
  
@@ -39,6 +37,8 @@ We require the following:
 ### Getting started with development
 
 * Clone the Git repository.
+* Install git-secrets https://github.com/awslabs/git-secrets
+* Run git config core.hooksPath hooks
 * Load the solution `PortingAssistantVSExtension.sln` using Visual Studio or Rider. 
 * Create a "Run/Debug" Configuration for the "PortingAssistantVSExtension.sln" solution.
 * Select 'Set Startup Projects'>'Multiple Startup Project' and set both PortingAssistantExtensionServer and PortingAssistantVSExtensionClient as startup projects.

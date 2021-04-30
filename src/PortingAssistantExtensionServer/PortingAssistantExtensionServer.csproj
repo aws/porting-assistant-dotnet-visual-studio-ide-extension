@@ -5,6 +5,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+	<PropertyGroup>
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.18.3" />
 		<PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.18.3" />

@@ -127,7 +127,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 try
                 {
-                    var successfulMessage = $"The solution has been ported to {targetFramework}" + (UserSettings.Instance.ApplyPortAction ? ", code changes has been applied." : "");
+                    var successfulMessage = $"The solution has been ported to {targetFramework}" + (UserSettings.Instance.ApplyPortAction ? $"{Environment.NewLine}Code changes have been applied" : "");
                     NotificationUtils.ShowInfoMessageBox(package, successfulMessage, "Porting successful");
                     await NotificationUtils.ShowInfoBarAsync(package, successfulMessage);
                     await NotificationUtils.UseStatusBarProgressAsync(2, 2, successfulMessage);

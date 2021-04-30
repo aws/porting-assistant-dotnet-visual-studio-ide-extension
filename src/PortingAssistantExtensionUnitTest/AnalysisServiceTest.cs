@@ -75,7 +75,7 @@ namespace PortingAssistantExtensionUnitTest
             Assert.AreEqual(diagnosticResult[DocumentUri.FromFileSystemPath("/test/test")].Count, 2);
             Assert.AreEqual(diagnosticResult[DocumentUri.FromFileSystemPath("/test/test")][0].Message, 
                 "Porting Assistant: System.Web.Mvc.Controller.View() is incompatible for target framework netcoreapp3.1 Replace API with 12.0.3, Replace namespace with 12.0.3, Replace Source Package System.Web.Mvc-5.2.7 with 12.0.3, Upgrade Source Package System.Web.Mvc-5.2.7 to version 12.0.3");
-            Assert.AreEqual(diagnosticResult[DocumentUri.FromFileSystemPath("/test/test")][1].Message, "When you port, Porting Assistant will make the following changes. Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.");
+            Assert.AreEqual(diagnosticResult[DocumentUri.FromFileSystemPath("/test/test")][1].Message, "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.");
         }
 
         [Test]

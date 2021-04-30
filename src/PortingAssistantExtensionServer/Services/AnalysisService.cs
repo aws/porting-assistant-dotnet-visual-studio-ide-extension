@@ -19,8 +19,11 @@ using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 using Codelyzer.Analysis.Model;
 using Constants = PortingAssistantExtensionServer.Common.Constants;
 using System.IO.Pipes;
+using System.Runtime.CompilerServices;
 using PortingAssistantExtensionServer.Services;
 
+[assembly: InternalsVisibleTo("PortingAssistantExtensionUnitTest")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 namespace PortingAssistantExtensionServer
 {
     internal class AnalysisService : BaseService, IDisposable

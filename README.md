@@ -4,9 +4,9 @@ Porting Assistant for .NET is an analysis tool that scans .NET Framework applica
  
 Porting Assistant for .NET quickly scans .NET Framework applications to identify incompatibilities with .NET Core, finds known replacements, and generates detailed compatibility assessment reports. This reduces the manual effort involved in modernizing applications to Linux.
  
-**PortingAssistant for .NET Visual Studio IDE Extension**  package provides a Visual Studio IDE extension implementation to analyze .NET applications, find the incompatibilities, and port applications to .NET Core. Please note that current support for porting is limited.
+**Porting Assistant for .NET Visual Studio IDE Extension**  package provides a Visual Studio IDE extension implementation to analyze .NET applications, find incompatibilities, and port applications to .NET Core. Please note that current support for porting is limited.
  
-For more information about Porting Assistant for .NET Visual Studio IDE Extension and to try the tool, please refer to the documenation: https://aws.amazon.com/porting-assistant-dotnet/
+For more information about Porting Assistant for .NET Visual Studio IDE Extension and to try the tool, please refer to the documentation: https://aws.amazon.com/porting-assistant-dotnet/
 
 ## Getting Started
 

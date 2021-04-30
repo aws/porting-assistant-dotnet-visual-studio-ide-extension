@@ -33,8 +33,8 @@ namespace PortingAssistantExtensionServer
                 Common.PALanguageServerConfiguration.ExtensionVersion = args.Length == 1 ? "0.0.0.0" : args[3];
                 var portingAssistantConfiguration = JsonSerializer.Deserialize<PortingAssistantIDEConfiguration>(File.ReadAllText(config));
                 var outputTemplate = Common.Constants.DefaultOutputTemplate;
-                var isConsole = args.Length == 5 && args[4].Equals("--console");
-                if (args.Length == 5 && !args[4].Equals("--console"))
+                var isConsole = args.Length == 4 && args[3].Equals("--console");
+                if (args.Length == 4 && !args[3].Equals("--console"))
                 {
                     outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (Porting Assistant IDE Extension) (" + args[3] + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
                 }

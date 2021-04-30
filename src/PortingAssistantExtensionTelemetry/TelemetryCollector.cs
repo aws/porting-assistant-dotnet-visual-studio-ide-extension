@@ -36,7 +36,7 @@ namespace PortingAssistantExtensionTelemetry
 
         }
 
-        public void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework, string extensionVersion)
+        public void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework, string extensionVersion, int time)
         {
             try
             {
@@ -50,6 +50,7 @@ namespace PortingAssistantExtensionTelemetry
                     TargetFramework = targetFramework,
                     TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                     SolutionPath = solutionDetail.SolutionFilePath,
+                    AnalysisTime = time,
                 };
                 WriteToFile(JsonConvert.SerializeObject(solutionMetrics));
 

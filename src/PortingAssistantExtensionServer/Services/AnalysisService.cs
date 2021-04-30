@@ -48,7 +48,7 @@ namespace PortingAssistantExtensionServer
             CodeActions = new Dictionary<int, IList<TextChange>>();
             FileToProjectAnalyssiResult = new Dictionary<DocumentUri, ProjectAnalysisResult>();
         }
-        
+
 
         public async Task<SolutionAnalysisResult> AssessSolutionAsync(AnalyzeSolutionRequest request)
         {
@@ -58,11 +58,13 @@ namespace PortingAssistantExtensionServer
                 // Clean up the existing result before run full assessment
                 Cleanup();
                 _request = request;
+                var startTime = DateTime.Now.Millisecond;
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
                 _telemetry.SolutionAssessmentCollect(
                     solutionAnalysisResult,
                     _request.settings.TargetFramework,
-                    PALanguageServerConfiguration.ExtensionVersion);
+                    PALanguageServerConfiguration.ExtensionVersion,
+                    DateTime.Now.Millisecond - startTime);
                 CreateClientConnectionAsync(request.PipeName);
                 return solutionAnalysisResult;
             }

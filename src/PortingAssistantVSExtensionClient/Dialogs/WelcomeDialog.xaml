@@ -1,0 +1,38 @@
+﻿<ui:DialogWindow  x:Class="PortingAssistantVSExtensionClient.Dialogs.WelcomeDialog"
+	              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	              xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+	              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
+	              mc:Ignorable="d" d:DesignWidth="1000" Width="1000" Height="650">
+    <Grid x:Name="AddProfile" Margin="0,0,0,0" HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Label Content="Get Started With Porting Assistant for .NET" HorizontalAlignment="Stretch" Margin="120,40,0,0" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" FontSize="36"/>
+        <Image x:Name="IconHolder" HorizontalAlignment="Left" Margin="20,50,0,0" Height="80" Width="80" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Source="../Resources/PortingAssistantLogo.png"/>
+        <TextBlock HorizontalAlignment="Stretch" Margin="20,5,15,15" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" TextAlignment="Justify" Grid.Row="1" Grid.Column="0"><Run Text="Porting Assistant for .NET is a compatibility scanner that reduces the manual effort required to port Microsoft .NET Framework applications to .NET Core. Porting Assistant for .NET assesses the .NET application source code and identifies incompatible APIs and third-party packages. Where applicable, Porting Assistant for .NET also provides replacement suggestions that are compatible with .NET Core. To get started with Porting Assistant, " /><Hyperlink NavigateUri="https://docs.aws.amazon.com/portingassistant/latest/userguide/what-is-porting-assistant.html" Click="Hyperlink_Click">see the Porting Assistant User Guide </Hyperlink></TextBlock>
+        <CheckBox x:Name="AgreeToShare" Content="I agree to share my usage data with Porting Assistant for .NET and receive emails regarding feedback on the tool." HorizontalAlignment="Left" Margin="20,85,10,10" VerticalAlignment="Top" FontSize="14" IsChecked="True" Grid.Row="1" Grid.Column="0"/>
+        <Label Content="You can change this setting at anytime in tools options." HorizontalAlignment="Left" Margin="20,100,0,0" VerticalAlignment="Top" FontSize="14" Opacity="0.6" Grid.Row="1" Grid.Column="0"/>
+        <TextBlock HorizontalAlignment="Stretch" Margin="20,10,15,10" TextWrapping="Wrap" TextAlignment="Justify" VerticalAlignment="Top" FontSize="14" Grid.Row="2" Grid.Column="0"><Run Text="Porting Assistant for .NET Data Usage Sharing" FontWeight="Bold"/><LineBreak/><LineBreak/><Run Text="When you share your usage data, Porting Assistant for .NET collects information only about the public NuGet packages, APIs, build errors, and stack traces. This information is used to make Porting Assistant for .NET better, for example, by improving the package and API replacement recommendations. Porting Assistant for .NET does not collect any identifying information about you. "/><Hyperlink NavigateUri="https://docs.aws.amazon.com/portingassistant/latest/userguide/how-porting-assistant-works.html#porting-assistant-information-collected" Click="Hyperlink_Click_1">To learn more, see Information Collected</Hyperlink></TextBlock>
+        <TextBlock HorizontalAlignment="Stretch" Margin="20,10,15,10" TextWrapping="Wrap" TextAlignment="Justify" VerticalAlignment="Top" FontSize="14" Grid.Row="3" Grid.Column="0"><Run Text="Porting Assistant for .NET is licensed as &quot;AWS Content&quot; under the terms and conditions of the AWS Customer Agreement located at Agreement and the Service Terms located at Service-Terms. By installing, using or accessing the Porting Assistant for .NET tool, you agree to such terms and conditions. The term &quot;AWS Content&quot; does not include software and assets distributed under separate license terms (such as code licensed under an open source license). "/><Hyperlink NavigateUri="https://aws.amazon.com/agreement">AWS Customer Agreement</Hyperlink><Run Text=" and "/><Hyperlink NavigateUri="https://aws.amazon.com/service-terms" Click="Hyperlink_Click_3"> Service Terms.</Hyperlink></TextBlock>
+        <Label Content="AWS Profile" HorizontalAlignment="Left" Margin="15,-150,0,0" VerticalAlignment="Center"  FontSize="14" Grid.Row="4" Grid.Column="0"/>
+        <ComboBox x:Name="Profiles" HorizontalAlignment="Left" Margin="20,-100,0,0" VerticalAlignment="Center" Width="340" Grid.Row="4" Grid.Column="0" SelectionChanged="Profiles_SelectionChanged"/>
+        <Label x:Name="WarningBar" Content="" HorizontalAlignment="Left" Margin="380,-100,0,0" VerticalAlignment="Center" Foreground="Red" FontSize="14" Grid.Row="4" Grid.Column="0"/>
+        <Button Content="Add Named Profile" HorizontalAlignment="Left" Margin="20,-30,0,20" VerticalAlignment="Top"  Background="{x:Null}" BorderThickness="0" Cursor="Hand" Foreground="Blue" Click="Button_Click_1" Grid.Row="4" Grid.Column="0"/>
+        <Button Content=" Cancel " HorizontalAlignment="Right" Margin="20,-40,120,30" VerticalAlignment="Top" Grid.Row="4" Grid.Column="0" FontSize="16" Width="80" Click="Button_Click_2"/>
+        <Button Content=" Save " HorizontalAlignment="Right" Margin="20,-40,20,30" VerticalAlignment="Top" Click="Button_Click" Grid.Row="4" Grid.Column="0" FontSize="16" Width="80"/>
+
+
+
+
+    </Grid>
+</ui:DialogWindow>

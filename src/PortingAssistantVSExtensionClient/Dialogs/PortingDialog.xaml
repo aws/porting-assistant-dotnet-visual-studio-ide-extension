@@ -1,0 +1,26 @@
+﻿<ui:DialogWindow x:Class="PortingAssistantVSExtensionClient.Dialogs.PortingDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
+             mc:Ignorable="d" Height="180" Width="480">
+    <Grid Margin="0,0,0,0" VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Image x:Name="InfoSign" Source="../Resources/StatusInformation.png" HorizontalAlignment="Left" Margin="10,20,0,20" VerticalAlignment="Top" Height="25" Width="25" Grid.Column="0" Grid.Row="0"></Image>
+        
+        <Label Content="Porting is final and cannot be undone." HorizontalAlignment="Left" Margin="40,15,0,20" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" FontSize="14"/>
+        <CheckBox x:Name="ApplyPortActionCheck" Content="  Select check box to apply recommended source code changes &#xD;&#xA;  (indicated by wavy underlines in your source code).&#xA;" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="1" />
+        <Button Content="Port" HorizontalAlignment="Right" Margin="10,10,10,15" VerticalAlignment="Bottom" Width="75" Grid.Column="0"  Grid.Row="2" Height="20" Click="Button_Click_1"/>
+        <Button Content="Cancel" HorizontalAlignment="Right" Margin="10,10,95,15" VerticalAlignment="Bottom" Width="75" Grid.Column="0"  Grid.Row="2" Height="20" Click="Button_Click"/>
+    </Grid>
+</ui:DialogWindow>

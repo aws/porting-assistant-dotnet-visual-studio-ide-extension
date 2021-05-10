@@ -54,12 +54,11 @@ namespace PortingAssistantExtensionTelemetry
                 };
                 WriteToFile(JsonConvert.SerializeObject(solutionMetrics));
 
-                // Porject Metris = 
                 foreach (var project in solutionDetail.Projects)
                 {
                     var projectMetrics = new ProjectMetrics
                     {
-                        MetricsType = MetricsType.solution,
+                        MetricsType = MetricsType.project,
                         PortingAssistantExtensionVersion = extensionVersion,
                         TargetFramework = targetFramework,
                         TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
@@ -80,7 +79,7 @@ namespace PortingAssistantExtensionTelemetry
                         nuget.Value.Wait();
                         var nugetMetrics = new NugetMetrics
                         {
-                            MetricsType = MetricsType.solution,
+                            MetricsType = MetricsType.nuget,
                             PortingAssistantExtensionVersion = extensionVersion,
                             TargetFramework = targetFramework,
                             TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),

@@ -60,11 +60,14 @@ namespace PortingAssistantExtensionServer
                 _request = request;
                 var startTime = DateTime.Now.Millisecond;
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
-                _telemetry.SolutionAssessmentCollect(
+                if (PALanguageServerConfiguration.EnabledMetrics)
+                {
+                    _telemetry.SolutionAssessmentCollect(
                     solutionAnalysisResult,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
                     DateTime.Now.Millisecond - startTime);
+                }
                 CreateClientConnectionAsync(request.PipeName);
                 return solutionAnalysisResult;
             }
@@ -116,15 +119,16 @@ namespace PortingAssistantExtensionServer
                         SourceFileName = Path.GetFileNameWithoutExtension(codeFile.NormalizedPath)
                     });
                 }
-
-                foreach (var sourceFileAnalysisResult in result)
+                if (PALanguageServerConfiguration.EnabledMetrics)
                 {
-                    _telemetry.FileAssessmentCollect(
-                        sourceFileAnalysisResult,
-                        _request.settings.TargetFramework,
-                        PALanguageServerConfiguration.ExtensionVersion);
+                    foreach (var sourceFileAnalysisResult in result)
+                    {
+                        _telemetry.FileAssessmentCollect(
+                            sourceFileAnalysisResult,
+                            _request.settings.TargetFramework,
+                            PALanguageServerConfiguration.ExtensionVersion);
+                    }
                 }
-
                 return result;
             }
             catch (Exception e)

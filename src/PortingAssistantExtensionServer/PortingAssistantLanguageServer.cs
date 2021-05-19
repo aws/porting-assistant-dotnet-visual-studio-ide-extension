@@ -5,8 +5,6 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistant.Client.Client;
-using PortingAssistantExtensionTelemetry;
-using PortingAssistantExtensionTelemetry.Interface;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
 using System;
@@ -52,11 +50,6 @@ namespace PortingAssistantExtensionServer
                     service.AddAssessment(_configuration.PortingAssistantConfiguration);
                     service.AddSingleton<AnalysisService>();
                     service.AddSingleton<PortingService>();
-                    service.AddSingleton<ITelemetryCollector>(sp =>
-                    {
-                        var logger = sp.GetService<ILogger<ITelemetryCollector>>();
-                        return new TelemetryCollector(logger, _configuration.TelemetryConfiguration.MetricsFilePath);
-                    });
                 })
                 .WithHandler<PortingAssistantTextSyncHandler>()
                 .WithHandler<PortingAssistantCodeActionHandler>()

@@ -4,7 +4,6 @@ using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtensionTelemetry.Interface;
 using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionServer.TextDocumentModels;
@@ -21,6 +20,7 @@ using Constants = PortingAssistantExtensionServer.Common.Constants;
 using System.IO.Pipes;
 using System.Runtime.CompilerServices;
 using PortingAssistantExtensionServer.Services;
+using PortingAssistantExtensionTelemetry;
 
 [assembly: InternalsVisibleTo("PortingAssistantExtensionUnitTest")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
@@ -31,7 +31,6 @@ namespace PortingAssistantExtensionServer
         private AnalyzeSolutionRequest _request;
         private readonly ILogger<AnalysisService> _logger;
         private readonly IPortingAssistantClient _client;
-        private readonly ITelemetryCollector _telemetry;
         public Dictionary<int, IList<TextChange>> CodeActions;
         public Dictionary<DocumentUri, ProjectAnalysisResult> FileToProjectAnalyssiResult;
 
@@ -39,12 +38,10 @@ namespace PortingAssistantExtensionServer
 
         public AnalysisService(
             ILogger<AnalysisService> logger,
-            IPortingAssistantClient client,
-            ITelemetryCollector telemetry)
+            IPortingAssistantClient client)
         {
             _logger = logger;
             _client = client;
-            _telemetry = telemetry;
             CodeActions = new Dictionary<int, IList<TextChange>>();
             FileToProjectAnalyssiResult = new Dictionary<DocumentUri, ProjectAnalysisResult>();
         }
@@ -62,7 +59,7 @@ namespace PortingAssistantExtensionServer
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
                 if (PALanguageServerConfiguration.EnabledMetrics)
                 {
-                    _telemetry.SolutionAssessmentCollect(
+                    Collector.SolutionAssessmentCollect(
                     solutionAnalysisResult,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
@@ -123,7 +120,7 @@ namespace PortingAssistantExtensionServer
                 {
                     foreach (var sourceFileAnalysisResult in result)
                     {
-                        _telemetry.FileAssessmentCollect(
+                        Collector.FileAssessmentCollect(
                             sourceFileAnalysisResult,
                             _request.settings.TargetFramework,
                             PALanguageServerConfiguration.ExtensionVersion);

@@ -7,7 +7,6 @@ using PortingAssistant.Client.Model;
 using PortingAssistantExtensionServer;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
-using PortingAssistantExtensionTelemetry.Interface;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,7 +21,6 @@ namespace PortingAssistantExtensionUnitTest
 
         private Mock<ILogger<AnalysisService>> _analysisLoggerMock;
         private Mock<IPortingAssistantClient> _clientMock;
-        private Mock<ITelemetryCollector> _telemetryMock;
         private AnalysisService _analysisService;
 
         private SolutionAnalysisResult _solutionAnalysisResult = TestParameters.TestSolutionAnalysisResult;
@@ -38,11 +36,10 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock = new Mock<IPortingAssistantClient>();
             _analysisLoggerMock = new Mock<ILogger<AnalysisService>>();
-            _telemetryMock = new Mock<ITelemetryCollector>();
             _textDocumentLanguageServer = new Mock<ITextDocumentLanguageServer>();
 
             _analysisService = new AnalysisService(_analysisLoggerMock.Object,
-                _clientMock.Object, _telemetryMock.Object);
+                _clientMock.Object);
 
             _languageServer = new Mock<ILanguageServerFacade>();
             _logger = new Mock<ILogger<SolutionAssessmentHandler>>();

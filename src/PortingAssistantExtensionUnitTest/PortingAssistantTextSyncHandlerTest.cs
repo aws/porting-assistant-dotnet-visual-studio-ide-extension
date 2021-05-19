@@ -14,7 +14,6 @@ using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionServer.TextDocumentModels;
-using PortingAssistantExtensionTelemetry.Interface;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +33,6 @@ namespace PortingAssistantExtensionUnitTest
 
         private Mock<ILogger<AnalysisService>> _analysisLoggerMock;
         private Mock<IPortingAssistantClient> _clientMock;
-        private Mock<ITelemetryCollector> _telemetryMock;
         private AnalysisService _analysisService;
 
         private SolutionAnalysisResult _solutionAnalysisResult = TestParameters.TestSolutionAnalysisResult;
@@ -113,11 +111,10 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock = new Mock<IPortingAssistantClient>();
             _analysisLoggerMock = new Mock<ILogger<AnalysisService>>();
-            _telemetryMock = new Mock<ITelemetryCollector>();
             _textDocumentLanguageServer = new Mock<ITextDocumentLanguageServer>();
 
             _analysisService = new AnalysisService(_analysisLoggerMock.Object,
-                _clientMock.Object, _telemetryMock.Object);
+                _clientMock.Object);
 
             _languageServer = new Mock<ILanguageServerFacade>();
             _logger = new Mock<ILogger<PortingAssistantTextSyncHandler>>();
@@ -126,7 +123,7 @@ namespace PortingAssistantExtensionUnitTest
 
             _solutionAssessmentHandler = new SolutionAssessmentHandler(_loggerSolutionHandler.Object, _languageServer.Object,
                _analysisService);
-            _portingAssistantTextSyncHandler = new PortingAssistantTextSyncHandler(_languageServer.Object, _analysisService, 
+            _portingAssistantTextSyncHandler = new PortingAssistantTextSyncHandler(_languageServer.Object, _analysisService,
                 _logger.Object);
 
             _portingAssistantTextSyncHandler.SetCapability(new OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities.SynchronizationCapability
@@ -145,7 +142,7 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock.Setup(client => client.AnalyzeSolutionAsync(It.IsAny<string>(),
                 It.IsAny<AnalyzerSettings>())).Returns(Task.FromResult(_solutionAnalysisResult));
-            _clientMock.Setup(client => client.AnalyzeFileAsync(It.IsAny<string>(), It.IsAny<string>(), 
+            _clientMock.Setup(client => client.AnalyzeFileAsync(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<List<string>>(),
                 It.IsAny<RootNodes>(), It.IsAny<ExternalReferences>(), It.IsAny<AnalyzerSettings>()))
                 .Returns(Task.FromResult(new List<SourceFileAnalysisResult> { _sourceFileAnalysisResult }));

@@ -1028,15 +1028,15 @@
       },
       "PortingAssistant.Client.Telemetry": {
         "type": "Transitive",
-        "resolved": "1.8.11-alpha-gb14392cb90",
-        "contentHash": "3fV5KWJFUYhsdHcIaPch85KKPWTddFgyUmuIXX28NS+CZ9vxBOpvrPNgXX0t6RzYRBxejS8hpi7/2niuzr6sRQ==",
+        "resolved": "1.8.15-alpha-g6b581d8647",
+        "contentHash": "9ML4RNrM8b3DO0w+oMkO25Up0JRAqOzFJZAoPnwOQhtmdjf9s+Y/eeUWPXtKausy0gwGutSwaF5GFO0Ts2MW3A==",
         "dependencies": {
           "AWSSDK.APIGateway": "3.7.0.9",
           "AWSSDK.Core": "3.7.0.13",
           "Aws4RequestSigner": "1.0.1",
           "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889",
           "Serilog": "2.10.0",
-          "Serilog.Sinks.RollingFile": "3.3.0"
+          "Serilog.Sinks.File": "4.1.0"
         }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
@@ -1188,18 +1188,6 @@
           "System.IO.FileSystem": "4.0.1",
           "System.Text.Encoding.Extensions": "4.0.11",
           "System.Threading.Timer": "4.0.1"
-        }
-      },
-      "Serilog.Sinks.RollingFile": {
-        "type": "Transitive",
-        "resolved": "3.3.0",
-        "contentHash": "2lT5X1r3GH4P0bRWJfhA7etGl8Q2Ipw9AACvtAHWRUSpYZ42NGVyHoVs2ALBZ/cAkkS+tA4jl80Zie144eLQPg==",
-        "dependencies": {
-          "Serilog.Sinks.File": "3.2.0",
-          "System.IO": "4.1.0",
-          "System.IO.FileSystem.Primitives": "4.0.1",
-          "System.Runtime.InteropServices": "4.1.0",
-          "System.Text.Encoding.Extensions": "4.0.11"
         }
       },
       "System.AppContext": {
@@ -2356,11 +2344,7 @@
       "portingassistantextensiontelemetry": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.APIGateway": "3.7.0.9",
-          "AWSSDK.Core": "3.7.0.13",
-          "Aws4RequestSigner": "1.0.1",
-          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889",
-          "PortingAssistant.Client.Telemetry": "1.8.11-alpha-gb14392cb90"
+          "PortingAssistant.Client.Telemetry": "1.8.15-alpha-g6b581d8647"
         }
       }
     }

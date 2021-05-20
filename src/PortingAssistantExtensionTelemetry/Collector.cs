@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using PortingAssistant.Client.Model;
+﻿using PortingAssistant.Client.Model;
 using PortingAssistantExtensionTelemetry.Model;
 using System;
 
@@ -7,7 +6,7 @@ namespace PortingAssistantExtensionTelemetry
 {
     public static class Collector
     {
-        public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework, string extensionVersion, int time)
+        public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework, string extensionVersion, double time)
         {
             var date = DateTime.Now;
             var solutionDetail = result.SolutionDetails;

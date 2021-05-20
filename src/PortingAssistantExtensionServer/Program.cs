@@ -41,7 +41,7 @@ namespace PortingAssistantExtensionServer
                 Serilog.Formatting.Display.MessageTemplateTextFormatter tf = new Serilog.Formatting.Display.MessageTemplateTextFormatter(outputTemplate, CultureInfo.InvariantCulture);
                 var logConfiguration = new LoggerConfiguration().Enrich.FromLogContext()
                     .MinimumLevel.Warning()
-                    .WriteTo.RollingFile(
+                    .WriteTo.File(
                         portingAssistantConfiguration.TelemetryConfiguration.LogFilePath,
                         outputTemplate: outputTemplate);
                 if (isConsole)
@@ -49,6 +49,7 @@ namespace PortingAssistantExtensionServer
                     logConfiguration = logConfiguration.WriteTo.Console();
                 }
                 Log.Logger = logConfiguration.CreateLogger();
+                TelemetryCollector.Builder(Log.Logger, portingAssistantConfiguration.TelemetryConfiguration.MetricsFilePath);
                 var (input, output) = await CreateNamedPipe(stdInPipeName, stdOutPipeName);
                 var portingAssisstantLanguageServer = new PortingAssistantLanguageServer(
                     loggingBuilder => loggingBuilder

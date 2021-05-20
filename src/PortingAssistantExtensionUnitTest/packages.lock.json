@@ -1026,6 +1026,19 @@
           "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889"
         }
       },
+      "PortingAssistant.Client.Telemetry": {
+        "type": "Transitive",
+        "resolved": "1.8.11-alpha-gb14392cb90",
+        "contentHash": "3fV5KWJFUYhsdHcIaPch85KKPWTddFgyUmuIXX28NS+CZ9vxBOpvrPNgXX0t6RzYRBxejS8hpi7/2niuzr6sRQ==",
+        "dependencies": {
+          "AWSSDK.APIGateway": "3.7.0.9",
+          "AWSSDK.Core": "3.7.0.13",
+          "Aws4RequestSigner": "1.0.1",
+          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889",
+          "Serilog": "2.10.0",
+          "Serilog.Sinks.RollingFile": "3.3.0"
+        }
+      },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
         "resolved": "4.3.2",
@@ -1168,15 +1181,12 @@
       },
       "Serilog.Sinks.File": {
         "type": "Transitive",
-        "resolved": "3.2.0",
-        "contentHash": "VHbo68pMg5hwSWrzLEdZv5b/rYmIgHIRhd4d5rl8GnC5/a8Fr+RShT5kWyeJOXax1el6mNJ+dmHDOVgnNUQxaw==",
+        "resolved": "4.1.0",
+        "contentHash": "U0b34w+ZikbqWEZ3ui7BdzxY/19zwrdhLtI3o6tfmLdD3oXxg7n2TZJjwCCTlKPgRuYic9CBWfrZevbb70mTaw==",
         "dependencies": {
-          "Serilog": "2.3.0",
-          "System.IO": "4.1.0",
+          "Serilog": "2.5.0",
           "System.IO.FileSystem": "4.0.1",
-          "System.IO.FileSystem.Primitives": "4.0.1",
           "System.Text.Encoding.Extensions": "4.0.11",
-          "System.Threading": "4.0.11",
           "System.Threading.Timer": "4.0.1"
         }
       },
@@ -2339,7 +2349,7 @@
           "Serilog": "2.10.0",
           "Serilog.Extensions.Logging": "3.0.1",
           "Serilog.Sinks.Console": "3.1.1",
-          "Serilog.Sinks.RollingFile": "3.3.0",
+          "Serilog.Sinks.File": "4.1.0",
           "System.IO.Pipes.AccessControl": "5.0.0"
         }
       },
@@ -2349,7 +2359,8 @@
           "AWSSDK.APIGateway": "3.7.0.9",
           "AWSSDK.Core": "3.7.0.13",
           "Aws4RequestSigner": "1.0.1",
-          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889"
+          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889",
+          "PortingAssistant.Client.Telemetry": "1.8.11-alpha-gb14392cb90"
         }
       }
     }

@@ -1,110 +1,73 @@
 ﻿using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtensionTelemetry.Interface;
 using PortingAssistantExtensionTelemetry.Model;
 using System;
-using System.IO;
 
 namespace PortingAssistantExtensionTelemetry
 {
-    public class TelemetryCollector : ITelemetryCollector
+    public static class Collector
     {
-        private readonly ILogger _logger;
-        private readonly string _filePath;
-
-        public TelemetryCollector(ILogger<ITelemetryCollector> logger, string filePath)
+        public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework, string extensionVersion, int time)
         {
-            _logger = logger;
-            _filePath = filePath;
-        }
-
-        private void WriteToFile(string content)
-        {
-            try
+            var date = DateTime.Now;
+            var solutionDetail = result.SolutionDetails;
+            // Solution Metrics
+            var solutionMetrics = new SolutionMetrics
             {
-                lock (_filePath)
+                MetricsType = MetricsType.solution,
+                PortingAssistantExtensionVersion = extensionVersion,
+                TargetFramework = targetFramework,
+                TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
+                SolutionPath = solutionDetail.SolutionFilePath,
+                AnalysisTime = time,
+            };
+            TelemetryCollector.Collect<SolutionMetrics>(solutionMetrics);
+
+            foreach (var project in solutionDetail.Projects)
+            {
+                var projectMetrics = new ProjectMetrics
                 {
-                    using var file = new StreamWriter(_filePath, append: true);
-                    file.WriteLine(content);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("write to metrics file failed", ex);
-            }
-
-        }
-
-        public void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework, string extensionVersion, int time)
-        {
-            try
-            {
-                var date = DateTime.Now;
-                var solutionDetail = result.SolutionDetails;
-                // Solution Metrics
-                var solutionMetrics = new SolutionMetrics
-                {
-                    MetricsType = MetricsType.solution,
+                    MetricsType = MetricsType.project,
                     PortingAssistantExtensionVersion = extensionVersion,
                     TargetFramework = targetFramework,
                     TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
-                    SolutionPath = solutionDetail.SolutionFilePath,
-                    AnalysisTime = time,
+                    projectGuid = project.ProjectGuid,
+                    projectType = project.ProjectType,
+                    numNugets = project.PackageReferences.Count,
+                    numReferences = project.ProjectReferences.Count,
+                    isBuildFailed = project.IsBuildFailed,
                 };
-                WriteToFile(JsonConvert.SerializeObject(solutionMetrics));
+                TelemetryCollector.Collect<ProjectMetrics>(projectMetrics);
+            }
 
-                foreach (var project in solutionDetail.Projects)
+            //nuget metrics
+            result.ProjectAnalysisResults.ForEach(project =>
+            {
+                foreach (var nuget in project.PackageAnalysisResults)
                 {
-                    var projectMetrics = new ProjectMetrics
+                    nuget.Value.Wait();
+                    var nugetMetrics = new NugetMetrics
                     {
-                        MetricsType = MetricsType.project,
+                        MetricsType = MetricsType.nuget,
                         PortingAssistantExtensionVersion = extensionVersion,
                         TargetFramework = targetFramework,
                         TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
-                        projectGuid = project.ProjectGuid,
-                        projectType = project.ProjectType,
-                        numNugets = project.PackageReferences.Count,
-                        numReferences = project.ProjectReferences.Count,
-                        isBuildFailed = project.IsBuildFailed,
+                        pacakgeName = nuget.Value.Result.PackageVersionPair.PackageId,
+                        packageVersion = nuget.Value.Result.PackageVersionPair.Version,
+                        compatibility = nuget.Value.Result.CompatibilityResults[targetFramework].Compatibility,
                     };
-                    WriteToFile(JsonConvert.SerializeObject(projectMetrics));
+                    TelemetryCollector.Collect<NugetMetrics>(nugetMetrics);
                 }
 
-                //nuget metrics
-                result.ProjectAnalysisResults.ForEach(project =>
+                foreach (var sourceFile in project.SourceFileAnalysisResults)
                 {
-                    foreach (var nuget in project.PackageAnalysisResults)
-                    {
-                        nuget.Value.Wait();
-                        var nugetMetrics = new NugetMetrics
-                        {
-                            MetricsType = MetricsType.nuget,
-                            PortingAssistantExtensionVersion = extensionVersion,
-                            TargetFramework = targetFramework,
-                            TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
-                            pacakgeName = nuget.Value.Result.PackageVersionPair.PackageId,
-                            packageVersion = nuget.Value.Result.PackageVersionPair.Version,
-                            compatibility = nuget.Value.Result.CompatibilityResults[targetFramework].Compatibility,
-                        };
-                        WriteToFile(JsonConvert.SerializeObject(nugetMetrics));
-                    }
-
-                    foreach (var sourceFile in project.SourceFileAnalysisResults)
-                    {
-                        FileAssessmentCollect(sourceFile, targetFramework, extensionVersion);
-                    }
-                });
-
-
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Capture metrics failed with error", ex);
-            }
+                    FileAssessmentCollect(sourceFile, targetFramework, extensionVersion);
+                }
+            });
         }
 
-        public void FileAssessmentCollect(SourceFileAnalysisResult result, string targetFramework, string extensionVersion)
+
+        public static void FileAssessmentCollect(SourceFileAnalysisResult result, string targetFramework, string extensionVersion)
         {
             var date = DateTime.Now;
             foreach (var api in result.ApiAnalysisResults)
@@ -122,7 +85,7 @@ namespace PortingAssistantExtensionTelemetry
                     packageId = api.CodeEntityDetails.Package.PackageId,
                     packageVersion = api.CodeEntityDetails.Package.Version
                 };
-                WriteToFile(JsonConvert.SerializeObject(apiMetrics));
+                TelemetryCollector.Collect<APIMetrics>(apiMetrics);
             }
         }
     }

@@ -13,7 +13,6 @@ using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionServer.TextDocumentModels;
-using PortingAssistantExtensionTelemetry.Interface;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,7 +34,6 @@ namespace PortingAssistantExtensionUnitTest
 
         private Mock<ILogger<AnalysisService>> _analysisLoggerMock;
         private Mock<IPortingAssistantClient> _clientMock;
-        private Mock<ITelemetryCollector> _telemetryMock;
         private AnalysisService _analysisService;
 
         private static readonly string _testSolutionPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestSolution", "TestProject", "TestCodeFile.cs");
@@ -78,7 +76,7 @@ namespace PortingAssistantExtensionUnitTest
             },
             Range = new Range
             {
-                Start = new Position { Character = 0, Line = 4},
+                Start = new Position { Character = 0, Line = 4 },
                 End = new Position { Character = 21, Line = 4 }
             }
         };
@@ -88,11 +86,10 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock = new Mock<IPortingAssistantClient>();
             _analysisLoggerMock = new Mock<ILogger<AnalysisService>>();
-            _telemetryMock = new Mock<ITelemetryCollector>();
             _textDocumentLanguageServer = new Mock<ITextDocumentLanguageServer>();
 
             _analysisService = new AnalysisService(_analysisLoggerMock.Object,
-                _clientMock.Object, _telemetryMock.Object);
+                _clientMock.Object);
 
             _languageServer = new Mock<ILanguageServerFacade>();
             _logger = new Mock<ILogger<PortingAssistantTextSyncHandler>>();

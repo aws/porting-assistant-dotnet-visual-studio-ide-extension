@@ -6,7 +6,6 @@ using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
 using PortingAssistantExtensionServer;
 using PortingAssistantExtensionServer.Models;
-using PortingAssistantExtensionTelemetry.Interface;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TestParameters = PortingAssistantExtensionUnitTest.TestParameters;
@@ -17,7 +16,6 @@ namespace PortingAssistantExtensionUnitTest
     {
         private Mock<ILogger<AnalysisService>> _loggerMock;
         private Mock<IPortingAssistantClient> _clientMock;
-        private Mock<ITelemetryCollector> _telemetryMock;
         private AnalysisService _analysisService;
 
         private SolutionAnalysisResult _solutionAnalysisResult = TestParameters.TestSolutionAnalysisResult;
@@ -29,10 +27,9 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock = new Mock<IPortingAssistantClient>();
             _loggerMock = new Mock<ILogger<AnalysisService>>();
-            _telemetryMock = new Mock<ITelemetryCollector>();
 
             _analysisService = new AnalysisService(_loggerMock.Object,
-                _clientMock.Object, _telemetryMock.Object);
+                _clientMock.Object);
         }
 
         [SetUp]
@@ -73,7 +70,7 @@ namespace PortingAssistantExtensionUnitTest
             Assert.AreEqual(diagnosticResult.Count, 1);
             Assert.AreEqual(diagnosticResult.Keys, new List<DocumentUri> { DocumentUri.FromFileSystemPath("/test/test") });
             Assert.AreEqual(diagnosticResult[DocumentUri.FromFileSystemPath("/test/test")].Count, 2);
-            Assert.AreEqual(diagnosticResult[DocumentUri.FromFileSystemPath("/test/test")][0].Message, 
+            Assert.AreEqual(diagnosticResult[DocumentUri.FromFileSystemPath("/test/test")][0].Message,
                 "Porting Assistant: System.Web.Mvc.Controller.View() is incompatible for target framework netcoreapp3.1 Replace API with 12.0.3, Replace namespace with 12.0.3, Replace Source Package System.Web.Mvc-5.2.7 with 12.0.3, Upgrade Source Package System.Web.Mvc-5.2.7 to version 12.0.3");
             Assert.AreEqual(diagnosticResult[DocumentUri.FromFileSystemPath("/test/test")][1].Message, "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.");
         }

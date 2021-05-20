@@ -35,6 +35,20 @@
           "semver": "2.0.6"
         }
       },
+      "PortingAssistant.Client.Telemetry": {
+        "type": "Direct",
+        "requested": "[1.8.11-alpha-gb14392cb90, )",
+        "resolved": "1.8.11-alpha-gb14392cb90",
+        "contentHash": "3fV5KWJFUYhsdHcIaPch85KKPWTddFgyUmuIXX28NS+CZ9vxBOpvrPNgXX0t6RzYRBxejS8hpi7/2niuzr6sRQ==",
+        "dependencies": {
+          "AWSSDK.APIGateway": "3.7.0.9",
+          "AWSSDK.Core": "3.7.0.13",
+          "Aws4RequestSigner": "1.0.1",
+          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889",
+          "Serilog": "2.10.0",
+          "Serilog.Sinks.RollingFile": "3.3.0"
+        }
+      },
       "Buildalyzer": {
         "type": "Transitive",
         "resolved": "3.2.0",
@@ -874,6 +888,37 @@
         "contentHash": "6OD3Gn+ElluZ9xNa0SspcANjvLt0KdSLiR1wl7ls6ykZxdfDBUruY5LMpMk2q8+EAT3DsvX4SjCDi7EVqdA/fA==",
         "dependencies": {
           "NETStandard.Library": "1.6.1"
+        }
+      },
+      "Serilog": {
+        "type": "Transitive",
+        "resolved": "2.10.0",
+        "contentHash": "+QX0hmf37a0/OZLxM3wL7V6/ADvC1XihXN4Kq/p6d8lCPfgkRdiuhbWlMaFjR9Av0dy5F0+MBeDmDdRZN/YwQA=="
+      },
+      "Serilog.Sinks.File": {
+        "type": "Transitive",
+        "resolved": "3.2.0",
+        "contentHash": "VHbo68pMg5hwSWrzLEdZv5b/rYmIgHIRhd4d5rl8GnC5/a8Fr+RShT5kWyeJOXax1el6mNJ+dmHDOVgnNUQxaw==",
+        "dependencies": {
+          "Serilog": "2.3.0",
+          "System.IO": "4.1.0",
+          "System.IO.FileSystem": "4.0.1",
+          "System.IO.FileSystem.Primitives": "4.0.1",
+          "System.Text.Encoding.Extensions": "4.0.11",
+          "System.Threading": "4.0.11",
+          "System.Threading.Timer": "4.0.1"
+        }
+      },
+      "Serilog.Sinks.RollingFile": {
+        "type": "Transitive",
+        "resolved": "3.3.0",
+        "contentHash": "2lT5X1r3GH4P0bRWJfhA7etGl8Q2Ipw9AACvtAHWRUSpYZ42NGVyHoVs2ALBZ/cAkkS+tA4jl80Zie144eLQPg==",
+        "dependencies": {
+          "Serilog.Sinks.File": "3.2.0",
+          "System.IO": "4.1.0",
+          "System.IO.FileSystem.Primitives": "4.0.1",
+          "System.Runtime.InteropServices": "4.1.0",
+          "System.Text.Encoding.Extensions": "4.0.11"
         }
       },
       "System.AppContext": {

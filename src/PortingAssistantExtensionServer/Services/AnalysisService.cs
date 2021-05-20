@@ -55,7 +55,7 @@ namespace PortingAssistantExtensionServer
                 // Clean up the existing result before run full assessment
                 Cleanup();
                 _request = request;
-                var startTime = DateTime.Now.Millisecond;
+                var startTime = DateTime.Now;
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
                 if (PALanguageServerConfiguration.EnabledMetrics)
                 {
@@ -63,7 +63,7 @@ namespace PortingAssistantExtensionServer
                     solutionAnalysisResult,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
-                    DateTime.Now.Millisecond - startTime);
+                    DateTime.Now.Subtract(startTime).TotalMilliseconds);
                 }
                 CreateClientConnectionAsync(request.PipeName);
                 return solutionAnalysisResult;

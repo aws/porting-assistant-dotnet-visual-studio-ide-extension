@@ -43,6 +43,8 @@ namespace PortingAssistantExtensionServer
                     .MinimumLevel.Warning()
                     .WriteTo.File(
                         portingAssistantConfiguration.TelemetryConfiguration.LogFilePath,
+                        rollingInterval: RollingInterval.Day,
+                        rollOnFileSizeLimit: true,
                         outputTemplate: outputTemplate);
                 if (isConsole)
                 {

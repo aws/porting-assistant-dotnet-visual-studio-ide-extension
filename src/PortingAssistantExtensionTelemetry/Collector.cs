@@ -29,6 +29,7 @@ namespace PortingAssistantExtensionTelemetry
                     MetricsType = MetricsType.project,
                     PortingAssistantExtensionVersion = extensionVersion,
                     TargetFramework = targetFramework,
+                    sourceFrameworks = project.TargetFrameworks,
                     TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                     projectGuid = project.ProjectGuid,
                     projectType = project.ProjectType,

@@ -59,7 +59,7 @@
 			<Group guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PASolutionGroup" priority="0x0600">
 				<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" />
 			</Group>
-    </Groups>
+		</Groups>
 
 		<!--Buttons section. -->
 		<!--This section defines the elements the user can interact with, like a menu command or a button
@@ -190,11 +190,17 @@
 					<ButtonText>Documentation</ButtonText>
 				</Strings>
 			</Button>
+		  <Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidTestDeploymentCommand" priority="0x0308" type="Button">
+				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
+				<Strings>
+					<ButtonText>Test Deployment</ButtonText>
+				</Strings>
+			</Button>
 		</Buttons>
   </Commands>
 	
 	<VisibilityConstraints>
-		<VisibilityItem guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="SolutionAssessmentCommandId" context="uiContextGuid"  />
+		<VisibilityItem guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="SolutionAssessmentCommandId" context="uiContextGuid" />
 		<VisibilityItem guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidAutoAssessmentCommand" context="uiContextGuid" />
 		<VisibilityItem guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidProjectPortingCommand" context="uiContextGuid" />
 		<VisibilityItem guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidSolutionPortingCommand" context="uiContextGuid" />
@@ -224,7 +230,8 @@
 			<IDSymbol value="0x0104" name="cmdidDisplaySettings" />
 			<IDSymbol value="0x0105" name="cmdidContactSupportCommand" />
 			<IDSymbol value="0x0106" name="cmdidDocumentCommand" />
+			<IDSymbol value="0x0107" name="cmdidTestDeploymentCommand" />
 		</GuidSymbol>
-
-  </Symbols>
+ 
+	</Symbols>
 </CommandTable>

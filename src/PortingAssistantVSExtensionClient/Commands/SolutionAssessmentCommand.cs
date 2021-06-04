@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Shell;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Dialogs;
 using PortingAssistantVSExtensionClient.Models;
@@ -132,7 +134,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                         await PortingAssistantLanguageClient.UpdateUserSettingsAsync();
                     }
                     await NotificationUtils.UseStatusBarProgressAsync(2, 2, "Assessment successful");
-                    await NotificationUtils.ShowInfoBarAsync(this.package, "Assessment successful. You can view the assessment results in the error list or view the green highlights in your source code.");
+                    NotificationUtils.ShowInfoBar("Assessment successful. You can view the assessment results in the error list or view the green highlights in your source code.", KnownMonikers.StatusInformation);
                     UserSettings.Instance.SolutionAssessed = true;
                 }
                 catch (Exception ex)

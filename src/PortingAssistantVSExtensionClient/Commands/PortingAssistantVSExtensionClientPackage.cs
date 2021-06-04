@@ -43,5 +43,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         public const int cmdidDisplaySettings = 0x0104;
         public const int cmdidContactSupportCommand = 0x0105;
         public const int cmdidDocumentCommand = 0x0106;
+        public const int cmdidTestDeploymentCommand = 0x0107;
+        public const int cmdidViewDeploymentCommand = 0x0108;
     }
 }

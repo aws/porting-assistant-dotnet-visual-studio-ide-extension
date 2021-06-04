@@ -14,6 +14,7 @@ using PortingAssistantVSExtensionClient.Dialogs;
 using PortingAssistantVSExtensionClient.Common;
 using System.Threading;
 using System.IO;
+using Microsoft.VisualStudio.Imaging;
 
 namespace PortingAssistantVSExtensionClient.Commands
 {
@@ -142,7 +143,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 {
                     var successfulMessage = $"The project has been ported to {targetFramework}" + (UserSettings.Instance.ApplyPortAction? $".{Environment.NewLine}Code changes have been applied" : "");
                     NotificationUtils.ShowInfoMessageBox(package, successfulMessage, "Porting successful");
-                    await NotificationUtils.ShowInfoBarAsync(package, successfulMessage);
+                    NotificationUtils.ShowInfoBar(successfulMessage, KnownMonikers.StatusInformation);
                     await NotificationUtils.UseStatusBarProgressAsync(2, 2, successfulMessage);
                 }
                 catch (Exception ex)

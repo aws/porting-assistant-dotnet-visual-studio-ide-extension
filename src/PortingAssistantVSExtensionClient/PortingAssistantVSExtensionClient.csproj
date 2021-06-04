@@ -63,13 +63,19 @@
     <Compile Include="Commands\ProjectPortingCommand.cs" />
     <Compile Include="Commands\SolutionAssessmentCommand.cs" />
     <Compile Include="Commands\SolutionPortingCommand.cs" />
+    <Compile Include="Commands\TestDeploymentCommand.cs" />
+    <Compile Include="Commands\ViewDeploymentCommand.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\ExternalUrls.cs" />
     <Compile Include="Common\LanguageServerStatus.cs" />
     <Compile Include="Common\PAGlobalService.cs" />
+    <Compile Include="Common\PAInfoBarService.cs" />
     <Compile Include="Common\TargetFrameWorkType.cs" />
     <Compile Include="Dialogs\AddProfileDialog.xaml.cs">
       <DependentUpon>AddProfileDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\EULADialog.xaml.cs">
+      <DependentUpon>EULADialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\PortingDialog.xaml.cs">
       <DependentUpon>PortingDialog.xaml</DependentUpon>
@@ -77,14 +83,23 @@
     <Compile Include="Dialogs\SelectTargetDialog.xaml.cs">
       <DependentUpon>SelectTargetDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\TestDeploymentDialog.xaml.cs">
+      <DependentUpon>TestDeploymentDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ViewDeploymentDialog.xaml.cs">
+      <DependentUpon>ViewDeploymentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\WelcomeDialog.xaml.cs">
       <DependentUpon>WelcomeDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\AnalyzeSolutionRequest.cs" />
     <Compile Include="Models\AnalyzeSolutionResponse.cs" />
+    <Compile Include="Models\DeploymentParameters.cs" />
     <Compile Include="Models\ProjectFilePortingRequest.cs" />
     <Compile Include="Models\ProjectFilePortingResponse.cs" />
     <Compile Include="Models\TelemetryConfiguration.cs" />
+    <Compile Include="Models\TestDeploymentRequest.cs" />
+    <Compile Include="Models\TestDeploymentResponse.cs" />
     <Compile Include="Models\UpdateSettingsRequest.cs" />
     <Compile Include="Options\DataSharingOption.cs">
       <SubType>Component</SubType>
@@ -103,12 +118,22 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PortingAssistantVSExtensionClientPackage.cs" />
     <Compile Include="Utils\AwsUtils.cs" />
+    <Compile Include="Utils\FilesUtils.cs" />
+    <Compile Include="Utils\KerborosSideCarUtils.cs" />
     <Compile Include="Utils\NotificationUtils.cs" />
     <Compile Include="Utils\PipeUtils.cs" />
     <Compile Include="Utils\SolutionUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.lock.json" />
+    <Content Include="Resources\setup.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\deploymentconfiguration.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -136,8 +161,23 @@
     <PackageReference Include="AWSSDK.APIGateway">
       <Version>3.7.2.11</Version>
     </PackageReference>
-    <PackageReference Include="AWSSDK.Core">
-      <Version>3.7.3.5</Version>
+    <PackageReference Include="AWSSDK.CloudFormation">
+      <Version>3.7.5.38</Version>
+    </PackageReference>
+    <PackageReference Include="AWSSDK.EC2">
+      <Version>3.7.34.1</Version>
+    </PackageReference>
+    <PackageReference Include="AWSSDK.DirectoryService">
+      <Version>3.7.1.32</Version>
+    </PackageReference>
+    <PackageReference Include="AWSSDK.EC2">
+      <Version>3.7.34.3</Version>
+    </PackageReference>
+    <PackageReference Include="AWSSDK.S3">
+      <Version>3.7.3.17</Version>
+    </PackageReference>
+    <PackageReference Include="AWSSDK.SecretsManager">
+      <Version>3.7.1.37</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.9.31025.194" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -145,6 +185,9 @@
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.31">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Configuration.ConfigurationManager">
+      <Version>5.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>5.0.2</Version>
@@ -162,11 +205,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\EULADialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Dialogs\PortingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\SelectTargetDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\TestDeploymentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ViewDeploymentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

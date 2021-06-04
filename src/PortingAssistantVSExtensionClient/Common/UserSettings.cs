@@ -11,6 +11,9 @@ using System.Globalization;
 using System.IO;
 using PortingAssistantVSExtensionClient.Utils;
 using System.Threading.Tasks;
+using PortingAssistantVSExtensionClient.Dialogs;
+using System.Collections.Generic;
+using System.Text.Json;
 
 namespace PortingAssistantVSExtensionClient.Options
 {
@@ -20,15 +23,19 @@ namespace PortingAssistantVSExtensionClient.Options
 
         private bool _isLoaded;
         public bool ShowWelcomePage;
+        public string EULAType;
         public bool EnabledMetrics;
         public bool EnabledContinuousAssessment;
         public bool ApplyPortAction;
         public string AWSProfileName;
         public string RootCacheFolder;
         public string TargetFramework;
+        public string DeploymentProfileName;
+        public bool isInitialezed;
         public bool SolutionAssessed;
+        public Dictionary<string, DeploymentDetail> DeploymentResults;
         private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
-        
+
 
         readonly WritableSettingsStore _settingStore;
 
@@ -40,6 +47,9 @@ namespace PortingAssistantVSExtensionClient.Options
             this._languageServerStatus = new TaskCompletionSource<LanguageServerStatus>();
             this._languageServerStatus.SetResult(LanguageServerStatus.NOT_RUNNING);
             this.SolutionAssessed = false;
+            this.EULAType = "";
+            this.isInitialezed = false;
+            this.DeploymentResults = new Dictionary<string, DeploymentDetail>();
         }
 
         public void SetLanguageServerStatus(LanguageServerStatus status)
@@ -96,6 +106,43 @@ namespace PortingAssistantVSExtensionClient.Options
         {
             Write("TargetFramework", TargetFramework);
         }
+
+        public void UpdateDeploymentProfileName(string profileName)
+        {
+            this.DeploymentProfileName = profileName;
+            Write("DeploymentProfileName", profileName);
+        }
+
+        public void UpdateIsInitialezed(bool isInitialezed)
+        {
+            this.isInitialezed = isInitialezed;
+            Write("isInitialezed", isInitialezed);
+        }
+
+        public void UpdateEula(string eulaType)
+        {
+            this.EULAType = eulaType;
+            Write("EULAType", eulaType);
+        }
+
+        public void UpdateDeploymentResult(DeploymentDetail deploymentDetail)
+        {
+            if (this.DeploymentResults.ContainsKey(deploymentDetail.DeployName))
+            {
+                this.DeploymentResults.Remove(deploymentDetail.DeployName);
+            }
+
+            this.DeploymentResults.Add(deploymentDetail.DeployName, deploymentDetail);
+            string result = JsonSerializer.Serialize(DeploymentResults);
+            Write("DeploymentResult", result);
+        }
+
+        public void RemoveDeploymentResult(string deploymentName)
+        {
+            this.DeploymentResults.Remove(deploymentName);
+            string result = JsonSerializer.Serialize(DeploymentResults);
+            Write("DeploymentResult", result);
+        }
         public void SaveAllSettings()
         {
             Write("ShowWelcomePage", ShowWelcomePage);
@@ -104,6 +151,10 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("AWSProfileName", AWSProfileName);
             Write("TargetFramework", TargetFramework);
             Write("ApplyPortAction", ApplyPortAction);
+            Write("DeploymentProfileName", DeploymentProfileName);
+            Write("EULAType", EULAType);
+            Write("isInitialezed", isInitialezed);
+            Write("DeploymentResult", JsonSerializer.Serialize(DeploymentResults));
         }
 
         public void LoadingAllSettings()
@@ -114,7 +165,11 @@ namespace PortingAssistantVSExtensionClient.Options
             AWSProfileName = (string)Read("AWSProfileName", "");
             ApplyPortAction = (bool)Read("ApplyPortAction", false);
             TargetFramework = (string)Read("TargetFramework", TargetFrameworkType.NO_SELECTION);
+            EULAType = (string)Read("EULAType", "");
+            DeploymentProfileName = (string)Read("DeploymentProfileName", "");
+            isInitialezed = (bool)Read("isInitialezed", false);
             RootCacheFolder = Path.GetTempPath();
+            DeploymentResults = JsonSerializer.Deserialize<Dictionary<string, DeploymentDetail>>((string)Read("DeploymentResult", "{}"));
         }
 
         private object Read(string property, object defaultValue)

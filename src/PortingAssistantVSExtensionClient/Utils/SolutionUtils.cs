@@ -19,6 +19,7 @@ namespace PortingAssistantVSExtensionClient.Utils
         public static async Task<string> GetSolutionPathAsync(DTE2 dte)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            //dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateDone;
             return dte.Solution.FullName;
         }
 
@@ -26,6 +27,38 @@ namespace PortingAssistantVSExtensionClient.Utils
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             return dte.Solution.FullName;
+        }
+
+        public static Boolean IsBuildSucceed(DTE2 dte)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateDone
+                && dte.Solution.SolutionBuild.LastBuildInfo == 0;
+        }
+
+        public static string GetBuildOutputPath(DTE2 dte, string projectPath)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (string.IsNullOrWhiteSpace(projectPath))
+                return null;
+
+            foreach (Project project in dte.Solution.Projects)
+            {
+                if (project.FullName.Equals(projectPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    string fullPath = project.Properties.Item("FullPath").Value.ToString();
+                    string outputPath = project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString();
+                    string buildOutputPath = Path.Combine(fullPath, outputPath);
+
+                    // check if the build output is not empty
+                    if (!Directory.Exists(buildOutputPath) || (Directory.GetFiles(buildOutputPath).Length + Directory.GetDirectories(buildOutputPath).Length == 0))
+                    {
+                        return null;
+                    }
+                    return buildOutputPath;
+                }
+            }
+            return null;
         }
 
         public static async Task<Dictionary<string, List<string>>> GetMetadataReferencesAsync(DTE2 dte)
@@ -46,7 +79,7 @@ namespace PortingAssistantVSExtensionClient.Utils
                 }
 
                 VSLangProj.VSProject vsProject = p.Object as VSLangProj.VSProject;
-                if (vsProject == null) continue;                
+                if (vsProject == null) continue;
                 allProjects.Add(vsProject);
             }
 
@@ -102,7 +135,7 @@ namespace PortingAssistantVSExtensionClient.Utils
             return projects;
         }
 
-        public static  List<string>  GetProjectPath(string solutionPath)
+        public static List<string> GetProjectPath(string solutionPath)
         {
             var Content = File.ReadAllText(solutionPath);
             Regex projReg = new Regex(
@@ -145,11 +178,11 @@ namespace PortingAssistantVSExtensionClient.Utils
                                                       (int)__VSHPROPID.VSHPROPID_ExtObject,
                                                       out selectedObject));
                     Project selectedProject = selectedObject as Project;
-                    if (selectedProject!=null) return selectedProject.FileName;
+                    if (selectedProject != null) return selectedProject.FileName;
                 }
                 return "";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return "";
             }

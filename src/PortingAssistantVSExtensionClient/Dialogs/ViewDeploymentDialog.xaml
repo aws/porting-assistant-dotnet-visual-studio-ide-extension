@@ -1,0 +1,30 @@
+﻿<ui:DialogWindow x:Class="PortingAssistantVSExtensionClient.Dialogs.ViewDeploymentDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Height="450" Width="800">
+    <ui:DialogWindow.Resources>
+        <local:EndpointConverter x:Key="EndpointConverter"/>
+    </ui:DialogWindow.Resources>
+    <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="800">
+        <DataGrid x:Name="DeploymentTable" ItemsSource="{Binding}" AlternatingRowBackground="LightBlue" HorizontalAlignment="Center" VerticalAlignment="Top" Height="450" Margin="0,0,0,0"  Width="800">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Deployment name"  Binding="{Binding DeployName}" IsReadOnly="true" Width="150"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="80" IsReadOnly="true" />
+                <DataGridTextColumn Header="Creation time" Binding="{Binding CreationTime}" IsReadOnly="true" Width="150"/>
+                <DataGridHyperlinkColumn Header="Deployment endpoint" Binding="{Binding DeploymentEndpoint}" ContentBinding="{Binding DeploymentEndpoint, Converter={StaticResource EndpointConverter}}" Width="300">
+                    <DataGridHyperlinkColumn.ElementStyle>
+                        <Style>
+                            <EventSetter Event="Hyperlink.Click" Handler="View_Hyperlink_Click"/>
+                        </Style>
+                    </DataGridHyperlinkColumn.ElementStyle>
+                </DataGridHyperlinkColumn>
+                <DataGridHyperlinkColumn Header="Manage" Binding="{Binding DeploymentEndpoint}" Width="80" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</ui:DialogWindow>

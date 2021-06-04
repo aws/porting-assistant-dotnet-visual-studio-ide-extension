@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Dialogs;
@@ -22,6 +23,42 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
             else return true;
         }
+
+        public static string GetEulaType()
+        {
+            return UserSettings.Instance.EULAType;
+        }
+
+        public static void UpdateEula(string eula)
+        {
+            UserSettings.Instance.UpdateEula(eula);
+        }
+
+        public static bool IsDeploymentInit()
+        {
+            return UserSettings.Instance.isInitialezed;
+        }
+
+        public static void UpdateInitStatus(bool isInit)
+        {
+            UserSettings.Instance.UpdateIsInitialezed(isInit);
+        }
+
+        public static Dictionary<string, DeploymentDetail> GetDeploymentResults()
+        {
+            return UserSettings.Instance.DeploymentResults;
+        }
+
+        public static void UpdateDeploymentResults(DeploymentDetail deploymentDetail)
+        {
+            UserSettings.Instance.UpdateDeploymentResult(deploymentDetail);
+        }
+
+        public static void RemoveFromDeploymentResults(string deploymentName)
+        {
+            UserSettings.Instance.RemoveDeploymentResult(deploymentName);
+        }
+
 
         public static readonly List<int> CommandIDs = new List<int>
         {
@@ -80,7 +117,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                     return true;
                 }
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;
@@ -89,7 +127,25 @@ namespace PortingAssistantVSExtensionClient.Commands
             {
                 EnableAllCommand(true);
             }
-            
+
+        }
+
+        public static async Task<bool> IsBuildSucceedAsync()
+        {
+            var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
+            return SolutionUtils.IsBuildSucceed(dte);
+        }
+
+        public static async Task<string> GetBuildOutputPathAsync(string projectPath)
+        {
+            var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
+            return SolutionUtils.GetBuildOutputPath(dte, projectPath);
+        }
+
+        public static async void AddKerberosTemplatesToProject()
+        {
+            var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
+            KerborosSideCarUtils.AddKerberosTemplatesToProject(dte);
         }
 
         public static async System.Threading.Tasks.Task<string> GetSolutionPathAsync()
@@ -102,7 +158,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
             return await SolutionUtils.GetMetadataReferencesAsync(dte);
         }
-        
+
         public static async System.Threading.Tasks.Task RunAssessmentAsync(string SolutionFile, string pipeName)
         {
             var metaReferences = await CommandsCommon.GetMetaReferencesAsync();
@@ -118,10 +174,10 @@ namespace PortingAssistantVSExtensionClient.Commands
                 },
             };
             await NotificationUtils.UseStatusBarProgressAsync(1, 2, "Porting Assistant is assessing the solution");
-            
+
             await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>(
                 "analyzeSolution",
-                analyzeSolutionRequest);            
+                analyzeSolutionRequest);
         }
 
         public static async System.Threading.Tasks.Task RunPortingAsync(string SolutionFile, List<string> ProjectFiles, string pipeName, string portingFile)

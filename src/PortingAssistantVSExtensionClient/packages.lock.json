@@ -17,11 +17,50 @@
           "AWSSDK.Core": "[3.7.3.5, 4.0.0)"
         }
       },
-      "AWSSDK.Core": {
+      "AWSSDK.CloudFormation": {
         "type": "Direct",
-        "requested": "[3.7.3.5, )",
-        "resolved": "3.7.3.5",
-        "contentHash": "wu6s4geFWpSKuqg/UOx6DAdTnnTzoWQRsKOVCYae2ggzpadFJxwMIB7CSvw0r8CaIQNDKYr6Al3eKU+EA8jqbg=="
+        "requested": "[3.7.5.38, )",
+        "resolved": "3.7.5.38",
+        "contentHash": "E0TF4SlJ96ZO3XLSX5cIT9Sa9jX3pPMOyd2z3milz5hVnPmVKCYMPIqIjxZPMw5Rmh0vtnrEgUQKZ0vGJ2/H3g==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.34, 4.0.0)"
+        }
+      },
+      "AWSSDK.DirectoryService": {
+        "type": "Direct",
+        "requested": "[3.7.1.32, )",
+        "resolved": "3.7.1.32",
+        "contentHash": "H7UrGOJa1AI7Kkttv6j72GHVWOYkTURWl5V+nfWOhTq7DTgND2w6zXeP+SM5wwYyyl4Tr8ngCryJtb1DjA5TQw==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
+        }
+      },
+      "AWSSDK.EC2": {
+        "type": "Direct",
+        "requested": "[3.7.34.3, )",
+        "resolved": "3.7.34.3",
+        "contentHash": "Scd0v3w4H6MBc9E5Bs1y0Hsi9b/4JHFKyRJCoI/KaxeSLUi7eOHAM79ag9CuILBjRxxlIUEvE4fLnUSyaGp1og==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
+        }
+      },
+      "AWSSDK.S3": {
+        "type": "Direct",
+        "requested": "[3.7.3.17, )",
+        "resolved": "3.7.3.17",
+        "contentHash": "fzrg1XK98wizUiLq9+oMN43xvRpcTPmOhsBdk6iVpXTxmJb/z9D2ScB5qCQ9tMeu3Lj2zpQvg77eG7UEWAA2CQ==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
+        }
+      },
+      "AWSSDK.SecretsManager": {
+        "type": "Direct",
+        "requested": "[3.7.1.37, )",
+        "resolved": "3.7.1.37",
+        "contentHash": "PnRuoKDpYdBWQgJBmMri8mPU3nfuwlczzV46aHeYqkSik1XkmY7QZ4KsEY+Odrb/B4umCNo/7qTQ7O0r5M2v/Q==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
+        }
       },
       "Microsoft.VisualStudio.SDK": {
         "type": "Direct",
@@ -96,6 +135,15 @@
           "Microsoft.VisualStudio.SDK.Analyzers": "15.8.33"
         }
       },
+      "System.Configuration.ConfigurationManager": {
+        "type": "Direct",
+        "requested": "[5.0.0, )",
+        "resolved": "5.0.0",
+        "contentHash": "aM7cbfEfVNlEEOj3DsZP+2g9NRwbkyiAv2isQEzw7pnkDg9ekCU2m1cdJLM02Uq691OaCS91tooaxcEn8d0q5w==",
+        "dependencies": {
+          "System.Security.Permissions": "5.0.0"
+        }
+      },
       "System.Text.Json": {
         "type": "Direct",
         "requested": "[5.0.2, )",
@@ -111,6 +159,11 @@
           "System.Threading.Tasks.Extensions": "4.5.4",
           "System.ValueTuple": "4.5.0"
         }
+      },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "3.7.3.34",
+        "contentHash": "xzYOFlMDRuvWU441GZTUMOIVKuXtTwMvJKNK+HLq93v94aTTp9l7l2RdM5S3ABs1AX0PIzMbgZ4w6iqLwr//Qw=="
       },
       "EnvDTE": {
         "type": "Transitive",
@@ -1254,6 +1307,14 @@
         "dependencies": {
           "System.Security.Cryptography.Algorithms": "4.3.0",
           "System.Security.Cryptography.Encoding": "4.3.0"
+        }
+      },
+      "System.Security.Permissions": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "uE8juAhEkp7KDBCdjDIE3H9R1HJuEHqeqX8nLX9gmYKWwsqk3T5qZlPx8qle5DPKimC/Fy3AFTdV7HamgCh9qQ==",
+        "dependencies": {
+          "System.Security.AccessControl": "5.0.0"
         }
       },
       "System.Security.Principal.Windows": {

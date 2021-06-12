@@ -1,0 +1,208 @@
+{
+  "FileCompatResults": {
+    "Global.asax.cs": [
+      {
+        "fileName": "Global.asax.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 5,
+            "Character": 0
+          },
+          "End": {
+            "Line": 5,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "FilterConfig.cs": [
+      {
+        "fileName": "FilterConfig.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 1,
+            "Character": 0
+          },
+          "End": {
+            "Line": 1,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "RouteConfig.cs": [
+      {
+        "fileName": "RouteConfig.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 4,
+            "Character": 0
+          },
+          "End": {
+            "Line": 4,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "AccountController.cs": [
+      {
+        "fileName": "AccountController.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 5,
+            "Character": 0
+          },
+          "End": {
+            "Line": 5,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "CheckoutController.cs": [
+      {
+        "fileName": "CheckoutController.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 2,
+            "Character": 0
+          },
+          "End": {
+            "Line": 2,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "HomeController.cs": [
+      {
+        "fileName": "HomeController.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 3,
+            "Character": 0
+          },
+          "End": {
+            "Line": 3,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "ShoppingCartController.cs": [
+      {
+        "fileName": "ShoppingCartController.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 1,
+            "Character": 0
+          },
+          "End": {
+            "Line": 1,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "StoreController.cs": [
+      {
+        "fileName": "StoreController.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 5,
+            "Character": 0
+          },
+          "End": {
+            "Line": 5,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "StoreManagerController.cs": [
+      {
+        "fileName": "StoreManagerController.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 6,
+            "Character": 0
+          },
+          "End": {
+            "Line": 6,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "InitializeSimpleMembershipAttribute.cs": [
+      {
+        "fileName": "InitializeSimpleMembershipAttribute.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 4,
+            "Character": 0
+          },
+          "End": {
+            "Line": 4,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "Order.cs": [
+      {
+        "fileName": "Order.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 3,
+            "Character": 0
+          },
+          "End": {
+            "Line": 3,
+            "Character": 21
+          }
+        }
+      }
+    ],
+    "ShoppingCart.cs": [
+      {
+        "fileName": "ShoppingCart.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "Range": {
+          "Start": {
+            "Line": 4,
+            "Character": 0
+          },
+          "End": {
+            "Line": 4,
+            "Character": 21
+          }
+        }
+      }
+    ]
+  }
+}

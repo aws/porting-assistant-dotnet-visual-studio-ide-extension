@@ -87,6 +87,7 @@ namespace PortingAssistantExtensionIntegTests
                 }
             });
 
+            // wait for client intialization
             await Client.Initialize(CancellationToken.None).ConfigureAwait(false);
         }
 

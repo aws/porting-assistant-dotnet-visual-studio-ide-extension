@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
-using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
 
 namespace PortingAssistantExtensionIntegTests
@@ -80,7 +79,6 @@ namespace PortingAssistantExtensionIntegTests
 
             return set;
         }
-
     }
 
 

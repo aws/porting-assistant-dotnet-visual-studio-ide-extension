@@ -10,15 +10,13 @@ using NUnit.Framework;
 
 namespace PortingAssistantExtensionIntegTests
 {
-    //[CollectionDefinition("Non-Parallel Collection", DisableParallelization = true)]
     class AssessmentTests
     {
         private string tempProjectRoot;
         private List<string[]> testProjectInfoList = new List<string[]>();
         private string zipRootFolderPath;
         private string testRootPath;
-        private static SemaphoreSlim testLock =  new SemaphoreSlim(1);    // Capacity of 3
-
+        private string clientConfigPath;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -30,10 +28,11 @@ namespace PortingAssistantExtensionIntegTests
                 ["NetFrameworkExample.zip"] = new string[] { "NetFrameworkExample", "NetFrameworkExample.sln", "NetFrameworkExample.json" }
             };
 
-            zipRootFolderPath = Path.Combine(
-                TestContext.CurrentContext.TestDirectory, "TestProjects");
-            
             testRootPath = TestContext.CurrentContext.TestDirectory;
+
+            zipRootFolderPath = Path.Combine(testRootPath, "TestProjects");
+
+            clientConfigPath = Path.Combine(testRootPath, "Resources", "porting-assistant-config.json");
 
             tempProjectRoot = Path.GetFullPath(Path.Combine(
                 Path.GetTempPath(),
@@ -58,8 +57,6 @@ namespace PortingAssistantExtensionIntegTests
 
                 testProjectInfoList.Add(fileInfo);
             }
-
-            //RunCLI();
         }
 
         [OneTimeTearDown]
@@ -73,46 +70,9 @@ namespace PortingAssistantExtensionIntegTests
             ProcessHelper.getInstance().StopServer();
         }
 
-        /*
-          public async Task FrameworkProjectAnalysisProduceExpectedJsonResult()
-          {
-              Console.WriteLine(testProjectInfoList);
-
-
-              string solutionPath = @"C:/Users/Administrator/Projects/MvcMusicStore/";
-              string solutionName = "MvcMusicStore.sln";
-              //solutionPath = @"C:/Users/Administrator/Projects/Umbraco-CMS/src";
-              //solutionName = "umbraco.sln";
-
-              foreach (string[] projectInfo in testProjectInfoList)
-              {
-                  PAIntegTestClient client = new PAIntegTestClient(solutionPath, solutionName);
-                  try
-                  {
-                      solutionPath = Path.Combine(tempProjectRoot, projectInfo[0]);
-                      solutionName = projectInfo[1];
-                      string jsonFile = Path.Combine(testRootPath, projectInfo[2]);
-
-                      await client.InitClient();
-                      var currentResults = await client.AssessSolution();
-                      SaveResults(jsonFile, currentResults);
-                      Boolean result = VerifyResults(jsonFile, currentResults);
-                      Console.WriteLine("Verification Result: " + result);
-                      Assert.IsTrue(result);
-
-                  }
-                  finally
-                  {
-                      await client.Cleanup();
-                  }
-              }
-          }
-        */
-
        [Test]
         public async Task TestMvcMusicStoreAsync()
         {
-
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
             if (projectInfo == null)
             {
@@ -120,7 +80,7 @@ namespace PortingAssistantExtensionIntegTests
                 return;
             }
 
-            Boolean result = await TestSolution(projectInfo);
+            Boolean result = await TestSolutionAsync(projectInfo);
             Console.WriteLine("Verification TestMvcMusicStore Result: " + result);
             Assert.IsTrue(result);
 
@@ -136,7 +96,7 @@ namespace PortingAssistantExtensionIntegTests
                 return;
             }
 
-            Boolean result = await TestSolution(projectInfo);
+            Boolean result = await TestSolutionAsync(projectInfo);
             Console.WriteLine("Verification MiniblogCore Result: " + result);
             Assert.IsTrue(result);
 
@@ -152,44 +112,39 @@ namespace PortingAssistantExtensionIntegTests
                 return;
             }
 
-            Boolean result = await TestSolution(projectInfo);
+            Boolean result = await TestSolutionAsync(projectInfo);
             Console.WriteLine("Verification NetFrameworkExample Result: " + result);
             Assert.IsTrue(result);
-
         }
 
-
-        private async Task<Boolean> TestSolution(string[] projectInfo)
+        private async Task<Boolean> TestSolutionAsync(string[] projectInfo)
         {
-            // testLock.Wait();
-            
-
             PAIntegTestClient client = null;
             try
             {
-              //  testLock.Wait();
                 string solutionPath = Path.Combine(tempProjectRoot, projectInfo[0]);
                 string solutionName = projectInfo[1];
                 string jsonFile = Path.Combine(zipRootFolderPath, projectInfo[2]);
 
-               // solutionPath = @"C:/Users/Administrator/Projects/MvcMusicStore/";
-               // solutionPath = "C:\\Users\\Administrator\\AppData\\Local\\Temp\\2\\PortingAssistantExtension\\wrehmvz5.ugz\\MvcMusicStore";
-               // solutionName = "MvcMusicStore.sln";
+                StartLanguageServer();
 
-                string inPipe = "InPipe" + Path.GetFileNameWithoutExtension(solutionName);
-                string outPipe = "OutPipe" + Path.GetFileNameWithoutExtension(solutionName);
+                client = new PAIntegTestClient(solutionPath, solutionName);
 
-                RunCLI(inPipe, outPipe);
+                await client.InitClientAsync();
+                var currentResults = await client.AssessSolutionAsync();
 
-                client = new PAIntegTestClient(solutionPath, solutionName, inPipe, outPipe);
-
-                await client.InitClient();
-                var currentResults = await client.AssessSolution();
+                /* Uncomment this method to save the results in a json file*/
                 //SaveResults(jsonFile, currentResults);
+                
                 Boolean result = VerifyResults(jsonFile, currentResults);
                 Console.WriteLine("Verification Result: " + result);
                 return result;
 
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
             }
             finally
             {
@@ -197,7 +152,7 @@ namespace PortingAssistantExtensionIntegTests
                 {
                     try
                     {
-                        await client.Cleanup();
+                        await client.CleanupAsync();
                     }
                     catch (Exception e) { }
                 }
@@ -207,13 +162,11 @@ namespace PortingAssistantExtensionIntegTests
                     ProcessHelper.getInstance().StopServer();
                 }
                 catch (Exception e) { }
-
-                //testLock.Release();
-
             }
 
             return false;
         }
+
         private static void SaveResults(string resultsFile, AnalysisTestResult analysisResults)
         {
             JsonUtils.ToJsonFile(analysisResults, resultsFile);
@@ -245,92 +198,22 @@ namespace PortingAssistantExtensionIntegTests
 
             if (!verifyResult)
             {
-                Console.WriteLine("New entries found in curreent run: ");
-                Console.WriteLine(currentResults);
+                Console.WriteLine("New entries found in curreent run: " + currentResults.Count);
+                if (currentResults.Count > 0)
+                {
+                    foreach (var eResult in currentResults)
+                    {
+                        Console.WriteLine("NEW " + currentResults);
+                    }
+                }
             }
 
             return verifyResult;
         }
-
-        /*
-        public static Task RunAsync(this Process process)
+        
+        private void StartLanguageServer()
         {
-            var tcs = new TaskCompletionSource<object>();
-            process.EnableRaisingEvents = true;
-            process.Exited += (s, e) => tcs.TrySetResult(null);
-            // not sure on best way to handle false being returned
-            if (!process.Start()) tcs.SetException(new Exception("Failed to start process."));
-            return tcs.Task;
-        }*/
-
-      
-
-        Process exeProcess;
-        private void RunCLI(string inPipe, string outPipe)
-        {
-            string path = @"C:\Users\Administrator\Projects\porting-assistant-dotnet-visual-studio-ide-extension\src\PortingAssistantVSExtensionClient\Resources\porting-assistant-config.json";
-
-            string args = $"{path} {inPipe.ToLower()} {outPipe.ToLower()}";
-            ProcessHelper.getInstance().StartServer(TestContext.CurrentContext.TestDirectory, path);
+            ProcessHelper.getInstance().StartServer(testRootPath, clientConfigPath);
         }
-
-        private void RunCLI______T()
-        { 
-            //"C:\\Users\\Administrator\\Projects\\porting-assistant-dotnet-visual-studio-ide-extension\\src\\PortingAssistantExtensionIntegTests\\bin\\Debug\\netcoreapp3.1"
-            string path = @"C:\Users\Administrator\Projects\porting-assistant-dotnet-visual-studio-ide-extension\src\PortingAssistantVSExtensionClient\Resources\porting-assistant-config.json";
-            ProcessStartInfo startInfo = new ProcessStartInfo("PortingAssistantExtensionServer.exe");
-            startInfo.WorkingDirectory = TestContext.CurrentContext.TestDirectory;
-            startInfo.CreateNoWindow = false;
-            startInfo.UseShellExecute = true;
-            //startInfo.RedirectStandardOutput = false;
-
-            //startInfo.CreateNoWindow = false;
-            //startInfo.UseShellExecute = false;
-            //            startInfo.RedirectStandardOutput = true;
-            // startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
-            //startInfo.RedirectStandardOutput = true;
-            startInfo.WindowStyle = ProcessWindowStyle.Normal;//ProcessWindowStyle.Hidden;
-            startInfo.Arguments = path;
-
-            //myProcess.StartInfo.FileName = fileName;
-            // Allows to raise event when the process is finished
-            //startInfo.EnableRaisingEvents = true;
-            // Eventhandler wich fires when exited
-            //myProcess.Exited += new EventHandler(myProcess_Exited);
-            // Starts the process
-            //myProcess.Start();
-
-            try
-            {
-                // Start the process with the info we specified.
-                // Call WaitForExit and then the using statement will close.
-               // using (Process exeProcess = Process.Start(startInfo))
-                {
-                    exeProcess = Process.Start(startInfo);
-                    if (!exeProcess.HasExited && exeProcess.Responding)
-                    {
-                        Console.WriteLine("Successfully started ...");
-                    }
-
-                    Console.WriteLine(exeProcess.ExitCode);
-                    // do stuff with results
-                    //  exeProcess.WaitForExit();
-                    /*while (!exeProcess.HasExited && exeProcess.Responding)
-                    {
-                        Thread.Sleep(1000);
-                    } 
-                    string output = exeProcess.StandardOutput.ReadToEnd();
-                    Console.WriteLine(output);*/
-
-                }
-            }
-            catch
-            {
-                Console.WriteLine("Fail to execute PA Client CLI!");
-             //   Assert.Fail();
-            }
-        }
-
     }
 }

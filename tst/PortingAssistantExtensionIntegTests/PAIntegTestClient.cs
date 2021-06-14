@@ -25,31 +25,21 @@ namespace PortingAssistantExtensionIntegTests
         public string SolutionRootPathUri { get; set; }
         public string SolutionRootPath { get; set;  }
         public string SolutionPath { get; set;  }
-        string stdInPipeName;
-        string stdOutPipeName;
-
-        public PAIntegTestClient(string solutionPath, string solutionName, string inPipe, string outPipe)
+        
+        public PAIntegTestClient(string solutionPath, string solutionName)
         {
             Diagnostics = new List<Diagnostic>();
             SolutionPath = Path.Combine(solutionPath, solutionName);
             SolutionRootPathUri = "file:\\" + solutionPath;
             SolutionRootPath = solutionPath;
-            stdInPipeName = inPipe;
-            stdOutPipeName = outPipe;
-            stdInPipeName = "extensionclientreadpipe";
-            stdOutPipeName = "extensionclientwritepipe";
-            bool exists = File.Exists(SolutionPath);
-            exists = Directory.Exists(solutionPath);
-            exists = Directory.Exists(SolutionRootPathUri);
-
         }
 
-        public async Task InitClient() { 
-            //var stdInPipeName = "extensionclientreadpipe";
-            //var stdOutPipeName = "extensionclientwritepipe";
+        public async Task InitClientAsync() { 
+            var stdInPipeName = "extensionclientreadpipe";
+            var stdOutPipeName = "extensionclientwritepipe";
 
             var clientOptionsAction = new Action<LanguageClientOptions>(option => { });
-            var (readerPipe, writerPipe) = await CreateConnectionPipe(stdInPipeName, stdOutPipeName);
+            var (readerPipe, writerPipe) = await CreateConnectionPipeAsync(stdInPipeName, stdOutPipeName);
 
             Client = LanguageClient.PreInit(options =>
             {
@@ -102,7 +92,7 @@ namespace PortingAssistantExtensionIntegTests
 
 
         async private Task<(NamedPipeServerStream readerPipe, NamedPipeServerStream writerPipe)> 
-            CreateConnectionPipe(string stdInPipeName, string stdOutPipeName)
+            CreateConnectionPipeAsync(string stdInPipeName, string stdOutPipeName)
         {
             var readerPipe = new NamedPipeServerStream(stdInPipeName, 
                 PipeDirection.In, 
@@ -125,11 +115,10 @@ namespace PortingAssistantExtensionIntegTests
             return (readerPipe, writerPipe);
         }
 
-        public async Task<AnalysisTestResult> AssessSolution()
+        public async Task<AnalysisTestResult> AssessSolutionAsync()
         {
-            //Before
             Diagnostics.Clear();
-            //Test
+
             string pipeName = Guid.NewGuid().ToString();
             
             var analyzeSolutionRequest = new AnalyzeSolutionRequest()
@@ -144,110 +133,26 @@ namespace PortingAssistantExtensionIntegTests
                 },
             };
             
-            //PipeUtils.StartListenerConnection(pipeName, GetAssessmentCompletionTasks( SolutionPath));
-
             var res = Client.SendRequest<AnalyzeSolutionRequest>("analyzeSolution", analyzeSolutionRequest);
             await res.Returning<AnalyzeSolutionResponse>(CancellationToken.None).ConfigureAwait(true);
             AnalysisTestResult analysisResults = new AnalysisTestResult();
 
             if (Diagnostics.Count > 0)
             {
-                using (StreamWriter outputFile = new StreamWriter(Path.Combine(SolutionRootPath, "File.txt")))
+                Diagnostics.ForEach(diag =>
                 {
-                    Diagnostics.ForEach(diag =>
-                    {
-                        
-                        string path = diag.RelatedInformation.ElementAt(0).Location.Uri.Path;
-
-                        outputFile.WriteLine(Path.GetFileName(path));
-
-                        CompatEntry entry = new CompatEntry(Path.GetFileName(path), diag.Code, diag.Message, diag.Range);
-                        Console.WriteLine(entry);
-                        analysisResults.AddEntry(entry);
-                        outputFile.WriteLine(diag.Code);
-                        outputFile.WriteLine(diag.Message);
-                        outputFile.WriteLine(diag.Range);
-                        outputFile.WriteLine();
-                    });
-                }
+                    string path = diag.RelatedInformation.ElementAt(0).Location.Uri.Path;
+                    CompatEntry entry = new CompatEntry(Path.GetFileName(path), diag.Code, diag.Message, diag.Range);
+                    analysisResults.AddEntry(entry);
+                });
             }
 
             return analysisResults;
         }
 
-        public async Task Cleanup()
+        public async Task CleanupAsync()
         {
             await Client.Shutdown();
         }
-
-        public Func<Task> GetAssessmentCompletionTasks(string solutionName)
-        {
-            async Task CompletionTask()
-            {
-                Console.WriteLine("CompletionTask called....");
-                //await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-             /*   try
-                {
-                    if (!UserSettings.Instance.EnabledContinuousAssessment)
-                    {
-                        UserSettings.Instance.EnabledContinuousAssessment = true;
-                        UserSettings.Instance.UpdateContinuousAssessment();
-                        await PortingAssistantLanguageClient.UpdateUserSettingsAsync();
-                    }
-                    await NotificationUtils.UseStatusBarProgressAsync(2, 2, "Assessment successful");
-                    await NotificationUtils.ShowInfoBarAsync(this.package, "Assessment successful. You can view the assessment results in the error list or view the green highlights in your source code.");
-                }
-                catch (Exception ex)
-                {
-                    NotificationUtils.ShowErrorMessageBox(package, $"Assessment failed for {solutionName} due to {ex.Message}", "Assessment failed");
-                }
-                finally
-                {
-                    CommandsCommon.EnableAllCommand(true);
-                } */
-            }
-            return CompletionTask;
-        }
     }
-
-    /*
-    class PipeUtils
-    {
-        public static void StartListenerConnection(string pipeName, Func<Task> taskToRun)
-        {
-            System.Threading.Tasks.Task.Factory.StartNew(async () =>
-            {
-                NamedPipeServerStream server = null;
-                try
-                {
-                    Console.WriteLine("StartListenerConnection start");
-                    server = new NamedPipeServerStream(pipeName);
-
-                    await server.WaitForConnectionAsync();
-                    await ThreadHelper.JoinableTaskFactory.RunAsync(taskToRun);
-                    
-
-                    Console.WriteLine("StartListenerConnection end");
-
-                }
-                catch (Exception)
-                {
-
-                }
-                finally
-                {
-                    if (server != null)
-                    {
-                        if (server.IsConnected)
-                        {
-                            server.Disconnect();
-                            server.Close();
-                        }
-                        server.Dispose();
-                    }
-                }
-            });
-        }
-    }
-    */
 }

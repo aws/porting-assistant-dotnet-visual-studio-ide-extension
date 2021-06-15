@@ -140,7 +140,7 @@ namespace PortingAssistantExtensionServer.Handlers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Incremental assessment failed with error:", ex);
+                _logger.LogError("Incremental assessment failed with error:", ex.Message);
             }
         }
     }

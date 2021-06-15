@@ -70,7 +70,7 @@ namespace PortingAssistantExtensionServer
             }
             catch (Exception e)
             {
-                _logger.LogError($"Analyze solution {request.solutionFilePath} with error ", e);
+                _logger.LogError($"Analyze solution {request.solutionFilePath} with error ", e.Message);
                 return new SolutionAnalysisResult
                 {
                     ProjectAnalysisResults = new List<ProjectAnalysisResult> {
@@ -130,7 +130,7 @@ namespace PortingAssistantExtensionServer
             }
             catch (Exception e)
             {
-                _logger.LogError("incremental assessment failed with error: ", e);
+                _logger.LogError("incremental assessment failed with error: ", e.Message);
                 return new List<SourceFileAnalysisResult>
                     {
                         new SourceFileAnalysisResult
@@ -186,7 +186,7 @@ namespace PortingAssistantExtensionServer
             }
             catch (Exception e)
             {
-                _logger.LogError("get diagnostics failed with error ", e);
+                _logger.LogError("get diagnostics failed with error ", e.Message);
                 return new Dictionary<DocumentUri, IList<Diagnostic>>();
             }
         }
@@ -253,7 +253,7 @@ namespace PortingAssistantExtensionServer
                     }
                     catch (Exception e)
                     {
-                        _logger.LogError("Add API diagnostic failed with error ", e);
+                        _logger.LogError("Add API diagnostic failed with error ", e.Message);
                     }
                 }
             }
@@ -285,7 +285,7 @@ namespace PortingAssistantExtensionServer
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Add porting action diagnostic failed with error", ex);
+                    _logger.LogError("Add porting action diagnostic failed with error", ex.Message);
                 }
             }
 

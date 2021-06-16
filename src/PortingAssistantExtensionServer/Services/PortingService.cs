@@ -46,7 +46,7 @@ namespace PortingAssistantExtensionServer
             }
             catch (Exception ex)
             {
-                _logger.LogError(" failed to port projects: {0}", ex);
+                _logger.LogError(ex, "failed to port projects: ");
                 return new ProjectFilePortingResponse()
                 {
                     Success = false,

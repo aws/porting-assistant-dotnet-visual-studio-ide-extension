@@ -68,9 +68,9 @@ namespace PortingAssistantExtensionServer
                 CreateClientConnectionAsync(request.PipeName);
                 return solutionAnalysisResult;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError($"Analyze solution {request.solutionFilePath} with error ", e.Message);
+                _logger.LogError("Analyze solution {0} with error {1}", request.solutionFilePath, ex);
                 return new SolutionAnalysisResult
                 {
                     ProjectAnalysisResults = new List<ProjectAnalysisResult> {
@@ -128,9 +128,9 @@ namespace PortingAssistantExtensionServer
                 }
                 return result;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError("incremental assessment failed with error: ", e.Message);
+                _logger.LogError("incremental assessment failed with error: {0}", ex);
                 return new List<SourceFileAnalysisResult>
                     {
                         new SourceFileAnalysisResult
@@ -184,9 +184,9 @@ namespace PortingAssistantExtensionServer
 
                 return FileToFirstDiagnostics;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError("get diagnostics failed with error ", e.Message);
+                _logger.LogError("get diagnostics failed with error {0}", ex);
                 return new Dictionary<DocumentUri, IList<Diagnostic>>();
             }
         }
@@ -251,9 +251,9 @@ namespace PortingAssistantExtensionServer
                         };
                         diagnostics.Add(diagnostic);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        _logger.LogError("Add API diagnostic failed with error ", e.Message);
+                        _logger.LogError("Add API diagnostic failed with error {0}", ex);
                     }
                 }
             }
@@ -285,7 +285,7 @@ namespace PortingAssistantExtensionServer
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Add porting action diagnostic failed with error", ex.Message);
+                    _logger.LogError("Add porting action diagnostic failed with error: {0}", ex);
                 }
             }
 

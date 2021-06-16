@@ -1,0 +1,72 @@
+{
+  "FileCompatResults": {
+    "FilterConfig.cs": [
+      {
+        "fileName": "FilterConfig.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: System.Web.Mvc.GlobalFilterCollection.Add(object) is incompatible for target framework netcoreapp3.1 ",
+        "Range": {
+          "Start": {
+            "Line": 9,
+            "Character": 12
+          },
+          "End": {
+            "Line": 9,
+            "Character": 51
+          }
+        }
+      }
+    ],
+    "RouteConfig.cs": [
+      {
+        "fileName": "RouteConfig.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: System.Web.Routing.RouteCollection.IgnoreRoute(string) is incompatible for target framework netcoreapp3.1 ",
+        "Range": {
+          "Start": {
+            "Line": 13,
+            "Character": 12
+          },
+          "End": {
+            "Line": 13,
+            "Character": 60
+          }
+        }
+      }
+    ],
+    "HomeController.cs": [
+      {
+        "fileName": "HomeController.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: System.Web.Mvc.Controller.View() is incompatible for target framework netcoreapp3.1 ",
+        "Range": {
+          "Start": {
+            "Line": 12,
+            "Character": 19
+          },
+          "End": {
+            "Line": 12,
+            "Character": 25
+          }
+        }
+      }
+    ],
+    "Global.asax.cs": [
+      {
+        "fileName": "Global.asax.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: System.Web.Mvc.AreaRegistration.RegisterAllAreas() is incompatible for target framework netcoreapp3.1 ",
+        "Range": {
+          "Start": {
+            "Line": 14,
+            "Character": 12
+          },
+          "End": {
+            "Line": 14,
+            "Character": 47
+          }
+        }
+      }
+    ]
+  }
+}

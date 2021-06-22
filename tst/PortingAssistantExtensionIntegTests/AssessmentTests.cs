@@ -17,15 +17,19 @@ namespace PortingAssistantExtensionIntegTests
         private string zipRootFolderPath;
         private string testRootPath;
         private string clientConfigPath;
-
+       
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {  
             var testFilesInfo = new Dictionary<string, string[]>()
             {   // Zipfile = {folder-name, solution file, json file}
                 ["Miniblog.Core-master.zip"] = new string[] { "Miniblog.Core-master", "Miniblog.Core.sln", "Miniblog.Core.json"},
-                ["MvcMusicStore.zip"] = new string[] { "MvcMusicStore", "MvcMusicStore.sln", "MvcMusicStore.json" },
-                ["NetFrameworkExample.zip"] = new string[] { "NetFrameworkExample", "NetFrameworkExample.sln", "NetFrameworkExample.json" }
+                ["MvcMusicStore.zip"] = new string[] { "MvcMusicStore", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
+                ["NetFrameworkExample.zip"] = new string[] { "NetFrameworkExample", "NetFrameworkExample.sln", "NetFrameworkExample.json" },
+                
+                ["Miniblog.Core-master-PortResults.zip"] = new string[] { "Miniblog.Core-master-PortResults", "Miniblog.Core.sln", "Miniblog.Core.json" },
+                ["MvcMusicStore-PortResults.zip"] = new string[] { "MvcMusicStore-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
+                ["NetFrameworkExample-PortResults.zip"] = new string[] { "NetFrameworkExample-PortResults", "NetFrameworkExample.sln", "NetFrameworkExample.json" }
             };
 
             testRootPath = TestContext.CurrentContext.TestDirectory;
@@ -62,12 +66,12 @@ namespace PortingAssistantExtensionIntegTests
         [OneTimeTearDown]
         public void Cleanup()
         {
+            ProcessHelper.getInstance().StopServer();
+
             if (tempProjectRoot != null)
             {
                 Directory.Delete(tempProjectRoot, true);
             }
-
-            ProcessHelper.getInstance().StopServer();
         }
 
        [Test]
@@ -83,7 +87,10 @@ namespace PortingAssistantExtensionIntegTests
             Boolean result = await TestSolutionAsync(projectInfo);
             Console.WriteLine("Verification TestMvcMusicStore Result: " + result);
             Assert.IsTrue(result);
-
+            
+            Boolean portResult = await TestPortSolutionAsync(projectInfo);
+            Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
+            Assert.IsTrue(portResult);
         }
 
        [Test]
@@ -100,6 +107,10 @@ namespace PortingAssistantExtensionIntegTests
             Console.WriteLine("Verification MiniblogCore Result: " + result);
             Assert.IsTrue(result);
 
+            Boolean portResult = await TestPortSolutionAsync(projectInfo);
+            Console.WriteLine("Porting Verification TestMiniblogCore Result: " + portResult);
+            Assert.IsTrue(portResult);
+
         }
 
        [Test]
@@ -115,6 +126,10 @@ namespace PortingAssistantExtensionIntegTests
             Boolean result = await TestSolutionAsync(projectInfo);
             Console.WriteLine("Verification NetFrameworkExample Result: " + result);
             Assert.IsTrue(result);
+
+            Boolean portResult = await TestPortSolutionAsync(projectInfo);
+            Console.WriteLine("Porting Verification TestNetFrameworkExample Result: " + portResult);
+            Assert.IsTrue(portResult);
         }
 
         private async Task<Boolean> TestSolutionAsync(string[] projectInfo)
@@ -167,6 +182,52 @@ namespace PortingAssistantExtensionIntegTests
             return false;
         }
 
+        private async Task<Boolean> TestPortSolutionAsync(string[] projectInfo)
+        {
+            PAIntegTestClient client = null;
+            try
+            {
+                string solutionPath = Path.Combine(tempProjectRoot, projectInfo[0]);
+                string solutionName = projectInfo[1];
+
+                StartLanguageServer();
+
+                client = new PAIntegTestClient(solutionPath, solutionName);
+
+                await client.InitClientAsync();
+                var currentResults = await client.PortSolutionAsync();
+
+                string expectedSolutionPath = solutionPath + "-PortResults";
+
+                Boolean result = FileUtils.AreTwoDirectoriesEqual(solutionPath, expectedSolutionPath);
+                return result;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return false;
+            }
+            finally
+            {
+                if (client != null)
+                {
+                    try
+                    {
+                        await client.CleanupAsync();
+                    }
+                    catch (Exception e) { }
+                }
+
+                try
+                {
+                    ProcessHelper.getInstance().StopServer();
+                }
+                catch (Exception e) { }
+            }
+
+            return false;
+        }
         private static void SaveResults(string resultsFile, AnalysisTestResult analysisResults)
         {
             JsonUtils.ToJsonFile(analysisResults, resultsFile);

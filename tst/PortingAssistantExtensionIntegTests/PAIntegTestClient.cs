@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
@@ -149,6 +150,57 @@ namespace PortingAssistantExtensionIntegTests
             }
 
             return analysisResults;
+        }
+
+        public async Task<AnalysisTestResult> PortSolutionAsync()
+        {
+            Diagnostics.Clear();
+
+            string pipeName = Guid.NewGuid().ToString();
+
+            var portingRequest = new ProjectFilePortingRequest()
+            {
+                SolutionPath = SolutionPath,
+                ProjectPaths = GetProjectPaths(SolutionPath),
+                TargetFramework = "netcoreapp3.1",
+                IncludeCodeFix = false,
+                PipeName = pipeName
+            };
+
+            var res = Client.SendRequest<ProjectFilePortingRequest>("applyPortingProjectFileChanges", portingRequest);
+            await res.Returning<ProjectFilePortingResponse>(CancellationToken.None).ConfigureAwait(true);
+            AnalysisTestResult analysisResults = new AnalysisTestResult();
+
+            if (Diagnostics.Count > 0)
+            {
+                Diagnostics.ForEach(diag =>
+                {
+                    string path = diag.RelatedInformation.ElementAt(0).Location.Uri.Path;
+                    CompatEntry entry = new CompatEntry(Path.GetFileName(path), diag.Code, diag.Message, diag.Range);
+                    analysisResults.AddEntry(entry);
+                });
+            }
+
+            return analysisResults;
+        }
+
+        public static List<string> GetProjectPaths(string solutionPath)
+        {
+            var Content = File.ReadAllText(solutionPath);
+            Regex projReg = new Regex(
+                "Project\\(\"\\{[\\w-]*\\}\"\\) = \"([\\w _]*.*)\", \"(.*\\.(cs|vcx|vb)proj)\""
+                , RegexOptions.Compiled);
+            var matches = projReg.Matches(Content).Cast<Match>();
+            var Projects = matches.Select(x => x.Groups[2].Value).ToList();
+            for (int i = 0; i < Projects.Count; ++i)
+            {
+                if (!Path.IsPathRooted(Projects[i]))
+                    Projects[i] = Path.Combine(Path.GetDirectoryName(solutionPath),
+                        Projects[i]);
+                Projects[i] = Path.GetFullPath(Projects[i]);
+            }
+
+            return Projects;
         }
 
         public async Task CleanupAsync()

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PortingAssistantExtensionServer.Models
 {
-    class ProjectFilePortingRequest : PortingRequest, IRequest<ProjectFilePortingResponse>
+    public class ProjectFilePortingRequest : PortingRequest, IRequest<ProjectFilePortingResponse>
     {
         public List<string> ProjectPaths { get; set; }
         public string PipeName { get; set; }

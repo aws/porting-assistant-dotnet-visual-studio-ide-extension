@@ -2,7 +2,7 @@
 
 namespace PortingAssistantExtensionServer.Models
 {
-    class ProjectFilePortingResponse
+    public class ProjectFilePortingResponse
     {
         public bool Success { get; set; }
         public string SolutionPath { get; set; }

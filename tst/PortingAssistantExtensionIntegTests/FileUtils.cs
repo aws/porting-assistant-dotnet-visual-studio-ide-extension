@@ -10,7 +10,7 @@ namespace PortingAssistantExtensionIntegTests
     //Copied from PA standalone tests
     class FileUtils
     {
-        static string[] allowList = { ".cs", ".csproj", ".json", ".config", ".nupkg", ".targets"};
+        static string[] allowList = { ".cs", ".json", ".config", ".nupkg", ".targets"};
         static ISet<string> allowSet = new HashSet<string>(allowList);
 
         public static bool AreTwoDirectoriesEqual(
@@ -65,7 +65,7 @@ namespace PortingAssistantExtensionIntegTests
         {
             foreach (FileInfo fi in fis)
             {
-                Console.WriteLine("{0} | {1}", fi.Name, fi.Length);
+                Console.WriteLine("{0} | {1} {2}", fi.Name, fi.Length, fi.FullName);
             }
         }
     }

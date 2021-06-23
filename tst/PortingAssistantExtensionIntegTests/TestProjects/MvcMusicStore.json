@@ -140,15 +140,15 @@
       {
         "fileName": "StoreManagerController.cs",
         "compatCode": "PA0002",
-        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
         "Range": {
           "Start": {
-            "Line": 6,
+            "Line": 3,
             "Character": 0
           },
           "End": {
-            "Line": 6,
-            "Character": 21
+            "Line": 3,
+            "Character": 25
           }
         }
       }
@@ -157,7 +157,24 @@
       {
         "fileName": "InitializeSimpleMembershipAttribute.cs",
         "compatCode": "PA0002",
-        "message": "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
+        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
+        "Range": {
+          "Start": {
+            "Line": 1,
+            "Character": 0
+          },
+          "End": {
+            "Line": 1,
+            "Character": 25
+          }
+        }
+      }
+    ],
+    "AccountModels.cs": [
+      {
+        "fileName": "AccountModels.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
         "Range": {
           "Start": {
             "Line": 4,
@@ -165,7 +182,24 @@
           },
           "End": {
             "Line": 4,
-            "Character": 21
+            "Character": 25
+          }
+        }
+      }
+    ],
+    "MusicStoreEntities.cs": [
+      {
+        "fileName": "MusicStoreEntities.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
+        "Range": {
+          "Start": {
+            "Line": 0,
+            "Character": 0
+          },
+          "End": {
+            "Line": 0,
+            "Character": 25
           }
         }
       }
@@ -183,6 +217,23 @@
           "End": {
             "Line": 3,
             "Character": 21
+          }
+        }
+      }
+    ],
+    "SampleData.cs": [
+      {
+        "fileName": "SampleData.cs",
+        "compatCode": "PA0002",
+        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
+        "Range": {
+          "Start": {
+            "Line": 4,
+            "Character": 0
+          },
+          "End": {
+            "Line": 4,
+            "Character": 25
           }
         }
       }

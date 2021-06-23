@@ -26,9 +26,9 @@ namespace PortingAssistantExtensionIntegTests
                 "*.*", SearchOption.AllDirectories).Where(x => isValidFile(x)).ToList<FileInfo>();
 
             Console.WriteLine("---------FILES IN DIR 1-----------");
-            PrintFileInfos(list1);
+            var set1 = PrintFileInfos(list1);
             Console.WriteLine("---------FILES IN DIR 2-----------");
-            PrintFileInfos(list2);
+            var set2 = PrintFileInfos(list2);
             
             if (list1.Count() != list2.Count())
             {
@@ -36,10 +36,20 @@ namespace PortingAssistantExtensionIntegTests
                 return false;
             }
 
-            // This query determines whether the two folders contain  
-            // identical file lists, based on the custom file comparer  
-            // that is defined in the FileCompare class.
-            return list1.SequenceEqual(list2, new FileCompare());
+            set2.ExceptWith(set1);
+
+            if (set2.Count != 0)
+            {
+                foreach (var file in set2)
+                {
+                    Console.WriteLine("Expected File Not found:  " + file);
+                }
+
+                return false;
+            }
+
+            Console.WriteLine("Two directories are Equal");
+            return true;
 
         }
 
@@ -61,12 +71,15 @@ namespace PortingAssistantExtensionIntegTests
 
         }
      
-        static void PrintFileInfos(IEnumerable<FileInfo> fis)
+        static ISet<string> PrintFileInfos(IEnumerable<FileInfo> fis)
         {
+            ISet<string> set = new HashSet<string>();
             foreach (FileInfo fi in fis)
             {
+                set.Add(fi.Name + "-" + fi.Length);
                 Console.WriteLine("{0} | {1} {2}", fi.Name, fi.Length, fi.FullName);
             }
+            return set;
         }
     }
 

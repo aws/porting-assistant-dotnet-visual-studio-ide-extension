@@ -74,9 +74,9 @@ namespace PortingAssistantExtensionServer
                     Environment.Exit(0);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Logger.Error("Porting Assistant Extension failed with error:", e);
+                Log.Logger.Error(ex, "Porting Assistant Extension failed with error: ");
                 Environment.Exit(1);
             }
             finally

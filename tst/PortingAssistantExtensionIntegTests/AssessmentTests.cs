@@ -17,7 +17,7 @@ namespace PortingAssistantExtensionIntegTests
         private string zipRootFolderPath;
         private string testRootPath;
         private string clientConfigPath;
-       
+
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {  
@@ -72,6 +72,8 @@ namespace PortingAssistantExtensionIntegTests
             {
                 Directory.Delete(tempProjectRoot, true);
             }
+
+            ProcessHelper.getInstance().StopServer();
         }
 
        [Test]
@@ -87,7 +89,7 @@ namespace PortingAssistantExtensionIntegTests
             Boolean result = await TestSolutionAsync(projectInfo);
             Console.WriteLine("Verification TestMvcMusicStore Result: " + result);
             Assert.IsTrue(result);
-            
+
             Boolean portResult = await TestPortSolutionAsync(projectInfo);
             Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
             Assert.IsTrue(portResult);

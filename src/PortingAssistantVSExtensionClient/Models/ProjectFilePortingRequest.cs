@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PortingAssistantVSExtensionClient.Models
 {
-    class ProjectFilePortingRequest
+    public class ProjectFilePortingRequest
     {
         public List<string> ProjectPaths { get; set; }
         public string SolutionPath { get; set; }

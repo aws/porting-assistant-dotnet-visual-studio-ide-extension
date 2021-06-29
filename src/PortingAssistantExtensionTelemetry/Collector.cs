@@ -1,6 +1,8 @@
 ﻿using PortingAssistant.Client.Model;
 using PortingAssistantExtensionTelemetry.Model;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PortingAssistantExtensionTelemetry
 {
@@ -8,6 +10,7 @@ namespace PortingAssistantExtensionTelemetry
     {
         public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework, string extensionVersion, double time)
         {
+            var sha256hash = SHA256.Create();
             var date = DateTime.Now;
             var solutionDetail = result.SolutionDetails;
             // Solution Metrics
@@ -17,7 +20,7 @@ namespace PortingAssistantExtensionTelemetry
                 PortingAssistantExtensionVersion = extensionVersion,
                 TargetFramework = targetFramework,
                 TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
-                SolutionPath = solutionDetail.SolutionFilePath,
+                SolutionPath = GetHash(sha256hash, solutionDetail.SolutionFilePath),
                 AnalysisTime = time,
             };
             TelemetryCollector.Collect<SolutionMetrics>(solutionMetrics);
@@ -87,6 +90,17 @@ namespace PortingAssistantExtensionTelemetry
                 };
                 TelemetryCollector.Collect<APIMetrics>(apiMetrics);
             }
+        }
+
+        private static string GetHash(HashAlgorithm hashAlgorithm, string input)
+        {
+            byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));
+            var sBuilder = new StringBuilder();
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+            return sBuilder.ToString();
         }
     }
 }

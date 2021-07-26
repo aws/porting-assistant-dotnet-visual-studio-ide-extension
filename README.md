@@ -53,7 +53,7 @@ We require the following:
 
 [Porting Assistant for .NET Datastore](https://github.com/aws/porting-assistant-dotnet-datastore): The repository containing the data set and recommendations used in compatibility assessment.
 
-[Code translation assistant](https://github.com/aws/cta): The repository used to apply code translations
+[Code translation assistant](https://github.com/aws/cta): The repository used to apply code translations.
 
 
 ## Contributing

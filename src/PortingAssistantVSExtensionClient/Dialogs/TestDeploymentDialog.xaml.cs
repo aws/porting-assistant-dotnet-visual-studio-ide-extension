@@ -3,8 +3,10 @@ using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Options;
 using PortingAssistantVSExtensionClient.Utils;
 using System;
-using System.Diagnostics;
+using System.Management.Automation;
 using System.IO;
+using System.Collections.ObjectModel;
+using System.Windows.Documents;
 
 namespace PortingAssistantVSExtensionClient.Dialogs
 {
@@ -39,31 +41,44 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
             string arg1 = InputBox1.Text;
             string arg2 = InputBox2.Text;
-            if (File.Exists(scriptPath))
+            try
             {
-                try
+                if (File.Exists(scriptPath))
                 {
-                    ProcessStartInfo info = new ProcessStartInfo()
+
+
+                    PowerShell powerShell = PowerShell.Create();
+                    string script = File.ReadAllText(scriptPath);
+                    powerShell.AddScript(script);
+                    var results = powerShell.Invoke();
+                    if (results.Count > 0)
                     {
-                        FileName = "powershell.exe",
-                        WorkingDirectory = Path.GetDirectoryName(scriptPath),
-                        UseShellExecute = false,
-                        CreateNoWindow = false,
-                        Arguments = $"-NoProfile -ExecutionPolicy unrestricted -file \"{scriptPath}\"",
-                    };
-                    Process process = new Process { StartInfo = info };
-                    if (process.Start())
-                    {
-                        ClickResult = "success";
+                        logs.Visibility = System.Windows.Visibility.Visible;
                     }
-                }
-                catch (Exception ex)
-                {
-                    ClickResult = ex.Message;
+                    foreach (PSObject outputItem in results)
+                    {
+                        // if null object was dumped to the pipeline during the script then a null object may be present here
+                        if (outputItem != null)
+                        {
+                            Console.WriteLine($"Output line: [{outputItem}]");
+                            logHolder.Inlines.Add(new Run($"Output line: [{outputItem}]"));
+                        }
+                    }
+
+
+                    // check the other output streams (for example, the error stream)
+                    if (powerShell.Streams.Error.Count > 0)
+                    {
+                        // error records were written to the error stream.
+                        // Do something with the error
+                    }
+
                 }
             }
-            
-            Close();
+            catch (Exception ex)
+            {
+                ClickResult = ex.Message;
+            }
         }
     }
 }

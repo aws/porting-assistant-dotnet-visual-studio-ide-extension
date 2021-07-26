@@ -7,11 +7,27 @@
              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Button Content="Deploy" HorizontalAlignment="Left" Margin="654,372,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
-        <Button Content="Cacnel" HorizontalAlignment="Left" Margin="545,372,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <TextBox x:Name="InputBox1" HorizontalAlignment="Left" Height="23" Margin="142,71,0,0" TextWrapping="Wrap" Text="input1" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="InputBox2" HorizontalAlignment="Left" Height="23" Margin="142,128,0,0" TextWrapping="Wrap" Text="input2" VerticalAlignment="Top" Width="120"/>
-
+    <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="800" Height="450">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+            <Button Content="Deploy" HorizontalAlignment="Left" Margin="670,354,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
+        <Button Content="Cacnel" HorizontalAlignment="Left" Margin="538,354,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <TextBox x:Name="InputBox1" HorizontalAlignment="Left" Height="23" Margin="91,45,0,0" TextWrapping="Wrap" Text="input1" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="InputBox2" HorizontalAlignment="Left" Height="23" Margin="91,104,0,0" TextWrapping="Wrap" Text="input2" VerticalAlignment="Top" Width="120"/>
+        <Label Content="param1&#xD;&#xA;" HorizontalAlignment="Left" Margin="25,45,0,0" VerticalAlignment="Top"/>
+        <Label Content="param1&#xA;" HorizontalAlignment="Left" Margin="25,45,0,0" VerticalAlignment="Top"/>
+        <Label Content="param2" HorizontalAlignment="Left" Margin="25,101,0,0" VerticalAlignment="Top"/>
+        <ScrollViewer Name ="logs" Visibility="Hidden" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Margin="25,150,20,20" VerticalAlignment="Top" Height="100" Width="600">
+            <TextBlock Name="logHolder"  TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20" Padding="20" >  
+                <InlineUIContainer>  
+                    <TextBlock FontSize="20" FontWeight="Bold"><Run Text="deployment logs"/></TextBlock>  
+                </InlineUIContainer><LineBreak/>
+            </TextBlock>
+        </ScrollViewer>
     </Grid>
 </ui:DialogWindow>

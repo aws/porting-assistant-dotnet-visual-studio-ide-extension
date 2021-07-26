@@ -23,6 +23,12 @@
         "resolved": "3.7.0.13",
         "contentHash": "8z7RHLvY/bQP3F55AL3keG3/6Y9O15RWFUhz1a585+UAFVvFD/eejn443s4C0O3k5TLnxf1u5M0qblIZbNMgqw=="
       },
+      "Microsoft.PowerShell.5.ReferenceAssemblies": {
+        "type": "Direct",
+        "requested": "[1.1.0, )",
+        "resolved": "1.1.0",
+        "contentHash": "EE87t3aUXlO0Rjq83Ti8z1g4wwsWnB4W+pOn84i3QWzUOOuP5gZg8n4Y8XTZ7GkxGcoSR6w/d/kBJTJbc3VZPQ=="
+      },
       "Microsoft.VisualStudio.SDK": {
         "type": "Direct",
         "requested": "[16.9.31025.194, )",

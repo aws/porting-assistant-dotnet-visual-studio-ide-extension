@@ -17,8 +17,8 @@
         </Grid.RowDefinitions>
             <Button x:Name="DeployButton" Content="Deploy" HorizontalAlignment="Left" Margin="593,317,0,37" Width="75" Click="Button_Click_1"/>
         <Button Content="Cacnel" HorizontalAlignment="Left" Margin="484,317,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <TextBox x:Name="InputBox1" HorizontalAlignment="Left" Height="23" Margin="91,45,0,0" TextWrapping="Wrap" Text="input1" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="InputBox2" HorizontalAlignment="Left" Height="23" Margin="91,104,0,0" TextWrapping="Wrap" Text="input2" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="InputBox1" HorizontalAlignment="Left" Height="23" Margin="91,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="InputBox2" HorizontalAlignment="Left" Height="23" Margin="91,104,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <Label Content="IAM role" HorizontalAlignment="Left" Margin="25,45,0,0" VerticalAlignment="Top"/>
         <Label Content="VPC" HorizontalAlignment="Left" Margin="25,101,0,0" VerticalAlignment="Top"/>
         <Label Content="Subnet" HorizontalAlignment="Left" Margin="25,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.534,1.599"/>
@@ -29,7 +29,7 @@
                 </InlineUIContainer><LineBreak/>
             </TextBlock>
         </ScrollViewer>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="91,144,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="91,144,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
         <CheckBox x:Name="ADConfigure" Content="AD Configure" HorizontalAlignment="Left" Margin="340,45,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked_1" Unchecked="ADConfigure_Unchecked"/>
         <CheckBox x:Name="DBConfigure" Content="Database Configure " HorizontalAlignment="Left" Margin="340,112,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="DBConfigure_Unchecked"/>
         <TextBox x:Name="ADInput" HorizontalAlignment="Left" Height="23" Margin="460,71,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="3.163,-3.612" Visibility="Hidden"/>

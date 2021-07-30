@@ -117,7 +117,10 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="packages.lock.json" />
-    <None Include="Resources\setup.ps1" />
+    <Content Include="Resources\setup.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>

@@ -98,7 +98,11 @@ namespace PortingAssistantVSExtensionClient.Commands
                 assemblyPath,
                 Common.Constants.ResourceFolder,
                 "test-script.ps1");
-            string result = TestDeploymentDialog.EnsureExecute(deployScriptPath);
+            string setupScriptPath = Path.Combine(
+                assemblyPath,
+                Common.Constants.ResourceFolder,
+                "setup.ps1");
+            string result = TestDeploymentDialog.EnsureExecute(deployScriptPath, setupScriptPath);
             if (result.Equals("success"))
             {
                 NotificationUtils.ShowInfoMessageBox(package, "success", "success");

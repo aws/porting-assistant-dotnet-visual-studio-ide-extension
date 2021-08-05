@@ -97,7 +97,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             string deployScriptPath =  Path.Combine(
                 assemblyPath,
                 Common.Constants.ResourceFolder,
-                "test-script.ps1");
+                "abc.bat");
             string setupScriptPath = Path.Combine(
                 assemblyPath,
                 Common.Constants.ResourceFolder,

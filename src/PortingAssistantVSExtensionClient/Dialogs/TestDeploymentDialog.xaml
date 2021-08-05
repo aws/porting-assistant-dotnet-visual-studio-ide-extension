@@ -6,39 +6,60 @@
              xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="700">
-    <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="800" Height="450">
+             d:DesignHeight="400" d:DesignWidth="750" Height="400" Width="750">
+    <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="750">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-            <Button x:Name="DeployButton" Content="Deploy" HorizontalAlignment="Left" Margin="593,317,0,37" Width="75" Click="Button_Click_1"/>
-        <Button Content="Cacnel" HorizontalAlignment="Left" Margin="484,317,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <TextBox x:Name="InputBox1" HorizontalAlignment="Left" Height="23" Margin="91,45,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="InputBox2" HorizontalAlignment="Left" Height="23" Margin="91,104,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <Label Content="IAM role" HorizontalAlignment="Left" Margin="25,45,0,0" VerticalAlignment="Top"/>
-        <Label Content="VPC" HorizontalAlignment="Left" Margin="25,101,0,0" VerticalAlignment="Top"/>
-        <Label Content="Subnet" HorizontalAlignment="Left" Margin="25,141,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.534,1.599"/>
-        <ScrollViewer Name ="logs" Visibility="Hidden" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Margin="25,220,20,20" VerticalAlignment="Top" Height="80" Width="600">
-            <TextBlock Name="logHolder"  TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20" Padding="20" >  
-                <InlineUIContainer>  
-                    <TextBlock FontSize="20" FontWeight="Bold"><Run Text="deployment logs"/></TextBlock>  
-                </InlineUIContainer><LineBreak/>
+        <GroupBox Header="General" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="180" Width="230" Margin="20,20,0,0">
+            <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <TextBox x:Name="InputBox1" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="120" Margin="80,30,0,0" TextWrapping="Wrap" Text=""/>
+                <TextBox x:Name="InputBox2" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="120" Margin="80,70,0,0" TextWrapping="Wrap" Text=""/>
+                <TextBox x:Name="InputBox3" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="120" Margin="80,110,0,0" TextWrapping="Wrap" Text=""/>
+                <Label Content="IAM role" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,30,0,0" />
+                <Label Content="VPC" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,70,0,0" />
+                <Label Content="Subnet" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,110,0,0" />
+            </Grid>
+        </GroupBox>
+        
+        <GroupBox Header="" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="180" Width="250" Margin="0,20,0,0">
+            <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <CheckBox x:Name="DBConfigure" Grid.Column="1" Grid.Row="0" Margin="0,-5,0,0" Content="Database Settings" HorizontalAlignment="Left" VerticalAlignment="Top" Unchecked="DBConfigure_Unchecked" IsChecked="True" Checked="DBConfigure_Checked"/>
+                <Label x:Name="DbSecretArnLabel" Grid.Column="1" Grid.Row="0" Margin="0,30,0,0" Content="Secret ARN" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="25" Width="120" Visibility="Visible"/>
+                <Label x:Name="SqlSgLabel" Grid.Column="1" Grid.Row="0" Margin="0,70,0,0" Content="Security Group" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="120" Visibility="Visible"/>
+                <Label x:Name="SqlConnectionLabel" Grid.Column="1" Grid.Row="0" Margin="0,110,0,0" Content="Connection String" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="120" Visibility="Visible" />
+                <TextBox x:Name="DbSecretArnInput" Grid.Column="1" Grid.Row="0" Margin="110,30,0,0" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Visibility="Visible"/>
+                <TextBox x:Name="SqlSgInput" Grid.Column="1" Grid.Row="0" Margin="110,70,0,0" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Visibility="Visible"/>
+                <TextBox x:Name="SqlConnectionInput" Grid.Column="1" Grid.Row="0" Margin="110,110,0,0" HorizontalAlignment="Left" Height="25" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"  Visibility="Visible"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="80" Width="220" Margin="0,20,0,0">
+            <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <CheckBox x:Name="ADConfigure" Grid.Column="2" Grid.Row="0" Margin="0,-5,0,0" Content="Active Directory Settings" HorizontalAlignment="Left"  VerticalAlignment="Top" Unchecked="ADConfigure_Unchecked" IsChecked="True" Checked="ADConfigure_Checked"/>
+                <TextBox x:Name="ADInput" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" Height="25" Margin="80,30,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Visibility="Visible"/>
+                <Label x:Name="ADLabel" Grid.Column="2" Grid.Row="0" Content="Directory-ID" HorizontalAlignment="Left" Height="25" Margin="0,30,0,0" VerticalAlignment="Top" Visibility="Visible"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="100" Width="220" Margin="0,100,0,0">
+            <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <CheckBox x:Name="IISConfigure" Grid.Column="2" Grid.Row="0" Margin="0,-5,0,0" Content="IIS Settings" HorizontalAlignment="Left"  VerticalAlignment="Top" IsChecked="True" Checked="IISConfigure_Checked" Unchecked="IISConfigure_Unchecked"/>
+                <TextBox x:Name="ApplicationPools" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" Height="25" Margin="110,30,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="90" Visibility="Visible"/>
+                <Label x:Name="ApplicationPoolsLabel" Grid.Column="2" Grid.Row="0" Content="Application Pools" HorizontalAlignment="Left" Height="25" Margin="0,30,0,0" VerticalAlignment="Top" Visibility="Visible"/>
+            </Grid>
+        </GroupBox>
+        <ScrollViewer Name ="logs" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Visibility="Visible" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" Height="100" Width="700">
+            <TextBlock Name="logHolder"  TextWrapping="Wrap" VerticalAlignment="Top" FontSize="12" Padding="30" Height="90" >
             </TextBlock>
         </ScrollViewer>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="91,144,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
-        <CheckBox x:Name="ADConfigure" Content="AD Configure" HorizontalAlignment="Left" Margin="340,45,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked_1" Unchecked="ADConfigure_Unchecked"/>
-        <CheckBox x:Name="DBConfigure" Content="Database Configure " HorizontalAlignment="Left" Margin="340,112,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="DBConfigure_Unchecked"/>
-        <TextBox x:Name="ADInput" HorizontalAlignment="Left" Height="23" Margin="460,71,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" RenderTransformOrigin="3.163,-3.612" Visibility="Hidden"/>
-        <Label x:Name="ADLabel" Content="Directory-ID" HorizontalAlignment="Left" Margin="340,68,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.656,0.219" Visibility="Hidden"/>
-        <Label x:Name="DbSecretArnLabel" Content="Database Secret ARN" HorizontalAlignment="Left" Margin="341,138,0,0" VerticalAlignment="Top" RenderTransformOrigin="2.984,-2.146" Visibility="Hidden"/>
-        <Label x:Name="SqlSgLabel" Content="sql-server security group&#xD;&#xA;" HorizontalAlignment="Left" Margin="340,164,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="26" Width="153" Visibility="Hidden"/>
-        <Label x:Name="SqlConnectionLabel" Content="SQL connection string" HorizontalAlignment="Left" Margin="341,197,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.567,0.523" Visibility="Hidden"/>
-        <TextBox x:Name="DbSecretArnInput" HorizontalAlignment="Left" Height="23" Margin="498,141,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Visibility="Hidden"/>
-        <TextBox x:Name="SqlSgInput" HorizontalAlignment="Left" Height="23" Margin="498,169,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Visibility="Hidden"/>
-        <TextBox x:Name="SqlConnectionInput" HorizontalAlignment="Left" Height="23" Margin="498,197,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120" Visibility="Hidden" RenderTransformOrigin="0.468,0.356"/>
+        <GroupBox Header="Deployment logs" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Top" Height="90" Margin="20,0,0,0"  Width="700" FontSize="15"/>
+        <Button x:Name="DeployButton" Grid.Column="2" Grid.Row="2"  Content="Deploy" HorizontalAlignment="Right" Margin="0,-20,50,0" Height="20" Width="75" Click="Button_Click_1"/>
+        <Button x:Name="Cancel" Content="Cancel" Grid.Column="2" Grid.Row="2" HorizontalAlignment="Right" Margin="0,-20,140,0"  Height="20" Width="75"  Click="Button_Click"/>
     </Grid>
 </ui:DialogWindow>

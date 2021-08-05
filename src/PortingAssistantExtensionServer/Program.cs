@@ -12,6 +12,9 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionTelemetry;
 using System.Text.Json;
+using PortingAssistant.Telemetry.Utils;
+using System.Net.Http;
+
 
 namespace PortingAssistantExtensionServer
 {
@@ -32,6 +35,7 @@ namespace PortingAssistantExtensionServer
                 var stdOutPipeName = args.Length == 1 ? Common.Constants.stdDebugOutPipeName : args[2];
                 Common.PALanguageServerConfiguration.ExtensionVersion = args.Length == 1 ? "0.0.0" : args[3];
                 var portingAssistantConfiguration = JsonSerializer.Deserialize<PortingAssistantIDEConfiguration>(File.ReadAllText(config));
+                
                 var outputTemplate = Common.Constants.DefaultOutputTemplate;
                 var isConsole = args.Length == 4 && args[3].Equals("--console");
                 if (args.Length == 4 && !args[3].Equals("--console"))
@@ -63,9 +67,16 @@ namespace PortingAssistantExtensionServer
                     portingAssistantConfiguration
                     );
                 await portingAssisstantLanguageServer.StartAsync();
-                LogWatcher logWatcher = new LogWatcher(portingAssistantConfiguration.TelemetryConfiguration, Common.PALanguageServerConfiguration.AWSProfileName, "portingassistant-ide-");
-                logWatcher.Start();
 
+                var logTimer = new System.Timers.Timer();
+                
+                logTimer.Interval = Convert.ToDouble(portingAssistantConfiguration.TelemetryConfiguration.LogTimerInterval);
+                var lastReadTokenFile = Path.Combine(portingAssistantConfiguration.TelemetryConfiguration.LogsPath, "lastToken.json");
+                var client = new HttpClient();
+                logTimer.Elapsed += (source, e) => LogUploadUtils.OnTimedEvent(source, e, portingAssistantConfiguration.TelemetryConfiguration, lastReadTokenFile, client, Common.PALanguageServerConfiguration.AWSProfileName); ;
+                logTimer.AutoReset = true;
+                logTimer.Enabled = true;
+                
                 await portingAssisstantLanguageServer.WaitForShutdownAsync();
 
                 if (portingAssisstantLanguageServer.IsSeverStarted() && !_isConnected)

@@ -27,23 +27,28 @@ namespace PortingAssistantExtensionTelemetry
             };
             TelemetryCollector.Collect<SolutionMetrics>(solutionMetrics);
 
-            foreach (var project in solutionDetail.Projects)
-            {
+            result.ProjectAnalysisResults.ForEach(projectAnalysisResult => {
+                if (projectAnalysisResult == null) 
+                {
+                    return;
+                }
                 var projectMetrics = new ProjectMetrics
                 {
                     MetricsType = MetricsType.project,
                     PortingAssistantExtensionVersion = extensionVersion,
                     TargetFramework = targetFramework,
-                    sourceFrameworks = project.TargetFrameworks,
+                    sourceFrameworks = projectAnalysisResult.TargetFrameworks,
                     TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
-                    projectGuid = project.ProjectGuid,
-                    projectType = project.ProjectType,
-                    numNugets = project.PackageReferences.Count,
-                    numReferences = project.ProjectReferences.Count,
-                    isBuildFailed = project.IsBuildFailed,
+                    projectGuid = projectAnalysisResult.ProjectGuid,
+                    projectType = projectAnalysisResult.ProjectType,
+                    numNugets = projectAnalysisResult.PackageReferences.Count,
+                    numReferences = projectAnalysisResult.ProjectReferences.Count,
+                    isBuildFailed = projectAnalysisResult.IsBuildFailed,
+                    compatibilityResult = projectAnalysisResult.ProjectCompatibilityResult
                 };
                 TelemetryCollector.Collect<ProjectMetrics>(projectMetrics);
-            }
+
+            });
 
             //nuget metrics
             result.ProjectAnalysisResults.ForEach(project =>

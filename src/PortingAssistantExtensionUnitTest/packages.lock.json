@@ -50,15 +50,15 @@
       },
       "Aws4RequestSigner": {
         "type": "Transitive",
-        "resolved": "1.0.1",
-        "contentHash": "8DPFfzLtd15dATqKNQXUSXPATeFG0jjMw5U1Zf0+qIJGVzX2j/nBEalXeA7h8xKjyHsVtJz1AKpvYnscuSRuWA=="
+        "resolved": "1.0.3",
+        "contentHash": "nRXdbKbNH85aLjmIst7q6v47Owh91RPB1DlkQqXAuVvrVHY1oTePjkAt/2/4L539PSwFMZchn/DK0pYpSsq3Og=="
       },
       "AWSSDK.APIGateway": {
         "type": "Transitive",
-        "resolved": "3.7.0.9",
-        "contentHash": "YMqiKlM440cdMHtttygNDKsVLjDZSt4NNl2PCt85Rf2NLv9pxVC4knkrIEekRXI1q3Hl7NmIs6tviPtkGqlFvQ==",
+        "resolved": "3.7.0.29",
+        "contentHash": "6V35gQcA+iq4iW0dJ9zEmkKrol0BVzROoGrh8YtjRrlkoanldFJU1vH+7VN90RbOBWv5Am3lQ4J6x56AX1EoZg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.0.10, 3.8.0)"
+          "AWSSDK.Core": "[3.7.0.31, 4.0.0)"
         }
       },
       "AWSSDK.Core": {
@@ -996,8 +996,8 @@
       },
       "PortingAssistant.Client.Common": {
         "type": "Transitive",
-        "resolved": "1.8.23-alpha-g79847935d1",
-        "contentHash": "LWmyAPXaL4KKKTZBO4LGwbkqmAYCf9uuxcw50crTG8ng14P1Hv3qltYuYshvaKHFCWnrRe/zU0BXQWvdipDKGA==",
+        "resolved": "1.8.43-g33c023161f",
+        "contentHash": "J5A1rgMni38f4G/uforSajCTGlwTP9QJOwdb0s1ytxhUDVqMRzNBoWlHE+7sdA39gKg/tmq5BPttArOfZiJ1iA==",
         "dependencies": {
           "CTA.Rules.PortCore": "1.8.4-alpha-g90cdd7a307",
           "Microsoft.Extensions.Logging": "5.0.0",
@@ -1030,13 +1030,13 @@
       },
       "PortingAssistant.Client.Telemetry": {
         "type": "Transitive",
-        "resolved": "1.8.15-alpha-g6b581d8647",
-        "contentHash": "9ML4RNrM8b3DO0w+oMkO25Up0JRAqOzFJZAoPnwOQhtmdjf9s+Y/eeUWPXtKausy0gwGutSwaF5GFO0Ts2MW3A==",
+        "resolved": "1.8.43-g33c023161f",
+        "contentHash": "+smcKIyR2ZzQN04olVYtno/vhROAFvt0xbvkFD/8FAtyNjt6ktcvZ6EMtf1/CtUEpGMVaMyPt+Sp5zHhzvnCqg==",
         "dependencies": {
-          "AWSSDK.APIGateway": "3.7.0.9",
-          "AWSSDK.Core": "3.7.0.13",
-          "Aws4RequestSigner": "1.0.1",
-          "PortingAssistant.Client.Common": "1.8.4-alpha-g27b33cb889",
+          "AWSSDK.APIGateway": "3.7.0.29",
+          "AWSSDK.Core": "3.7.0.31",
+          "Aws4RequestSigner": "1.0.3",
+          "Newtonsoft.Json": "13.0.1",
           "Serilog": "2.10.0",
           "Serilog.Sinks.File": "4.1.0"
         }
@@ -2346,7 +2346,8 @@
       "portingassistantextensiontelemetry": {
         "type": "Project",
         "dependencies": {
-          "PortingAssistant.Client.Telemetry": "1.8.15-alpha-g6b581d8647"
+          "PortingAssistant.Client.Common": "1.8.43-g33c023161f",
+          "PortingAssistant.Client.Telemetry": "1.8.43-g33c023161f"
         }
       }
     }

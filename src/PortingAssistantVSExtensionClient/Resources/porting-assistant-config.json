@@ -7,9 +7,9 @@
     }
   },
   "TelemetryConfiguration": {
-    "InvokeUrl": "",
-    "Region": "",
-    "ServiceName": "",
+    "InvokeUrl": "https://8q2itpfg51.execute-api.us-east-1.amazonaws.com/beta",
+    "Region": "us-east-1",
+    "ServiceName": "encore",
     "Description": "Porting Assistant for .NET",
     "Suffix": [
       ".log",

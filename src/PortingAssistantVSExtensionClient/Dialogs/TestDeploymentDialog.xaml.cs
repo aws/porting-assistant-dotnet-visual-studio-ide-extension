@@ -28,6 +28,9 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             InitializeComponent();
             this.scriptPath = scriptPath;
             this.setupScriptPath = setupScriptPath;
+            DeploymentType.Items.Add("EC2 Instance");
+            DeploymentType.Items.Add("ECR");
+            DeploymentType.SelectedValue = "EC2 Instance";
             this.Title = "Test Deployment";
         }
 
@@ -101,10 +104,8 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         }
         private void DBConfigure_Unchecked(object sender, System.Windows.RoutedEventArgs e)
         {
-            if(DbSecretArnInput != null && DbSecretArnInput.Visibility == System.Windows.Visibility.Visible)
+            if(SqlSgLabel != null && SqlSgLabel.Visibility == System.Windows.Visibility.Visible)
             {
-                DbSecretArnInput.Visibility = System.Windows.Visibility.Hidden;
-                DbSecretArnLabel.Visibility = System.Windows.Visibility.Hidden;
                 SqlSgLabel.Visibility = System.Windows.Visibility.Hidden;
                 SqlSgInput.Visibility = System.Windows.Visibility.Hidden;
                 SqlConnectionLabel.Visibility = System.Windows.Visibility.Hidden;
@@ -118,6 +119,11 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 ADInput.Visibility = System.Windows.Visibility.Hidden;
                 ADLabel.Visibility = System.Windows.Visibility.Hidden;
+                DirectoryName.Visibility = System.Windows.Visibility.Hidden;
+                DirectoryNameLabel.Visibility = System.Windows.Visibility.Hidden;
+                SecrteLabel.Visibility = System.Windows.Visibility.Hidden;
+                SecrteInput.Visibility = System.Windows.Visibility.Hidden;
+                PasswordRotation.Visibility = System.Windows.Visibility.Hidden;
             }
             
         }
@@ -128,15 +134,18 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 ADInput.Visibility = System.Windows.Visibility.Visible;
                 ADLabel.Visibility = System.Windows.Visibility.Visible;
+                DirectoryName.Visibility = System.Windows.Visibility.Visible;
+                DirectoryNameLabel.Visibility = System.Windows.Visibility.Visible;
+                SecrteLabel.Visibility = System.Windows.Visibility.Visible;
+                SecrteInput.Visibility = System.Windows.Visibility.Visible;
+                PasswordRotation.Visibility = System.Windows.Visibility.Visible;
             }
         }
 
         private void DBConfigure_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (DbSecretArnInput != null && DbSecretArnInput.Visibility == System.Windows.Visibility.Hidden)
+            if (SqlSgLabel != null && SqlSgLabel.Visibility == System.Windows.Visibility.Hidden)
             {
-                DbSecretArnInput.Visibility = System.Windows.Visibility.Visible;
-                DbSecretArnLabel.Visibility = System.Windows.Visibility.Visible;
                 SqlSgLabel.Visibility = System.Windows.Visibility.Visible;
                 SqlSgInput.Visibility = System.Windows.Visibility.Visible;
                 SqlConnectionLabel.Visibility = System.Windows.Visibility.Visible;
@@ -150,6 +159,10 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 ApplicationPools.Visibility = System.Windows.Visibility.Visible;
                 ApplicationPoolsLabel.Visibility = System.Windows.Visibility.Visible;
+                ApplicationPoolsID.Visibility = System.Windows.Visibility.Visible;
+                ApplicationPoolsIDLabel.Visibility = System.Windows.Visibility.Visible;
+                IISCertificate.Visibility = System.Windows.Visibility.Visible;
+                IISCertificateLabel.Visibility = System.Windows.Visibility.Visible;
             }
         }
 
@@ -159,6 +172,10 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 ApplicationPools.Visibility = System.Windows.Visibility.Hidden;
                 ApplicationPoolsLabel.Visibility = System.Windows.Visibility.Hidden;
+                ApplicationPoolsID.Visibility = System.Windows.Visibility.Hidden;
+                ApplicationPoolsIDLabel.Visibility = System.Windows.Visibility.Hidden;
+                IISCertificate.Visibility = System.Windows.Visibility.Hidden;
+                IISCertificateLabel.Visibility = System.Windows.Visibility.Hidden;
             }
         }
     }

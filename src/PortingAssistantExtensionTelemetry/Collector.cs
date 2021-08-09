@@ -1,8 +1,10 @@
 ﻿using PortingAssistant.Client.Model;
 using PortingAssistantExtensionTelemetry.Model;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using System.Linq;
 
 namespace PortingAssistantExtensionTelemetry
 {
@@ -62,34 +64,40 @@ namespace PortingAssistantExtensionTelemetry
                     TelemetryCollector.Collect<NugetMetrics>(nugetMetrics);
                 }
 
-                foreach (var sourceFile in project.SourceFileAnalysisResults)
-                {
-                    FileAssessmentCollect(sourceFile, targetFramework, extensionVersion);
-                }
+                var selectedApis = project.SourceFileAnalysisResults.SelectMany(s => s.ApiAnalysisResults);
+                FileAssessmentCollect(selectedApis, targetFramework, extensionVersion);
+                
             });
         }
 
 
-        public static void FileAssessmentCollect(SourceFileAnalysisResult result, string targetFramework, string extensionVersion)
+        public static void FileAssessmentCollect(IEnumerable<ApiAnalysisResult> selectedApis , string targetFramework, string extensionVersion)
         {
             var date = DateTime.Now;
-            foreach (var api in result.ApiAnalysisResults)
+            var apiMetrics = selectedApis.GroupBy(elem => new
             {
-                var apiMetrics = new APIMetrics
-                {
-                    MetricsType = MetricsType.api,
-                    PortingAssistantExtensionVersion = extensionVersion,
-                    TargetFramework = targetFramework,
-                    TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
-                    name = api.CodeEntityDetails.Name,
-                    nameSpace = api.CodeEntityDetails.Namespace,
-                    originalDefinition = api.CodeEntityDetails.OriginalDefinition,
-                    compatibility = api.CompatibilityResults[targetFramework].Compatibility,
-                    packageId = api.CodeEntityDetails.Package.PackageId,
-                    packageVersion = api.CodeEntityDetails.Package.Version
-                };
-                TelemetryCollector.Collect<APIMetrics>(apiMetrics);
-            }
+                elem.CodeEntityDetails.Name,
+                elem.CodeEntityDetails.Namespace,
+                elem.CodeEntityDetails.OriginalDefinition,
+                elem.CodeEntityDetails.Package?.PackageId,
+                elem.CodeEntityDetails.Signature
+            }).Select(group => new APIMetrics
+            {
+                MetricsType = MetricsType.api,
+                PortingAssistantExtensionVersion = extensionVersion,
+                TargetFramework = targetFramework,
+                TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
+                name = group.First().CodeEntityDetails.Name,
+                nameSpace = group.First().CodeEntityDetails.Namespace,
+                originalDefinition = group.First().CodeEntityDetails.OriginalDefinition,
+                compatibility = group.First().CompatibilityResults[targetFramework].Compatibility,
+                packageId = group.First().CodeEntityDetails.Package.PackageId,
+                packageVersion = group.First().CodeEntityDetails.Package.Version,
+                apiType = group.First().CodeEntityDetails.CodeEntityType.ToString(),
+                hasActions = group.First().Recommendations.RecommendedActions.Any(action => action.RecommendedActionType != RecommendedActionType.NoRecommendation),
+                apiCounts = group.Count()
+            });
+            apiMetrics.ToList().ForEach(metric => TelemetryCollector.Collect(metric));
         }
 
         private static string GetHash(HashAlgorithm hashAlgorithm, string input)

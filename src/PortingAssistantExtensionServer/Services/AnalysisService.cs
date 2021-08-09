@@ -118,13 +118,8 @@ namespace PortingAssistantExtensionServer
                 }
                 if (PALanguageServerConfiguration.EnabledMetrics)
                 {
-                    foreach (var sourceFileAnalysisResult in result)
-                    {
-                        Collector.FileAssessmentCollect(
-                            sourceFileAnalysisResult,
-                            _request.settings.TargetFramework,
-                            PALanguageServerConfiguration.ExtensionVersion);
-                    }
+                    var selectedApis = result.SelectMany(s => s.ApiAnalysisResults);
+                    Collector.FileAssessmentCollect(selectedApis, _request.settings.TargetFramework, PALanguageServerConfiguration.ExtensionVersion);
                 }
                 return result;
             }

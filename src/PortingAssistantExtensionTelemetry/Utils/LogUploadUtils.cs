@@ -95,7 +95,6 @@ namespace PortingAssistant.Telemetry.Utils
                     request = await signer.Sign(request, "execute-api", region);
 
                     var response = await client.SendAsync(request);
-
                     await response.Content.ReadAsStringAsync();
                     return response.IsSuccessStatusCode;
                 }
@@ -129,7 +128,6 @@ namespace PortingAssistant.Telemetry.Utils
                     var fName = Path.GetFileNameWithoutExtension(file);
                     var fileExtension = Path.GetExtension(file);
                     var logName = "";
-
                     // Check which type of log file and set the prefix
                     if (fileExtension == ".metrics")
                     {

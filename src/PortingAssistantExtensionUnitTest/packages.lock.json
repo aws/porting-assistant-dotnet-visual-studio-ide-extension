@@ -969,17 +969,17 @@
       },
       "PortingAssistant.Client.Analysis": {
         "type": "Transitive",
-        "resolved": "1.8.23-alpha-g79847935d1",
-        "contentHash": "TiFrlTe26kYGSI1wmj1u7egTdjOme31sn8S5w3f+80vG2sn0aJaHoKEB6EAT81uFyl0JWDeo5a9aWliZeA7qTA==",
+        "resolved": "1.8.43-g33c023161f",
+        "contentHash": "CwJDuoGSTcA5i0V2gF/MkSVkaoVFCEpDJiJNOMp6TX9EkkDOWpZIOD8s90Gpla+jbvoAIWi9IJuydZy4jZUtaw==",
         "dependencies": {
-          "PortingAssistant.Client.Common": "1.8.23-alpha-g79847935d1",
-          "PortingAssistant.Client.NuGet": "1.8.23-alpha-g79847935d1"
+          "PortingAssistant.Client.Common": "1.8.43-g33c023161f",
+          "PortingAssistant.Client.NuGet": "1.8.43-g33c023161f"
         }
       },
       "PortingAssistant.Client.Client": {
         "type": "Transitive",
-        "resolved": "1.8.23-alpha-g79847935d1",
-        "contentHash": "y1U4UqvpX14I63OZxgyAWuqDyWjxpx4N7VGdK2kRYoN9tHPa7K8lqF1XHt65UzlAsUy8ZrfWh822PI3KbX4GbA==",
+        "resolved": "1.8.43-g33c023161f",
+        "contentHash": "XblepDzEgNWczZ5+sSk0BaLytONibA5UIa2NjxHeTkkNluOD1Nz2A4aNh/wW5gY0eCOG+rHIwEJPZ+dG626xLg==",
         "dependencies": {
           "Microsoft.Build": "16.9.0",
           "Microsoft.Extensions.Configuration.Json": "5.0.0",
@@ -988,10 +988,10 @@
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "5.0.0",
           "Polly.Extensions.Http": "3.0.0",
-          "PortingAssistant.Client.Analysis": "1.8.23-alpha-g79847935d1",
-          "PortingAssistant.Client.Common": "1.8.23-alpha-g79847935d1",
-          "PortingAssistant.Client.NuGet": "1.8.23-alpha-g79847935d1",
-          "PortingAssistant.Client.Porting": "1.8.23-alpha-g79847935d1"
+          "PortingAssistant.Client.Analysis": "1.8.43-g33c023161f",
+          "PortingAssistant.Client.Common": "1.8.43-g33c023161f",
+          "PortingAssistant.Client.NuGet": "1.8.43-g33c023161f",
+          "PortingAssistant.Client.Porting": "1.8.43-g33c023161f"
         }
       },
       "PortingAssistant.Client.Common": {
@@ -1008,24 +1008,24 @@
       },
       "PortingAssistant.Client.NuGet": {
         "type": "Transitive",
-        "resolved": "1.8.23-alpha-g79847935d1",
-        "contentHash": "GVgM26VJGNibLNSnI7u3g7RNYNKlwIWZk57oqrolDPGdNov6P3yaRSfiZiDYP+hu3dZjtkBc5JLoBhZxCq6ojQ==",
+        "resolved": "1.8.43-g33c023161f",
+        "contentHash": "XmKlOrhCu11n1ORrfDsXC4s5cg3iEtkeJSXeMjw+rMtXCxbYN2Q/k3Ya6SrvJs4driGZO7FslLtopaOPKPORwQ==",
         "dependencies": {
           "AWSSDK.S3": "3.7.0.32",
           "Microsoft.Extensions.Http": "5.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
           "NuGet.Protocol": "5.9.1",
-          "PortingAssistant.Client.Common": "1.8.23-alpha-g79847935d1"
+          "PortingAssistant.Client.Common": "1.8.43-g33c023161f"
         }
       },
       "PortingAssistant.Client.Porting": {
         "type": "Transitive",
-        "resolved": "1.8.23-alpha-g79847935d1",
-        "contentHash": "LKEXlE9KIkkLaxVKAWUt3s0pEsJ7MG5mZkJ4dx7mgtmRAgah1I8871O6N1eVVnJAttnHkwBBg+ONXcd2YcRnHg==",
+        "resolved": "1.8.43-g33c023161f",
+        "contentHash": "Sc9eivtAv7h1hEc4sCK1p+J56lgkDQJbPSQkGuM6MGRF3HGoi1kxpbSCHf+SS7pVUK+QBa9P3+Zfo0A+XCsiKg==",
         "dependencies": {
           "CTA.Rules.PortCore": "1.8.4-alpha-g90cdd7a307",
           "Microsoft.Extensions.Logging": "5.0.0",
-          "PortingAssistant.Client.Common": "1.8.23-alpha-g79847935d1"
+          "PortingAssistant.Client.Common": "1.8.43-g33c023161f"
         }
       },
       "PortingAssistant.Client.Telemetry": {
@@ -2334,7 +2334,7 @@
         "dependencies": {
           "OmniSharp.Extensions.LanguageProtocol": "0.18.3",
           "OmniSharp.Extensions.LanguageServer": "0.18.3",
-          "PortingAssistant.Client.Client": "1.8.23-alpha-g79847935d1",
+          "PortingAssistant.Client.Client": "1.8.43-g33c023161f",
           "PortingAssistantExtensionTelemetry": "1.0.0",
           "Serilog": "2.10.0",
           "Serilog.Extensions.Logging": "3.0.1",

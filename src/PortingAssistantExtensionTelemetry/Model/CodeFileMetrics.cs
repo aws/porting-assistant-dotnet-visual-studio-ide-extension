@@ -8,7 +8,6 @@ namespace PortingAssistantExtensionTelemetry.Model
     {
         [JsonProperty("filePath")]
         public string FilePath { get; set; }
-
         [JsonProperty("diagnostics")]
         public int Diagnostics { get; set; }
     }

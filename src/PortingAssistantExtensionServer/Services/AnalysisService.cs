@@ -35,7 +35,7 @@ namespace PortingAssistantExtensionServer
         public Dictionary<DocumentUri, ProjectAnalysisResult> FileToProjectAnalyssiResult;
 
         public ImmutableDictionary<DocumentUri, CodeFileDocument> _openDocuments = ImmutableDictionary<DocumentUri, CodeFileDocument>.Empty.WithComparers(DocumentUri.Comparer);
-        public string runId;
+        public string runId { get; private set; }
 
         public AnalysisService(
             ILogger<AnalysisService> logger,
@@ -297,6 +297,7 @@ namespace PortingAssistantExtensionServer
         public async Task<IList<Diagnostic>> GetDiagnosticsAsync(DocumentUri fileUri)
         {
             _openDocuments.TryGetValue(fileUri, out var document);
+            var triggerType = "ContinuousAssessmentRequest";
             var result = await AssessFileAsync(document, false);
             var sourceFileAnalysisResult = result.FirstOrDefault();
             var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
@@ -304,6 +305,8 @@ namespace PortingAssistantExtensionServer
             {
                 Collector.ContinuousAssessmentCollect(
                     sourceFileAnalysisResult,
+                    runId,
+                    triggerType,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
                     diagnostics.Count);

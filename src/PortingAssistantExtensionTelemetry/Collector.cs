@@ -113,7 +113,7 @@ namespace PortingAssistantExtensionTelemetry
             apiMetrics.ToList().ForEach(metric => TelemetryCollector.Collect(metric));
         }
 
-        public static void ContinuousAssessmentCollect(SourceFileAnalysisResult result, string targetFramework, string extensionVersion, int diagnostics)
+        public static void ContinuousAssessmentCollect(SourceFileAnalysisResult result, string runId, string triggerType, string targetFramework, string extensionVersion, int diagnostics)
         {
             var timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm");
 
@@ -124,7 +124,9 @@ namespace PortingAssistantExtensionTelemetry
                 MetricsType = MetricsType.codeFile,
                 PortingAssistantExtensionVersion = extensionVersion,
                 TargetFramework = targetFramework,
-                Diagnostics = diagnostics
+                Diagnostics = diagnostics,
+                RunId = runId,
+                TriggerType = triggerType
             });
         }
 

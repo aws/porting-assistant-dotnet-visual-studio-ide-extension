@@ -10,7 +10,7 @@ namespace PortingAssistantExtensionTelemetry
 {
     public static class Collector
     {
-        public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework, string extensionVersion, double time)
+        public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string runId, string triggerType, string targetFramework, string extensionVersion, double time)
         {
             var sha256hash = SHA256.Create();
             var date = DateTime.Now;
@@ -19,6 +19,8 @@ namespace PortingAssistantExtensionTelemetry
             var solutionMetrics = new SolutionMetrics
             {
                 MetricsType = MetricsType.solution,
+                RunId = runId,
+                TriggerType = triggerType,
                 PortingAssistantExtensionVersion = extensionVersion,
                 TargetFramework = targetFramework,
                 TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
@@ -35,6 +37,8 @@ namespace PortingAssistantExtensionTelemetry
                 var projectMetrics = new ProjectMetrics
                 {
                     MetricsType = MetricsType.project,
+                    RunId = runId,
+                    TriggerType = triggerType,
                     PortingAssistantExtensionVersion = extensionVersion,
                     TargetFramework = targetFramework,
                     sourceFrameworks = projectAnalysisResult.TargetFrameworks,
@@ -59,6 +63,8 @@ namespace PortingAssistantExtensionTelemetry
                     var nugetMetrics = new NugetMetrics
                     {
                         MetricsType = MetricsType.nuget,
+                        RunId = runId,
+                        TriggerType = triggerType,
                         PortingAssistantExtensionVersion = extensionVersion,
                         TargetFramework = targetFramework,
                         TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
@@ -70,13 +76,13 @@ namespace PortingAssistantExtensionTelemetry
                 }
 
                 var selectedApis = project.SourceFileAnalysisResults.SelectMany(s => s.ApiAnalysisResults);
-                FileAssessmentCollect(selectedApis, targetFramework, extensionVersion);
+                FileAssessmentCollect(selectedApis, runId, triggerType, targetFramework, extensionVersion);
                 
             });
         }
 
 
-        public static void FileAssessmentCollect(IEnumerable<ApiAnalysisResult> selectedApis , string targetFramework, string extensionVersion)
+        public static void FileAssessmentCollect(IEnumerable<ApiAnalysisResult> selectedApis , string runId, string triggerType, string targetFramework, string extensionVersion)
         {
             var date = DateTime.Now;
             var apiMetrics = selectedApis.GroupBy(elem => new
@@ -89,6 +95,8 @@ namespace PortingAssistantExtensionTelemetry
             }).Select(group => new APIMetrics
             {
                 MetricsType = MetricsType.api,
+                RunId = runId,
+                TriggerType = triggerType,
                 PortingAssistantExtensionVersion = extensionVersion,
                 TargetFramework = targetFramework,
                 TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),

@@ -35,6 +35,7 @@ namespace PortingAssistantExtensionServer
         public Dictionary<DocumentUri, ProjectAnalysisResult> FileToProjectAnalyssiResult;
 
         public ImmutableDictionary<DocumentUri, CodeFileDocument> _openDocuments = ImmutableDictionary<DocumentUri, CodeFileDocument>.Empty.WithComparers(DocumentUri.Comparer);
+        public string runId;
 
         public AnalysisService(
             ILogger<AnalysisService> logger,
@@ -56,11 +57,15 @@ namespace PortingAssistantExtensionServer
                 Cleanup();
                 _request = request;
                 var startTime = DateTime.Now;
+                runId = System.Guid.NewGuid().ToString();
+                var triggerType = "InitialRequest";
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
                 if (PALanguageServerConfiguration.EnabledMetrics)
                 {
                     Collector.SolutionAssessmentCollect(
                     solutionAnalysisResult,
+                    runId,
+                    triggerType,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
                     DateTime.Now.Subtract(startTime).TotalMilliseconds);
@@ -118,8 +123,9 @@ namespace PortingAssistantExtensionServer
                 }
                 if (PALanguageServerConfiguration.EnabledMetrics)
                 {
+                    var triggerType = "ContinuousAssessmentRequest";
                     var selectedApis = result.SelectMany(s => s.ApiAnalysisResults);
-                    Collector.FileAssessmentCollect(selectedApis, _request.settings.TargetFramework, PALanguageServerConfiguration.ExtensionVersion);
+                    Collector.FileAssessmentCollect(selectedApis, runId, triggerType, _request.settings.TargetFramework, PALanguageServerConfiguration.ExtensionVersion);
                 }
                 return result;
             }

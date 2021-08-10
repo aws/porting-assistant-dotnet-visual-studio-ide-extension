@@ -113,6 +113,21 @@ namespace PortingAssistantExtensionTelemetry
             apiMetrics.ToList().ForEach(metric => TelemetryCollector.Collect(metric));
         }
 
+        public static void ContinuousAssessmentCollect(SourceFileAnalysisResult result, string targetFramework, string extensionVersion, int diagnostics)
+        {
+            var timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm");
+
+            TelemetryCollector.Collect<CodeFileMetrics>(new CodeFileMetrics()
+            {
+                FilePath = result.SourceFilePath,
+                TimeStamp = timeStamp,
+                MetricsType = MetricsType.codeFile,
+                PortingAssistantExtensionVersion = extensionVersion,
+                TargetFramework = targetFramework,
+                Diagnostics = diagnostics
+            });
+        }
+
         private static string GetHash(HashAlgorithm hashAlgorithm, string input)
         {
             byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));

@@ -299,7 +299,16 @@ namespace PortingAssistantExtensionServer
             _openDocuments.TryGetValue(fileUri, out var document);
             var result = await AssessFileAsync(document, false);
             var sourceFileAnalysisResult = result.FirstOrDefault();
-            return GetDiagnostics(sourceFileAnalysisResult);
+            var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
+            if (PALanguageServerConfiguration.EnabledMetrics)
+            {
+                Collector.ContinuousAssessmentCollect(
+                    sourceFileAnalysisResult,
+                    _request.settings.TargetFramework,
+                    PALanguageServerConfiguration.ExtensionVersion,
+                    diagnostics.Count);
+            }
+            return diagnostics;
         }
 
         public void UpdateCodeAction(string message, Range range, string documentPath, IList<TextChange> textChanges)

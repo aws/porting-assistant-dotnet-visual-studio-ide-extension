@@ -10,5 +10,6 @@ namespace PortingAssistantExtensionTelemetry.Model
         solution,
         api,
         nuget,
+        codeFile
     }
 }

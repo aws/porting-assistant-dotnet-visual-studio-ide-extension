@@ -1,14 +1,16 @@
 ﻿using PortingAssistant.Client.Model;
 using PortingAssistantExtensionTelemetry.Model;
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using System.Linq;
 
 namespace PortingAssistantExtensionTelemetry
 {
     public static class Collector
     {
-        public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string targetFramework, string extensionVersion, double time)
+        public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string runId, string triggerType, string targetFramework, string extensionVersion, double time)
         {
             var sha256hash = SHA256.Create();
             var date = DateTime.Now;
@@ -17,6 +19,8 @@ namespace PortingAssistantExtensionTelemetry
             var solutionMetrics = new SolutionMetrics
             {
                 MetricsType = MetricsType.solution,
+                RunId = runId,
+                TriggerType = triggerType,
                 PortingAssistantExtensionVersion = extensionVersion,
                 TargetFramework = targetFramework,
                 TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
@@ -25,23 +29,30 @@ namespace PortingAssistantExtensionTelemetry
             };
             TelemetryCollector.Collect<SolutionMetrics>(solutionMetrics);
 
-            foreach (var project in solutionDetail.Projects)
-            {
+            result.ProjectAnalysisResults.ForEach(projectAnalysisResult => {
+                if (projectAnalysisResult == null) 
+                {
+                    return;
+                }
                 var projectMetrics = new ProjectMetrics
                 {
                     MetricsType = MetricsType.project,
+                    RunId = runId,
+                    TriggerType = triggerType,
                     PortingAssistantExtensionVersion = extensionVersion,
                     TargetFramework = targetFramework,
-                    sourceFrameworks = project.TargetFrameworks,
+                    sourceFrameworks = projectAnalysisResult.TargetFrameworks,
                     TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
-                    projectGuid = project.ProjectGuid,
-                    projectType = project.ProjectType,
-                    numNugets = project.PackageReferences.Count,
-                    numReferences = project.ProjectReferences.Count,
-                    isBuildFailed = project.IsBuildFailed,
+                    projectGuid = projectAnalysisResult.ProjectGuid,
+                    projectType = projectAnalysisResult.ProjectType,
+                    numNugets = projectAnalysisResult.PackageReferences.Count,
+                    numReferences = projectAnalysisResult.ProjectReferences.Count,
+                    isBuildFailed = projectAnalysisResult.IsBuildFailed,
+                    compatibilityResult = projectAnalysisResult.ProjectCompatibilityResult
                 };
                 TelemetryCollector.Collect<ProjectMetrics>(projectMetrics);
-            }
+
+            });
 
             //nuget metrics
             result.ProjectAnalysisResults.ForEach(project =>
@@ -52,6 +63,8 @@ namespace PortingAssistantExtensionTelemetry
                     var nugetMetrics = new NugetMetrics
                     {
                         MetricsType = MetricsType.nuget,
+                        RunId = runId,
+                        TriggerType = triggerType,
                         PortingAssistantExtensionVersion = extensionVersion,
                         TargetFramework = targetFramework,
                         TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
@@ -62,37 +75,52 @@ namespace PortingAssistantExtensionTelemetry
                     TelemetryCollector.Collect<NugetMetrics>(nugetMetrics);
                 }
 
-                foreach (var sourceFile in project.SourceFileAnalysisResults)
-                {
-                    FileAssessmentCollect(sourceFile, targetFramework, extensionVersion);
-                }
+
+                var allActions = project.SourceFileAnalysisResults.SelectMany(a => a.RecommendedActions);
+                var selectedApis = project.SourceFileAnalysisResults.SelectMany(s => s.ApiAnalysisResults);
+
+                allActions.ToList().ForEach(action => {
+                    var selectedApi = selectedApis.FirstOrDefault(s => s.CodeEntityDetails.TextSpan.Equals(action.TextSpan));
+                    selectedApi?.Recommendations?.RecommendedActions?.Add(action);
+                });
+
+                FileAssessmentCollect(selectedApis, runId, triggerType, targetFramework, extensionVersion);
             });
         }
 
 
-        public static void FileAssessmentCollect(SourceFileAnalysisResult result, string targetFramework, string extensionVersion)
+        public static void FileAssessmentCollect(IEnumerable<ApiAnalysisResult> selectedApis , string runId, string triggerType, string targetFramework, string extensionVersion)
         {
             var date = DateTime.Now;
-            foreach (var api in result.ApiAnalysisResults)
+            var apiMetrics = selectedApis.GroupBy(elem => new
             {
-                var apiMetrics = new APIMetrics
-                {
-                    MetricsType = MetricsType.api,
-                    PortingAssistantExtensionVersion = extensionVersion,
-                    TargetFramework = targetFramework,
-                    TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
-                    name = api.CodeEntityDetails.Name,
-                    nameSpace = api.CodeEntityDetails.Namespace,
-                    originalDefinition = api.CodeEntityDetails.OriginalDefinition,
-                    compatibility = api.CompatibilityResults[targetFramework].Compatibility,
-                    packageId = api.CodeEntityDetails.Package.PackageId,
-                    packageVersion = api.CodeEntityDetails.Package.Version
-                };
-                TelemetryCollector.Collect<APIMetrics>(apiMetrics);
-            }
+                elem.CodeEntityDetails.Name,
+                elem.CodeEntityDetails.Namespace,
+                elem.CodeEntityDetails.OriginalDefinition,
+                elem.CodeEntityDetails.Package?.PackageId,
+                elem.CodeEntityDetails.Signature
+            }).Select(group => new APIMetrics
+            {
+                MetricsType = MetricsType.api,
+                RunId = runId,
+                TriggerType = triggerType,
+                PortingAssistantExtensionVersion = extensionVersion,
+                TargetFramework = targetFramework,
+                TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
+                name = group.First().CodeEntityDetails.Name,
+                nameSpace = group.First().CodeEntityDetails.Namespace,
+                originalDefinition = group.First().CodeEntityDetails.OriginalDefinition,
+                compatibility = group.First().CompatibilityResults[targetFramework].Compatibility,
+                packageId = group.First().CodeEntityDetails.Package.PackageId,
+                packageVersion = group.First().CodeEntityDetails.Package.Version,
+                apiType = group.First().CodeEntityDetails.CodeEntityType.ToString(),
+                hasActions = group.First().Recommendations.RecommendedActions.Any(action => action.RecommendedActionType != RecommendedActionType.NoRecommendation),
+                apiCounts = group.Count()
+            });
+            apiMetrics.ToList().ForEach(metric => TelemetryCollector.Collect(metric));
         }
 
-        public static void ContinuousAssessmentCollect(SourceFileAnalysisResult result, string targetFramework, string extensionVersion, int diagnostics)
+        public static void ContinuousAssessmentCollect(SourceFileAnalysisResult result, string runId, string triggerType, string targetFramework, string extensionVersion, int diagnostics)
         {
             var timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm");
 
@@ -103,7 +131,9 @@ namespace PortingAssistantExtensionTelemetry
                 MetricsType = MetricsType.codeFile,
                 PortingAssistantExtensionVersion = extensionVersion,
                 TargetFramework = targetFramework,
-                Diagnostics = diagnostics
+                Diagnostics = diagnostics,
+                RunId = runId,
+                TriggerType = triggerType
             });
         }
 

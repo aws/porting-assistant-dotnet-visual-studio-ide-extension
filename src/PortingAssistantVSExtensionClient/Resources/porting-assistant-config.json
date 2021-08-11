@@ -8,12 +8,13 @@
   },
   "TelemetryConfiguration": {
     "InvokeUrl": "",
-    "Region": "",
-    "ServiceName": "",
-    "Description": "Porting Assistant for .NET",
+	"Region": "",
+	"ServiceName": "",
+    "Description": "Porting Assistant for .NET Extension",
     "Suffix": [
       ".log",
       ".metrics"
-    ]
+    ],
+	"LogTimerInterval": "120000"
   }
 }

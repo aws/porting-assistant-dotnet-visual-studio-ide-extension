@@ -35,6 +35,7 @@ namespace PortingAssistantExtensionServer
         public Dictionary<DocumentUri, ProjectAnalysisResult> FileToProjectAnalyssiResult;
 
         public ImmutableDictionary<DocumentUri, CodeFileDocument> _openDocuments = ImmutableDictionary<DocumentUri, CodeFileDocument>.Empty.WithComparers(DocumentUri.Comparer);
+        public string runId { get; private set; }
 
         public AnalysisService(
             ILogger<AnalysisService> logger,
@@ -56,11 +57,15 @@ namespace PortingAssistantExtensionServer
                 Cleanup();
                 _request = request;
                 var startTime = DateTime.Now;
+                runId = System.Guid.NewGuid().ToString();
+                var triggerType = "InitialRequest";
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
                 if (PALanguageServerConfiguration.EnabledMetrics)
                 {
                     Collector.SolutionAssessmentCollect(
                     solutionAnalysisResult,
+                    runId,
+                    triggerType,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
                     DateTime.Now.Subtract(startTime).TotalMilliseconds);
@@ -118,13 +123,16 @@ namespace PortingAssistantExtensionServer
                 }
                 if (PALanguageServerConfiguration.EnabledMetrics)
                 {
-                    foreach (var sourceFileAnalysisResult in result)
-                    {
-                        Collector.FileAssessmentCollect(
-                            sourceFileAnalysisResult,
-                            _request.settings.TargetFramework,
-                            PALanguageServerConfiguration.ExtensionVersion);
-                    }
+                    var triggerType = "ContinuousAssessmentRequest";
+                    var allActions = result.SelectMany(a => a.RecommendedActions);
+                    var selectedApis = result.SelectMany(s => s.ApiAnalysisResults);
+
+                    allActions.ToList().ForEach(action => {
+                        var selectedApi = selectedApis.FirstOrDefault(s => s.CodeEntityDetails.TextSpan.Equals(action.TextSpan));
+                        selectedApi?.Recommendations?.RecommendedActions?.Add(action);
+                    });
+
+                    Collector.FileAssessmentCollect(selectedApis, runId, triggerType, _request.settings.TargetFramework, PALanguageServerConfiguration.ExtensionVersion);
                 }
                 return result;
             }
@@ -296,6 +304,7 @@ namespace PortingAssistantExtensionServer
         public async Task<IList<Diagnostic>> GetDiagnosticsAsync(DocumentUri fileUri)
         {
             _openDocuments.TryGetValue(fileUri, out var document);
+            var triggerType = "ContinuousAssessmentRequest";
             var result = await AssessFileAsync(document, false);
             var sourceFileAnalysisResult = result.FirstOrDefault();
             var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
@@ -303,6 +312,8 @@ namespace PortingAssistantExtensionServer
             {
                 Collector.ContinuousAssessmentCollect(
                     sourceFileAnalysisResult,
+                    runId,
+                    triggerType,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
                     diagnostics.Count);

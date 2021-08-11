@@ -124,7 +124,14 @@ namespace PortingAssistantExtensionServer
                 if (PALanguageServerConfiguration.EnabledMetrics)
                 {
                     var triggerType = "ContinuousAssessmentRequest";
+                    var allActions = result.SelectMany(a => a.RecommendedActions);
                     var selectedApis = result.SelectMany(s => s.ApiAnalysisResults);
+
+                    allActions.ToList().ForEach(action => {
+                        var selectedApi = selectedApis.FirstOrDefault(s => s.CodeEntityDetails.TextSpan.Equals(action.TextSpan));
+                        selectedApi?.Recommendations?.RecommendedActions?.Add(action);
+                    });
+
                     Collector.FileAssessmentCollect(selectedApis, runId, triggerType, _request.settings.TargetFramework, PALanguageServerConfiguration.ExtensionVersion);
                 }
                 return result;

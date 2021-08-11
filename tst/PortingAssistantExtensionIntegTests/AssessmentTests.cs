@@ -261,12 +261,12 @@ namespace PortingAssistantExtensionIntegTests
 
             if (!verifyResult)
             {
-                Console.WriteLine("New entries found in curreent run: " + currentResults.Count);
+                Console.WriteLine("New entries found in current run: " + currentResults.Count);
                 if (currentResults.Count > 0)
                 {
-                    foreach (var eResult in currentResults)
+                    foreach (var result in currentResults)
                     {
-                        Console.WriteLine("NEW " + currentResults);
+                        Console.WriteLine("NEW " + result);
                     }
                 }
             }

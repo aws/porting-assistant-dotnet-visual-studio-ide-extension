@@ -108,6 +108,7 @@
     <Compile Include="Utils\SolutionUtils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.lock.json" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -130,18 +131,18 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Aws4RequestSigner">
-      <Version>1.0.1</Version>
+      <Version>1.0.3</Version>
     </PackageReference>
     <PackageReference Include="AWSSDK.APIGateway">
-      <Version>3.7.0.9</Version>
+      <Version>3.7.0.50</Version>
     </PackageReference>
     <PackageReference Include="AWSSDK.Core">
-      <Version>3.7.0.13</Version>
+      <Version>3.7.2.2</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.9.31025.194 " ExcludeAssets="runtime">
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.10.31321.278" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.31">
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.1055">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

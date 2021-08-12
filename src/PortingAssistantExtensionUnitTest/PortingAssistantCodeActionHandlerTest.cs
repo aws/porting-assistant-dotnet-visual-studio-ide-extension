@@ -33,9 +33,10 @@ namespace PortingAssistantExtensionUnitTest
         private Mock<ITextDocumentLanguageServer> _textDocumentLanguageServer;
 
         private Mock<ILogger<AnalysisService>> _analysisLoggerMock;
+        private Mock<ILogger<PortingService>> _portingLoggerMock;
         private Mock<IPortingAssistantClient> _clientMock;
         private AnalysisService _analysisService;
-
+        private PortingService _portingService;
         private static readonly string _testSolutionPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestSolution", "TestProject", "TestCodeFile.cs");
         private CodeFileDocument _codeFileDocument = new CodeFileDocument(DocumentUri.FromFileSystemPath(_testSolutionPath));
 
@@ -86,9 +87,12 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock = new Mock<IPortingAssistantClient>();
             _analysisLoggerMock = new Mock<ILogger<AnalysisService>>();
+            _portingLoggerMock = new Mock<ILogger<PortingService>>();
             _textDocumentLanguageServer = new Mock<ITextDocumentLanguageServer>();
 
             _analysisService = new AnalysisService(_analysisLoggerMock.Object,
+                _clientMock.Object);
+            _portingService = new PortingService(_portingLoggerMock.Object,
                 _clientMock.Object);
 
             _languageServer = new Mock<ILanguageServerFacade>();
@@ -97,7 +101,7 @@ namespace PortingAssistantExtensionUnitTest
             _loggerSolutionHandler = new Mock<ILogger<SolutionAssessmentHandler>>();
 
             _solutionAssessmentHandler = new SolutionAssessmentHandler(_loggerSolutionHandler.Object, _languageServer.Object,
-               _analysisService);
+               _analysisService, _portingService);
             _portingAssistantTextSyncHandler = new PortingAssistantTextSyncHandler(_languageServer.Object, _analysisService,
                 _logger.Object);
 

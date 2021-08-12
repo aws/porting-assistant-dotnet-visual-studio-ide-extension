@@ -20,8 +20,10 @@ namespace PortingAssistantExtensionUnitTest
         private Mock<ITextDocumentLanguageServer> _textDocumentLanguageServer;
 
         private Mock<ILogger<AnalysisService>> _analysisLoggerMock;
+        private Mock<ILogger<PortingService>> _portingLoggerMock;
         private Mock<IPortingAssistantClient> _clientMock;
         private AnalysisService _analysisService;
+        private PortingService _portingService;
 
         private SolutionAnalysisResult _solutionAnalysisResult = TestParameters.TestSolutionAnalysisResult;
 
@@ -36,16 +38,20 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock = new Mock<IPortingAssistantClient>();
             _analysisLoggerMock = new Mock<ILogger<AnalysisService>>();
+            _portingLoggerMock = new Mock<ILogger<PortingService>>();
             _textDocumentLanguageServer = new Mock<ITextDocumentLanguageServer>();
 
             _analysisService = new AnalysisService(_analysisLoggerMock.Object,
                 _clientMock.Object);
+            _portingService = new PortingService(_portingLoggerMock.Object,
+                _clientMock.Object);
+
 
             _languageServer = new Mock<ILanguageServerFacade>();
             _logger = new Mock<ILogger<SolutionAssessmentHandler>>();
 
             _solutionAssessmentHandler = new SolutionAssessmentHandler(_logger.Object, _languageServer.Object,
-                _analysisService);
+                _analysisService, _portingService);
         }
 
         [SetUp]

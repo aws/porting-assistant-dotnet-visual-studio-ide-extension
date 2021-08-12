@@ -24,7 +24,7 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "nuget"
-    directory: "src/PortingAssistantExtensionUnitTest /"
+    directory: "src/PortingAssistantExtensionUnitTest/"
     registries:
       - porting-assistant-nuget
       - nuget-org

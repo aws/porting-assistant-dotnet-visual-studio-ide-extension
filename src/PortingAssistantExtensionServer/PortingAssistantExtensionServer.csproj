@@ -11,7 +11,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.18.3" />
-		<PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.18.3" />
+		<PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.19.2" />
 		<PackageReference Include="PortingAssistant.Client.Client" Version="1.8.43-g33c023161f" />
 		<PackageReference Include="Serilog" Version="2.10.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />

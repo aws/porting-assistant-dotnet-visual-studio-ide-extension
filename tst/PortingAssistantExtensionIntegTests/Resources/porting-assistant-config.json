@@ -14,6 +14,7 @@
     "Suffix": [
       ".log",
       ".metrics"
-    ]
+    ],
+    "LogTimerInterval": "120000"
   }
 }

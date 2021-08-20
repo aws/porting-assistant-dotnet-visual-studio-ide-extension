@@ -134,7 +134,7 @@
       <Version>1.0.3</Version>
     </PackageReference>
     <PackageReference Include="AWSSDK.APIGateway">
-      <Version>3.7.0.50</Version>
+      <Version>3.7.1.2</Version>
     </PackageReference>
     <PackageReference Include="AWSSDK.Core">
       <Version>3.7.2.5</Version>

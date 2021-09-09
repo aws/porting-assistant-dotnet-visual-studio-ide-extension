@@ -107,14 +107,14 @@ namespace PortingAssistantExtensionServer
         {
             try
             {
-                var upgradePacakgesResults = PackageToAnalysisResults
+                var upgradePackagesResults = PackageToAnalysisResults
         .Where(p =>
             p.CompatibilityResults.TryGetValue(request.TargetFramework, out var compatibilityResult)
             && compatibilityResult.Compatibility == Compatibility.INCOMPATIBLE
             && compatibilityResult.CompatibleVersions.Any()
             && compatibilityResult.CompatibleVersions.Exists(v => !v.Contains("-")));
 
-                var packageToRecommendations = upgradePacakgesResults.Select(package => new PackageRecommendation()
+                var packageToRecommendations = upgradePackagesResults.Select(package => new PackageRecommendation()
                 {
                     PackageId = package.PackageVersionPair.PackageId,
                     Version = package.PackageVersionPair.Version,

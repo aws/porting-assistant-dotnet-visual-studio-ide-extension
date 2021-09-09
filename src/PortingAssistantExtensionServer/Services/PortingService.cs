@@ -14,32 +14,40 @@ namespace PortingAssistantExtensionServer
     {
         private readonly ILogger<PortingService> _logger;
         private readonly IPortingAssistantClient _client;
-        public Dictionary<string, PackageAnalysisResult> PackageToAnalysisResults;
+        public List<PackageAnalysisResult> PackageToAnalysisResults;
+        public Dictionary<string, ProjectDetails> ProjectPathToDetails;
 
         public PortingService(ILogger<PortingService> logger,
     IPortingAssistantClient client)
         {
             _logger = logger;
             _client = client;
-            PackageToAnalysisResults = new Dictionary<string, PackageAnalysisResult>();
+            PackageToAnalysisResults = new List<PackageAnalysisResult>();
+            ProjectPathToDetails = new Dictionary<string, ProjectDetails>();
         }
 
         public async Task GetPackageAnalysisResultAsync(Task<SolutionAnalysisResult> SolutionAnalysisResultTask)
         {
             try
             {
-                PackageToAnalysisResults = new Dictionary<string, PackageAnalysisResult>();
                 Task<SolutionAnalysisResult> solutionAnalysisResultTask = SolutionAnalysisResultTask;
                 var solutionAnalysisResult = await solutionAnalysisResultTask;
-
-                foreach (var projectAnalysisResult in solutionAnalysisResult.ProjectAnalysisResults)
-                {
-                    foreach (var packageAnalysisResultPair in projectAnalysisResult.PackageAnalysisResults)
+                PackageToAnalysisResults = solutionAnalysisResult.ProjectAnalysisResults
+                    .SelectMany(project => project.PackageAnalysisResults.Values
+                    .Select(package => package.Result)).ToList();
+                ProjectPathToDetails = solutionAnalysisResult.ProjectAnalysisResults
+                    .Select(p => new ProjectDetails()
                     {
-                        var packageAnalysisResult = await packageAnalysisResultPair.Value;
-                        PackageToAnalysisResults[packageAnalysisResultPair.Key.PackageId] = packageAnalysisResult;
-                    }
-                }
+                        ProjectName = p.ProjectName,
+                        ProjectFilePath = p.ProjectFilePath,
+                        ProjectGuid = p.ProjectGuid,
+                        ProjectType = p.ProjectType,
+                        TargetFrameworks = p.TargetFrameworks,
+                        PackageReferences = p.PackageReferences,
+                        ProjectReferences = p.ProjectReferences,
+                        IsBuildFailed = p.IsBuildFailed
+                    })
+                    .ToDictionary(p => p.ProjectFilePath, p => p);
             }
             catch (Exception ex)
             {
@@ -51,27 +59,28 @@ namespace PortingAssistantExtensionServer
         {
             try
             {
-                var compatiblePacakges = PackageToAnalysisResults
-                    .Select(package => package.Value)
-                    .Where(packageAnalysisResult => packageAnalysisResult.CompatibilityResults.TryGetValue(request.TargetFramework, out var compatibilityResult) && compatibilityResult.Compatibility == Compatibility.COMPATIBLE)
-                    .ToList();
 
-                var packageToRecommendations = compatiblePacakges.Select(package => new PackageRecommendation()
-                {
-                    PackageId = package.PackageVersionPair.PackageId,
-                    Version = package.PackageVersionPair.Version,
-                    TargetVersions = new List<string> { package.CompatibilityResults[request.TargetFramework].CompatibleVersions.FirstOrDefault() },
-                    RecommendedActionType = RecommendedActionType.UpgradePackage,
-                });
                 var portingRequst = new PortingRequest
                 {
-                    Projects = request.ProjectPaths.Select(p => new ProjectDetails() { ProjectFilePath = p }).ToList(),
+                    Projects = request.ProjectPaths.Select(p =>
+                        ProjectPathToDetails.TryGetValue(p, out var projectDetails) ? projectDetails
+                        : new ProjectDetails()
+                        {
+                            ProjectName = "",
+                            ProjectFilePath = p,
+                            ProjectGuid = "",
+                            ProjectType = "",
+                            TargetFrameworks = new List<string>(),
+                            PackageReferences = new List<PackageVersionPair>(),
+                            ProjectReferences = new List<ProjectReference>(),
+                            IsBuildFailed = false
+                        }).ToList(),
                     SolutionPath = request.SolutionPath,
-                    RecommendedActions = packageToRecommendations.Select(r => (RecommendedAction)r).ToList(),
+                    RecommendedActions = GenerateRecommendedActions(request),
                     TargetFramework = request.TargetFramework,
                     IncludeCodeFix = request.IncludeCodeFix
                 };
-                _logger.LogInformation($"start porting ${request.SolutionPath} .....");
+                _logger.LogInformation($"start porting ${request} .....");
                 var results = _client.ApplyPortingChanges(portingRequst);
                 CreateClientConnectionAsync(request.PipeName);
                 _logger.LogInformation($"porting success ${request.SolutionPath}");
@@ -91,6 +100,33 @@ namespace PortingAssistantExtensionServer
                     messages = new List<string>() { ex.Message },
                     SolutionPath = request.SolutionPath
                 };
+            }
+        }
+
+        private List<RecommendedAction> GenerateRecommendedActions(ProjectFilePortingRequest request)
+        {
+            try
+            {
+                var upgradePacakgesResults = PackageToAnalysisResults
+        .Where(p =>
+            p.CompatibilityResults.TryGetValue(request.TargetFramework, out var compatibilityResult)
+            && compatibilityResult.Compatibility == Compatibility.INCOMPATIBLE
+            && compatibilityResult.CompatibleVersions.Any()
+            && compatibilityResult.CompatibleVersions.Exists(v => !v.Contains("-")));
+
+                var packageToRecommendations = upgradePacakgesResults.Select(package => new PackageRecommendation()
+                {
+                    PackageId = package.PackageVersionPair.PackageId,
+                    Version = package.PackageVersionPair.Version,
+                    TargetVersions = new List<string> { package.CompatibilityResults[request.TargetFramework].CompatibleVersions.First(v => !v.Contains("-")) },
+                    RecommendedActionType = RecommendedActionType.UpgradePackage,
+                });
+                return packageToRecommendations.Select(r => (RecommendedAction)r).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "failed to generate recommended actions ");
+                return null;
             }
         }
         public void Dispose()

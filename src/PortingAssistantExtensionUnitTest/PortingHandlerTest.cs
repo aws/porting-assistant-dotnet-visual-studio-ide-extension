@@ -43,7 +43,30 @@ namespace PortingAssistantExtensionUnitTest
                 }
             },
             IncludeCodeFix = true,
-            RecommendedActions = new List<RecommendedAction> { TestParameters.TestRecommendedAction },
+            RecommendedActions = null,
+            SolutionPath = "/testSolution/"
+        };
+
+        private readonly ProjectFilePortingRequest _portingRequestWithRecommendedAction = new ProjectFilePortingRequest
+        {
+            TargetFramework = "netcoreapp3.1",
+            ProjectPaths = new List<string> { "/test/testPath" },
+            Projects = new List<ProjectDetails>
+            {
+                new ProjectDetails
+                {
+                    IsBuildFailed = false,
+                    PackageReferences = new List<PackageVersionPair> { TestParameters.TestPackageVersionPair },
+                    ProjectFilePath = "/testSolution/testProject",
+                    ProjectGuid = "xxx",
+                    ProjectName = "testProject",
+                    ProjectReferences = null,
+                    ProjectType = "KnownToBeMSBuildFormat",
+                    TargetFrameworks = null
+                }
+            },
+            IncludeCodeFix = true,
+            RecommendedActions = new List<RecommendedAction> { TestParameters.TestUpgradePackageRecommendedAction },
             SolutionPath = "/testSolution/"
         };
 
@@ -77,6 +100,7 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock.Setup(_client => _client.ApplyPortingChanges(It.IsAny<PortingRequest>()))
                 .Returns(_portingResults);
+
         }
 
         [Test]
@@ -89,6 +113,21 @@ namespace PortingAssistantExtensionUnitTest
             Assert.AreEqual(actualResult.SolutionPath, "/testSolution/");
 
             _clientMock.Verify(_clientMock => _clientMock.ApplyPortingChanges(It.IsAny<PortingRequest>()), Times.Exactly(1));
+
+            _portingService.Dispose();
+
+        }
+
+        [Test]
+        public async Task PortingWithRecommendedActionHandlerSuccessAsync()
+        {
+            var actualResult = await _portingHandler.Handle(_portingRequestWithRecommendedAction, CancellationToken.None);
+            Assert.AreEqual(actualResult.Success, true);
+            Assert.AreEqual(actualResult.messages.Count, 1);
+            Assert.AreEqual(actualResult.messages[0], "Test Project Ported.");
+            Assert.AreEqual(actualResult.SolutionPath, "/testSolution/");
+
+            _clientMock.Verify(_clientMock => _clientMock.ApplyPortingChanges(It.IsAny<PortingRequest>()), Times.Exactly(2));
 
             _portingService.Dispose();
 

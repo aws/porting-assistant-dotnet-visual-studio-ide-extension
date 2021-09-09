@@ -17,21 +17,20 @@ namespace PortingAssistantExtensionIntegTests
         private string zipRootFolderPath;
         private string testRootPath;
         private string clientConfigPath;
+        private Dictionary<string, string[]> testFilesInfo = new Dictionary<string, string[]>()
+        {   // Zipfile = {folder-name, solution file, json file}
+            ["Miniblog.Core-master.zip"] = new string[] { "Miniblog.Core-master", "Miniblog.Core.sln", "Miniblog.Core.json" },
+            ["MvcMusicStore.zip"] = new string[] { "MvcMusicStore", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
+            ["NetFrameworkExample.zip"] = new string[] { "NetFrameworkExample", "NetFrameworkExample.sln", "NetFrameworkExample.json" },
+
+            ["Miniblog.Core-master-PortResults.zip"] = new string[] { "Miniblog.Core-master-PortResults", "Miniblog.Core.sln", "Miniblog.Core.json" },
+            ["MvcMusicStore-PortResults.zip"] = new string[] { "MvcMusicStore-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
+            ["NetFrameworkExample-PortResults.zip"] = new string[] { "NetFrameworkExample-PortResults", "NetFrameworkExample.sln", "NetFrameworkExample.json" }
+        };
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {  
-            var testFilesInfo = new Dictionary<string, string[]>()
-            {   // Zipfile = {folder-name, solution file, json file}
-                ["Miniblog.Core-master.zip"] = new string[] { "Miniblog.Core-master", "Miniblog.Core.sln", "Miniblog.Core.json"},
-                ["MvcMusicStore.zip"] = new string[] { "MvcMusicStore", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
-                ["NetFrameworkExample.zip"] = new string[] { "NetFrameworkExample", "NetFrameworkExample.sln", "NetFrameworkExample.json" },
-                
-                ["Miniblog.Core-master-PortResults.zip"] = new string[] { "Miniblog.Core-master-PortResults", "Miniblog.Core.sln", "Miniblog.Core.json" },
-                ["MvcMusicStore-PortResults.zip"] = new string[] { "MvcMusicStore-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
-                ["NetFrameworkExample-PortResults.zip"] = new string[] { "NetFrameworkExample-PortResults", "NetFrameworkExample.sln", "NetFrameworkExample.json" }
-            };
-
             testRootPath = TestContext.CurrentContext.TestDirectory;
 
             zipRootFolderPath = Path.Combine(testRootPath, "TestProjects");
@@ -79,6 +78,7 @@ namespace PortingAssistantExtensionIntegTests
        [Test]
         public async Task TestMvcMusicStoreAsync()
         {
+            InitializeTestResource("MvcMusicStore.zip");
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
             if (projectInfo == null)
             {
@@ -90,12 +90,28 @@ namespace PortingAssistantExtensionIntegTests
             Console.WriteLine("Verification TestMvcMusicStore Result: " + result);
             Assert.IsTrue(result);
 
-            Boolean portResult = await TestPortSolutionAsync(projectInfo);
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, true);
             Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
             Assert.IsTrue(portResult);
         }
 
-       [Test]
+        [Test]
+        public async Task TestMvcMusicStorePortingOnlyAsync()
+        {
+            InitializeTestResource("MvcMusicStore.zip");
+            string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
+            if (projectInfo == null)
+            {
+                Assert.IsTrue(false);
+                return;
+            }
+
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, true);
+            Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
+            Assert.IsTrue(portResult);
+        }
+
+        [Test]
         public async Task TestMiniblogCoreAsync()
         {
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("Miniblog.Core-master"));
@@ -109,7 +125,7 @@ namespace PortingAssistantExtensionIntegTests
             Console.WriteLine("Verification MiniblogCore Result: " + result);
             Assert.IsTrue(result);
 
-            Boolean portResult = await TestPortSolutionAsync(projectInfo);
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, false);
             Console.WriteLine("Porting Verification TestMiniblogCore Result: " + portResult);
             Assert.IsTrue(portResult);
 
@@ -129,9 +145,18 @@ namespace PortingAssistantExtensionIntegTests
             Console.WriteLine("Verification NetFrameworkExample Result: " + result);
             Assert.IsTrue(result);
 
-            Boolean portResult = await TestPortSolutionAsync(projectInfo);
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, false);
             Console.WriteLine("Porting Verification TestNetFrameworkExample Result: " + portResult);
             Assert.IsTrue(portResult);
+        }
+
+        private void InitializeTestResource(string testSolutionName)
+        {
+            string testProjectZipFilePath = Path.Combine(zipRootFolderPath, testSolutionName);
+            using (ZipArchive archive = ZipFile.Open(testProjectZipFilePath, ZipArchiveMode.Read))
+            {
+                archive.ExtractToDirectory(tempProjectRoot, true);
+            }
         }
 
         private async Task<Boolean> TestSolutionAsync(string[] projectInfo)
@@ -184,7 +209,7 @@ namespace PortingAssistantExtensionIntegTests
             return false;
         }
 
-        private async Task<Boolean> TestPortSolutionAsync(string[] projectInfo)
+        private async Task<Boolean> TestPortSolutionAsync(string[] projectInfo, bool includeFix)
         {
             PAIntegTestClient client = null;
             try
@@ -197,7 +222,7 @@ namespace PortingAssistantExtensionIntegTests
                 client = new PAIntegTestClient(solutionPath, solutionName);
 
                 await client.InitClientAsync();
-                var currentResults = await client.PortSolutionAsync();
+                var currentResults = await client.PortSolutionAsync(includeFix);
 
                 string expectedSolutionPath = solutionPath + "-PortResults";
 

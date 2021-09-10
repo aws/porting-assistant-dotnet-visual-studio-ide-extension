@@ -90,7 +90,7 @@ namespace PortingAssistantExtensionIntegTests
             Console.WriteLine("Verification TestMvcMusicStore Result: " + result);
             Assert.IsTrue(result);
 
-            Boolean portResult = await TestPortSolutionAsync(projectInfo, true);
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, false);
             Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
             Assert.IsTrue(portResult);
         }
@@ -106,7 +106,7 @@ namespace PortingAssistantExtensionIntegTests
                 return;
             }
 
-            Boolean portResult = await TestPortSolutionAsync(projectInfo, true);
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, false);
             Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
             Assert.IsTrue(portResult);
         }

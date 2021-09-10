@@ -163,7 +163,7 @@ namespace PortingAssistantExtensionIntegTests
                 SolutionPath = SolutionPath,
                 ProjectPaths = GetProjectPaths(SolutionPath),
                 TargetFramework = "netcoreapp3.1",
-                IncludeCodeFix = false,
+                IncludeCodeFix = includeCodeFix,
                 PipeName = pipeName
             };
 

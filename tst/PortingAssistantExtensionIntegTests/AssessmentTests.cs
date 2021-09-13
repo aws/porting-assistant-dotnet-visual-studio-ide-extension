@@ -63,7 +63,7 @@ namespace PortingAssistantExtensionIntegTests
             }
         }
 
-        //[OneTimeTearDown]
+        [OneTimeTearDown]
         public void Cleanup()
         {
             ProcessHelper.getInstance().StopServer();

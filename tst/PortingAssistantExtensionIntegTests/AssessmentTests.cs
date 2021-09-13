@@ -25,6 +25,7 @@ namespace PortingAssistantExtensionIntegTests
 
             ["Miniblog.Core-master-PortResults.zip"] = new string[] { "Miniblog.Core-master-PortResults", "Miniblog.Core.sln", "Miniblog.Core.json" },
             ["MvcMusicStore-PortResults.zip"] = new string[] { "MvcMusicStore-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
+            ["MvcMusicStore-WithFix-PortResults.zip"] = new string[] { "MvcMusicStore-WithFix-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["NetFrameworkExample-PortResults.zip"] = new string[] { "NetFrameworkExample-PortResults", "NetFrameworkExample.sln", "NetFrameworkExample.json" }
         };
 
@@ -62,7 +63,7 @@ namespace PortingAssistantExtensionIntegTests
             }
         }
 
-        [OneTimeTearDown]
+        //[OneTimeTearDown]
         public void Cleanup()
         {
             ProcessHelper.getInstance().StopServer();
@@ -107,6 +108,42 @@ namespace PortingAssistantExtensionIntegTests
             }
 
             Boolean portResult = await TestPortSolutionAsync(projectInfo, false);
+            Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
+            Assert.IsTrue(portResult);
+        }
+
+        [Test]
+        public async Task TestMvcMusicStoreWithFixAsync()
+        {
+            InitializeTestResource("MvcMusicStore.zip");
+            string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
+            if (projectInfo == null)
+            {
+                Assert.IsTrue(false);
+                return;
+            }
+
+            Boolean result = await TestSolutionAsync(projectInfo);
+            Console.WriteLine("Verification TestMvcMusicStore Result: " + result);
+            Assert.IsTrue(result);
+
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, true);
+            Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
+            Assert.IsTrue(portResult);
+        }
+
+        [Test]
+        public async Task TestMvcMusicStorePortingOnlyWithFixAsync()
+        {
+            InitializeTestResource("MvcMusicStore.zip");
+            string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
+            if (projectInfo == null)
+            {
+                Assert.IsTrue(false);
+                return;
+            }
+
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, true);
             Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
             Assert.IsTrue(portResult);
         }
@@ -213,7 +250,7 @@ namespace PortingAssistantExtensionIntegTests
         {
             PAIntegTestClient client = null;
             try
-            {
+            { 
                 string solutionPath = Path.Combine(tempProjectRoot, projectInfo[0]);
                 string solutionName = projectInfo[1];
 
@@ -224,7 +261,7 @@ namespace PortingAssistantExtensionIntegTests
                 await client.InitClientAsync();
                 var currentResults = await client.PortSolutionAsync(includeFix);
 
-                string expectedSolutionPath = solutionPath + "-PortResults";
+                string expectedSolutionPath = includeFix ? solutionPath + "-WithFix-PortResults" : solutionPath + "-PortResults";
 
                 Boolean result = FileUtils.AreTwoDirectoriesEqual(solutionPath, expectedSolutionPath);
                 return result;

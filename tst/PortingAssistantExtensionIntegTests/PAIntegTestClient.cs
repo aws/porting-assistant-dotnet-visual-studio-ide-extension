@@ -152,7 +152,7 @@ namespace PortingAssistantExtensionIntegTests
             return analysisResults;
         }
 
-        public async Task<AnalysisTestResult> PortSolutionAsync()
+        public async Task<AnalysisTestResult> PortSolutionAsync(bool includeCodeFix = false)
         {
             Diagnostics.Clear();
 
@@ -163,7 +163,7 @@ namespace PortingAssistantExtensionIntegTests
                 SolutionPath = SolutionPath,
                 ProjectPaths = GetProjectPaths(SolutionPath),
                 TargetFramework = "netcoreapp3.1",
-                IncludeCodeFix = false,
+                IncludeCodeFix = includeCodeFix,
                 PipeName = pipeName
             };
 

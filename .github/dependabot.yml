@@ -32,6 +32,7 @@ updates:
       interval: "daily"
     ignore:
       - dependency-name: "OmniSharp.Extensions.Language*"
+      - dependency-name: "Microsoft.VisualStudio.SDK"
   - package-ecosystem: "nuget"
     directory: "src/PortingAssistantVSExtensionClient/"
     registries:

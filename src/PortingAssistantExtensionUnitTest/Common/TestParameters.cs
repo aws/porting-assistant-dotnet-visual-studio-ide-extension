@@ -18,7 +18,7 @@ namespace PortingAssistantExtensionUnitTest
             Version = "5.2.7"
         };
 
-        public static readonly RecommendedAction TestRecommendedAction = new RecommendedAction
+        public static readonly RecommendedAction TestReplaceNamespaceRecommendedAction = new RecommendedAction
         {
             Description = "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
             RecommendedActionType = RecommendedActionType.ReplaceNamespace,
@@ -39,6 +39,11 @@ namespace PortingAssistantExtensionUnitTest
                 StartCharPosition = 1,
                 StartLinePosition = 5
             }
+        };
+
+        public static readonly RecommendedAction TestUpgradePackageRecommendedAction = new RecommendedAction
+        {
+            RecommendedActionType = RecommendedActionType.UpgradePackage
         };
 
         private static readonly Dictionary<PackageVersionPair, Task<PackageAnalysisResult>> _packageAnalysisResult = new Dictionary<PackageVersionPair, Task<PackageAnalysisResult>>
@@ -157,7 +162,7 @@ namespace PortingAssistantExtensionUnitTest
             },
             RecommendedActions = new List<RecommendedAction>
             {
-               TestRecommendedAction
+               TestReplaceNamespaceRecommendedAction
             }
         };
 

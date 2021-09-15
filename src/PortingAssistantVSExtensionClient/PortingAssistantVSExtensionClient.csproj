@@ -134,10 +134,10 @@
       <Version>1.0.3</Version>
     </PackageReference>
     <PackageReference Include="AWSSDK.APIGateway">
-      <Version>3.7.2.10</Version>
+      <Version>3.7.2.11</Version>
     </PackageReference>
     <PackageReference Include="AWSSDK.Core">
-      <Version>3.7.3.4</Version>
+      <Version>3.7.3.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.9.31025.194" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

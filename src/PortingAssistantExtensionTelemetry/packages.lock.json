@@ -4,9 +4,9 @@
     ".NETCoreApp,Version=v3.1": {
       "PortingAssistant.Client.Common": {
         "type": "Direct",
-        "requested": "[1.8.79-g47f56933b2, )",
-        "resolved": "1.8.79-g47f56933b2",
-        "contentHash": "UHWnkY9+NRsMhnddWhUpmXP5Rrf4oeV9g506VL3+cVB9NnslTGefBemuSluXNdwLHkA9K3KUG6oqZ/OVFq0xfQ==",
+        "requested": "[1.8.80-ged8b40b4eb, )",
+        "resolved": "1.8.80-ged8b40b4eb",
+        "contentHash": "/Zy/EL87hriYW5anvxUV3oVGwMdNN7mC7lMbIlqbFuDt15gDLptl8qkh+R/aTV941QcIxzF0yHDzT2mZyej3Vw==",
         "dependencies": {
           "CTA.Rules.PortCore": "1.9.3-alpha-geca169ede0",
           "Microsoft.Extensions.Logging": "5.0.0",
@@ -17,15 +17,15 @@
       },
       "PortingAssistant.Client.Telemetry": {
         "type": "Direct",
-        "requested": "[1.8.79-g47f56933b2, )",
-        "resolved": "1.8.79-g47f56933b2",
-        "contentHash": "ufM470gojk3tmpNi5uHyAyAAw4ccPkVfQM8XDwnIPoRs4ibTZra0J7JKPXNwY2gO/sl92ZvEa065t6wSIIaPkw==",
+        "requested": "[1.8.80-ged8b40b4eb, )",
+        "resolved": "1.8.80-ged8b40b4eb",
+        "contentHash": "sKL08nfPuhEShzAGf0e+J/9ITnMz1BtCb3yDOllZ21LN3DhMAEXm/OsgVL9iNtmlWd263ezxjCpXiQXEtciJrQ==",
         "dependencies": {
           "AWSSDK.APIGateway": "3.7.2.10",
           "AWSSDK.Core": "3.7.3.4",
           "Aws4RequestSigner": "1.0.3",
           "Newtonsoft.Json": "13.0.1",
-          "PortingAssistant.Client.Common": "1.8.79-g47f56933b2",
+          "PortingAssistant.Client.Common": "1.8.80-ged8b40b4eb",
           "Serilog": "2.10.0",
           "Serilog.Sinks.File": "5.0.0"
         }

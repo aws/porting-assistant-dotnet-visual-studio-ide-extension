@@ -117,8 +117,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                 string SolutionFile = await CommandsCommon.GetSolutionPathAsync();
                 CommandsCommon.EnableAllCommand(false);
                 string pipeName = Guid.NewGuid().ToString();
-                CommandsCommon.RunPortingAsync(SolutionFile, new List<string> { SelectedProjectPath }, pipeName, selectedProjectName);
-                PipeUtils.StartListenerConnection(pipeName, GetPortingCompletionTasks(this.package, selectedProjectName, UserSettings.Instance.TargetFramework));
+                await CommandsCommon.RunPortingAsync(SolutionFile, new List<string> { SelectedProjectPath }, pipeName, selectedProjectName);
+                await CompletionTask(this.package, selectedProjectName, UserSettings.Instance.TargetFramework);
             }
             catch (Exception ex)
             {
@@ -128,30 +128,25 @@ namespace PortingAssistantVSExtensionClient.Commands
         }
 
 
-        public Func<Task> GetPortingCompletionTasks(AsyncPackage package, string selectedProject, string targetFramework)
+        async Task CompletionTask(AsyncPackage package, string selectedProject, string targetFramework)
         {
-            async Task CompletionTask()
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            try
             {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                try
-                {
-                    var successfulMessage = $"The project has been ported to {targetFramework}" + (UserSettings.Instance.ApplyPortAction? $".{Environment.NewLine}Code changes have been applied" : "");
-                    NotificationUtils.ShowInfoMessageBox(package, successfulMessage, "Porting successful");
-                    await NotificationUtils.ShowInfoBarAsync(package, successfulMessage);
-                    await NotificationUtils.UseStatusBarProgressAsync(2, 2, successfulMessage);
-                }
-                catch (Exception ex)
-                {
-                    NotificationUtils.ShowErrorMessageBox(package, $"Porting failed for {selectedProject} due to {ex.Message}", "Porting failed");
-                }
-                finally
-                {
-                    CommandsCommon.EnableAllCommand(true);
-                }
+                var successfulMessage = $"The project has been ported to {targetFramework}" + (UserSettings.Instance.ApplyPortAction ? $".{Environment.NewLine}Code changes have been applied" : "");
+                NotificationUtils.ShowInfoMessageBox(package, successfulMessage, "Porting successful");
+                await NotificationUtils.ShowInfoBarAsync(package, successfulMessage);
+                await NotificationUtils.UseStatusBarProgressAsync(2, 2, successfulMessage);
             }
-            return CompletionTask;
+            catch (Exception ex)
+            {
+                NotificationUtils.ShowErrorMessageBox(package, $"Porting failed for {selectedProject} due to {ex.Message}", "Porting failed");
+            }
+            finally
+            {
+                CommandsCommon.EnableAllCommand(true);
+            }
         }
 
-        
     }
 }

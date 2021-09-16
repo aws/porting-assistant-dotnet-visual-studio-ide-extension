@@ -59,22 +59,20 @@ namespace PortingAssistantExtensionServer
         {
             try
             {
+                if (ProjectPathToDetails.Count == 0)
+                {
+                    return new ProjectFilePortingResponse()
+                    {
+                        NeedAssessment = true,
+                        Success = false,
+                        messages = new List<string>() { "please run a full assessment before porting" },
+                        SolutionPath = request.SolutionPath
+                    };
+                }
 
                 var portingRequst = new PortingRequest
                 {
-                    Projects = request.ProjectPaths.Select(p =>
-                        ProjectPathToDetails.TryGetValue(p, out var projectDetails) ? projectDetails
-                        : new ProjectDetails()
-                        {
-                            ProjectName = "",
-                            ProjectFilePath = p,
-                            ProjectGuid = "",
-                            ProjectType = "",
-                            TargetFrameworks = new List<string>(),
-                            PackageReferences = new List<PackageVersionPair>(),
-                            ProjectReferences = new List<ProjectReference>(),
-                            IsBuildFailed = false
-                        }).ToList(),
+                    Projects = ProjectPathToDetails.Select(p => p.Value).ToList(),
                     SolutionPath = request.SolutionPath,
                     RecommendedActions = GenerateRecommendedActions(request),
                     TargetFramework = request.TargetFramework,
@@ -86,6 +84,7 @@ namespace PortingAssistantExtensionServer
                 _logger.LogInformation($"porting success ${request.SolutionPath}");
                 return new ProjectFilePortingResponse()
                 {
+                    NeedAssessment = false,
                     Success = results.All(r => r.Success),
                     messages = results.Select(r => r.Message).ToList(),
                     SolutionPath = request.SolutionPath
@@ -96,6 +95,7 @@ namespace PortingAssistantExtensionServer
                 _logger.LogError(ex, "failed to port projects: ");
                 return new ProjectFilePortingResponse()
                 {
+                    NeedAssessment = false,
                     Success = false,
                     messages = new List<string>() { ex.Message },
                     SolutionPath = request.SolutionPath

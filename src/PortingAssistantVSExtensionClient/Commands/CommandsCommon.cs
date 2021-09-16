@@ -138,14 +138,22 @@ namespace PortingAssistantVSExtensionClient.Commands
             try
             {
                 await NotificationUtils.UseStatusBarProgressAsync(1, 2, $"Porting {portingFile} in process");
-                PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
+                var portingResponse = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<ProjectFilePortingResponse>(
                     "applyPortingProjectFileChanges",
                     PortingRequest);
+
+                if (portingResponse.NeedAssessment)
+                {
+                    await NotificationUtils.UseStatusBarProgressAsync(2, 2, $"Porting {portingFile} can not continue");
+                    NotificationUtils.ShowInfoMessageBox(PAGlobalService.Instance.Package, $"please run a full assessment before porting", "Can not porting");
+                    CommandsCommon.EnableAllCommand(true);
+                }
             }
             catch (Exception ex)
             {
                 await NotificationUtils.UseStatusBarProgressAsync(2, 2, $"Porting {portingFile} failed");
                 NotificationUtils.ShowErrorMessageBox(PAGlobalService.Instance.Package, $"Porting failed for {portingFile} due to {ex.Message}", "Porting failed");
+                CommandsCommon.EnableAllCommand(true);
             }
         }
     }

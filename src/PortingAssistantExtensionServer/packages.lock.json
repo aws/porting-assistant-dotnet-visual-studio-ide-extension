@@ -2,15 +2,6 @@
   "version": 1,
   "dependencies": {
     ".NETCoreApp,Version=v3.1": {
-      "LibGit2Sharp": {
-        "type": "Direct",
-        "requested": "[0.26.2, )",
-        "resolved": "0.26.2",
-        "contentHash": "qHLhuI8VEtMf7jiurT/Ypquh37S6ngllCx+aq9uqOY2evok7Fb2AzhJgvNctsXOzHaJwveBs+30sPQJFn/pISg==",
-        "dependencies": {
-          "LibGit2Sharp.NativeBinaries": "[2.0.306]"
-        }
-      },
       "OmniSharp.Extensions.LanguageProtocol": {
         "type": "Direct",
         "requested": "[0.18.3, )",
@@ -35,18 +26,18 @@
       },
       "PortingAssistant.Client.Client": {
         "type": "Direct",
-        "requested": "[1.8.79-g47f56933b2, )",
-        "resolved": "1.8.79-g47f56933b2",
-        "contentHash": "rg/eKXR/N9tDYw7MsxJvDtfkAs7pL2qYcuaWvZa+1Ip7So2UrK1OyJ2QWrYrEFXhc/RPAD3cTSUSwSq6pB+Yyw==",
+        "requested": "[1.8.80-ged8b40b4eb, )",
+        "resolved": "1.8.80-ged8b40b4eb",
+        "contentHash": "C9Nn3CCX7GAnoJglXxXkozhVzfgqFuESJ1P4tXDUF5vRu4k8dgX/ZWq+CrOsjS+Ki26hXPiLyDMEl4RXqHEJcg==",
         "dependencies": {
           "LibGit2Sharp": "0.26.2",
           "Microsoft.Extensions.Configuration.Json": "5.0.0",
           "Microsoft.Extensions.Http.Polly": "5.0.1",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "5.0.0",
           "Polly.Extensions.Http": "3.0.0",
-          "PortingAssistant.Client.Analysis": "1.8.79-g47f56933b2",
-          "PortingAssistant.Client.NuGet": "1.8.79-g47f56933b2",
-          "PortingAssistant.Client.Porting": "1.8.79-g47f56933b2"
+          "PortingAssistant.Client.Analysis": "1.8.80-ged8b40b4eb",
+          "PortingAssistant.Client.NuGet": "1.8.80-ged8b40b4eb",
+          "PortingAssistant.Client.Porting": "1.8.80-ged8b40b4eb"
         }
       },
       "Serilog": {
@@ -372,6 +363,14 @@
         "contentHash": "rsYXB7+iUPP8AHgQ8JP2UZI2xK2KhjcdGr9E6zX3CsZaTLCaw8M35vaAJRo1rfxeaZEVMuXeaquLVCkZ7JcZ5Q==",
         "dependencies": {
           "NETStandard.Library": "1.6.1"
+        }
+      },
+      "LibGit2Sharp": {
+        "type": "Transitive",
+        "resolved": "0.26.2",
+        "contentHash": "qHLhuI8VEtMf7jiurT/Ypquh37S6ngllCx+aq9uqOY2evok7Fb2AzhJgvNctsXOzHaJwveBs+30sPQJFn/pISg==",
+        "dependencies": {
+          "LibGit2Sharp.NativeBinaries": "[2.0.306]"
         }
       },
       "LibGit2Sharp.NativeBinaries": {
@@ -1003,17 +1002,17 @@
       },
       "PortingAssistant.Client.Analysis": {
         "type": "Transitive",
-        "resolved": "1.8.79-g47f56933b2",
-        "contentHash": "xZjb1Q0CXxKqCRVay0DYkQF68A3w42UUQCw4WdaxFDqORyJxjL0OSqZT9hhdnbz9Nx0cKlDhC2NPq1LMwnRrXA==",
+        "resolved": "1.8.80-ged8b40b4eb",
+        "contentHash": "oWu2bWzXJuP/e+QPeu+Y4S/+QI2Uhn38fpOtK0H7Ot7mzX/+2jWgOin/JNByWHhrDY6ksj1RBP8/RMke6dtuVQ==",
         "dependencies": {
-          "PortingAssistant.Client.Common": "1.8.79-g47f56933b2",
-          "PortingAssistant.Client.NuGet": "1.8.79-g47f56933b2"
+          "PortingAssistant.Client.Common": "1.8.80-ged8b40b4eb",
+          "PortingAssistant.Client.NuGet": "1.8.80-ged8b40b4eb"
         }
       },
       "PortingAssistant.Client.Common": {
         "type": "Transitive",
-        "resolved": "1.8.79-g47f56933b2",
-        "contentHash": "UHWnkY9+NRsMhnddWhUpmXP5Rrf4oeV9g506VL3+cVB9NnslTGefBemuSluXNdwLHkA9K3KUG6oqZ/OVFq0xfQ==",
+        "resolved": "1.8.80-ged8b40b4eb",
+        "contentHash": "/Zy/EL87hriYW5anvxUV3oVGwMdNN7mC7lMbIlqbFuDt15gDLptl8qkh+R/aTV941QcIxzF0yHDzT2mZyej3Vw==",
         "dependencies": {
           "CTA.Rules.PortCore": "1.9.3-alpha-geca169ede0",
           "Microsoft.Extensions.Logging": "5.0.0",
@@ -1024,33 +1023,33 @@
       },
       "PortingAssistant.Client.NuGet": {
         "type": "Transitive",
-        "resolved": "1.8.79-g47f56933b2",
-        "contentHash": "OoR6eIyIJ9G9p+JSftS1PBmYDmCEADpVo/8u8s7zjASE5OUz3rz9xMorf03A4bXok6qjsVMX3l1HMFI5TDx2eA==",
+        "resolved": "1.8.80-ged8b40b4eb",
+        "contentHash": "Zvnv6D+C/jgOCgf3IbephSvTi3Hir+38ekbF23IJd2mhHNfRCD7w9wxvOdsnyRC74t8t83Ic5onQ6ZacjqMcaw==",
         "dependencies": {
           "AWSSDK.S3": "3.7.2.4",
           "Microsoft.Extensions.Http": "5.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
-          "PortingAssistant.Client.Common": "1.8.79-g47f56933b2"
+          "PortingAssistant.Client.Common": "1.8.80-ged8b40b4eb"
         }
       },
       "PortingAssistant.Client.Porting": {
         "type": "Transitive",
-        "resolved": "1.8.79-g47f56933b2",
-        "contentHash": "HSaAKy6bfnuVmMPB6BS9flBK5gu48l/fBBLBqJC2DxUrgf9fmsdK5QyEE8eiS3sCwwvU9Q0nioP5JRc6/DmDTA==",
+        "resolved": "1.8.80-ged8b40b4eb",
+        "contentHash": "f9M0xPh07v6CSMBBnt4PcnwMI3TB01ds6nO+8fQwynAvY6K/xEaAI02pfBBgUzHcufj5eOsc3Yz12KIJ98MRXg==",
         "dependencies": {
-          "PortingAssistant.Client.Common": "1.8.79-g47f56933b2"
+          "PortingAssistant.Client.Common": "1.8.80-ged8b40b4eb"
         }
       },
       "PortingAssistant.Client.Telemetry": {
         "type": "Transitive",
-        "resolved": "1.8.79-g47f56933b2",
-        "contentHash": "ufM470gojk3tmpNi5uHyAyAAw4ccPkVfQM8XDwnIPoRs4ibTZra0J7JKPXNwY2gO/sl92ZvEa065t6wSIIaPkw==",
+        "resolved": "1.8.80-ged8b40b4eb",
+        "contentHash": "sKL08nfPuhEShzAGf0e+J/9ITnMz1BtCb3yDOllZ21LN3DhMAEXm/OsgVL9iNtmlWd263ezxjCpXiQXEtciJrQ==",
         "dependencies": {
           "AWSSDK.APIGateway": "3.7.2.10",
           "AWSSDK.Core": "3.7.3.4",
           "Aws4RequestSigner": "1.0.3",
           "Newtonsoft.Json": "13.0.1",
-          "PortingAssistant.Client.Common": "1.8.79-g47f56933b2",
+          "PortingAssistant.Client.Common": "1.8.80-ged8b40b4eb",
           "Serilog": "2.10.0",
           "Serilog.Sinks.File": "5.0.0"
         }
@@ -2202,8 +2201,8 @@
       "portingassistantextensiontelemetry": {
         "type": "Project",
         "dependencies": {
-          "PortingAssistant.Client.Common": "1.8.79-g47f56933b2",
-          "PortingAssistant.Client.Telemetry": "1.8.79-g47f56933b2"
+          "PortingAssistant.Client.Common": "1.8.80-ged8b40b4eb",
+          "PortingAssistant.Client.Telemetry": "1.8.80-ged8b40b4eb"
         }
       }
     },

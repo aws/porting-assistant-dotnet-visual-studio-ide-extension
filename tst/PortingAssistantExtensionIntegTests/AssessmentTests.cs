@@ -63,7 +63,7 @@ namespace PortingAssistantExtensionIntegTests
             }
         }
 
-        //[OneTimeTearDown]
+        [OneTimeTearDown]
         public void Cleanup()
         {
             ProcessHelper.getInstance().StopServer();
@@ -90,22 +90,6 @@ namespace PortingAssistantExtensionIntegTests
             Boolean result = await TestSolutionAsync(projectInfo);
             Console.WriteLine("Verification TestMvcMusicStore Result: " + result);
             Assert.IsTrue(result);
-
-            Boolean portResult = await TestPortSolutionAsync(projectInfo, false);
-            Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
-            Assert.IsTrue(portResult);
-        }
-
-        [Test]
-        public async Task TestMvcMusicStorePortingOnlyAsync()
-        {
-            InitializeTestResource("MvcMusicStore.zip");
-            string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
-            if (projectInfo == null)
-            {
-                Assert.IsTrue(false);
-                return;
-            }
 
             Boolean portResult = await TestPortSolutionAsync(projectInfo, false);
             Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);

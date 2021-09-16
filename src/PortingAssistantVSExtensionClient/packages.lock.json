@@ -10,18 +10,18 @@
       },
       "AWSSDK.APIGateway": {
         "type": "Direct",
-        "requested": "[3.7.2.10, )",
-        "resolved": "3.7.2.10",
-        "contentHash": "WRn38ppEPmx8Ov3+JxHJy845ZW4d5+PEyXP2aSWwCbD3rE/vkqbNE7/6jMi1bsg7lB7dbsRhN4nabRnrSRccRA==",
+        "requested": "[3.7.2.11, )",
+        "resolved": "3.7.2.11",
+        "contentHash": "fEJLLhTSurWWkVGvC798XdGVYbQaLbAbNp7lOdEq+tt3ChmRz5nSqrK0lDkDP8NsBPyYJqRbxKkh7FyuacRhqg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.3.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.3.5, 4.0.0)"
         }
       },
       "AWSSDK.Core": {
         "type": "Direct",
-        "requested": "[3.7.3.4, )",
-        "resolved": "3.7.3.4",
-        "contentHash": "vnaua1196PDtfTGOeFXCD7ozJ7CLYUjbDyyLJ/a5XgMyJcqTADlnZkVF8tadbbht2qxEMj+o/ggthK4gtW9dFg=="
+        "requested": "[3.7.3.5, )",
+        "resolved": "3.7.3.5",
+        "contentHash": "wu6s4geFWpSKuqg/UOx6DAdTnnTzoWQRsKOVCYae2ggzpadFJxwMIB7CSvw0r8CaIQNDKYr6Al3eKU+EA8jqbg=="
       },
       "Microsoft.VisualStudio.SDK": {
         "type": "Direct",

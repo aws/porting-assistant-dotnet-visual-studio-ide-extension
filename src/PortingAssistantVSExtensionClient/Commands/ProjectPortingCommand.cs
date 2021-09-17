@@ -104,6 +104,11 @@ namespace PortingAssistantVSExtensionClient.Commands
                 if (!CommandsCommon.SetupPage()) return;
                 string SelectedProjectPath = SolutionUtils.GetSelectedProjectPath();
                 selectedProjectName = Path.GetFileName(SelectedProjectPath);
+                if (!UserSettings.Instance.SolutionAssessed)
+                {
+                    NotificationUtils.ShowInfoMessageBox(this.package, "please run a full assessment before porting", "");
+                    return;
+                }
                 if (SelectedProjectPath.Equals(""))
                 {
                     NotificationUtils.ShowInfoMessageBox(this.package, "Please select or open a project", "Porting a project");

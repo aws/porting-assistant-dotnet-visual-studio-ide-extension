@@ -91,7 +91,26 @@ namespace PortingAssistantExtensionUnitTest
             _clientMock = new Mock<IPortingAssistantClient>();
 
             _portingService = new PortingService(_serviceLogger.Object, _clientMock.Object);
+            _portingService.ProjectPathToDetails = new Dictionary<string, ProjectDetails>()
+            {
+                {"/testSolution/testProject",
+                    new ProjectDetails {
+                        ProjectFilePath = "/testSolution/testProject",
+                        PackageReferences = new List<PackageVersionPair>
+                        {
+                            new PackageVersionPair
+                            {
+                                PackageId = "Newtonsoft.Json",
+                                Version = "9.0.1"
+                            }
 
+                },
+                        ProjectGuid = "testguid",
+                        ProjectName="testProject",
+                        ProjectReferences = new List<ProjectReference>()
+                    }
+                }
+            };
             _portingHandler = new PortingHandler(_logger.Object, _portingService);
         }
 

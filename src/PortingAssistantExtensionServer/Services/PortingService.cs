@@ -72,7 +72,7 @@ namespace PortingAssistantExtensionServer
                 var portingRequst = new PortingRequest
                 {
 
-                    Projects = ProjectPathToDetails.Select(p => p.Value).ToList(),
+                    Projects = ProjectPathToDetails.Where(p=>p.Value!=null).Select(p => p.Value).ToList(),
                     SolutionPath = request.SolutionPath,
                     RecommendedActions = GenerateRecommendedActions(request),
                     TargetFramework = request.TargetFramework,

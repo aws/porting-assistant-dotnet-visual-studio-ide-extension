@@ -64,7 +64,7 @@ namespace PortingAssistantExtensionServer
                     return new ProjectFilePortingResponse()
                     {
                         Success = false,
-                        messages = new List<string>() { "please run a full assessment before porting" },
+                        messages = new List<string>() { "Please run a full assessment before porting" },
                         SolutionPath = request.SolutionPath
                     };
                 }

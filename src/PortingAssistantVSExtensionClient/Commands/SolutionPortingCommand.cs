@@ -100,6 +100,11 @@ namespace PortingAssistantVSExtensionClient.Commands
             {
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 if (!CommandsCommon.SetupPage()) return;
+                if (!UserSettings.Instance.SolutionAssessed)
+                {
+                    NotificationUtils.ShowInfoMessageBox(this.package, "Please run a full assessment before porting", "");
+                    return;
+                }
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;

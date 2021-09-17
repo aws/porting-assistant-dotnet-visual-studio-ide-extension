@@ -26,7 +26,9 @@ namespace PortingAssistantVSExtensionClient.Options
         public string AWSProfileName;
         public string RootCacheFolder;
         public string TargetFramework;
+        public bool SolutionAssessed;
         private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
+        
 
         readonly WritableSettingsStore _settingStore;
 
@@ -37,6 +39,7 @@ namespace PortingAssistantVSExtensionClient.Options
             _settingStore = sm.GetWritableSettingsStore(SettingsScope.UserSettings);
             this._languageServerStatus = new TaskCompletionSource<LanguageServerStatus>();
             this._languageServerStatus.SetResult(LanguageServerStatus.NOT_RUNNING);
+            this.SolutionAssessed = false;
         }
 
         public void SetLanguageServerStatus(LanguageServerStatus status)

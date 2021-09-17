@@ -59,22 +59,20 @@ namespace PortingAssistantExtensionServer
         {
             try
             {
+                if (ProjectPathToDetails == null || ProjectPathToDetails.Count == 0)
+                {
+                    return new ProjectFilePortingResponse()
+                    {
+                        Success = false,
+                        messages = new List<string>() { "Please run a full assessment before porting" },
+                        SolutionPath = request.SolutionPath
+                    };
+                }
 
                 var portingRequst = new PortingRequest
                 {
-                    Projects = request.ProjectPaths.Select(p =>
-                        ProjectPathToDetails.TryGetValue(p, out var projectDetails) ? projectDetails
-                        : new ProjectDetails()
-                        {
-                            ProjectName = "",
-                            ProjectFilePath = p,
-                            ProjectGuid = "",
-                            ProjectType = "",
-                            TargetFrameworks = new List<string>(),
-                            PackageReferences = new List<PackageVersionPair>(),
-                            ProjectReferences = new List<ProjectReference>(),
-                            IsBuildFailed = false
-                        }).ToList(),
+
+                    Projects = ProjectPathToDetails.Where(p=>p.Value!=null).Select(p => p.Value).ToList(),
                     SolutionPath = request.SolutionPath,
                     RecommendedActions = GenerateRecommendedActions(request),
                     TargetFramework = request.TargetFramework,

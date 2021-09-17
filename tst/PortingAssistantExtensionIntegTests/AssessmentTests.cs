@@ -97,7 +97,7 @@ namespace PortingAssistantExtensionIntegTests
         }
 
         [Test]
-        public async Task TestMvcMusicStorePortingOnlyAsync()
+        public async Task TestMvcMusicStorePortingOnlyNegativeAsync()
         {
             InitializeTestResource("MvcMusicStore.zip");
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
@@ -109,7 +109,7 @@ namespace PortingAssistantExtensionIntegTests
 
             Boolean portResult = await TestPortSolutionAsync(projectInfo, false);
             Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
-            Assert.IsTrue(portResult);
+            Assert.IsFalse(portResult);
         }
 
         [Test]

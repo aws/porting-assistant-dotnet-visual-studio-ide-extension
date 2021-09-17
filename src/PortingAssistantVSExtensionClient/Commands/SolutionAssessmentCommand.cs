@@ -133,6 +133,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                     }
                     await NotificationUtils.UseStatusBarProgressAsync(2, 2, "Assessment successful");
                     await NotificationUtils.ShowInfoBarAsync(this.package, "Assessment successful. You can view the assessment results in the error list or view the green highlights in your source code.");
+                    UserSettings.Instance.SolutionAssessed = true;
                 }
                 catch (Exception ex)
                 {

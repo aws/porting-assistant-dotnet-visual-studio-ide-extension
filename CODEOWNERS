@@ -3,5 +3,5 @@
 # be sent to owner(s) for a review.
 
 
-/src/PortingAssistantExtensionServer/Services/AnalysisService.cs @huawenm @kanikaul-amazon
-/src/PortingAssistantExtensionServer/Services/PortingService.cs @huawenm @kanikaul-amazon
+/src/PortingAssistantExtensionServer/Services/AnalysisService.cs @marknfawaz @huawenm @kanikaul-amazon
+/src/PortingAssistantExtensionServer/Services/PortingService.cs @marknfawaz @huawenm @kanikaul-amazon

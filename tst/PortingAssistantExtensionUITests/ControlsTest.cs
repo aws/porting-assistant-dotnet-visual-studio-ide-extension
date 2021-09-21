@@ -57,22 +57,19 @@ namespace PortingAssistantExtensionUITests
     [TestClass]
     public class ControlsTest : VisualStudioSession 
     {
-        [TestMethod]
         public void RunTest()
         {
             GoToFile("AccountController.cs");
             StartFullSolutionAssessment();
-            WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]");
+            WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]", 300);
             CheckLightBulbAction();
         }
 
-        [TestMethod]
         public void RightClickActions()
         {
             RightClickRunAssessment();
         }
 
-        [TestMethod]
         public void SupportActions()
         {
             TestSupportActions();
@@ -81,7 +78,8 @@ namespace PortingAssistantExtensionUITests
         [TestInitialize]
         public void ClassInitialize()
         {
-            Setup(@"C:\testsolutions\mvcmusicstore\sourceCode\mvcmusicstore\MvcMusicStore.sln");
+            
+            Setup(@"C:\ide-ui-test-solutions\mvcmusicstore\sourceCode\mvcmusicstore\MvcMusicStore.sln");
         }
 
         [TestCleanup]
@@ -126,7 +124,7 @@ namespace PortingAssistantExtensionUITests
             var builder = new Actions(session);
             builder.ContextClick(solutionElement).SendKeys(arrowDownToAssess).Perform();
 
-            WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]");
+            WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]", 300);
             //session.FindElementByXPath("//Menu[@ClassName=\"ContextMenu\"][@Name=\"Solution\"]/MenuItem[@ClassName=\"MenuItem\"][@Name=\"Run Full Assessment with Porting Assistant\"]").Click();
         }
 

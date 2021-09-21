@@ -22,6 +22,8 @@ using System;
 using System.Threading;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using System.IO;
+using System.IO.Compression;
 
 namespace PortingAssistantExtensionUITests
 {
@@ -29,14 +31,26 @@ namespace PortingAssistantExtensionUITests
     {
         protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723";
         private const string VSAppId = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe";
+        private const string testSolutionsDir = "C:\\ide-ui-test-solutions";
+        private const string testSolutionsZip = "C:\\ide-ui-test-solutions.zip";
 
         protected static WindowsDriver<WindowsElement> session;
         protected static WindowsElement mainWindow;
         protected static WindowsDriver<WindowsElement> desktopSession;
 
+        private static void ResetTestSolutions()
+        {
+            // assumes that test solutions are located in c:\ drive
+            if (Directory.Exists(testSolutionsDir))
+            {
+                Directory.Delete(testSolutionsDir, true);
+            }
+            ZipFile.ExtractToDirectory(testSolutionsZip, "C:\\");
+        }
+
         public static void Setup(string testSolution)
         {
-            // Launch a new instance of Notepad application
+            ResetTestSolutions();
             if (session == null)
             {
                 // Create a new session to launch Notepad application
@@ -119,7 +133,7 @@ namespace PortingAssistantExtensionUITests
             session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"Port\"]/Text[@ClassName=\"TextBlock\"][@Name=\"Port\"]").Click();
 
             // Wait for finish
-            WaitForElement("//Window[@ClassName=\"#32770\"][@Name=\"Microsoft Visual Studio\"]/Button[@ClassName=\"Button\"][@Name=\"OK\"]", 120); 
+            WaitForElement("//Window[@ClassName=\"#32770\"][@Name=\"Microsoft Visual Studio\"]/Button[@ClassName=\"Button\"][@Name=\"OK\"]", 180); 
 
             // Reload projects
             session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();

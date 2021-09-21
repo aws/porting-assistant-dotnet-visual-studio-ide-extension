@@ -28,7 +28,7 @@ namespace PortingAssistantExtensionUITests
         [TestMethod]
         public void RunTest()
         {
-            GoToFile("program.cs");
+            GoToFile("AccountController.cs");
             StartFullSolutionAssessment();
             WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]");
         }
@@ -36,7 +36,7 @@ namespace PortingAssistantExtensionUITests
         [TestInitialize]
         public void ClassInitialize()
         {
-            Setup(@"C:\testsolutions\mvcmusicstore\sourceCode\mvcmusicstore\MvcMusicStore.sln");
+            Setup(@"C:\ide-ui-test-solutions\mvcmusicstore\sourceCode\mvcmusicstore\MvcMusicStore.sln");
         }
 
         [TestCleanup]

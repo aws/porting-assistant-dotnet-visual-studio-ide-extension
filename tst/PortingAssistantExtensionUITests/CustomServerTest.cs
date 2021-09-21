@@ -25,8 +25,8 @@ namespace PortingAssistantExtensionUITests
     [TestClass]
     public class CustomServerTest : VisualStudioSession 
     {
-        private const string portingResultsFile = @"C:\testsolutions\CustomServer\PortSolutionResult.json";
-        private const string solutionFile = @"C:\testsolutions\CustomServer\CustomServer.sln";
+        private const string portingResultsFile = @"C:\ide-ui-test-solutions\CustomServer\PortSolutionResult.json";
+        private const string solutionFile = @"C:\ide-ui-test-solutions\CustomServer\CustomServer.sln";
 
         [TestMethod]
         public void RunTest()

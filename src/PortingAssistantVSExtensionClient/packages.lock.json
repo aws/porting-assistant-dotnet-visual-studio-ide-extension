@@ -4,24 +4,24 @@
     ".NETFramework,Version=v4.7.2": {
       "Aws4RequestSigner": {
         "type": "Direct",
-        "requested": "[1.0.1, )",
-        "resolved": "1.0.1",
-        "contentHash": "8DPFfzLtd15dATqKNQXUSXPATeFG0jjMw5U1Zf0+qIJGVzX2j/nBEalXeA7h8xKjyHsVtJz1AKpvYnscuSRuWA=="
+        "requested": "[1.0.3, )",
+        "resolved": "1.0.3",
+        "contentHash": "nRXdbKbNH85aLjmIst7q6v47Owh91RPB1DlkQqXAuVvrVHY1oTePjkAt/2/4L539PSwFMZchn/DK0pYpSsq3Og=="
       },
       "AWSSDK.APIGateway": {
         "type": "Direct",
-        "requested": "[3.7.0.9, )",
-        "resolved": "3.7.0.9",
-        "contentHash": "YMqiKlM440cdMHtttygNDKsVLjDZSt4NNl2PCt85Rf2NLv9pxVC4knkrIEekRXI1q3Hl7NmIs6tviPtkGqlFvQ==",
+        "requested": "[3.7.2.11, )",
+        "resolved": "3.7.2.11",
+        "contentHash": "fEJLLhTSurWWkVGvC798XdGVYbQaLbAbNp7lOdEq+tt3ChmRz5nSqrK0lDkDP8NsBPyYJqRbxKkh7FyuacRhqg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.0.10, 3.8.0)"
+          "AWSSDK.Core": "[3.7.3.5, 4.0.0)"
         }
       },
       "AWSSDK.Core": {
         "type": "Direct",
-        "requested": "[3.7.0.13, )",
-        "resolved": "3.7.0.13",
-        "contentHash": "8z7RHLvY/bQP3F55AL3keG3/6Y9O15RWFUhz1a585+UAFVvFD/eejn443s4C0O3k5TLnxf1u5M0qblIZbNMgqw=="
+        "requested": "[3.7.3.5, )",
+        "resolved": "3.7.3.5",
+        "contentHash": "wu6s4geFWpSKuqg/UOx6DAdTnnTzoWQRsKOVCYae2ggzpadFJxwMIB7CSvw0r8CaIQNDKYr6Al3eKU+EA8jqbg=="
       },
       "Microsoft.PowerShell.5.ReferenceAssemblies": {
         "type": "Direct",

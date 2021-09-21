@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<IncludeSymbolsInSingleFile>true</IncludeSymbolsInSingleFile>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -12,11 +13,11 @@
 	<ItemGroup>
 		<PackageReference Include="OmniSharp.Extensions.LanguageProtocol" Version="0.18.3" />
 		<PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.18.3" />
-		<PackageReference Include="PortingAssistant.Client.Client" Version="1.8.23-alpha-g79847935d1" />
+		<PackageReference Include="PortingAssistant.Client.Client" Version="1.8.80-ged8b40b4eb" />
 		<PackageReference Include="Serilog" Version="2.10.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
-		<PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-		<PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 		<PackageReference Include="System.IO.Pipes.AccessControl" Version="5.0.0" />
 	</ItemGroup>
 

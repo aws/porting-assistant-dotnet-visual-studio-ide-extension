@@ -9,6 +9,7 @@ namespace PortingAssistantExtensionServer.Models
     public class PortingAssistantTelemetryConfiguration : TelemetryConfiguration
     {
         private string AppData;
+        public string LogTimerInterval { get; set; }
         public PortingAssistantTelemetryConfiguration()
         {
             AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);

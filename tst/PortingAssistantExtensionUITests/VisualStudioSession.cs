@@ -31,12 +31,14 @@ namespace PortingAssistantExtensionUITests
     {
         protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723";
         private const string VSAppId = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe";
+        protected const string winAppDriverExe = "C:\\Program Files (x86)\\Windows Application Driver\\WinAppDriver.exe";
         private const string testSolutionsDir = "C:\\ide-ui-test-solutions";
         private const string testSolutionsZip = "C:\\ide-ui-test-solutions.zip";
 
         protected static WindowsDriver<WindowsElement> session;
         protected static WindowsElement mainWindow;
         protected static WindowsDriver<WindowsElement> desktopSession;
+        private static Process winAppDriver;
 
         private static void ResetTestSolutions()
         {
@@ -48,8 +50,20 @@ namespace PortingAssistantExtensionUITests
             ZipFile.ExtractToDirectory(testSolutionsZip, "C:\\");
         }
 
+        private static void StartWinAppDriver()
+        {
+            winAppDriver = new Process();
+            winAppDriver.StartInfo = new ProcessStartInfo
+            {
+                FileName = winAppDriverExe,
+                Arguments = "127.0.0.1 4723",
+            };
+            winAppDriver.Start();
+        }
+
         public static void Setup(string testSolution)
         {
+            StartWinAppDriver();
             ResetTestSolutions();
             if (session == null)
             {
@@ -61,9 +75,13 @@ namespace PortingAssistantExtensionUITests
                 Assert.IsNotNull(session);
                 Assert.IsNotNull(session.SessionId);
 
-                DesiredCapabilities desktopAppCapabilities = new DesiredCapabilities();
-                desktopAppCapabilities.SetCapability("app", "Root");
-                desktopSession = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), desktopAppCapabilities);
+                Assert.IsNotNull(session);
+                // Wait for 5 seconds or however long it is needed for the right window to appear/for the splash screen to be dismissed
+                Thread.Sleep(TimeSpan.FromSeconds(5));
+                // When the application uses pre-launched existing instance, re-launching the application simply update 
+                // the current application window to whatever current main window belonging to the same application 
+                // process id
+                session.LaunchApp();
 
                 // Set implicit timeout to 1.5 seconds to make element search to retry every 500 ms for at most three times
                 session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);

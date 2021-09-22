@@ -35,6 +35,7 @@ namespace PortingAssistantExtensionUITests
         protected const string winAppDriverExe = "C:\\Program Files (x86)\\Windows Application Driver\\WinAppDriver.exe";
         private const string testSolutionsDir = "C:\\ide-ui-test-solutions";
         private const string testSolutionsZip = "C:\\ide-ui-test-solutions.zip";
+        private static bool firstTimeSetupRequired = true;
 
         protected static WindowsDriver<WindowsElement> session;
         protected static WindowsElement mainWindow;
@@ -88,13 +89,10 @@ namespace PortingAssistantExtensionUITests
                 Assert.IsNotNull(session);
                 Assert.IsNotNull(session.SessionId);
 
-                Assert.IsNotNull(session);
-                // Wait for 5 seconds or however long it is needed for the right window to appear/for the splash screen to be dismissed
-                Thread.Sleep(TimeSpan.FromSeconds(5));
-                // When the application uses pre-launched existing instance, re-launching the application simply update 
-                // the current application window to whatever current main window belonging to the same application 
-                // process id
-                session.LaunchApp();
+                if (firstTimeSetupRequired)
+                {
+                    FirstTimeVsSetup();
+                }
 
                 // Set implicit timeout to 1.5 seconds to make element search to retry every 500 ms for at most three times
                 session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
@@ -104,6 +102,36 @@ namespace PortingAssistantExtensionUITests
             // Make sure errors windows is opened
             session.FindElementByName("View").Click();
             session.FindElementByXPath($"//MenuItem[starts-with(@Name, \"Error List\")]").Click();
+        }
+
+        private static void FirstTimeVsSetup()
+        {
+            // Fresh install of visual studio has setup screens we need to bypass.
+            
+            // Identify the current window handle. You can check through inspect.exe which window this is.
+            var currentWindowHandle = session.CurrentWindowHandle;
+            // Wait for 5 seconds or however long it is needed for the right window to appear/for the splash screen to be dismissed
+            Thread.Sleep(TimeSpan.FromSeconds(5));
+            try
+            {
+                session.FindElementByName("Not now, maybe later.").Click();
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                session.FindElementByName("Start Visual Studio").Click();
+                Thread.Sleep(TimeSpan.FromSeconds(60));
+            }
+            catch
+            {
+                //swallow error only needed for first time setup.
+            }
+            firstTimeSetupRequired = false;
+            // Return all window handles associated with this process/application.
+            // At this point hopefully you have one to pick from. Otherwise you can
+            // simply iterate through them to identify the one you want.
+            var allWindowHandles = session.WindowHandles;
+            // Assuming you only have only one window entry in allWindowHandles and it is in fact the correct one,
+            // switch the session to that window as follows. You can repeat this logic with any top window with the same
+            // process id (any entry of allWindowHandles)
+            session.SwitchTo().Window(allWindowHandles[0]);
         }
 
         public static void TearDown()

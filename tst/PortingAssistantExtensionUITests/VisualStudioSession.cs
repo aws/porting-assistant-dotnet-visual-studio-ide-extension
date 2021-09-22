@@ -95,7 +95,7 @@ namespace PortingAssistantExtensionUITests
                 }
 
                 // Set implicit timeout to 1.5 seconds to make element search to retry every 500 ms for at most three times
-                session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
+                session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
                 mainWindow = session.FindElementByAccessibilityId("VisualStudioMainWindow");
             }
 
@@ -112,18 +112,12 @@ namespace PortingAssistantExtensionUITests
             var currentWindowHandle = session.CurrentWindowHandle;
             // Wait for 5 seconds or however long it is needed for the right window to appear/for the splash screen to be dismissed
             Thread.Sleep(TimeSpan.FromSeconds(5));
-            try
-            {
-                session.FindElementByName("Not now, maybe later.").Click();
-                Thread.Sleep(TimeSpan.FromSeconds(1));
-                session.FindElementByName("Start Visual Studio").Click();
-                Thread.Sleep(TimeSpan.FromSeconds(60));
-            }
-            catch
-            {
-                //swallow error only needed for first time setup.
-            }
-            firstTimeSetupRequired = false;
+
+            session.FindElementByName("Not now, maybe later.").Click();
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            session.FindElementByName("Start Visual Studio").Click();
+            Thread.Sleep(TimeSpan.FromSeconds(60));
+            
             // Return all window handles associated with this process/application.
             // At this point hopefully you have one to pick from. Otherwise you can
             // simply iterate through them to identify the one you want.
@@ -132,6 +126,16 @@ namespace PortingAssistantExtensionUITests
             // switch the session to that window as follows. You can repeat this logic with any top window with the same
             // process id (any entry of allWindowHandles)
             session.SwitchTo().Window(allWindowHandles[0]);
+
+            GetPortingAssistantMenuElement("Settings...");
+            session.FindElementByAccessibilityId("TargeFrameworks").Click();
+            session.FindElementByName(".netcoreapp3.1").Click();
+            session.FindElementByName("Data usage sharing").Click();
+            session.FindElementByAccessibilityId("Profiles").Click();
+            session.FindElementByName("default").Click();
+            session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
+
+            firstTimeSetupRequired = false;
         }
 
         public static void TearDown()

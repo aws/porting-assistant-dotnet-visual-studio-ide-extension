@@ -27,6 +27,7 @@ using System.IO.Compression;
 
 namespace PortingAssistantExtensionUITests
 {
+    [TestClass]
     public class VisualStudioSession
     {
         protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723";
@@ -38,7 +39,21 @@ namespace PortingAssistantExtensionUITests
         protected static WindowsDriver<WindowsElement> session;
         protected static WindowsElement mainWindow;
         protected static WindowsDriver<WindowsElement> desktopSession;
-        private static Process winAppDriver;
+        protected static Process winAppDriver;
+
+        [AssemblyInitialize()]
+        public static void AssemblyInit(TestContext context)
+        {
+            StartWinAppDriver();
+            ResetTestSolutions();
+        }
+
+        [AssemblyCleanup]
+        public static void AssemblyCleanup()
+        {
+            Console.WriteLine("AssemblyCleanup");
+            winAppDriver.Kill();
+        }
 
         private static void ResetTestSolutions()
         {
@@ -63,8 +78,6 @@ namespace PortingAssistantExtensionUITests
 
         public static void Setup(string testSolution)
         {
-            StartWinAppDriver();
-            ResetTestSolutions();
             if (session == null)
             {
                 // Create a new session to launch Notepad application

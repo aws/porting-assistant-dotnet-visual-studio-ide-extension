@@ -25,6 +25,9 @@ namespace PortingAssistantExtensionTelemetry
                 TargetFramework = targetFramework,
                 TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                 SolutionPath = GetHash(sha256hash, solutionDetail.SolutionFilePath),
+                ApplicationGuid = result.SolutionDetails.ApplicationGuid,
+                SolutionGuid = result.SolutionDetails.SolutionGuid,
+                RepositoryUrl = result.SolutionDetails.RepositoryUrl,
                 AnalysisTime = time,
             };
             TelemetryCollector.Collect<SolutionMetrics>(solutionMetrics);

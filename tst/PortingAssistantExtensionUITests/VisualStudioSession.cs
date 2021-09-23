@@ -1,20 +1,4 @@
-﻿//******************************************************************************
-//
-// Copyright (c) 2017 Microsoft Corporation. All rights reserved.
-//
-// This code is licensed under the MIT License (MIT).
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
-//******************************************************************************
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium.Windows;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium;
@@ -24,6 +8,11 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using System.IO;
 using System.IO.Compression;
+using Amazon;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
+using System.Configuration;
+
 
 namespace PortingAssistantExtensionUITests
 {
@@ -89,7 +78,7 @@ namespace PortingAssistantExtensionUITests
                 Assert.IsNotNull(session);
                 Assert.IsNotNull(session.SessionId);
 
-                session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+                session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(45);
                 if (firstTimeSetupRequired)
                 {
                     FirstTimeVsSetup();
@@ -97,6 +86,10 @@ namespace PortingAssistantExtensionUITests
 
                 mainWindow = session.FindElementByAccessibilityId("VisualStudioMainWindow");
             }
+
+            DesiredCapabilities desktopCapabilities = new DesiredCapabilities();
+            desktopCapabilities.SetCapability("app", "Root");
+            desktopSession = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), desktopCapabilities);
 
             // Make sure errors windows is opened
             session.FindElementByName("View").Click();
@@ -128,7 +121,20 @@ namespace PortingAssistantExtensionUITests
                 session.SwitchTo().Window(allWindowHandles[0]);
 
                 SelectTargetFramework();
-                SelectAwsProfile();
+                GoToFile(".cs");
+
+                var secret = GetSecret();
+                GetPortingAssistantMenuElement("Enable Incremental Assessments with Porting Assistant");
+                // should trigger first time setup page
+                session.FindElementByXPath("//Window[@ClassName=\"Window\"][@Name=\"Get started\"]/Button[@ClassName=\"Button\"][@Name=\"Add Named Profile\"]/Text[@ClassName=\"TextBlock\"][@Name=\"Add Named Profile\"]").Click();
+                session.FindElementByAccessibilityId("ProfileName").SendKeys("default");
+                session.FindElementByAccessibilityId("AccesskeyID").SendKeys(secret.test_role_access_key);
+                session.FindElementByAccessibilityId("secretAccessKey").SendKeys(secret.test_role_secret_key);
+                session.FindElementByXPath("//Window[@ClassName=\"Window\"][@Name=\"Get started\"]/Window[@ClassName=\"Window\"][@Name=\"Add a Named Profile\"]/Button[@ClassName=\"Button\"][@Name=\"Save Profile\"]").Click();
+                Thread.Sleep(TimeSpan.FromSeconds(60));
+                session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\" Save \"]").Click();
+
+                //SelectAwsProfile();
             } 
             catch
             {
@@ -278,6 +284,45 @@ namespace PortingAssistantExtensionUITests
             }
 
             return receivedHash == expectedHash;
+        }
+
+        protected static Secret GetSecret()
+        {
+            string secretName = ConfigurationManager.AppSettings.Get("AwsProfileSecretArn"); 
+            string region = ConfigurationManager.AppSettings.Get("AwsRegion");
+            string secret = "";
+
+            MemoryStream memoryStream = new MemoryStream();
+
+            IAmazonSecretsManager client = new AmazonSecretsManagerClient(RegionEndpoint.GetBySystemName(region));
+
+            GetSecretValueRequest request = new GetSecretValueRequest();
+            request.SecretId = secretName;
+            request.VersionStage = "AWSCURRENT"; // VersionStage defaults to AWSCURRENT if unspecified.
+
+            GetSecretValueResponse response = null;
+
+            // In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
+            // See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+            // We rethrow the exception by default.
+
+             response = client.GetSecretValueAsync(request).Result;
+
+            // Decrypts secret using the associated KMS CMK.
+            // Depending on whether the secret is a string or binary, one of these fields will be populated.
+            if (response.SecretString != null)
+            {
+                secret = response.SecretString;
+            }
+            else
+            {
+                memoryStream = response.SecretBinary;
+                StreamReader reader = new StreamReader(memoryStream);
+                string decodedBinarySecret = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(reader.ReadToEnd()));
+            }
+
+            var secretObject = JsonConvert.DeserializeObject<Secret>(secret);
+            return secretObject;
         }
     }
 }

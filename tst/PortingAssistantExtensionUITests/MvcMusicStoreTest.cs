@@ -9,7 +9,6 @@ namespace PortingAssistantExtensionUITests
     [TestClass]
     public class MvcMusicStoreTest : VisualStudioSession 
     {
-        [TestMethod]
         public void RunTest()
         {
             GoToFile("AccountController.cs");

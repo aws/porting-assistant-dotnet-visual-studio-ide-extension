@@ -68,6 +68,10 @@ namespace PortingAssistantExtensionUITests
 
         public static void Setup(string testSolution)
         {
+            DesiredCapabilities desktopCapabilities = new DesiredCapabilities();
+            desktopCapabilities.SetCapability("app", "Root");
+            desktopSession = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), desktopCapabilities);
+
             if (session == null)
             {
                 // Create a new session to launch Notepad application
@@ -86,10 +90,6 @@ namespace PortingAssistantExtensionUITests
 
                 mainWindow = session.FindElementByAccessibilityId("VisualStudioMainWindow");
             }
-
-            DesiredCapabilities desktopCapabilities = new DesiredCapabilities();
-            desktopCapabilities.SetCapability("app", "Root");
-            desktopSession = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), desktopCapabilities);
 
             // Make sure errors windows is opened
             session.FindElementByName("View").Click();
@@ -134,7 +134,6 @@ namespace PortingAssistantExtensionUITests
                 Thread.Sleep(TimeSpan.FromSeconds(60));
                 session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\" Save \"]").Click();
 
-                //SelectAwsProfile();
             } 
             catch
             {
@@ -153,15 +152,6 @@ namespace PortingAssistantExtensionUITests
                 session.Quit();
                 session = null;
             }
-        }
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            // Select all text and delete to clear the edit box
-            //editBox.SendKeys(Keys.Control + "a" + Keys.Control);
-            //editBox.SendKeys(Keys.Delete);
-            //Assert.AreEqual(string.Empty, editBox.Text);
         }
 
         protected static void GoToFile(string fileName)
@@ -216,11 +206,11 @@ namespace PortingAssistantExtensionUITests
         {
             GetPortingAssistantMenuElement("Settings...");
             session.FindElementByName("General").Click();
+            // This not a typo, the automation id is missing the last t
             var frameworksBox = session.FindElementByAccessibilityId("TargeFrameworks");
             frameworksBox.Click();
             frameworksBox.SendKeys(Keys.Down);
             frameworksBox.SendKeys(Keys.Enter);
-            //frameworksBox.FindElementByXPath($"//ListItem[@ClassName=\"ListBoxItem\"][@Name=\"{targetFramework}\"]").Click();  
             session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
         }
         protected static void SelectAwsProfile()
@@ -231,7 +221,6 @@ namespace PortingAssistantExtensionUITests
             profilesBox.Click();
             profilesBox.SendKeys(Keys.Down);
             profilesBox.SendKeys(Keys.Enter);
-            //profilesBox.FindElementByXPath($"//ListItem[@ClassName=\"ListBoxItem\"][@Name=\"{awsProfile}\"]").Click();
             session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
         }
 
@@ -284,6 +273,12 @@ namespace PortingAssistantExtensionUITests
             }
 
             return receivedHash == expectedHash;
+        }
+
+        protected static void SearchErrorList(string input)
+        {
+            session.FindElementByXPath("//Group[@Name=\"Search Control\"][@AutomationId=\"SearchControl\"]/Edit[@Name=\"Search Error List\"]")
+                .SendKeys(input);
         }
 
         protected static Secret GetSecret()

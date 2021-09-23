@@ -82,6 +82,8 @@ namespace PortingAssistantExtensionUITests
                 Assert.IsNotNull(session);
                 Assert.IsNotNull(session.SessionId);
 
+                Thread.Sleep(TimeSpan.FromSeconds(30));
+
                 session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(45);
                 if (firstTimeSetupRequired)
                 {

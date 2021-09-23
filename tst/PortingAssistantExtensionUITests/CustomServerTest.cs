@@ -35,7 +35,7 @@ namespace PortingAssistantExtensionUITests
             StartFullSolutionAssessment();
             WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]");
             WaitForElement("//DataItem[@ClassName=\"ListViewItem\"][starts-with(@Name,\"PA0002. Add a reference to Microsoft.AspNetCore.Owin and remove \")]");
-            PortSolution();
+            PortSolution(true);
             VerifyPortingResults(ExpectedValues.MvcMusicStorePortSolution, File.ReadAllText(portingResultsFile));
         }
 

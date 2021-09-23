@@ -106,33 +106,34 @@ namespace PortingAssistantExtensionUITests
         private static void FirstTimeVsSetup()
         {
             // Fresh install of visual studio has setup screens we need to bypass.
-            
-            // Identify the current window handle. You can check through inspect.exe which window this is.
-            var currentWindowHandle = session.CurrentWindowHandle;
-            // Wait for 5 seconds or however long it is needed for the right window to appear/for the splash screen to be dismissed
-            Thread.Sleep(TimeSpan.FromSeconds(5));
+            try
+            {
+                // Identify the current window handle. You can check through inspect.exe which window this is.
+                var currentWindowHandle = session.CurrentWindowHandle;
+                // Wait for 5 seconds or however long it is needed for the right window to appear/for the splash screen to be dismissed
+                Thread.Sleep(TimeSpan.FromSeconds(45));
 
-            session.FindElementByName("Not now, maybe later.").Click();
-            Thread.Sleep(TimeSpan.FromSeconds(1));
-            session.FindElementByName("Start Visual Studio").Click();
-            Thread.Sleep(TimeSpan.FromSeconds(60));
+                session.FindElementByName("Not now, maybe later.").Click();
+                Thread.Sleep(TimeSpan.FromSeconds(1));
+                session.FindElementByName("Start Visual Studio").Click();
+                Thread.Sleep(TimeSpan.FromSeconds(60));
             
-            // Return all window handles associated with this process/application.
-            // At this point hopefully you have one to pick from. Otherwise you can
-            // simply iterate through them to identify the one you want.
-            var allWindowHandles = session.WindowHandles;
-            // Assuming you only have only one window entry in allWindowHandles and it is in fact the correct one,
-            // switch the session to that window as follows. You can repeat this logic with any top window with the same
-            // process id (any entry of allWindowHandles)
-            session.SwitchTo().Window(allWindowHandles[0]);
+                // Return all window handles associated with this process/application.
+                // At this point hopefully you have one to pick from. Otherwise you can
+                // simply iterate through them to identify the one you want.
+                var allWindowHandles = session.WindowHandles;
+                // Assuming you only have only one window entry in allWindowHandles and it is in fact the correct one,
+                // switch the session to that window as follows. You can repeat this logic with any top window with the same
+                // process id (any entry of allWindowHandles)
+                session.SwitchTo().Window(allWindowHandles[0]);
 
-            GetPortingAssistantMenuElement("Settings...");
-            session.FindElementByAccessibilityId("TargeFrameworks").Click();
-            session.FindElementByName(".netcoreapp3.1").Click();
-            session.FindElementByName("Data usage sharing").Click();
-            session.FindElementByAccessibilityId("Profiles").Click();
-            session.FindElementByName("default").Click();
-            session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
+                SelectTargetFramework();
+                SelectAwsProfile();
+            } 
+            catch
+            {
+                // if we are testing in an established environment, just move on.
+            }
 
             firstTimeSetupRequired = false;
         }
@@ -185,13 +186,16 @@ namespace PortingAssistantExtensionUITests
             GetPortingAssistantMenuElement("Run Full Assessment with Porting Assistant");
         }
 
-        protected static void PortSolution()
+        protected static void PortSolution(bool applyFileActions)
         {
             // Menu Action
             GetPortingAssistantMenuElement("Port Solution to .NET Core with Porting Assistant");
 
             // Check apply porting actions
-            session.FindElementByAccessibilityId("ApplyPortActionCheck").Click();
+            if (applyFileActions)
+            {
+                session.FindElementByAccessibilityId("ApplyPortActionCheck").Click();
+            }
             session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"Port\"]/Text[@ClassName=\"TextBlock\"][@Name=\"Port\"]").Click();
 
             // Wait for finish
@@ -200,6 +204,29 @@ namespace PortingAssistantExtensionUITests
             // Reload projects
             session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
             session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"Reload All\"]").Click();
+        }
+
+        protected static void SelectTargetFramework()
+        {
+            GetPortingAssistantMenuElement("Settings...");
+            session.FindElementByName("General").Click();
+            var frameworksBox = session.FindElementByAccessibilityId("TargeFrameworks");
+            frameworksBox.Click();
+            frameworksBox.SendKeys(Keys.Down);
+            frameworksBox.SendKeys(Keys.Enter);
+            //frameworksBox.FindElementByXPath($"//ListItem[@ClassName=\"ListBoxItem\"][@Name=\"{targetFramework}\"]").Click();  
+            session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
+        }
+        protected static void SelectAwsProfile()
+        {
+            GetPortingAssistantMenuElement("Settings...");
+            session.FindElementByName("Data usage sharing").Click();
+            var profilesBox = session.FindElementByAccessibilityId("Profiles");
+            profilesBox.Click();
+            profilesBox.SendKeys(Keys.Down);
+            profilesBox.SendKeys(Keys.Enter);
+            //profilesBox.FindElementByXPath($"//ListItem[@ClassName=\"ListBoxItem\"][@Name=\"{awsProfile}\"]").Click();
+            session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
         }
 
         protected static bool WaitForElement(string xPath, int timeout = 60)

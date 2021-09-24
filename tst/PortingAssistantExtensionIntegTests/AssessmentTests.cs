@@ -24,12 +24,13 @@ namespace PortingAssistantExtensionIntegTests
             ["Miniblog.Core-master.zip"] = new string[] { "Miniblog.Core-master", "Miniblog.Core.sln", "Miniblog.Core.json" },
             ["MvcMusicStore.zip"] = new string[] { "MvcMusicStore", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["NetFrameworkExample.zip"] = new string[] { "NetFrameworkExample", "NetFrameworkExample.sln", "NetFrameworkExample.json" },
-
+            ["NopCommerce-3.1.zip"] = new string[] { "NopCommerce-3.1", "NopCommerce.sln", "NopCommerce.json" },
             ["Miniblog.Core-master-PortResults.zip"] = new string[] { "Miniblog.Core-master-PortResults", "Miniblog.Core.sln", "Miniblog.Core.json" },
             ["MvcMusicStore-PortResults.zip"] = new string[] { "MvcMusicStore-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["MvcMusicStore-WithFix-PortResults.zip"] = new string[] { "MvcMusicStore-WithFix-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["MvcMusicStore-net50-PortResults.zip"] = new string[] { "MvcMusicStore-net50-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
-            ["NetFrameworkExample-PortResults.zip"] = new string[] { "NetFrameworkExample-PortResults", "NetFrameworkExample.sln", "NetFrameworkExample.json" }
+            ["NetFrameworkExample-PortResults.zip"] = new string[] { "NetFrameworkExample-PortResults", "NetFrameworkExample.sln", "NetFrameworkExample.json" },
+            ["NopCommerce-3.1-net50-PortResults.zip"] = new string[] { "NopCommerce-3.1-net50-PortResults", "NopCommerce.sln", "NopCommerce.json" }
         };
 
         [OneTimeSetUp]
@@ -194,6 +195,22 @@ namespace PortingAssistantExtensionIntegTests
             Assert.IsTrue(portResult);
         }
 
+        [Test]
+        public async Task TestNopCommerceAsync()
+        {
+            InitializeTestResource("NopCommerce-3.1.zip");
+            string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("NopCommerce-3.1"));
+            if (projectInfo == null)
+            {
+                Assert.IsTrue(false);
+                return;
+            }
+
+            Boolean result = await TestSolutionAsync(projectInfo, NET50);
+            Console.WriteLine("Verification Test NopCommerce Result: " + result);
+            Assert.IsTrue(result);
+        }
+
         private void InitializeTestResource(string testSolutionName)
         {
             string testProjectZipFilePath = Path.Combine(zipRootFolderPath, testSolutionName);
@@ -220,7 +237,7 @@ namespace PortingAssistantExtensionIntegTests
                 var currentResults = await client.AssessSolutionAsync(targetFramework);
 
                 /* Uncomment this method to save the results in a json file*/
-                //SaveResults(jsonFile, currentResults);
+                SaveResults(jsonFile, currentResults);
                 
                 Boolean result = VerifyResults(jsonFile, currentResults);
                 Console.WriteLine("Verification Result: " + result);

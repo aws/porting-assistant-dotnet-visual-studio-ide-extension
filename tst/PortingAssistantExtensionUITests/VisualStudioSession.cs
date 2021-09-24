@@ -82,9 +82,11 @@ namespace PortingAssistantExtensionUITests
                 Assert.IsNotNull(session);
                 Assert.IsNotNull(session.SessionId);
 
+                // Wait out the Visual studio splash screen
                 Thread.Sleep(TimeSpan.FromSeconds(30));
+                session.LaunchApp();
 
-                session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(45);
+                session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
                 if (firstTimeSetupRequired)
                 {
                     FirstTimeVsSetup();
@@ -112,7 +114,7 @@ namespace PortingAssistantExtensionUITests
                 Thread.Sleep(TimeSpan.FromSeconds(1));
                 session.FindElementByName("Start Visual Studio").Click();
                 Thread.Sleep(TimeSpan.FromSeconds(60));
-            
+
                 // Return all window handles associated with this process/application.
                 // At this point hopefully you have one to pick from. Otherwise you can
                 // simply iterate through them to identify the one you want.
@@ -124,25 +126,29 @@ namespace PortingAssistantExtensionUITests
 
                 SelectTargetFramework();
                 GoToFile(".cs");
-
-                var secret = GetSecret();
-                GetPortingAssistantMenuElement("Enable Incremental Assessments with Porting Assistant");
-                // should trigger first time setup page
-                session.FindElementByXPath("//Window[@ClassName=\"Window\"][@Name=\"Get started\"]/Button[@ClassName=\"Button\"][@Name=\"Add Named Profile\"]/Text[@ClassName=\"TextBlock\"][@Name=\"Add Named Profile\"]").Click();
-                session.FindElementByAccessibilityId("ProfileName").SendKeys("default");
-                session.FindElementByAccessibilityId("AccesskeyID").SendKeys(secret.test_role_access_key);
-                session.FindElementByAccessibilityId("secretAccessKey").SendKeys(secret.test_role_secret_key);
-                session.FindElementByXPath("//Window[@ClassName=\"Window\"][@Name=\"Get started\"]/Window[@ClassName=\"Window\"][@Name=\"Add a Named Profile\"]/Button[@ClassName=\"Button\"][@Name=\"Save Profile\"]").Click();
-                Thread.Sleep(TimeSpan.FromSeconds(60));
-                session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\" Save \"]").Click();
-
-            } 
+                ClickPortingAssistantMenuElement("Enable Incremental Assessments with Porting Assistant");
+                // enabling incremental assessment should trigger first time setup page
+                FirstTimeAwsProfileSetup();
+            }
             catch
             {
                 // if we are testing in an established environment, just move on.
             }
-
             firstTimeSetupRequired = false;
+        }
+
+        private static void FirstTimeAwsProfileSetup()
+        {
+            // Look if get started window is presented
+            // session.FindElementByXPath("//Window[@ClassName=\"Window\"][@Name=\"Get started\"]");
+            var secret = GetSecret();
+            session.FindElementByXPath("//Window[@ClassName=\"Window\"][@Name=\"Get started\"]/Button[@ClassName=\"Button\"][@Name=\"Add Named Profile\"]/Text[@ClassName=\"TextBlock\"][@Name=\"Add Named Profile\"]").Click();
+            session.FindElementByAccessibilityId("ProfileName").SendKeys("default");
+            session.FindElementByAccessibilityId("AccesskeyID").SendKeys(secret.test_role_access_key);
+            session.FindElementByAccessibilityId("secretAccessKey").SendKeys(secret.test_role_secret_key);
+            session.FindElementByXPath("//Window[@ClassName=\"Window\"][@Name=\"Get started\"]/Window[@ClassName=\"Window\"][@Name=\"Add a Named Profile\"]/Button[@ClassName=\"Button\"][@Name=\"Save Profile\"]").Click();
+            Thread.Sleep(TimeSpan.FromSeconds(60));
+            session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\" Save \"]").Click();
         }
 
         public static void TearDown()
@@ -168,7 +174,7 @@ namespace PortingAssistantExtensionUITests
             searchBox.SendKeys(Keys.Enter);
         }
 
-        protected static void GetPortingAssistantMenuElement(string menuItem)
+        protected static void ClickPortingAssistantMenuElement(string menuItem)
         {
             session.FindElementByName("Extensions").Click();
             session.FindElementByXPath("//Window[@ClassName=\"Popup\"]/MenuItem[@ClassName=\"MenuItem\"][@Name=\"Porting Assistant For .Net\"]").Click();
@@ -181,13 +187,13 @@ namespace PortingAssistantExtensionUITests
 
         protected static void StartFullSolutionAssessment()
         {
-            GetPortingAssistantMenuElement("Run Full Assessment with Porting Assistant");
+            ClickPortingAssistantMenuElement("Run Full Assessment with Porting Assistant");
         }
 
         protected static void PortSolution(bool applyFileActions)
         {
             // Menu Action
-            GetPortingAssistantMenuElement("Port Solution to .NET Core with Porting Assistant");
+            ClickPortingAssistantMenuElement("Port Solution to .NET Core with Porting Assistant");
 
             // Check apply porting actions
             if (applyFileActions)
@@ -206,7 +212,7 @@ namespace PortingAssistantExtensionUITests
 
         protected static void SelectTargetFramework()
         {
-            GetPortingAssistantMenuElement("Settings...");
+            ClickPortingAssistantMenuElement("Settings...");
             session.FindElementByName("General").Click();
             // This not a typo, the automation id is missing the last t
             var frameworksBox = session.FindElementByAccessibilityId("TargeFrameworks");
@@ -217,7 +223,7 @@ namespace PortingAssistantExtensionUITests
         }
         protected static void SelectAwsProfile()
         {
-            GetPortingAssistantMenuElement("Settings...");
+            ClickPortingAssistantMenuElement("Settings...");
             session.FindElementByName("Data usage sharing").Click();
             var profilesBox = session.FindElementByAccessibilityId("Profiles");
             profilesBox.Click();

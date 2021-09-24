@@ -237,7 +237,7 @@ namespace PortingAssistantExtensionIntegTests
                 var currentResults = await client.AssessSolutionAsync(targetFramework);
 
                 /* Uncomment this method to save the results in a json file*/
-                SaveResults(jsonFile, currentResults);
+                //SaveResults(jsonFile, currentResults);
                 
                 Boolean result = VerifyResults(jsonFile, currentResults);
                 Console.WriteLine("Verification Result: " + result);

@@ -1,20 +1,4 @@
-﻿//******************************************************************************
-//
-// Copyright (c) 2017 Microsoft Corporation. All rights reserved.
-//
-// This code is licensed under the MIT License (MIT).
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
-//******************************************************************************
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using OpenQA.Selenium;
 using System;
@@ -36,10 +20,9 @@ namespace PortingAssistantExtensionUITests
 {
     /*
     * Editor
-        * Light bulb actions
+        * Light bulb actions - Covered because recommended actions are covered by porting
     * Solution Explorer (right-click actions)
         * Full assessment
-        * Enable Incremental assessment
         * Port Solution
         * Port Project
     * Menu Items
@@ -57,17 +40,11 @@ namespace PortingAssistantExtensionUITests
     [TestClass]
     public class ControlsTest : VisualStudioSession 
     {
-        public void RunTest()
-        {
-            GoToFile("AccountController.cs");
-            StartFullSolutionAssessment();
-            WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]", 300);
-            CheckLightBulbAction();
-        }
-
+        [TestMethod]
         public void RightClickActions()
         {
             RightClickRunAssessment();
+            RightClickRunPorting();
         }
 
         public void SupportActions()
@@ -99,7 +76,7 @@ namespace PortingAssistantExtensionUITests
             var actionText = session.FindElementByXPath("//Text[@Name=\"Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.\"][starts-with(@AutomationId,\"Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc\")]");
             actionText.Click();
             actionText.Click();
-            
+
             // Click lightbulb and action
             // todo: for some reason actions aren't coming up in the test version of visual studio
             //session.FindElementByXPath("//Window[@ClassName=\"Popup\"]/Image[@ClassName=\"Image\"]").Click();
@@ -114,26 +91,41 @@ namespace PortingAssistantExtensionUITests
             session.FindElementByName("View").Click();
             session.FindElementByXPath($"//MenuItem[starts-with(@Name, \"Solution Explorer\")]").Click();
 
-            // Trying to find and click on assessment action wasn't working, so arrow down the menu.
-            // Todo: Try and fix this jank
             string arrowDownToAssess = "";
-            for (int i = 0; i < 13; i++) arrowDownToAssess.Concat(Keys.ArrowDown);
-            arrowDownToAssess += Keys.Enter;
+            for (int i = 0; i < 12; i++)
+            {
+                arrowDownToAssess += Keys.ArrowDown;
+            }
 
             var solutionElement = session.FindElementByXPath("//Pane[@ClassName=\"GenericPane\"][@Name=\"Solution Explorer\"]/Tree[@Name=\"Solution Explorer\"][@AutomationId=\"SolutionExplorer\"]/TreeItem[@ClassName=\"TreeViewItem\"][starts-with(@Name,\"Solution\")]");
             var builder = new Actions(session);
-            builder.ContextClick(solutionElement).SendKeys(arrowDownToAssess).Perform();
+            builder.ContextClick(solutionElement).SendKeys(arrowDownToAssess).SendKeys(Keys.Enter).Perform();
 
-            WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]", 300);
-            //session.FindElementByXPath("//Menu[@ClassName=\"ContextMenu\"][@Name=\"Solution\"]/MenuItem[@ClassName=\"MenuItem\"][@Name=\"Run Full Assessment with Porting Assistant\"]").Click();
+            WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]", 60);
+        }
+
+        private static void RightClickRunPorting()
+        {
+            // assumes solution explorer is up from assessment test
+            string keys = "";
+            for (int i = 0; i < 14; i++) 
+            {
+                keys += Keys.ArrowDown; 
+            }
+            var solutionElement = session.FindElementByXPath("//Pane[@ClassName=\"GenericPane\"][@Name=\"Solution Explorer\"]/Tree[@Name=\"Solution Explorer\"][@AutomationId=\"SolutionExplorer\"]/TreeItem[@ClassName=\"TreeViewItem\"][starts-with(@Name,\"Solution\")]");
+            var builder = new Actions(session);
+            builder.ContextClick(solutionElement).SendKeys(keys).SendKeys(Keys.Enter).Perform();
         }
 
         private static void TestSupportActions()
         {
-            GetPortingAssistantMenuElement("Support");
+            Console.WriteLine(desktopSession.WindowHandles);
+            Console.WriteLine(desktopSession.WindowHandles.Count);
+            ClickPortingAssistantMenuElement("Support");
             //WaitForElement("//Window[@Name=\"How do you want to open this?\"][@AutomationId=\"Popup Window\"]/Text[@Name=\"How do you want to open this?\"][@AutomationId=\"HeadText\"]");
+            Console.WriteLine(desktopSession.WindowHandles.Count);
             new Actions(session).SendKeys(Keys.Escape).Perform();
-            GetPortingAssistantMenuElement("Documentation");
+            ClickPortingAssistantMenuElement("Documentation");
             //WaitForDesktopElement("/ToolBar[@Name=\"Browser tabs\"][@AutomationId=\"TabsToolbar\"]/Tab[@AutomationId=\"tabbrowser-tabs\"]/TabItem[starts-with(@Name,\"What is Porting Assistant for .NET? - Porting Assistant for .NET\")]");
 
         }

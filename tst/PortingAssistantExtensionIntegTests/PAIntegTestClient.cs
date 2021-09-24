@@ -117,7 +117,7 @@ namespace PortingAssistantExtensionIntegTests
             return (readerPipe, writerPipe);
         }
 
-        public async Task<AnalysisTestResult> AssessSolutionAsync()
+        public async Task<AnalysisTestResult> AssessSolutionAsync(string targetFramework)
         {
             Diagnostics.Clear();
 
@@ -130,7 +130,7 @@ namespace PortingAssistantExtensionIntegTests
                 PipeName = pipeName,
                 settings = new AnalyzerSettings()
                 {
-                    TargetFramework = "netcoreapp3.1",
+                    TargetFramework = targetFramework,
                     IgnoreProjects = new List<string>(),
                 },
             };
@@ -152,7 +152,7 @@ namespace PortingAssistantExtensionIntegTests
             return analysisResults;
         }
 
-        public async Task<AnalysisTestResult> PortSolutionAsync(bool includeCodeFix = false)
+        public async Task<AnalysisTestResult> PortSolutionAsync(string targetFramework, bool includeCodeFix = false)
         {
             Diagnostics.Clear();
 
@@ -162,7 +162,7 @@ namespace PortingAssistantExtensionIntegTests
             {
                 SolutionPath = SolutionPath,
                 ProjectPaths = GetProjectPaths(SolutionPath),
-                TargetFramework = "netcoreapp3.1",
+                TargetFramework = targetFramework,
                 IncludeCodeFix = includeCodeFix,
                 PipeName = pipeName
             };

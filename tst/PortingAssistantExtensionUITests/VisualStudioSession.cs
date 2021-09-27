@@ -78,7 +78,7 @@ namespace PortingAssistantExtensionUITests
                 DesiredCapabilities appCapabilities = new DesiredCapabilities();
                 appCapabilities.SetCapability("app", VSAppId);
                 appCapabilities.SetCapability("appArguments", testSolution);
-                session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
+                session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities, TimeSpan.FromMinutes(10));
                 Assert.IsNotNull(session);
                 Assert.IsNotNull(session.SessionId);
 

@@ -74,16 +74,16 @@ namespace PortingAssistantExtensionUITests
 
             if (session == null)
             {
-                // Create a new session to launch Notepad application
                 DesiredCapabilities appCapabilities = new DesiredCapabilities();
                 appCapabilities.SetCapability("app", VSAppId);
                 appCapabilities.SetCapability("appArguments", testSolution);
-                session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities, TimeSpan.FromMinutes(10));
+                appCapabilities.SetCapability("ms:waitForAppLaunch", "30");
+                session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities, TimeSpan.FromMinutes(1));
                 Assert.IsNotNull(session);
                 Assert.IsNotNull(session.SessionId);
 
                 // Wait out the Visual studio splash screen
-                Thread.Sleep(TimeSpan.FromSeconds(30));
+                Thread.Sleep(TimeSpan.FromSeconds(60));
                 session.LaunchApp();
 
                 session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);

@@ -17,7 +17,7 @@ namespace PortingAssistantExtensionUITests
         {
             GoToFile("startup.cs");
             StartFullSolutionAssessment();
-            WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]");
+            WaitForElement("//Pane[starts-with(@Name,\"Assessment successful. You can view the assessment results in th\")]", 120);
 
             // Filter error list
             SearchErrorList("PA000");

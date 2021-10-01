@@ -84,7 +84,8 @@ namespace PortingAssistantExtensionServer
                             PreportMetaReferences = new List<string>(),
                             MetaReferences = new List<string>(),
                             ExternalReferences = new ExternalReferences(),
-                            ProjectRules = new RootNodes()
+                            ProjectRules = new RootNodes(),
+                            PackageAnalysisResults = new Dictionary<PackageVersionPair, Task<PackageAnalysisResult>>()
                         }
                     },
                 };

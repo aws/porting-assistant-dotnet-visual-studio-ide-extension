@@ -27,8 +27,6 @@ namespace PortingAssistantExtensionUITests
         private static bool firstTimeSetupRequired = true;
 
         protected static WindowsDriver<WindowsElement> session;
-        protected static WindowsElement mainWindow;
-        protected static WindowsDriver<WindowsElement> desktopSession;
         protected static Process winAppDriver;
 
         [AssemblyInitialize()]
@@ -68,31 +66,21 @@ namespace PortingAssistantExtensionUITests
 
         public static void Setup(string testSolution)
         {
-            DesiredCapabilities desktopCapabilities = new DesiredCapabilities();
-            desktopCapabilities.SetCapability("app", "Root");
-            desktopSession = new WindowsDriver<WindowsElement>(new Uri("http://127.0.0.1:4723"), desktopCapabilities);
-
             if (session == null)
             {
                 DesiredCapabilities appCapabilities = new DesiredCapabilities();
                 appCapabilities.SetCapability("app", VSAppId);
-                appCapabilities.SetCapability("appArguments", testSolution);
+                appCapabilities.SetCapability("appArguments", "/NoSplash " + testSolution);
                 appCapabilities.SetCapability("ms:waitForAppLaunch", "30");
                 session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities, TimeSpan.FromMinutes(1));
                 Assert.IsNotNull(session);
                 Assert.IsNotNull(session.SessionId);
-
-                // Wait out the Visual studio splash screen
-                Thread.Sleep(TimeSpan.FromSeconds(60));
-                session.LaunchApp();
 
                 session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
                 if (firstTimeSetupRequired)
                 {
                     FirstTimeVsSetup();
                 }
-
-                mainWindow = session.FindElementByAccessibilityId("VisualStudioMainWindow");
             }
 
             // Make sure errors windows is opened
@@ -235,11 +223,6 @@ namespace PortingAssistantExtensionUITests
         protected static bool WaitForElement(string xPath, int timeout = 60)
         {
             return WaitForElement(session, xPath, timeout);
-        }
-
-        protected static bool WaitForDesktopElement(string xPath, int timeout = 60)
-        {
-            return WaitForElement(desktopSession, xPath, timeout);
         }
         protected static bool WaitForElement(WindowsDriver<WindowsElement> driver, string xPath, int timeout = 60)
         {

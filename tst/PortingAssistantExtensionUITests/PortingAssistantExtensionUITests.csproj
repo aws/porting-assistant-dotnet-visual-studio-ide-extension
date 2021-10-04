@@ -86,7 +86,6 @@
     <Compile Include="CustomServerTest.cs" />
     <Compile Include="Metric.cs" />
     <Compile Include="ControlsTest.cs" />
-    <Compile Include="MvcMusicStoreTest.cs" />
     <Compile Include="VisualStudioSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

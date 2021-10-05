@@ -168,6 +168,10 @@ namespace PortingAssistantExtensionServer
 
                 foreach (var projectAnalysisResult in solutionAnalysisResult.ProjectAnalysisResults)
                 {
+                    if (string.IsNullOrEmpty(projectAnalysisResult.ProjectFilePath)) {
+                        // Very likely AssessSolutionAsync has encountered exception and returned empty SolutionAnalysisResult.
+                        continue;
+                    }
                     var projectFileUri = DocumentUri.FromFileSystemPath(projectAnalysisResult.ProjectFilePath);
                     if (!FileToProjectAnalyssiResult.ContainsKey(projectFileUri))
                     {

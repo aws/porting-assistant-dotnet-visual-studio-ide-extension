@@ -50,8 +50,39 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
             if (openFolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                BuildFolderPath.Text = openFolderDialog.SelectedPath;
+                BuildFolderPathText.Text = openFolderDialog.SelectedPath;
             }
+        }
+
+        private void AdvanceButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            BuildFolderLabel.Visibility = System.Windows.Visibility.Hidden;
+            S3BucketLabel.Visibility = System.Windows.Visibility.Hidden;
+            BuildFolderPathText.Visibility = System.Windows.Visibility.Hidden;
+            S3PathText.Visibility = System.Windows.Visibility.Hidden;
+            SelectFileButton.Visibility = System.Windows.Visibility.Hidden;
+            AdvanceButton.Visibility = System.Windows.Visibility.Hidden;
+            GoBackButton.Visibility = System.Windows.Visibility.Visible;
+            AdSettingGroup.Visibility = System.Windows.Visibility.Visible;
+            HttpSettingsGroup.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        private void GoBackButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            BuildFolderLabel.Visibility = System.Windows.Visibility.Visible;
+            S3BucketLabel.Visibility = System.Windows.Visibility.Visible;
+            BuildFolderPathText.Visibility = System.Windows.Visibility.Visible;
+            S3PathText.Visibility = System.Windows.Visibility.Visible;
+            SelectFileButton.Visibility = System.Windows.Visibility.Visible;
+            AdvanceButton.Visibility = System.Windows.Visibility.Visible;
+            GoBackButton.Visibility = System.Windows.Visibility.Hidden;
+            AdSettingGroup.Visibility = System.Windows.Visibility.Hidden;
+            HttpSettingsGroup.Visibility = System.Windows.Visibility.Hidden;
+        }
+
+        private void Button_Click_2(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

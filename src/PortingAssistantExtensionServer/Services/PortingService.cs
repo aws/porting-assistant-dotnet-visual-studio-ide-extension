@@ -33,8 +33,9 @@ namespace PortingAssistantExtensionServer
                 Task<SolutionAnalysisResult> solutionAnalysisResultTask = SolutionAnalysisResultTask;
                 var solutionAnalysisResult = await solutionAnalysisResultTask;
                 PackageToAnalysisResults = solutionAnalysisResult.ProjectAnalysisResults
+                    .Where(project => project.PackageAnalysisResults != null)
                     .SelectMany(project => project.PackageAnalysisResults.Values
-                    .Select(package => package.Result)).ToList();
+                    .Select(package => package?.Result)).ToList();
                 ProjectPathToDetails = solutionAnalysisResult.ProjectAnalysisResults
                     .Select(p => new ProjectDetails()
                     {

@@ -84,7 +84,8 @@ namespace PortingAssistantExtensionServer
                             PreportMetaReferences = new List<string>(),
                             MetaReferences = new List<string>(),
                             ExternalReferences = new ExternalReferences(),
-                            ProjectRules = new RootNodes()
+                            ProjectRules = new RootNodes(),
+                            PackageAnalysisResults = new Dictionary<PackageVersionPair, Task<PackageAnalysisResult>>()
                         }
                     },
                 };
@@ -167,6 +168,10 @@ namespace PortingAssistantExtensionServer
 
                 foreach (var projectAnalysisResult in solutionAnalysisResult.ProjectAnalysisResults)
                 {
+                    if (string.IsNullOrEmpty(projectAnalysisResult.ProjectFilePath)) {
+                        // Very likely AssessSolutionAsync has encountered exception and returned empty SolutionAnalysisResult.
+                        continue;
+                    }
                     var projectFileUri = DocumentUri.FromFileSystemPath(projectAnalysisResult.ProjectFilePath);
                     if (!FileToProjectAnalyssiResult.ContainsKey(projectFileUri))
                     {

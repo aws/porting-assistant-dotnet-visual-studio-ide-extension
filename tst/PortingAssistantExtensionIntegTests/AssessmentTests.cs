@@ -25,12 +25,14 @@ namespace PortingAssistantExtensionIntegTests
             ["MvcMusicStore.zip"] = new string[] { "MvcMusicStore", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["NetFrameworkExample.zip"] = new string[] { "NetFrameworkExample", "NetFrameworkExample.sln", "NetFrameworkExample.json" },
             ["NopCommerce-3.1.zip"] = new string[] { "NopCommerce-3.1", "NopCommerce.sln", "NopCommerce.json" },
+            ["StarWars.zip"] = new string[] { "StarWars", "StarWars.sln", "StarWars.json" },
             ["Miniblog.Core-master-PortResults.zip"] = new string[] { "Miniblog.Core-master-PortResults", "Miniblog.Core.sln", "Miniblog.Core.json" },
             ["MvcMusicStore-PortResults.zip"] = new string[] { "MvcMusicStore-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["MvcMusicStore-WithFix-PortResults.zip"] = new string[] { "MvcMusicStore-WithFix-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["MvcMusicStore-net50-PortResults.zip"] = new string[] { "MvcMusicStore-net50-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["NetFrameworkExample-PortResults.zip"] = new string[] { "NetFrameworkExample-PortResults", "NetFrameworkExample.sln", "NetFrameworkExample.json" },
-            ["NopCommerce-3.1-net50-PortResults.zip"] = new string[] { "NopCommerce-3.1-net50-PortResults", "NopCommerce.sln", "NopCommerce.json" }
+            ["NopCommerce-3.1-PortResults.zip"] = new string[] { "NopCommerce-3.1-PortResults", "NopCommerce.sln", "NopCommerce.json" },
+            ["StarWars-WithFix-PortResults.zip"] = new string[] { "StarWars-WithFix-PortResults", "StarWars.sln", "StarWars.json" }
         };
 
         [OneTimeSetUp]
@@ -60,7 +62,7 @@ namespace PortingAssistantExtensionIntegTests
                 string testProjectZipFilePath = Path.Combine(zipRootFolderPath, file);
                 using (ZipArchive archive = ZipFile.Open(testProjectZipFilePath, ZipArchiveMode.Read))
                 {
-                    archive.ExtractToDirectory(tempProjectRoot);
+                    archive.ExtractToDirectory(tempProjectRoot, true);
                 }
 
                 testProjectInfoList.Add(fileInfo);
@@ -206,11 +208,24 @@ namespace PortingAssistantExtensionIntegTests
                 return;
             }
 
-            Boolean result = await TestSolutionAsync(projectInfo, NET50);
+            Boolean result = await TestSolutionAsync(projectInfo, NETCOREAPP31);
             Console.WriteLine("Verification Test NopCommerce Result: " + result);
             Assert.IsTrue(result);
         }
 
+        [Test]
+        public async Task TestPortSingleProjectAsync()
+        {
+            string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("StarWars"));
+            if (projectInfo == null)
+            {
+                Assert.IsTrue(false);
+                return;
+            }
+            Boolean portResult = await TestPortSolutionAsync(projectInfo,  NETCOREAPP31, true, true, "StarWars.Core");
+            Console.WriteLine("Porting Verification StarWars Result: " + portResult);
+            Assert.IsTrue(portResult);
+        }
         private void InitializeTestResource(string testSolutionName)
         {
             string testProjectZipFilePath = Path.Combine(zipRootFolderPath, testSolutionName);
@@ -270,7 +285,7 @@ namespace PortingAssistantExtensionIntegTests
             return false;
         }
 
-        private async Task<Boolean> TestPortSolutionAsync(string[] projectInfo, string targetFramework, bool includeFix, bool assessSolution=true)
+        private async Task<Boolean> TestPortSolutionAsync(string[] projectInfo,  string targetFramework, bool includeFix,  bool assessSolution=true, string projectName = "")
         {
             PAIntegTestClient client = null;
             try
@@ -288,7 +303,7 @@ namespace PortingAssistantExtensionIntegTests
                 {
                     await client.AssessSolutionAsync(targetFramework);
                 }
-                var currentResults = await client.PortSolutionAsync(targetFramework, includeFix);
+                var currentResults = await client.PortSolutionAsync(targetFramework, includeFix, projectName);
                 if (includeFix)
                 {
                     expectedSolutionPath += "-WithFix";

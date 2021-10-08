@@ -1,0 +1,19 @@
+{
+  "Version": "1.0",
+  "ExposedPorts": [
+    {
+      "localPort": 8080,
+      "protocol": "tcp"
+    }
+  ],
+  "Https": {
+    "enabled": "false",
+    "certPath": "",
+    "secretPath": ""
+  },
+  "CPU": 2,
+  "Memory": 4096,
+  "LogLevel": "info",
+  "TargetFramework": "netcoreapp3.1",
+  "LoadBalancer": "True"
+}

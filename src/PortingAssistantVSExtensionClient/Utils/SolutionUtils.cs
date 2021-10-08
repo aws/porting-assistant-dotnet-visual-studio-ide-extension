@@ -19,6 +19,7 @@ namespace PortingAssistantVSExtensionClient.Utils
         public static async Task<string> GetSolutionPathAsync(DTE2 dte)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            //dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateDone;
             return dte.Solution.FullName;
         }
 
@@ -26,6 +27,16 @@ namespace PortingAssistantVSExtensionClient.Utils
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             return dte.Solution.FullName;
+        }
+
+        public static Boolean IsBuildSucceed(DTE2 dte)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            var solutionPath = dte.Solution;
+            var startup = dte.Solution.SolutionBuild.StartupProjects;
+            var build = dte.Solution.SolutionBuild.ActiveConfiguration;
+            return dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateDone
+                && dte.Solution.SolutionBuild.LastBuildInfo == 0;
         }
 
         public static async Task<Dictionary<string, List<string>>> GetMetadataReferencesAsync(DTE2 dte)
@@ -46,7 +57,7 @@ namespace PortingAssistantVSExtensionClient.Utils
                 }
 
                 VSLangProj.VSProject vsProject = p.Object as VSLangProj.VSProject;
-                if (vsProject == null) continue;                
+                if (vsProject == null) continue;
                 allProjects.Add(vsProject);
             }
 
@@ -102,7 +113,7 @@ namespace PortingAssistantVSExtensionClient.Utils
             return projects;
         }
 
-        public static  List<string>  GetProjectPath(string solutionPath)
+        public static List<string> GetProjectPath(string solutionPath)
         {
             var Content = File.ReadAllText(solutionPath);
             Regex projReg = new Regex(
@@ -145,11 +156,11 @@ namespace PortingAssistantVSExtensionClient.Utils
                                                       (int)__VSHPROPID.VSHPROPID_ExtObject,
                                                       out selectedObject));
                     Project selectedProject = selectedObject as Project;
-                    if (selectedProject!=null) return selectedProject.FileName;
+                    if (selectedProject != null) return selectedProject.FileName;
                 }
                 return "";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return "";
             }

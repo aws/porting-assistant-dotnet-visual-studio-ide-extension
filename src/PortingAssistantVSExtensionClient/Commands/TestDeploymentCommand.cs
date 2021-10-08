@@ -1,8 +1,12 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PortingAssistantVSExtensionClient.Dialogs;
+using PortingAssistantVSExtensionClient.Models;
 using PortingAssistantVSExtensionClient.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
@@ -91,10 +95,18 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void Execute(object sender, EventArgs e)
+        private async void Execute(object sender, EventArgs e)
         {
+            var IsBuildSucceed = await CommandsCommon.IsBuildSucceedAsync();
+            if (!IsBuildSucceed)
+            {
+                NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
+                return;
+            }
+
+            var solutionPath = await CommandsCommon.GetSolutionPathAsync();
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string deployScriptPath =  Path.Combine(
+            string deployScriptPath = Path.Combine(
                 assemblyPath,
                 Common.Constants.ResourceFolder,
                 "abc.bat");
@@ -102,15 +114,55 @@ namespace PortingAssistantVSExtensionClient.Commands
                 assemblyPath,
                 Common.Constants.ResourceFolder,
                 "setup.ps1");
-            string result = TestDeploymentDialog.EnsureExecute(deployScriptPath, setupScriptPath);
-            if (result.Equals("success"))
+            DeploymentParameters result = TestDeploymentDialog.GetParameters();
+
+
+            var AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var ConfigurationFileName = Environment.GetEnvironmentVariable("DeploymentConfiguration") ?? Common.Constants.DefaultDeploymentConfiguration;
+            var ConfigurationPath = Path.Combine(
+                AssemblyPath,
+                Common.Constants.ResourceFolder,
+                ConfigurationFileName);
+
+            var deploymentjson = Path.Combine(AssemblyPath, Common.Constants.ResourceFolder, "deployment.json");
+
+            dynamic configuration = JObject.Parse(File.ReadAllText(ConfigurationPath));
+            dynamic deploymentconfig = JObject.Parse(File.ReadAllText(deploymentjson));
+
+            deploymentconfig.applicationName = Path.GetFileName(solutionPath);
+            deploymentconfig.buildDefinitions.buildParameters.buildLocation = result.BuildFolderPath;
+
+            File.WriteAllText(deploymentjson, deploymentconfig.ToString());
+
+            var parameters = new List<String>()
+            {
+                "generate",
+                "app-deployment",
+                "--deploy",
+                "--input-deployment-files",
+                @"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\deployment.json"
+            };
+
+            Console.WriteLine("Hello World!");
+            var exitcode = RemoteCallUtils.Excute("app2container", parameters,
+                new DataReceivedEventHandler((object sendingProcess, DataReceivedEventArgs outLine) =>
+                {
+                    if (!String.IsNullOrEmpty(outLine.Data))
+                    {
+                        Console.WriteLine(outLine.Data);
+                    }
+                }));
+            Console.WriteLine("Hello World!");
+
+            if (exitcode == 0)
             {
                 NotificationUtils.ShowInfoMessageBox(package, "success", "success");
             }
-            else if (!String.IsNullOrEmpty(result))
+            else
             {
-                NotificationUtils.ShowErrorMessageBox(package, result, "failed");
+                NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
             }
+
         }
     }
 }

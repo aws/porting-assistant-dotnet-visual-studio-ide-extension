@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace PortingAssistantVSExtensionClient.Utils
+namespace PortingAssistantExtensionServer.Utils
 {
     public static class RemoteCallUtils
     {

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
+using PortingAssistantVSExtensionClient.Models;
 
 namespace PortingAssistantVSExtensionClient.Dialogs
 {
@@ -19,29 +20,36 @@ namespace PortingAssistantVSExtensionClient.Dialogs
     /// </summary>
     public partial class TestDeploymentDialog : DialogWindow
     {
-        public string ClickResult = "";
+        public DeploymentParameters parameters { set; get; }
 
-        private string scriptPath = "";
-
-        private string setupScriptPath = "";
-        public TestDeploymentDialog(string scriptPath, string setupScriptPath)
+        private static TestDeploymentDialog Instance;
+        public TestDeploymentDialog()
         {
             InitializeComponent();
-            this.scriptPath = scriptPath;
-            this.setupScriptPath = setupScriptPath;
+            parameters = new DeploymentParameters();
             this.Title = "Test Deployment";
         }
 
-        public static string EnsureExecute(string scriptPath, string setupScriptPath)
+        public static DeploymentParameters GetParameters()
         {
-            TestDeploymentDialog testDeploymenttDialog = new TestDeploymentDialog(scriptPath, setupScriptPath);
+            TestDeploymentDialog testDeploymenttDialog = GetInstance();
             testDeploymenttDialog.ShowModal();
-            return testDeploymenttDialog.ClickResult;
+            return testDeploymenttDialog.parameters;
+        }
+
+        private static TestDeploymentDialog GetInstance()
+        {
+            if (Instance == null)
+            {
+                Instance = new TestDeploymentDialog();
+            }
+            return Instance;
         }
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             this.Content = "deploying....";
+            Close();
         }
 
         private void Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
@@ -52,32 +60,27 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 BuildFolderPathText.Text = openFolderDialog.SelectedPath;
             }
+            parameters.BuildFolderPath = BuildFolderPathText.Text;
         }
 
         private void AdvanceButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             BuildFolderLabel.Visibility = System.Windows.Visibility.Hidden;
-            S3BucketLabel.Visibility = System.Windows.Visibility.Hidden;
             BuildFolderPathText.Visibility = System.Windows.Visibility.Hidden;
-            S3PathText.Visibility = System.Windows.Visibility.Hidden;
             SelectFileButton.Visibility = System.Windows.Visibility.Hidden;
             AdvanceButton.Visibility = System.Windows.Visibility.Hidden;
             GoBackButton.Visibility = System.Windows.Visibility.Visible;
             AdSettingGroup.Visibility = System.Windows.Visibility.Visible;
-            HttpSettingsGroup.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void GoBackButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             BuildFolderLabel.Visibility = System.Windows.Visibility.Visible;
-            S3BucketLabel.Visibility = System.Windows.Visibility.Visible;
             BuildFolderPathText.Visibility = System.Windows.Visibility.Visible;
-            S3PathText.Visibility = System.Windows.Visibility.Visible;
             SelectFileButton.Visibility = System.Windows.Visibility.Visible;
             AdvanceButton.Visibility = System.Windows.Visibility.Visible;
             GoBackButton.Visibility = System.Windows.Visibility.Hidden;
             AdSettingGroup.Visibility = System.Windows.Visibility.Hidden;
-            HttpSettingsGroup.Visibility = System.Windows.Visibility.Hidden;
         }
 
         private void Button_Click_2(object sender, System.Windows.RoutedEventArgs e)

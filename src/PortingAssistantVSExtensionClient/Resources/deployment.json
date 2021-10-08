@@ -1,0 +1,126 @@
+{
+       "a2CTemplateVersion": "1.0",
+       "applicationId": "",
+       "applicationName": "Miniblog.Core",
+       "deploymentSource": "BUILD",
+       "imageName": "",
+       "exposedPorts": [
+           {
+               "localPort": 8080,
+               "protocol": "tcp"
+           }
+       ],
+       "environment": [
+           {
+               "name": "ASPNETCORE_ENVIRONMENT",
+               "value": "Development_AWS"
+           },
+           {
+               "name": "HTTP_PORT",
+               "value": "80"
+           }
+       ],
+       "ecrParameters": {
+           "ecrRepoTag": "latest"
+       },
+       "containerVolumes": [
+          "/var/scratch"
+       ],
+       "buildDefinitions": {
+           "buildParameters": {
+               "sourceType": "NETCORE",
+               "buildLocation": "C:\\Users\\lwwnz\\Desktop\\Optimus\\Miniblog.Core-master\\Miniblog.Core-master\\src\\bin\\Debug\\netcoreapp3.1",
+               "excludedFiles": [],
+               "dockerFileLocation": ""
+           },
+           "sidecarParameters": [
+           ]
+       },
+       "ecsParameters": {
+           "createEcsArtifacts": true,
+           "ecsFamily": "kerberos-web-site",
+           "cpu": 2,
+           "memory": 4096,
+           "dockerSecurityOption": "",
+           "publicApp": true,
+           "stackName": "a2c-kerberos-web-site-ECS",
+           "resourceTags": [
+               {
+                   "key": "example-key",
+                   "value": "example-value"
+               }
+           ],
+           "reuseResources": {
+               "vpcId": "",
+               "reuseExistingA2cStack": {
+                   "cfnStackName": "",
+                   "microserviceUrlPath": ""
+               },
+               "sshKeyPairName": "",
+               "acmCertificateArn": ""
+           },
+           "gMSAParameters": {
+               "directoryId": "",
+               "domainSecretsArn": "",
+               "domainDNSName": "",
+               "domainNetBIOSName": "",
+               "servicePrincipalName": "",
+               "createGMSA": false,
+               "gMSAName": ""
+           },
+           "deployTarget": "FARGATE",
+           "dependentApps": []
+       },
+       "fireLensParameters": {
+           "enableFireLensLogging": true,
+           "logDestinations": [
+               {
+                   "service": "cloudwatch",
+                   "regexFilter": "^.*INFO.*$",
+                   "streamName": "Info"
+               },
+               {
+                   "service": "cloudwatch",
+                   "regexFilter": "^.*WARN.*$",
+                   "streamName": "Warn"
+               }
+           ]
+       },
+       "eksParameters": {
+           "createEksArtifacts": false,
+           "stackName": "",
+           "reuseResources": {
+               "vpcId": "",
+               "reuseExistingA2cStack": {
+                   "cfnStackName": ""
+               },
+               "sshKeyPairName": ""
+           },
+           "gMSAParameters": {
+               "domainSecretsArn": "",
+               "domainDNSName": "",
+               "domainNetBIOSName": "",
+               "createGMSA": false,
+               "gMSAName": ""
+           },
+           "resourceTags": [
+               {
+                   "key": "example-key",
+                   "value": "example-value"
+               }
+           ],
+           "dependentApps": []
+       },
+       "appRunnerParameters": {
+           "createAppRunnerArtifacts": false,
+           "stackName": "",
+           "serviceName": "",
+           "autoDeploymentsEnabled": true,
+           "resourceTags": [
+               {
+                   "key": "example-key",
+                   "value": "example-value"
+               }
+           ]
+       }
+   }

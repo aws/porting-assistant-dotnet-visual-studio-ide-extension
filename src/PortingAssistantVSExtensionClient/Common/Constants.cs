@@ -30,6 +30,8 @@ namespace PortingAssistantVSExtensionClient.Common
 
         public const string DefaultConfigurationFile = "porting-assistant-config.json";
 
+        public const string DefaultDeploymentConfiguration = "deploymentconfiguration.json";
+
         public const string ResourceFolder = "Resources";
     }
 }

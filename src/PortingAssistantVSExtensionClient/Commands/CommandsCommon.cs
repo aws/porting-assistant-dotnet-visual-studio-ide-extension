@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Dialogs;
@@ -80,7 +81,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                     return true;
                 }
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return false;
@@ -89,7 +91,13 @@ namespace PortingAssistantVSExtensionClient.Commands
             {
                 EnableAllCommand(true);
             }
-            
+
+        }
+
+        public static async Task<bool> IsBuildSucceedAsync()
+        {
+            var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
+            return SolutionUtils.IsBuildSucceed(dte);
         }
 
         public static async System.Threading.Tasks.Task<string> GetSolutionPathAsync()
@@ -102,7 +110,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
             return await SolutionUtils.GetMetadataReferencesAsync(dte);
         }
-        
+
         public static async System.Threading.Tasks.Task RunAssessmentAsync(string SolutionFile, string pipeName)
         {
             var metaReferences = await CommandsCommon.GetMetaReferencesAsync();
@@ -118,10 +126,10 @@ namespace PortingAssistantVSExtensionClient.Commands
                 },
             };
             await NotificationUtils.UseStatusBarProgressAsync(1, 2, "Porting Assistant is assessing the solution");
-            
+
             await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>(
                 "analyzeSolution",
-                analyzeSolutionRequest);            
+                analyzeSolutionRequest);
         }
 
         public static async System.Threading.Tasks.Task RunPortingAsync(string SolutionFile, List<string> ProjectFiles, string pipeName, string portingFile)

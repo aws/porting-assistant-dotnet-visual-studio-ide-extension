@@ -97,6 +97,8 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="e">Event args.</param>
         private async void Execute(object sender, EventArgs e)
         {
+            if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
+            if (!CommandsCommon.SetupPage()) return;
             var IsBuildSucceed = await CommandsCommon.IsBuildSucceedAsync();
             //if (!IsBuildSucceed)
             //{

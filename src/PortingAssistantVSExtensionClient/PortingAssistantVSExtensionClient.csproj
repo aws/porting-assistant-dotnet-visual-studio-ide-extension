@@ -110,7 +110,6 @@
     <Compile Include="Utils\AwsUtils.cs" />
     <Compile Include="Utils\NotificationUtils.cs" />
     <Compile Include="Utils\PipeUtils.cs" />
-    <Compile Include="Utils\RemoteCallUtils.cs" />
     <Compile Include="Utils\SolutionUtils.cs" />
   </ItemGroup>
   <ItemGroup>

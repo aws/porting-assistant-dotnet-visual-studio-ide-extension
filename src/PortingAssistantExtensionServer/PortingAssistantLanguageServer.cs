@@ -50,6 +50,7 @@ namespace PortingAssistantExtensionServer
                     service.AddAssessment(_configuration.PortingAssistantConfiguration);
                     service.AddSingleton<AnalysisService>();
                     service.AddSingleton<PortingService>();
+                    service.AddSingleton<TestDeploymentService>();
                 })
                 .WithHandler<PortingAssistantTextSyncHandler>()
                 .WithHandler<PortingAssistantCodeActionHandler>()

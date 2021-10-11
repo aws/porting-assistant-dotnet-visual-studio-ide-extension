@@ -105,17 +105,8 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
 
             var solutionPath = await CommandsCommon.GetSolutionPathAsync();
-            string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string deployScriptPath = Path.Combine(
-                assemblyPath,
-                Common.Constants.ResourceFolder,
-                "abc.bat");
-            string setupScriptPath = Path.Combine(
-                assemblyPath,
-                Common.Constants.ResourceFolder,
-                "setup.ps1");
-            DeploymentParameters result = TestDeploymentDialog.GetParameters();
 
+            DeploymentParameters parameters = TestDeploymentDialog.GetParameters();
 
             var AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             var ConfigurationFileName = Environment.GetEnvironmentVariable("DeploymentConfiguration") ?? Common.Constants.DefaultDeploymentConfiguration;
@@ -130,11 +121,12 @@ namespace PortingAssistantVSExtensionClient.Commands
             dynamic deploymentconfig = JObject.Parse(File.ReadAllText(deploymentjson));
 
             deploymentconfig.applicationName = Path.GetFileName(solutionPath);
-            deploymentconfig.buildDefinitions.buildParameters.buildLocation = result.BuildFolderPath;
+            deploymentconfig.buildDefinitions.buildParameters.buildLocation = parameters.BuildFolderPath;
 
             File.WriteAllText(deploymentjson, deploymentconfig.ToString());
 
-            var parameters = new List<String>()
+            /*
+            var parameter = new List<String>()
             {
                 "generate",
                 "app-deployment",
@@ -144,7 +136,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             };
 
             Console.WriteLine("Hello World!");
-            var exitcode = RemoteCallUtils.Excute("app2container", parameters,
+            var exitcode = RemoteCallUtils.Excute("app2container", parameter,
                 new DataReceivedEventHandler((object sendingProcess, DataReceivedEventArgs outLine) =>
                 {
                     if (!String.IsNullOrEmpty(outLine.Data))
@@ -154,6 +146,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                 }));
             Console.WriteLine("Hello World!");
 
+            
+
             if (exitcode == 0)
             {
                 NotificationUtils.ShowInfoMessageBox(package, "success", "success");
@@ -162,7 +156,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             {
                 NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
             }
-
+            */
         }
     }
 }

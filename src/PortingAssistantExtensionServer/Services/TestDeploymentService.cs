@@ -20,7 +20,7 @@ namespace PortingAssistantExtensionServer
         public int Excute(TestDeploymentRequest request)
         {
             _logger.LogInformation($"start excuting ${request} .....");
-            CreateClientConnectionAsync(request.PipeName);
+            //CreateClientConnectionAsync(request.PipeName);
             var exitcode = RemoteCallUtils.Excute(request.fileName, request.arguments, OutputDataHandler);
             _logger.LogInformation($"finish excuting ${request} with exit code {exitcode}");
 

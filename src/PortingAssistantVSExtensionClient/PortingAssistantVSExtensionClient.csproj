@@ -90,6 +90,8 @@
     <Compile Include="Models\ProjectFilePortingRequest.cs" />
     <Compile Include="Models\ProjectFilePortingResponse.cs" />
     <Compile Include="Models\TelemetryConfiguration.cs" />
+    <Compile Include="Models\TestDeploymentRequest.cs" />
+    <Compile Include="Models\TestDeploymentResponse.cs" />
     <Compile Include="Models\UpdateSettingsRequest.cs" />
     <Compile Include="Options\DataSharingOption.cs">
       <SubType>Component</SubType>

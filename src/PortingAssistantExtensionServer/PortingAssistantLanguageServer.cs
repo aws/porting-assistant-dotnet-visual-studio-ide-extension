@@ -36,8 +36,6 @@ namespace PortingAssistantExtensionServer
             _output = output;
             _configuration = configuration;
         }
-
-        //TODO add handler interfaces for mock unit tests
         public async Task StartAsync()
         {
             _portingAssistantServer = await LanguageServer.From(options =>
@@ -57,7 +55,9 @@ namespace PortingAssistantExtensionServer
                 .WithHandler<SolutionAssessmentHandler>()
                 .WithHandler<PortingHandler>()
                 .WithHandler<UpdateSettingsHandler>()
+                .WithHandler<TestDeploymentHandler>()
                 .ConfigureLogging(_logConfiguration)
+                .WithMaximumRequestTimeout(TimeSpan.FromHours(2))
                 .OnInitialize((server, request, ct) =>
                 {
                     if (request?.InitializationOptions is JObject initOption)

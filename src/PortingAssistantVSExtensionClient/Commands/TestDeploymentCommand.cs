@@ -98,15 +98,22 @@ namespace PortingAssistantVSExtensionClient.Commands
         private async void Execute(object sender, EventArgs e)
         {
             var IsBuildSucceed = await CommandsCommon.IsBuildSucceedAsync();
-            if (!IsBuildSucceed)
-            {
-                NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
-                return;
-            }
+            //if (!IsBuildSucceed)
+            //{
+            //    NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
+            //    return;
+            //}
 
             var solutionPath = await CommandsCommon.GetSolutionPathAsync();
 
             DeploymentParameters parameters = TestDeploymentDialog.GetParameters();
+            await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<TestDeploymentResponse>(
+        "deploySolution",
+        new TestDeploymentRequest()
+        {
+            fileName = solutionPath,
+            arguments = new List<string>(),
+        });
 
             var AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             var ConfigurationFileName = Environment.GetEnvironmentVariable("DeploymentConfiguration") ?? Common.Constants.DefaultDeploymentConfiguration;

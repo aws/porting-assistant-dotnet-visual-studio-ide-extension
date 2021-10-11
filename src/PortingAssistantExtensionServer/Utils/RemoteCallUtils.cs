@@ -9,14 +9,21 @@ namespace PortingAssistantExtensionServer.Utils
         public static int Excute(String FileName, List<String> args, DataReceivedEventHandler OutputHandler)
         {
             var startInfo = GetProcessInfo(FileName, args);
-            using (Process exeProcess = Process.Start(startInfo))
+            try
             {
-                exeProcess.OutputDataReceived += OutputHandler;
-                exeProcess.ErrorDataReceived += OutputHandler;
-                exeProcess.BeginOutputReadLine();
-                exeProcess.BeginErrorReadLine();
-                exeProcess.WaitForExit();
-                return exeProcess.ExitCode;
+                using (Process exeProcess = Process.Start(startInfo))
+                {
+                    exeProcess.OutputDataReceived += OutputHandler;
+                    exeProcess.ErrorDataReceived += OutputHandler;
+                    exeProcess.BeginOutputReadLine();
+                    exeProcess.BeginErrorReadLine();
+                    exeProcess.WaitForExit();
+                    return exeProcess.ExitCode;
+                }
+            }
+            catch
+            {
+                return 1;
             }
         }
 

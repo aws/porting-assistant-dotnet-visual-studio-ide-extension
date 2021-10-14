@@ -39,6 +39,31 @@ namespace PortingAssistantVSExtensionClient.Utils
                 && dte.Solution.SolutionBuild.LastBuildInfo == 0;
         }
 
+        public static string GetBuildOutputPath(DTE2 dte, string projectPath)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (string.IsNullOrWhiteSpace(projectPath))
+                return null;
+
+            foreach (Project project in dte.Solution.Projects)
+            {
+                if(project.FullName.Equals(projectPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    string fullPath = project.Properties.Item("FullPath").Value.ToString();
+                    string outputPath = project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString();
+                    string buildOutputPath = Path.Combine(fullPath, outputPath);
+
+                    // check if the build output is not empty
+                    if (!Directory.Exists(buildOutputPath) || (Directory.GetFiles(buildOutputPath).Length + Directory.GetDirectories(buildOutputPath).Length == 0))
+                    {
+                        return null;
+                    }
+                    return buildOutputPath;
+                }
+            }
+            return null;
+        }
+
         public static async Task<Dictionary<string, List<string>>> GetMetadataReferencesAsync(DTE2 dte)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();

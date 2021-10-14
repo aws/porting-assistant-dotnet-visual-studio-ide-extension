@@ -8,6 +8,7 @@ namespace PortingAssistantVSExtensionClient.Models
 {
     public class DeploymentParameters
     {
+        public string ProjectPath { get; set; }
         public String BuildFolderPath { set; get; }
         public String DirectoryId { set; get; }
         public String DomainSecretsArn { set; get; }

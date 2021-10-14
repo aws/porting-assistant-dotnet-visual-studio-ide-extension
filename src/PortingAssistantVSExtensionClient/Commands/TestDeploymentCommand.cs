@@ -107,8 +107,16 @@ namespace PortingAssistantVSExtensionClient.Commands
             //}
 
             var solutionPath = await CommandsCommon.GetSolutionPathAsync();
-
             DeploymentParameters parameters = TestDeploymentDialog.GetParameters();
+            string buildOutputPath = await CommandsCommon.GetBuildOutputPathAsync(parameters.ProjectPath);
+
+            if(string.IsNullOrWhiteSpace(buildOutputPath))
+            {
+                //    NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
+                //    return;
+            }
+            parameters.BuildFolderPath = buildOutputPath;
+
             await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<TestDeploymentResponse>(
         "deploySolution",
         new TestDeploymentRequest()

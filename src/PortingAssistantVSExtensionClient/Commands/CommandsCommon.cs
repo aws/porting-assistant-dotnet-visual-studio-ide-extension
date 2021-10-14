@@ -100,6 +100,12 @@ namespace PortingAssistantVSExtensionClient.Commands
             return SolutionUtils.IsBuildSucceed(dte);
         }
 
+        public static async Task<string> GetBuildOutputPathAsync(string projectPath)
+        {
+            var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
+            return SolutionUtils.GetBuildOutputPath(dte, projectPath);
+        }
+
         public static async System.Threading.Tasks.Task<string> GetSolutionPathAsync()
         {
             var dte = await PAGlobalService.Instance.GetDTEServiceAsync();

@@ -56,6 +56,7 @@ namespace PortingAssistantExtensionServer
                 .WithHandler<SolutionAssessmentHandler>()
                 .WithHandler<PortingHandler>()
                 .WithHandler<UpdateSettingsHandler>()
+                .WithMaximumRequestTimeout(TimeSpan.FromHours(2))
                 .ConfigureLogging(_logConfiguration)
                 .OnInitialize((server, request, ct) =>
                 {

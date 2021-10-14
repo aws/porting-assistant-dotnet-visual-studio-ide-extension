@@ -158,7 +158,6 @@ namespace PortingAssistantExtensionIntegTests
 
         }
 
-       [Test]
         public async Task TestNetFrameworkExampleAsync()
         {
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("NetFrameworkExample"));

@@ -52,6 +52,7 @@ namespace PortingAssistantExtensionIntegTests
                 .WithTrace(InitializeTrace.Verbose)
                 .WithRootPath(SolutionRootPath)
                 .WithRootUri(SolutionRootPathUri)
+                .WithMaximumRequestTimeout(TimeSpan.FromHours(2))
                 .WithInitializationOptions(new
                 {
                     paSettings = new

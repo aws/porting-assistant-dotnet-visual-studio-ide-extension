@@ -1,5 +1,8 @@
 ﻿using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Util;
 using Aws4RequestSigner;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -18,11 +21,13 @@ namespace PortingAssistantVSExtensionClient.Utils
     {
         public string AwsAccessKeyId;
         public string AwsSecretKey;
+        public Amazon.RegionEndpoint Region;
 
         public AwsCredential(string AwsAccessKeyId, string AwsSecretKey)
         {
             this.AwsAccessKeyId = AwsAccessKeyId;
             this.AwsSecretKey = AwsSecretKey;
+            this.Region = Amazon.RegionEndpoint.USEast1;
         }
     }
 
@@ -34,6 +39,33 @@ namespace PortingAssistantVSExtensionClient.Utils
             return sharedProfile.ListProfileNames();
         }
 
+        public static AWSCredentials GetAWSCredentials(string profileName)
+        {
+            if (sharedProfile.TryGetProfile(profileName, out var basicProfile) &&
+                AWSCredentialsFactory.TryGetAWSCredentials(basicProfile, sharedProfile, out var awsCredentials))
+            {
+                return awsCredentials;
+            }
+            return null;
+        }
+
+        public static async Task CreateDefaultBucketAsync(String profileName, String bucketName)
+        {
+            AWSCredentials credentials = GetAWSCredentials(profileName);
+            using (var s3Client = new AmazonS3Client(credentials))
+            {
+                if (!await AmazonS3Util.DoesS3BucketExistV2Async(s3Client, bucketName))
+                {
+                    var putBucketRequest = new PutBucketRequest
+                    {
+                        BucketName = bucketName,
+                        UseClientRegion = true
+                    };
+
+                    PutBucketResponse putBucketResponse = await s3Client.PutBucketAsync(putBucketRequest);
+                }
+            }
+        }
 
         public static void SaveProfile(string profileName, AwsCredential credential)
         {
@@ -53,11 +85,11 @@ namespace PortingAssistantVSExtensionClient.Utils
             {
                 Console.WriteLine(ex.Message);
             }
-            
+
         }
 
         public static Dictionary<string, string> ValidateProfile(
-            string profileName, 
+            string profileName,
             AwsCredential credential)
         {
             Dictionary<string, string> errors = new Dictionary<string, string>();

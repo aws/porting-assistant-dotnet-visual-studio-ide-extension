@@ -16,10 +16,10 @@ namespace PortingAssistantExtensionServer.Handlers
     internal class TestDeploymentHandler : ITestDeploymentHandler
     {
 
-        private readonly ILogger<ISolutionAssessmentHandler> _logger;
+        private readonly ILogger<ITestDeploymentHandler> _logger;
         private readonly TestDeploymentService _testDeploymentService;
         private readonly ILanguageServerFacade _languageServer;
-        public TestDeploymentHandler(ILogger<SolutionAssessmentHandler> logger,
+        public TestDeploymentHandler(ILogger<TestDeploymentHandler> logger,
             ILanguageServerFacade languageServer,
             TestDeploymentService testDeploymentService
             )
@@ -27,14 +27,12 @@ namespace PortingAssistantExtensionServer.Handlers
             _logger = logger;
             _languageServer = languageServer;
             _testDeploymentService = testDeploymentService;
-
         }
 
         public async Task<TestDeploymentResponse> Handle(TestDeploymentRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"received deployment request: ${request} .....");
-            var result = 0;
-            //var result = _testDeploymentService.Excute(request);
+            var result = _testDeploymentService.Excute(request);
             return new TestDeploymentResponse()
             {
                 status = result,

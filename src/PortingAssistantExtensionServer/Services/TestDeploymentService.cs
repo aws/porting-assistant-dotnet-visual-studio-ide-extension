@@ -20,7 +20,7 @@ namespace PortingAssistantExtensionServer
             init();
         }
 
-        // init A2C service
+        // init Deployment Infra
         public void init()
         {
             try

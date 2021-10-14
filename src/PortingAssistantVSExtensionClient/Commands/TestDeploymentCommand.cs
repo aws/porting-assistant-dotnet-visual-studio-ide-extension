@@ -100,14 +100,15 @@ namespace PortingAssistantVSExtensionClient.Commands
             if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
             if (!CommandsCommon.SetupPage()) return;
             var IsBuildSucceed = await CommandsCommon.IsBuildSucceedAsync();
-            //if (!IsBuildSucceed)
-            //{
-            //    NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
-            //    return;
-            //}
+            if (!IsBuildSucceed)
+            {
+                NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
+                return;
+            }
 
             var solutionPath = await CommandsCommon.GetSolutionPathAsync();
             DeploymentParameters parameters = TestDeploymentDialog.GetParameters();
+<<<<<<< HEAD
             string buildOutputPath = await CommandsCommon.GetBuildOutputPathAsync(parameters.ProjectPath);
 
             if(string.IsNullOrWhiteSpace(buildOutputPath))
@@ -124,6 +125,8 @@ namespace PortingAssistantVSExtensionClient.Commands
             fileName = solutionPath,
             arguments = new List<string>(),
         });
+=======
+>>>>>>> fb7c332 (Add AWS utils for create resouce in AWS account.)
 
             var AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             var ConfigurationFileName = Environment.GetEnvironmentVariable("DeploymentConfiguration") ?? Common.Constants.DefaultDeploymentConfiguration;
@@ -138,34 +141,29 @@ namespace PortingAssistantVSExtensionClient.Commands
             dynamic deploymentconfig = JObject.Parse(File.ReadAllText(deploymentjson));
 
             deploymentconfig.applicationName = Path.GetFileName(solutionPath);
-            deploymentconfig.buildDefinitions.buildParameters.buildLocation = parameters.BuildFolderPath;
+            deploymentconfig.buildDefinitions.buildParameters.buildLocation = @"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\deployment.json";
 
-            File.WriteAllText(deploymentjson, deploymentconfig.ToString());
+            var tmpPath = Path.Combine(Path.GetTempPath(), "deployment.json");
+            File.WriteAllText(tmpPath, deploymentconfig.ToString());
 
-            /*
-            var parameter = new List<String>()
-            {
-                "generate",
-                "app-deployment",
-                "--deploy",
-                "--input-deployment-files",
-                @"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\deployment.json"
-            };
+            await initDeploymentToolAsync("test", true);
 
-            Console.WriteLine("Hello World!");
-            var exitcode = RemoteCallUtils.Excute("app2container", parameter,
-                new DataReceivedEventHandler((object sendingProcess, DataReceivedEventArgs outLine) =>
+            var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
+                .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
+                new TestDeploymentRequest()
                 {
-                    if (!String.IsNullOrEmpty(outLine.Data))
-                    {
-                        Console.WriteLine(outLine.Data);
-                    }
-                }));
-            Console.WriteLine("Hello World!");
+                    fileName = Common.Constants.DefaultDeploymentTool,
+                    arguments = new List<string> {
+                        "generate",
+                        "app-deployment",
+                        "--deploy",
+                        "--input-deployment-files",
+                        tmpPath
+                        //@"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\deployment.json"
+                    },
+                });
 
-            
-
-            if (exitcode == 0)
+            if (response.status == 0)
             {
                 NotificationUtils.ShowInfoMessageBox(package, "success", "success");
             }
@@ -173,6 +171,22 @@ namespace PortingAssistantVSExtensionClient.Commands
             {
                 NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
             }
+        }
+
+        private async Task initDeploymentToolAsync(string profileName, bool enableMetrics)
+        {
+            await AwsUtils.CreateDefaultBucketAsync(profileName, Common.Constants.DefaultDeploymentBucketName);
+            /*
+            await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
+                .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
+                new TestDeploymentRequest()
+                {
+                    fileName = Common.Constants.DefaultDeploymentTool,
+                    arguments = new List<string> {
+                        "init",
+                        @"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\deployment.json"
+                    },
+                });
             */
         }
     }

@@ -6,6 +6,7 @@ namespace PortingAssistantExtensionServer.Models
 {
     public class TestDeploymentResponse
     {
-        public int status;
+        public int status { get; set; }
+        public string content { get; set; }
     }
 }

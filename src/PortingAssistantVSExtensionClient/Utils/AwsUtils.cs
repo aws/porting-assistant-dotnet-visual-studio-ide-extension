@@ -49,21 +49,28 @@ namespace PortingAssistantVSExtensionClient.Utils
             return null;
         }
 
-        public static async Task CreateDefaultBucketAsync(String profileName, String bucketName)
+        public static async Task<string> CreateDefaultBucketAsync(String profileName, String bucketName)
         {
             AWSCredentials credentials = GetAWSCredentials(profileName);
             using (var s3Client = new AmazonS3Client(credentials))
             {
-                if (!await AmazonS3Util.DoesS3BucketExistV2Async(s3Client, bucketName))
+                // retry 3 times to create a random bucket
+                for (int i = 0; i < 3; i++)
                 {
-                    var putBucketRequest = new PutBucketRequest
+                    var uniqueBuecketName = bucketName + "-" + Path.GetRandomFileName();
+                    if (!await AmazonS3Util.DoesS3BucketExistV2Async(s3Client, bucketName))
                     {
-                        BucketName = bucketName,
-                        UseClientRegion = true
-                    };
+                        var putBucketRequest = new PutBucketRequest
+                        {
+                            BucketName = bucketName,
+                            UseClientRegion = true
+                        };
 
-                    PutBucketResponse putBucketResponse = await s3Client.PutBucketAsync(putBucketRequest);
+                        PutBucketResponse putBucketResponse = await s3Client.PutBucketAsync(putBucketRequest);
+                        if (putBucketResponse.HttpStatusCode == System.Net.HttpStatusCode.OK) return uniqueBuecketName;
+                    }
                 }
+                return "";
             }
         }
 

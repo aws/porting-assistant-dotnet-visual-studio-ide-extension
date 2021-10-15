@@ -106,27 +106,13 @@ namespace PortingAssistantVSExtensionClient.Commands
                 return;
             }
 
+            var tmpFolder = FilesUtils.GetTmpFolder();
             var solutionPath = await CommandsCommon.GetSolutionPathAsync();
             DeploymentParameters parameters = TestDeploymentDialog.GetParameters();
-<<<<<<< HEAD
-            string buildOutputPath = await CommandsCommon.GetBuildOutputPathAsync(parameters.ProjectPath);
 
-            if(string.IsNullOrWhiteSpace(buildOutputPath))
-            {
-                //    NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
-                //    return;
-            }
-            parameters.BuildFolderPath = buildOutputPath;
+            // init deployment tool
+            if (parameters.initDeploymentTool) await initDeploymentToolAsync(parameters.profileName, parameters.enableMetrics, tmpFolder);
 
-            await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<TestDeploymentResponse>(
-        "deploySolution",
-        new TestDeploymentRequest()
-        {
-            fileName = solutionPath,
-            arguments = new List<string>(),
-        });
-=======
->>>>>>> fb7c332 (Add AWS utils for create resouce in AWS account.)
 
             var AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             var ConfigurationFileName = Environment.GetEnvironmentVariable("DeploymentConfiguration") ?? Common.Constants.DefaultDeploymentConfiguration;
@@ -140,14 +126,14 @@ namespace PortingAssistantVSExtensionClient.Commands
             dynamic configuration = JObject.Parse(File.ReadAllText(ConfigurationPath));
             dynamic deploymentconfig = JObject.Parse(File.ReadAllText(deploymentjson));
 
+            // configure the depolyment json from the inputs
             deploymentconfig.applicationName = Path.GetFileName(solutionPath);
             deploymentconfig.buildDefinitions.buildParameters.buildLocation = @"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\deployment.json";
 
-            var tmpPath = Path.Combine(Path.GetTempPath(), "deployment.json");
+            var tmpPath = Path.Combine(tmpFolder, "deployment.json");
             File.WriteAllText(tmpPath, deploymentconfig.ToString());
 
-            await initDeploymentToolAsync("test", true);
-
+            // deploy
             var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                 .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                 new TestDeploymentRequest()
@@ -163,6 +149,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                     },
                 });
 
+            // update results
             if (response.status == 0)
             {
                 NotificationUtils.ShowInfoMessageBox(package, "success", "success");
@@ -173,9 +160,11 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
         }
 
-        private async Task initDeploymentToolAsync(string profileName, bool enableMetrics)
+        private async Task initDeploymentToolAsync(string profileName, bool enableMetrics, string tmpFolder)
         {
-            await AwsUtils.CreateDefaultBucketAsync(profileName, Common.Constants.DefaultDeploymentBucketName);
+            var uniqueBucketName = await AwsUtils.CreateDefaultBucketAsync(profileName, Common.Constants.DefaultDeploymentBucketName);
+            var initJsonPath = FilesUtils.GetInitJsonFilePath(uniqueBucketName, enableMetrics, tmpFolder);
+
             /*
             await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                 .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
@@ -184,7 +173,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                     fileName = Common.Constants.DefaultDeploymentTool,
                     arguments = new List<string> {
                         "init",
-                        @"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\deployment.json"
+                        initJsonPath
                     },
                 });
             */

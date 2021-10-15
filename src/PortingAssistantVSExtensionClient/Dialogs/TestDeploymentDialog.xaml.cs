@@ -21,11 +21,13 @@ namespace PortingAssistantVSExtensionClient.Dialogs
     public partial class TestDeploymentDialog : DialogWindow
     {
         public DeploymentParameters parameters { set; get; }
+        private readonly UserSettings _userSettings;
 
         private static TestDeploymentDialog Instance;
         public TestDeploymentDialog()
         {
             InitializeComponent();
+            _userSettings = UserSettings.Instance;
             parameters = new DeploymentParameters();
             this.Title = "Test Deployment";
         }
@@ -60,7 +62,11 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 BuildFolderPathText.Text = openFolderDialog.SelectedPath;
             }
-            parameters.BuildFolderPath = BuildFolderPathText.Text;
+            parameters.buildFolderPath = BuildFolderPathText.Text;
+
+            var oldProfileName = _userSettings.GetDeploymentProfileName();
+            parameters.initDeploymentTool = oldProfileName == "current_profile" ? false : true;
+            parameters.enableMetrics = _userSettings.EnabledMetrics;
         }
 
         private void AdvanceButton_Click(object sender, System.Windows.RoutedEventArgs e)

@@ -26,9 +26,10 @@ namespace PortingAssistantVSExtensionClient.Options
         public string AWSProfileName;
         public string RootCacheFolder;
         public string TargetFramework;
+        public string DeploymentProfileName;
         public bool SolutionAssessed;
         private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
-        
+
 
         readonly WritableSettingsStore _settingStore;
 
@@ -95,6 +96,16 @@ namespace PortingAssistantVSExtensionClient.Options
         public void UpdateTargetFramework()
         {
             Write("TargetFramework", TargetFramework);
+        }
+
+        public string GetDeploymentProfileName()
+        {
+            return (string)Read("DeploymentProfileName", "");
+        }
+
+        public void UpdateDeploymentProfileName(string profileName)
+        {
+            Write("DeploymentProfileName", profileName);
         }
         public void SaveAllSettings()
         {

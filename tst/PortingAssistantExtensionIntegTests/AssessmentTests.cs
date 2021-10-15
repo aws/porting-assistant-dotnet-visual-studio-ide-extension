@@ -23,14 +23,12 @@ namespace PortingAssistantExtensionIntegTests
         {   // Zipfile = {folder-name, solution file, json file}
             ["Miniblog.Core-master.zip"] = new string[] { "Miniblog.Core-master", "Miniblog.Core.sln", "Miniblog.Core.json" },
             ["MvcMusicStore.zip"] = new string[] { "MvcMusicStore", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
-            ["NetFrameworkExample.zip"] = new string[] { "NetFrameworkExample", "NetFrameworkExample.sln", "NetFrameworkExample.json" },
             ["NopCommerce-3.1.zip"] = new string[] { "NopCommerce-3.1", "NopCommerce.sln", "NopCommerce.json" },
             ["StarWars.zip"] = new string[] { "StarWars", "StarWars.sln", "StarWars.json" },
             ["Miniblog.Core-master-PortResults.zip"] = new string[] { "Miniblog.Core-master-PortResults", "Miniblog.Core.sln", "Miniblog.Core.json" },
             ["MvcMusicStore-PortResults.zip"] = new string[] { "MvcMusicStore-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["MvcMusicStore-WithFix-PortResults.zip"] = new string[] { "MvcMusicStore-WithFix-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["MvcMusicStore-net50-PortResults.zip"] = new string[] { "MvcMusicStore-net50-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
-            ["NetFrameworkExample-PortResults.zip"] = new string[] { "NetFrameworkExample-PortResults", "NetFrameworkExample.sln", "NetFrameworkExample.json" },
             ["NopCommerce-3.1-PortResults.zip"] = new string[] { "NopCommerce-3.1-PortResults", "NopCommerce.sln", "NopCommerce.json" },
             ["StarWars-WithFix-PortResults.zip"] = new string[] { "StarWars-WithFix-PortResults", "StarWars.sln", "StarWars.json" }
         };
@@ -156,24 +154,6 @@ namespace PortingAssistantExtensionIntegTests
             Console.WriteLine("Porting Verification TestMiniblogCore Result: " + portResult);
             Assert.IsTrue(portResult);
 
-        }
-
-        public async Task TestNetFrameworkExampleAsync()
-        {
-            string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("NetFrameworkExample"));
-            if (projectInfo == null)
-            {
-                Assert.IsTrue(false);
-                return;
-            }
-
-            Boolean result = await TestSolutionAsync(projectInfo, NETCOREAPP31);
-            Console.WriteLine("Verification NetFrameworkExample Result: " + result);
-            Assert.IsTrue(result);
-
-            Boolean portResult = await TestPortSolutionAsync(projectInfo, NETCOREAPP31, false);
-            Console.WriteLine("Porting Verification TestNetFrameworkExample Result: " + portResult);
-            Assert.IsTrue(portResult);
         }
 
         [Test]

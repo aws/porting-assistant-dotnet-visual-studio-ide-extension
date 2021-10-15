@@ -193,13 +193,32 @@ namespace PortingAssistantExtensionServer.Services
                         });
                     }
 
+                    int numberOfExceptions = 0;
                     foreach (var sourceFileAnalysisResult in projectAnalysisResult.SourceFileAnalysisResults)
                     {
-                        var sourceFileUri = DocumentUri.FromFileSystemPath(sourceFileAnalysisResult.SourceFilePath);
-                        var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
-                        if (!FileToFirstDiagnostics.ContainsKey(sourceFileUri))
+                        const int maxNumberOfExceptions = 5;
+
+                        if (string.IsNullOrEmpty(sourceFileAnalysisResult.SourceFilePath))
                         {
-                            FileToFirstDiagnostics.Add(sourceFileUri, diagnostics);
+                            continue;
+                        }
+                        try
+                        {
+                            var sourceFileUri = DocumentUri.FromFileSystemPath(sourceFileAnalysisResult.SourceFilePath);
+                            var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
+                            if (!FileToFirstDiagnostics.ContainsKey(sourceFileUri))
+                            {
+                                FileToFirstDiagnostics.Add(sourceFileUri, diagnostics);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            numberOfExceptions++;
+                            _logger.LogError(ex, string.Format("Get diagnostic failed {0} times with error: ", numberOfExceptions));
+                            if (numberOfExceptions > maxNumberOfExceptions)
+                            {
+                                throw new Exception("Get diagnostic exceeded maximum number of exceptions allowed");
+                            }
                         }
                     }
                 }

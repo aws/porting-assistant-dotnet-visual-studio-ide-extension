@@ -18,8 +18,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionUn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionIntegTests", "..\tst\PortingAssistantExtensionIntegTests\PortingAssistantExtensionIntegTests.csproj", "{82311002-05CF-40B6-A5D1-9D7D6809A16C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortingAssistantExtensionUITests", "..\tst\PortingAssistantExtensionUITests\PortingAssistantExtensionUITests.csproj", "{54E36D90-BFBB-4F1A-945D-B7646F3AF88A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,10 +44,6 @@ Global
 		{82311002-05CF-40B6-A5D1-9D7D6809A16C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82311002-05CF-40B6-A5D1-9D7D6809A16C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82311002-05CF-40B6-A5D1-9D7D6809A16C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{54E36D90-BFBB-4F1A-945D-B7646F3AF88A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{54E36D90-BFBB-4F1A-945D-B7646F3AF88A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{54E36D90-BFBB-4F1A-945D-B7646F3AF88A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{54E36D90-BFBB-4F1A-945D-B7646F3AF88A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

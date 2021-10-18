@@ -56,8 +56,8 @@ namespace PortingAssistantExtensionServer
                 .WithHandler<PortingHandler>()
                 .WithHandler<UpdateSettingsHandler>()
                 .WithHandler<TestDeploymentHandler>()
-                .ConfigureLogging(_logConfiguration)
                 .WithMaximumRequestTimeout(TimeSpan.FromHours(2))
+                .ConfigureLogging(_logConfiguration)
                 .OnInitialize((server, request, ct) =>
                 {
                     if (request?.InitializationOptions is JObject initOption)

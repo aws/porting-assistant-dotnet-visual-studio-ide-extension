@@ -123,6 +123,9 @@ namespace PortingAssistantExtensionServer.Handlers
 
         private async void Process(CodeFileDocument document)
         {
+            if (document == null || document.DocumentUri == null) {
+                return;
+            }
             try
             {
                 var diagnostics = _solutionAnalysisService.GetDiagnosticsAsync(document.DocumentUri);

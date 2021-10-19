@@ -100,11 +100,13 @@ namespace PortingAssistantVSExtensionClient.Commands
             if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
             if (!CommandsCommon.SetupPage()) return;
             var IsBuildSucceed = await CommandsCommon.IsBuildSucceedAsync();
+            /*
             if (!IsBuildSucceed)
             {
                 NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
                 return;
             }
+            */
 
             var tmpFolder = FilesUtils.GetTmpFolder();
             var solutionPath = await CommandsCommon.GetSolutionPathAsync();

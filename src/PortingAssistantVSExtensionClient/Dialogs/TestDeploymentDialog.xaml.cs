@@ -83,7 +83,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
             parameters.buildFolderPath = LocalFolderPathText.Text;
 
-            var oldProfileName = _userSettings.GetDeploymentProfileName();
+            var oldProfileName = _userSettings.DeploymentProfileName;
             parameters.initDeploymentTool = oldProfileName == "current_profile" ? false : true;
             parameters.enableMetrics = _userSettings.EnabledMetrics;
         }

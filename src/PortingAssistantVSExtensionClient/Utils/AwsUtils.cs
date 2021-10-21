@@ -1,4 +1,6 @@
-﻿using Amazon.Runtime;
+﻿using Amazon.EC2;
+using Amazon.EC2.Model;
+using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -72,6 +74,14 @@ namespace PortingAssistantVSExtensionClient.Utils
                 }
                 return "";
             }
+        }
+
+        private static async Task<List<Vpc>> GetVpcIdsAsync()
+        {
+            AWSCredentials credentials = GetAWSCredentials("test");
+            var ec2client = new AmazonEC2Client(credentials);
+            var vpcs = await ec2client.DescribeVpcsAsync();
+            return vpcs.Vpcs;
         }
 
         public static void SaveProfile(string profileName, AwsCredential credential)

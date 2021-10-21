@@ -20,6 +20,7 @@ namespace PortingAssistantVSExtensionClient.Options
 
         private bool _isLoaded;
         public bool ShowWelcomePage;
+        public bool IsDeployementExist;
         public bool EnabledMetrics;
         public bool EnabledContinuousAssessment;
         public bool ApplyPortAction;
@@ -98,14 +99,16 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("TargetFramework", TargetFramework);
         }
 
-        public string GetDeploymentProfileName()
-        {
-            return (string)Read("DeploymentProfileName", "");
-        }
-
         public void UpdateDeploymentProfileName(string profileName)
         {
+            this.DeploymentProfileName = profileName;
             Write("DeploymentProfileName", profileName);
+        }
+
+        public void UpdateIsDeploymentToolExist(bool IsDeployementExist)
+        {
+            this.IsDeployementExist = IsDeployementExist;
+            Write("IsDeployementExist", IsDeployementExist);
         }
         public void SaveAllSettings()
         {
@@ -115,6 +118,8 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("AWSProfileName", AWSProfileName);
             Write("TargetFramework", TargetFramework);
             Write("ApplyPortAction", ApplyPortAction);
+            Write("DeploymentProfileName", DeploymentProfileName);
+            Write("IsDeployementExist", IsDeployementExist);
         }
 
         public void LoadingAllSettings()
@@ -125,6 +130,8 @@ namespace PortingAssistantVSExtensionClient.Options
             AWSProfileName = (string)Read("AWSProfileName", "");
             ApplyPortAction = (bool)Read("ApplyPortAction", false);
             TargetFramework = (string)Read("TargetFramework", TargetFrameworkType.NO_SELECTION);
+            IsDeployementExist = (bool)Read("IsDeployementExist", false);
+            DeploymentProfileName = (string)Read("DeploymentProfileName", "");
             RootCacheFolder = Path.GetTempPath();
         }
 

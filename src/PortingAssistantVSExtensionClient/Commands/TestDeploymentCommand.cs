@@ -98,7 +98,19 @@ namespace PortingAssistantVSExtensionClient.Commands
         private async void Execute(object sender, EventArgs e)
         {
             if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
-            if (!CommandsCommon.SetupPage()) return;
+            //if (!CommandsCommon.SetupPage()) return;
+            if (!CommandsCommon.IsDeploymentToolExist())
+            {
+                var resp = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
+                .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
+                new TestDeploymentRequest()
+                {
+                    fileName = "init",
+                });
+                if (resp.status != 0) return;
+            }
+
+
             var IsBuildSucceed = await CommandsCommon.IsBuildSucceedAsync();
             if (!IsBuildSucceed)
             {
@@ -110,6 +122,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             var solutionPath = await CommandsCommon.GetSolutionPathAsync();
             DeploymentParameters parameters = TestDeploymentDialog.GetParameters();
 
+            var buildpath = await CommandsCommon.GetBuildOutputPathAsync(@"C:\Users\lwwnz\source\repos\testweb\testweb\testweb.csproj");
             // init deployment tool
             if (parameters.initDeploymentTool) await initDeploymentToolAsync(parameters.profileName, parameters.enableMetrics, tmpFolder);
 
@@ -128,9 +141,10 @@ namespace PortingAssistantVSExtensionClient.Commands
 
             // configure the depolyment json from the inputs
             deploymentconfig.applicationName = Path.GetFileName(solutionPath);
-            deploymentconfig.buildDefinitions.buildParameters.buildLocation = @"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\deployment.json";
+            deploymentconfig.buildDefinitions.buildParameters.buildLocation = buildpath;
 
             var tmpPath = Path.Combine(tmpFolder, "deployment.json");
+            var outputPath = Path.Combine(tmpFolder, "deployment-output.json");
             File.WriteAllText(tmpPath, deploymentconfig.ToString());
 
             // deploy
@@ -144,12 +158,17 @@ namespace PortingAssistantVSExtensionClient.Commands
                         "app-deployment",
                         "--deploy",
                         "--input-deployment-files",
-                        tmpPath
-                        //@"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\deployment.json"
+                        tmpPath,
+                        "--output-file",
+                        outputPath
                     },
                 });
 
             // update results
+
+            dynamic result = JObject.Parse(File.ReadAllText(outputPath));
+            var status = result.deploymentStatus;
+            var url = result.appEndpoint;
             if (response.status == 0)
             {
                 NotificationUtils.ShowInfoMessageBox(package, "success", "success");

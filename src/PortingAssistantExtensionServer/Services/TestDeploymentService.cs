@@ -17,7 +17,6 @@ namespace PortingAssistantExtensionServer
         public TestDeploymentService(ILogger<TestDeploymentService> logger)
         {
             _logger = logger;
-            init();
         }
 
         // init Deployment Infra
@@ -47,9 +46,9 @@ namespace PortingAssistantExtensionServer
                     {
                         archive.ExtractToDirectory(tmpfolder);
                     }
-                    //var installPath = Path.Combine(tmpfolder, Constants.InstallPath);
+                    var installPath = Path.Combine(tmpfolder, Constants.InstallPath);
 
-                    var installPath = @"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\install.ps1";
+                    //var installPath = @"C:\Users\lwwnz\Downloads\AWSApp2Container-installer-windows\install.ps1";
 
                     var exitcode = RemoteCallUtils.Excute("powershell.exe", new List<string> { installPath, "-acceptEula", "true" }, OutputDataHandler);
                     if (exitcode == 0) _logger.LogInformation("Deployment tool installation success");
@@ -67,6 +66,13 @@ namespace PortingAssistantExtensionServer
 
         public int Excute(TestDeploymentRequest request)
         {
+            // take a init command from front
+            if (request.fileName == "init")
+            {
+                init();
+                return 0;
+            }
+
             _logger.LogInformation($"start excuting ${request} .....");
             //CreateClientConnectionAsync(request.PipeName);
             var exitcode = RemoteCallUtils.Excute(request.fileName, request.arguments, OutputDataHandler);

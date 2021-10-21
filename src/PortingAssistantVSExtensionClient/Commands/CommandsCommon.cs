@@ -24,6 +24,11 @@ namespace PortingAssistantVSExtensionClient.Commands
             else return true;
         }
 
+        public static bool IsDeploymentToolExist()
+        {
+            return UserSettings.Instance.IsDeployementExist;
+        }
+
         public static readonly List<int> CommandIDs = new List<int>
         {
             PackageIds.cmdidAutoAssessmentCommand,

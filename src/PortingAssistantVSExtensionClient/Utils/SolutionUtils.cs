@@ -32,9 +32,6 @@ namespace PortingAssistantVSExtensionClient.Utils
         public static Boolean IsBuildSucceed(DTE2 dte)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            //var solutionPath = dte.Solution;
-            //var startup = dte.Solution.SolutionBuild.StartupProjects;
-            //var build = dte.Solution.SolutionBuild.ActiveConfiguration;
             return dte.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateDone
                 && dte.Solution.SolutionBuild.LastBuildInfo == 0;
         }

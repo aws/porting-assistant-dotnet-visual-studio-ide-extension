@@ -23,13 +23,40 @@
         "resolved": "3.7.3.5",
         "contentHash": "wu6s4geFWpSKuqg/UOx6DAdTnnTzoWQRsKOVCYae2ggzpadFJxwMIB7CSvw0r8CaIQNDKYr6Al3eKU+EA8jqbg=="
       },
+      "AWSSDK.DirectoryService": {
+        "type": "Direct",
+        "requested": "[3.7.1.32, )",
+        "resolved": "3.7.1.32",
+        "contentHash": "H7UrGOJa1AI7Kkttv6j72GHVWOYkTURWl5V+nfWOhTq7DTgND2w6zXeP+SM5wwYyyl4Tr8ngCryJtb1DjA5TQw==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
+        }
+      },
+      "AWSSDK.EC2": {
+        "type": "Direct",
+        "requested": "[3.7.34.3, )",
+        "resolved": "3.7.34.3",
+        "contentHash": "Scd0v3w4H6MBc9E5Bs1y0Hsi9b/4JHFKyRJCoI/KaxeSLUi7eOHAM79ag9CuILBjRxxlIUEvE4fLnUSyaGp1og==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
+        }
+      },
       "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.3.14, )",
-        "resolved": "3.7.3.14",
-        "contentHash": "z64h727LhLqSvZvBFUYB0WsxYeYd2vDtIMWAmfnh2eTNThODyS7FW8aaiW1aVkNVGE3i+qdsKZx08ELxo0Y2/A==",
+        "requested": "[3.7.3.17, )",
+        "resolved": "3.7.3.17",
+        "contentHash": "fzrg1XK98wizUiLq9+oMN43xvRpcTPmOhsBdk6iVpXTxmJb/z9D2ScB5qCQ9tMeu3Lj2zpQvg77eG7UEWAA2CQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.3.21, 4.0.0)"
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
+        }
+      },
+      "AWSSDK.SecretsManager": {
+        "type": "Direct",
+        "requested": "[3.7.1.37, )",
+        "resolved": "3.7.1.37",
+        "contentHash": "PnRuoKDpYdBWQgJBmMri8mPU3nfuwlczzV46aHeYqkSik1XkmY7QZ4KsEY+Odrb/B4umCNo/7qTQ7O0r5M2v/Q==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
         }
       },
       "Microsoft.VisualStudio.SDK": {

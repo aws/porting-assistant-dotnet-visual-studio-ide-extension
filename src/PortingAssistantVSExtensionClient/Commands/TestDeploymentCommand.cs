@@ -110,7 +110,7 @@ namespace PortingAssistantVSExtensionClient.Commands
 
             var tmpFolder = FilesUtils.GetTmpFolder();
             var solutionPath = await CommandsCommon.GetSolutionPathAsync();
-            DeploymentParameters parameters = TestDeploymentDialog.GetParameters();
+            DeploymentParameters parameters = TestDeploymentDialog.GetParameters(solutionPath);
 
             // init deployment tool
             if (parameters.initDeploymentTool) await initDeploymentToolAsync(parameters.profileName, parameters.enableMetrics, tmpFolder);

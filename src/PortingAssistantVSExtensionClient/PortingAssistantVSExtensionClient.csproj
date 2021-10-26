@@ -171,8 +171,17 @@
     <PackageReference Include="AWSSDK.Core">
       <Version>3.7.3.5</Version>
     </PackageReference>
+    <PackageReference Include="AWSSDK.DirectoryService">
+      <Version>3.7.1.32</Version>
+    </PackageReference>
+    <PackageReference Include="AWSSDK.EC2">
+      <Version>3.7.34.3</Version>
+    </PackageReference>
     <PackageReference Include="AWSSDK.S3">
-      <Version>3.7.3.14</Version>
+      <Version>3.7.3.17</Version>
+    </PackageReference>
+    <PackageReference Include="AWSSDK.SecretsManager">
+      <Version>3.7.1.37</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.9.31025.194" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

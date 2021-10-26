@@ -1,8 +1,12 @@
-﻿using Amazon.Runtime;
+﻿using Amazon.DirectoryService;
+using Amazon.EC2;
+using Amazon.EC2.Model;
+using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Util;
+using Amazon.SecretsManager;
 using Aws4RequestSigner;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -115,6 +119,63 @@ namespace PortingAssistantVSExtensionClient.Utils
             return errors;
         }
 
+        public static Dictionary<string, string> ListActiveDirectories()
+        {
+            Dictionary<string, string> directories = new Dictionary<string, string>();
+            using (var ds = new AmazonDirectoryServiceClient())
+            {
+                var directoriesResponse = ds.DescribeDirectories();
+                directories = directoriesResponse.DirectoryDescriptions.ToDictionary(d => d.Name, d => d.DirectoryId);
+            }
+            return directories;
+        }
+
+        public static List<string> ListSecretArns()
+        {
+            List<string> secretArns = new List<string>();
+            using (var asm = new AmazonSecretsManagerClient())
+            {
+                var listSecretsResponse = asm.ListSecrets(new Amazon.SecretsManager.Model.ListSecretsRequest()
+                {
+                    MaxResults = 100
+                });
+                secretArns = listSecretsResponse.SecretList.Select(secret => secret.ARN).ToList();
+            }
+            return secretArns;
+        }
+
+
+        public static List<string> ListVpcIds()
+        {
+            List<string> vpcList = new List<string>();
+            using (var ec2Client = new AmazonEC2Client())
+            {
+                var vpcs = ec2Client.DescribeVpcs();
+                vpcList = vpcs.Vpcs.Select(v => v.VpcId).ToList();
+            }
+            return vpcList;
+        }
+
+        public static List<string> ListVpcSubnets(string vpcId)
+        {
+            List<string> subnetsList = new List<string>();
+            using (var ec2Client = new AmazonEC2Client())
+            {
+                DescribeSubnetsResponse subnetsResponse = ec2Client.DescribeSubnets(new DescribeSubnetsRequest()
+                {
+                    Filters = new List<Amazon.EC2.Model.Filter> {
+                        new Amazon.EC2.Model.Filter {
+                            Name = "vpc-id",
+                            Values = new List<string> {
+                                vpcId
+                            }
+                        }
+                    }
+                });
+                subnetsList = subnetsResponse.Subnets.Select(s => s.SubnetId).ToList();
+            }
+            return subnetsList;
+        }
         public async static Task<string> ValidateProfile(
             string profileName,
             AwsCredential credential,

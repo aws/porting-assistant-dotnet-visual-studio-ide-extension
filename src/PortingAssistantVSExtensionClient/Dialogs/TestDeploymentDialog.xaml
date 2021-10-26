@@ -32,8 +32,10 @@
             </Grid.RowDefinitions>
             <Label Content="AWS Profile"  Grid.Row="0"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
             <ComboBox x:Name="AwsProfileComboBox"  Grid.Row="0" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
+            <Label x:Name="ProfileErrorHint"  Content=""  Grid.Row="0"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />
             <Label Content="AWS Region"  Grid.Row="1"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
             <ComboBox x:Name="AwsRegionComboBox"  Grid.Row="1" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
+            <Label x:Name="RegioneErrorHint"  Content=""  Grid.Row="1"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />
             <Label Content="Deployment Project"  Grid.Row="2"  HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top"/>
             <ComboBox x:Name="DeploymentProjectComboBox"  Grid.Row="2" Margin="25,25,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
             <Label Content="Deployment Name"  Grid.Row="3"  HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top"/>
@@ -54,7 +56,7 @@
             </Grid.RowDefinitions>
             <Label Content="Directory services"  Grid.Row="0"  Margin="20,20,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="14" FontWeight="Bold"/>
             <TextBlock Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,50,20,0" TextWrapping="Wrap" Text="The directory in which you want to allow authorized user to authenticate with this application using Windows Authentication. &#xD;&#xA;Note: only AWS managed services are supported." />
-            <CheckBox Grid.Row="1" Content="Connect to AWS managed Active Directory" HorizontalAlignment="Left" Margin="25,10,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" />
+            <CheckBox x:Name="UseAwsAdCheckBox" Grid.Row="1" Content="Connect to AWS managed Active Directory" HorizontalAlignment="Left" Margin="25,10,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" />
             <Grid x:Name="ADGrid" Grid.Row="2" Visibility="Hidden" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>

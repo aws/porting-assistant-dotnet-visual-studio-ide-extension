@@ -49,7 +49,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
             if(profiles != null && profiles.Count != 0)
             {
-                AwsProfileComboBox.SelectedValue = profiles.First();
+                AwsProfileComboBox.SelectedValue =_userSettings.AWSProfileName;
             }
 
             //init project
@@ -110,17 +110,23 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Next_Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
         {
-            HideGeneralSettings(true);
-            HideDirectorySettings(false);
-            HideAdvanceSettings(true);
-            
+            if (IsInputValid())
+            {
+                HideGeneralSettings(true);
+                HideDirectorySettings(false);
+                HideAdvanceSettings(true);
+            }
         }
 
         private void Next_Button_Click_2(object sender, System.Windows.RoutedEventArgs e)
         {
-            HideGeneralSettings(true);
-            HideDirectorySettings(true);
-            HideAdvanceSettings(false);
+            if (IsInputValid())
+            {
+                HideGeneralSettings(true);
+                HideDirectorySettings(true);
+                HideAdvanceSettings(false);
+            }
+                
         }
 
         private void Back_Click_2(object sender, System.Windows.RoutedEventArgs e)
@@ -132,18 +138,20 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Next_Button_Click_3(object sender, System.Windows.RoutedEventArgs e)
         {
-            //validations
-            parameters = new DeploymentParameters()
+            if (IsInputValid())
             {
-                profileName = (string)AwsProfileComboBox.SelectedValue,
-                enableMetrics = _userSettings.EnabledMetrics,
-                buildFolderPath = projectNames[(string)DeploymentProjectComboBox.SelectedValue],
-                directoryId = ADIdBox.Text,
-                domainSecretsArn = (string)SecretArnBox.SelectedValue,
-                servicePrincipalName = SecretPrincipalBox.Text,
-                initDeploymentTool = true
-            };
-            Close();
+                parameters = new DeploymentParameters()
+                {
+                    profileName = (string)AwsProfileComboBox.SelectedValue,
+                    enableMetrics = _userSettings.EnabledMetrics,
+                    buildFolderPath = projectNames[(string)DeploymentProjectComboBox.SelectedValue],
+                    directoryId = ADIdBox.Text,
+                    domainSecretsArn = (string)SecretArnBox.SelectedValue,
+                    servicePrincipalName = SecretPrincipalBox.Text,
+                    initDeploymentTool = true
+                };
+                Close();
+            }
         }
 
         private void Back_Button_Click_3(object sender, System.Windows.RoutedEventArgs e)
@@ -156,7 +164,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void AdvancedSettingsFrame_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (AdvancedSettingsGrid.Visibility == System.Windows.Visibility.Visible) return;
+            if (AdvancedSettingsGrid.Visibility == System.Windows.Visibility.Visible || !IsInputValid()) return;
             HideGeneralSettings(true);
             HideDirectorySettings(true);
             HideAdvanceSettings(false);
@@ -164,7 +172,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void DirectoryServiceFrame_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (DirectoryServicesGrid.Visibility == System.Windows.Visibility.Visible) return;
+            if (DirectoryServicesGrid.Visibility == System.Windows.Visibility.Visible || !IsInputValid()) return;
             HideGeneralSettings(true);
             HideDirectorySettings(false);
             HideAdvanceSettings(true);
@@ -172,7 +180,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void GeneralSettingsFrame_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (GeneralSettingGrid.Visibility == System.Windows.Visibility.Visible) return;
+            if (GeneralSettingGrid.Visibility == System.Windows.Visibility.Visible || !IsInputValid()) return;
             HideGeneralSettings(false);
             HideDirectorySettings(true);
             HideAdvanceSettings(true);
@@ -253,6 +261,65 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 ADIdBox.Text = directoryId;
             }
+        }
+
+        private bool IsInputValid()
+        {
+            bool IsValid = true;
+            if (GeneralSettingGrid.Visibility == System.Windows.Visibility.Visible)
+            {
+                if (AwsProfileComboBox.SelectedIndex == -1)
+                {
+                    ProfileErrorHint.Content = "please select an AWS profile";
+                    IsValid = false;
+                }
+                if (AwsRegionComboBox.SelectedIndex == -1)
+                {
+                    RegioneErrorHint.Content = "please select an AWS Region";
+                    IsValid = false;
+                }
+                if (DeploymentProjectComboBox.SelectedIndex == -1)
+                {
+
+                    IsValid = false;
+                }
+                if (string.IsNullOrEmpty(DeploymentNameTextBox.Text))
+                {
+
+                    IsValid = false;
+                }
+            }
+            else if (DirectoryServicesGrid.Visibility == System.Windows.Visibility.Visible)
+            {
+                if (UseAwsAdCheckBox.IsChecked.HasValue && UseAwsAdCheckBox.IsChecked.Value)
+                {
+                    if (string.IsNullOrEmpty(ADIdBox.Text))
+                    {
+                        IsValid = false;
+                    }
+                    if (SecretArnBox.SelectedIndex == -1)
+                    {
+                        IsValid = false;
+                    }
+                    if (string.IsNullOrEmpty(SecretPrincipalBox.Text))
+                    {
+                        IsValid = false;
+                    }
+                }
+            }
+            else if (AdvancedSettingsGrid.Visibility == System.Windows.Visibility.Visible)
+            {
+                if(VpcBox.SelectedIndex == -1)
+                {
+                    IsValid = false;
+                }
+                if(VpcSubnetsBox.SelectedIndex == -1)
+                {
+                    IsValid = false;
+                }
+            }
+            return IsValid;
+
         }
     }
 }

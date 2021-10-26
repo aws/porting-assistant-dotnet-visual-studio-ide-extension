@@ -112,15 +112,17 @@ namespace PortingAssistantVSExtensionClient.Commands
 
 
             var IsBuildSucceed = await CommandsCommon.IsBuildSucceedAsync();
+            /*
             if (!IsBuildSucceed)
             {
                 NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
                 return;
             }
+            */
 
             var tmpFolder = FilesUtils.GetTmpFolder();
             var solutionPath = await CommandsCommon.GetSolutionPathAsync();
-            DeploymentParameters parameters = TestDeploymentDialog.GetParameters();
+            DeploymentParameters parameters = TestDeploymentDialog.GetParameters(solutionPath);
 
             var buildpath = await CommandsCommon.GetBuildOutputPathAsync(@"C:\Users\lwwnz\source\repos\testweb\testweb\testweb.csproj");
             // init deployment tool

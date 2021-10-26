@@ -15,15 +15,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Rectangle x:Name="GeneralSettingsFrame" Fill="#FFE5E5E5"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="30" Width="150" Margin="10,20,0,0" Stroke="White" VerticalAlignment="Top"/>
-        <Label Content="General settings"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,20,0,0" VerticalAlignment="Top" FontSize="14"/>
-        <Rectangle x:Name="DirectoryServiceFrame" Fill="#FFF0F0F0"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="30" Width="150" Margin="10,60,0,0" Stroke="White" VerticalAlignment="Top"/>
-        <Label Content="Directory Service"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" FontSize="14"/>
-        <Rectangle x:Name="AdvancedSettingsFrame" Fill="#FFF0F0F0"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="30" Width="150" Margin="10,100,0,0" Stroke="White" VerticalAlignment="Top"/>
-        <Label Content="Advanced Settings"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" FontSize="14"/>
-        <Rectangle x:Name="LicenseAgreementFrame" Fill="#FFF0F0F0"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="30" Width="150" Margin="10,140,0,0" Stroke="White" VerticalAlignment="Top"/>
-        <Label Content="License Agreement"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,140,0,0" VerticalAlignment="Top" FontSize="14"/>
-        <Button x:Name="Deploy" Content="Deploy" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="75"  Click="Button_Click" Margin="830,321,0,0"/>
+        <Rectangle x:Name="GeneralSettingsFrame" Fill="#FFE5E5E5"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="30" Width="150" Margin="10,20,0,0" VerticalAlignment="Top"/>
+        <Label Content="General settings"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,20,0,0" VerticalAlignment="Top" FontSize="14" MouseLeftButtonDown="GeneralSettingsFrame_MouseDown" Cursor="Hand" />
+        <Rectangle x:Name="DirectoryServiceFrame" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="30" Width="150" Margin="10,60,0,0" VerticalAlignment="Top" />
+        <Label Content="Directory service"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" FontSize="14" MouseLeftButtonDown="DirectoryServiceFrame_MouseDown" Cursor="Hand"/>
+        <Rectangle x:Name="AdvancedSettingsFrame" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Height="30" Width="150" Margin="10,100,0,0" VerticalAlignment="Top"/>
+        <Label Content="Advanced settings"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" FontSize="14" MouseLeftButtonDown="AdvancedSettingsFrame_MouseDown" Cursor="Hand"/>
         <Grid x:Name="GeneralSettingGrid" Visibility="Visible" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="0" Background="White">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -31,49 +28,74 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
-
+                <RowDefinition Height="60"/>
             </Grid.RowDefinitions>
-            <Label Content="AWS Profile"  Grid.Row="0"  Margin="20,20,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="14"/>
-            <ComboBox  Grid.Row="0" Margin="25,50,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
-            <Label Content="Deployment Name"  Grid.Row="1"  HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" FontSize="14"/>
-            <TextBox Grid.Row="1" Height="25" Margin="25,50,0,0" TextWrapping="Wrap" Text=".Net Test deploy" HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" FontSize="14" Opacity="0.8"/>
-            <Label Content="Specify local file directory *"  Grid.Row="2"  HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" FontSize="14"/>
-            <Button x:Name="BrowseLocalFolderButton" Content="Browse...." Grid.Row="2" HorizontalAlignment="Left" Margin="220,50,0,0" VerticalAlignment="Top" Width="100" Click="Browse_Folder_Click" Height="23"/>
-            <TextBox x:Name="LocalFolderPathText" Text="C:\" Grid.Row="2" Height="25" Margin="25,50,0,0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" FontSize="14" Opacity="0.8"/>
+            <Label Content="AWS Profile"  Grid.Row="0"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+            <ComboBox x:Name="AwsProfileComboBox"  Grid.Row="0" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
+            <Label Content="AWS Region"  Grid.Row="1"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+            <ComboBox x:Name="AwsRegionComboBox"  Grid.Row="1" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
+            <Label Content="Deployment Project"  Grid.Row="2"  HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top"/>
+            <ComboBox x:Name="DeploymentProjectComboBox"  Grid.Row="2" Margin="25,25,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
+            <Label Content="Deployment Name"  Grid.Row="3"  HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top"/>
+            <TextBox x:Name="DeploymentNameTextBox" Grid.Row="3" Height="25" Margin="25,25,0,0" TextWrapping="Wrap"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"  Opacity="0.8"/>
+            <GroupBox Header="Notice - Manual Configuration" Grid.Row="4" Height="100" Margin="20,0,30,0" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,0,0,0" TextWrapping="Wrap" Text="Advanced configuration (virtual private cloud, subdomain, database, etc) may be managed by directly editing the JSON file. (placeholder copy)" />
+            </GroupBox>
+            <Button Content="Next" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,30,20" VerticalAlignment="Bottom" Width="80" Click="Next_Button_Click_1"/>
+            <Button Content="Back" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,120,20" VerticalAlignment="Bottom" Width="80" IsEnabled="False"/>
         </Grid>
 
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="628,321,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_2"/>
-        <Button x:Name="AdvanceButton" Content="Advance" HorizontalAlignment="Left" Margin="729,321,0,0" VerticalAlignment="Top" Width="75" Click="AdvanceButton_Click"/>
-        <Button x:Name="GoBackButton" Content="Back" HorizontalAlignment="Left" Margin="729,321,0,0" VerticalAlignment="Top" Width="75" Visibility="Hidden" Click="GoBackButton_Click"/>
-
-        <GroupBox x:Name="AdSettingGroup" Header="AD Settings" HorizontalAlignment="Left" Height="180" Margin="50,150,0,0" VerticalAlignment="Top" Width="379" Visibility="Hidden">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
+        <Grid x:Name="DirectoryServicesGrid" Visibility="Hidden" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="0" Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+            <Label Content="Directory services"  Grid.Row="0"  Margin="20,20,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="14" FontWeight="Bold"/>
+            <TextBlock Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,50,20,0" TextWrapping="Wrap" Text="The directory in which you want to allow authorized user to authenticate with this application using Windows Authentication. &#xD;&#xA;Note: only AWS managed services are supported." />
+            <CheckBox Grid.Row="1" Content="Connect to AWS managed Active Directory" HorizontalAlignment="Left" Margin="25,10,0,0" VerticalAlignment="Top" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" />
+            <Grid x:Name="ADGrid" Grid.Row="2" Visibility="Hidden" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-
-                <Label x:Name="directoryIdLabel" Content="directoryId" Grid.Row="0" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                <TextBox x:Name="directoryIdText" HorizontalAlignment="Left" Grid.Row="0" Height="23" Margin="120,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                <Label x:Name="domainSecretsArnLabel" Content="domainSecretsArn" Grid.Row="1" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="domainSecretsArnText" Grid.Row="1" HorizontalAlignment="Left" Height="23" Margin="120,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                <Label x:Name="domainDNSNameLabel" Content="domainDNSName" Grid.Row="2" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                <TextBox x:Name="domainDNSNameText" HorizontalAlignment="Left" Grid.Row="2" Height="23" Margin="120,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                <Label x:Name="domainNetBIOSNameLabel" Content="domainNetBIOSName" Grid.Row="3" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="domainNetBIOSNameText" Grid.Row="3" HorizontalAlignment="Left" Height="23" Margin="120,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                <Label x:Name="servicePrincipalNameLabel" Content="servicePrincipalName" Grid.Row="4" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="servicePrincipalNameText" Grid.Row="4" HorizontalAlignment="Left" Height="23" Margin="120,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-                <Label x:Name="passwordRotationLabel" Content="PasswordRotation" Grid.Row="5" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
-                <CheckBox x:Name="passwordRotationCheckBox" Grid.Row="5" HorizontalAlignment="Left" Margin="150,5,0,0" VerticalAlignment="Top"/>
+                <Label  Grid.Row="0" Content="Active directory Name" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" />
+                <Label  Grid.Row="0" Content="Chose the active directory your application uses" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" />
+                <ComboBox x:Name="ADNameBox" Grid.Row="0"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,45,0,0"  Width="250" SelectionChanged="ADNameBox_SelectionChanged"/>
+                <Label  Grid.Row="1" Content="Directory ID" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" />
+                <TextBox x:Name="ADIdBox" Grid.Row="1" Height="23" Margin="25,25,0,0" TextWrapping="Wrap"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="250"  IsReadOnly="True"/>
+                <Label  Grid.Row="2" Content="Secrets Manager ARN that has AD username and password" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" />
+                <ComboBox x:Name="SecretArnBox" Grid.Row="2"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,25,0,0"  Width="250"/>
+                
+                <Label  Grid.Row="3" Content="Service Principal Name (only keytab files are needed for now) " HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" />
+                <TextBox x:Name="SecretPrincipalBox" Grid.Row="3" Height="23" Margin="25,25,0,0" TextWrapping="Wrap"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="250"  />
             </Grid>
-        </GroupBox>
-        
+            
+            <Button Content="Next" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,30,20" VerticalAlignment="Bottom" Width="80" Click="Next_Button_Click_2"/>
+            <Button Content="Back" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,120,20" VerticalAlignment="Bottom" Width="80" Click="Back_Click_2"/>
+        </Grid>
+
+        <Grid x:Name="AdvancedSettingsGrid" Visibility="Hidden" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="0" Background="White">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="60"/>
+            </Grid.RowDefinitions>
+            <Label Content="Virtual Private Cloud (VPC) ID"  Grid.Row="0"  Margin="20,20,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="14" FontWeight="Bold"/>
+            <TextBlock Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,50,20,0" TextWrapping="Wrap" Text="Provision a logically section of the AWS cloud to lauch AWS resources. The VPC in which .Net application will be deployed on." />
+            <ComboBox x:Name="VpcBox" Grid.Row="0"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,100,0,0"  Width="250" SelectionChanged="VpcBox_SelectionChanged"/>
+            <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,10,20,0" TextWrapping="Wrap" Text="Provision a logically section of the AWS cloud to lauch AWS resources. The VPC in which .Net application will be deployed on." />
+            <Label Content="VPC subnets"  Grid.Row="1"  Margin="20,50,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+            <ComboBox x:Name="VpcSubnetsBox" Grid.Row="1"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,75,0,0"  Width="250"/>
+            <Label Content="Manual configuration with JSON editing"  Grid.Row="2"  Margin="20,0,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="14" FontWeight="Bold"/>
+            <TextBlock Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Provision a logically section of the AWS cloud to lauch AWS resources. The VPC in which .Net application will be deployed on." />
+            <Button Content="Deploy" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,30,20" VerticalAlignment="Bottom" Width="80" Click="Next_Button_Click_3"/>
+            <Button Content="Back" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,120,20" VerticalAlignment="Bottom" Width="80" Click="Back_Button_Click_3"/>
+        </Grid>
+
     </Grid>
 </ui:DialogWindow>

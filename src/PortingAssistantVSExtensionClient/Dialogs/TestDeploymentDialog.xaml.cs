@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using PortingAssistantVSExtensionClient.Models;
+using System.Windows.Media;
+using System.Linq;
+using Amazon;
 
 namespace PortingAssistantVSExtensionClient.Dialogs
 {
@@ -20,72 +23,236 @@ namespace PortingAssistantVSExtensionClient.Dialogs
     /// </summary>
     public partial class TestDeploymentDialog : DialogWindow
     {
+        private const string SELECTED_BACKGROUND_COLOR = "#FFE5E5E5";
         public DeploymentParameters parameters { set; get; }
         private readonly UserSettings _userSettings;
+        private readonly string SolutionPath;
+        private Dictionary<string, string> directories = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> projectNames;
 
         private static TestDeploymentDialog Instance;
-        public TestDeploymentDialog()
+        public TestDeploymentDialog(string solutionPath)
         {
             InitializeComponent();
             _userSettings = UserSettings.Instance;
-            parameters = new DeploymentParameters();
+            this.SolutionPath = solutionPath;
             this.Title = "Test Deployment";
+            DeploymentNameTextBox.Text = GetSolutionName(SolutionPath);
+            var projectFiles = SolutionUtils.GetProjectPath(SolutionPath);
+            projectNames = projectFiles.Where(p => p.Length != 0).ToDictionary(p => GetProjectName(p), p => p);
+
+            //init profile
+            List<string> profiles = AwsUtils.ListProfiles();
+            foreach (string profile in profiles)
+            {
+                AwsProfileComboBox.Items.Add(profile);
+            }
+            if(profiles != null && profiles.Count != 0)
+            {
+                AwsProfileComboBox.SelectedValue = profiles.First();
+            }
+
+            //init project
+            foreach (string projectName in projectNames.Keys)
+            {
+                DeploymentProjectComboBox.Items.Add(projectName);
+            }
+
+            foreach (var region in RegionEndpoint.EnumerableAllRegions)
+            {
+                AwsRegionComboBox.Items.Add(region.DisplayName);
+            }
+
+            directories = AwsUtils.ListActiveDirectories();
+            foreach (var directoryName in directories.Keys)
+            {
+               ADNameBox.Items.Add(directoryName);
+            }
+
+            List<string> arns = AwsUtils.ListSecretArns();
+            foreach (var arn in arns)
+            {
+                SecretArnBox.Items.Add(arn);
+            }
+
+            List<string> vpcs = AwsUtils.ListVpcIds();
+            foreach (var vpc in vpcs)
+            {
+                VpcBox.Items.Add(vpc);
+            }
         }
 
-        public static DeploymentParameters GetParameters()
+
+        private string GetProjectName(string projectPath)
         {
-            TestDeploymentDialog testDeploymenttDialog = GetInstance();
+            return Path.GetFileName(projectPath).Replace(".csproj", "");
+        }
+
+        private string GetSolutionName(string solutionPath)
+        {
+            return Path.GetFileName(solutionPath).Replace(".sln", "");
+        }
+        public static DeploymentParameters GetParameters(string solutionPath)
+        {
+            TestDeploymentDialog testDeploymenttDialog = GetInstance(solutionPath);
             testDeploymenttDialog.ShowModal();
             return testDeploymenttDialog.parameters;
         }
 
-        private static TestDeploymentDialog GetInstance()
+        private static TestDeploymentDialog GetInstance(string solutionPath)
         {
             if (Instance == null)
             {
-                Instance = new TestDeploymentDialog();
+                Instance = new TestDeploymentDialog(solutionPath);
             }
             return Instance;
         }
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void Next_Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.Content = "deploying....";
-            Close();
+            HideGeneralSettings(true);
+            HideDirectorySettings(false);
+            HideAdvanceSettings(true);
+            
         }
 
-        private void AdvanceButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void Next_Button_Click_2(object sender, System.Windows.RoutedEventArgs e)
         {
-            AdvanceButton.Visibility = System.Windows.Visibility.Hidden;
-            GoBackButton.Visibility = System.Windows.Visibility.Visible;
-            AdSettingGroup.Visibility = System.Windows.Visibility.Visible;
+            HideGeneralSettings(true);
+            HideDirectorySettings(true);
+            HideAdvanceSettings(false);
         }
 
-        private void GoBackButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void Back_Click_2(object sender, System.Windows.RoutedEventArgs e)
         {
-            AdvanceButton.Visibility = System.Windows.Visibility.Visible;
-            GoBackButton.Visibility = System.Windows.Visibility.Hidden;
-            AdSettingGroup.Visibility = System.Windows.Visibility.Hidden;
+            HideGeneralSettings(false);
+            HideDirectorySettings(true);
+            HideAdvanceSettings(true);
         }
 
-        private void Button_Click_2(object sender, System.Windows.RoutedEventArgs e)
+        private void Next_Button_Click_3(object sender, System.Windows.RoutedEventArgs e)
         {
-            Close();
-        }
-
-        private void Browse_Folder_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
-
-            if (openFolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //validations
+            parameters = new DeploymentParameters()
             {
-                LocalFolderPathText.Text = openFolderDialog.SelectedPath;
-            }
-            parameters.buildFolderPath = LocalFolderPathText.Text;
+                profileName = (string)AwsProfileComboBox.SelectedValue,
+                enableMetrics = _userSettings.EnabledMetrics,
+                buildFolderPath = projectNames[(string)DeploymentProjectComboBox.SelectedValue],
+                directoryId = ADIdBox.Text,
+                domainSecretsArn = (string)SecretArnBox.SelectedValue,
+                servicePrincipalName = SecretPrincipalBox.Text,
+                initDeploymentTool = true
+            };
+            Close();
+        }
 
-            var oldProfileName = _userSettings.DeploymentProfileName;
-            parameters.initDeploymentTool = oldProfileName == "current_profile" ? false : true;
-            parameters.enableMetrics = _userSettings.EnabledMetrics;
+        private void Back_Button_Click_3(object sender, System.Windows.RoutedEventArgs e)
+        {
+            HideGeneralSettings(true);
+            HideDirectorySettings(false);
+            HideAdvanceSettings(true);
+        }
+
+
+        private void AdvancedSettingsFrame_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (AdvancedSettingsGrid.Visibility == System.Windows.Visibility.Visible) return;
+            HideGeneralSettings(true);
+            HideDirectorySettings(true);
+            HideAdvanceSettings(false);
+        }
+
+        private void DirectoryServiceFrame_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (DirectoryServicesGrid.Visibility == System.Windows.Visibility.Visible) return;
+            HideGeneralSettings(true);
+            HideDirectorySettings(false);
+            HideAdvanceSettings(true);
+        }
+
+        private void GeneralSettingsFrame_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (GeneralSettingGrid.Visibility == System.Windows.Visibility.Visible) return;
+            HideGeneralSettings(false);
+            HideDirectorySettings(true);
+            HideAdvanceSettings(true);
+        }
+
+        private void HideGeneralSettings(bool hide)
+        {
+            if (hide)
+            {
+                GeneralSettingGrid.Visibility = System.Windows.Visibility.Hidden;
+                GeneralSettingsFrame.Fill = null;
+            }
+            else
+            {
+                GeneralSettingGrid.Visibility = System.Windows.Visibility.Visible;
+                GeneralSettingsFrame.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SELECTED_BACKGROUND_COLOR));
+            }
+        }
+
+        private void HideDirectorySettings(bool hide)
+        {
+            if (hide)
+            {
+                DirectoryServicesGrid.Visibility = System.Windows.Visibility.Hidden;
+                DirectoryServiceFrame.Fill = null;
+            }
+            else
+            {
+                DirectoryServicesGrid.Visibility = System.Windows.Visibility.Visible;
+                DirectoryServiceFrame.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SELECTED_BACKGROUND_COLOR));
+            }
+        }
+
+        private void HideAdvanceSettings(bool hide)
+        {
+            if (hide)
+            {
+                AdvancedSettingsGrid.Visibility = System.Windows.Visibility.Hidden;
+                AdvancedSettingsFrame.Fill = null;
+            }
+            else
+            {
+                AdvancedSettingsGrid.Visibility = System.Windows.Visibility.Visible;
+                AdvancedSettingsFrame.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SELECTED_BACKGROUND_COLOR));
+            }
+        }
+
+        private void CheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ADGrid.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        private void CheckBox_Unchecked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ADGrid.Visibility = System.Windows.Visibility.Hidden;
+        }
+
+        private void VpcBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            VpcSubnetsBox.IsEnabled = false;
+            LoadSubnets((string)VpcBox.SelectedValue);
+            VpcSubnetsBox.IsEnabled = true;
+        }
+
+        private void LoadSubnets(string vpcId)
+        {
+            VpcSubnetsBox.Items.Clear();
+            var subnets = AwsUtils.ListVpcSubnets(vpcId);
+            foreach(var subnet in subnets)
+            {
+                VpcSubnetsBox.Items.Add(subnet);
+            }
+        }
+
+        private void ADNameBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+             if(directories.TryGetValue((string) ADNameBox.SelectedValue, out var directoryId))
+            {
+                ADIdBox.Text = directoryId;
+            }
         }
     }
 }

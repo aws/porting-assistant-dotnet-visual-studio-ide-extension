@@ -17,6 +17,15 @@
           "AWSSDK.Core": "[3.7.3.5, 4.0.0)"
         }
       },
+      "AWSSDK.DirectoryService": {
+        "type": "Direct",
+        "requested": "[3.7.1.32, )",
+        "resolved": "3.7.1.32",
+        "contentHash": "H7UrGOJa1AI7Kkttv6j72GHVWOYkTURWl5V+nfWOhTq7DTgND2w6zXeP+SM5wwYyyl4Tr8ngCryJtb1DjA5TQw==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
+        }
+      },
       "AWSSDK.EC2": {
         "type": "Direct",
         "requested": "[3.7.34.1, )",
@@ -28,11 +37,20 @@
       },
       "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.3.14, )",
-        "resolved": "3.7.3.14",
-        "contentHash": "z64h727LhLqSvZvBFUYB0WsxYeYd2vDtIMWAmfnh2eTNThODyS7FW8aaiW1aVkNVGE3i+qdsKZx08ELxo0Y2/A==",
+        "requested": "[3.7.3.17, )",
+        "resolved": "3.7.3.17",
+        "contentHash": "fzrg1XK98wizUiLq9+oMN43xvRpcTPmOhsBdk6iVpXTxmJb/z9D2ScB5qCQ9tMeu3Lj2zpQvg77eG7UEWAA2CQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.3.21, 4.0.0)"
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
+        }
+      },
+      "AWSSDK.SecretsManager": {
+        "type": "Direct",
+        "requested": "[3.7.1.37, )",
+        "resolved": "3.7.1.37",
+        "contentHash": "PnRuoKDpYdBWQgJBmMri8mPU3nfuwlczzV46aHeYqkSik1XkmY7QZ4KsEY+Odrb/B4umCNo/7qTQ7O0r5M2v/Q==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.24, 4.0.0)"
         }
       },
       "Microsoft.VisualStudio.SDK": {
@@ -126,8 +144,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.3.22",
-        "contentHash": "6rLAnit68QuCQ/U2GCIZjSQ6XUMSKZ691IJ6Zl9Wnn4Z0lmkfZKTNxCQV4tj2FjooH5bSlxwAIp7dnlx2OvYYw=="
+        "resolved": "3.7.3.24",
+        "contentHash": "zsFgTcreatZxnVo3K23kKGr2rFiencqoo8sBuFiqGA89EEPBKWZo7+1HwWQR1GZyvR4WoiAZUEslZ+KM6sUunw=="
       },
       "EnvDTE": {
         "type": "Transitive",

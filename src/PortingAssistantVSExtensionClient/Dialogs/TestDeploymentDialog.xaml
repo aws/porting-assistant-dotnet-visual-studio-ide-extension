@@ -31,8 +31,8 @@
                 <RowDefinition Height="60"/>
             </Grid.RowDefinitions>
             <Label Content="AWS Profile"  Grid.Row="0"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-            <ComboBox x:Name="AwsProfileComboBox"  Grid.Row="0" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
-            <Label x:Name="ProfileErrorHint"  Content=""  Grid.Row="0"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />
+            <ComboBox x:Name="AwsProfileComboBox"  Grid.Row="0" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" SelectionChanged="AwsProfileComboBox_SelectionChanged"/>
+            <Label x:Name="ProfileErrorHint"  Content=""  Grid.Row="0"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />            
             <Label Content="AWS Region"  Grid.Row="1"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
             <ComboBox x:Name="AwsRegionComboBox"  Grid.Row="1" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
             <Label x:Name="RegioneErrorHint"  Content=""  Grid.Row="1"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />
@@ -71,11 +71,11 @@
                 <TextBox x:Name="ADIdBox" Grid.Row="1" Height="23" Margin="25,25,0,0" TextWrapping="Wrap"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="250"  IsReadOnly="True"/>
                 <Label  Grid.Row="2" Content="Secrets Manager ARN that has AD username and password" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" />
                 <ComboBox x:Name="SecretArnBox" Grid.Row="2"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,25,0,0"  Width="250"/>
-                
+
                 <Label  Grid.Row="3" Content="Service Principal Name (only keytab files are needed for now) " HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" />
                 <TextBox x:Name="SecretPrincipalBox" Grid.Row="3" Height="23" Margin="25,25,0,0" TextWrapping="Wrap"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="250"  />
             </Grid>
-            
+
             <Button Content="Next" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,30,20" VerticalAlignment="Bottom" Width="80" Click="Next_Button_Click_2"/>
             <Button Content="Back" Grid.Row="3" HorizontalAlignment="Right" Margin="0,0,120,20" VerticalAlignment="Bottom" Width="80" Click="Back_Click_2"/>
         </Grid>

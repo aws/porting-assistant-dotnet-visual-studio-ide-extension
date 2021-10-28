@@ -47,7 +47,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 AwsProfileComboBox.Items.Add(profile);
             }
-            if(profiles != null && profiles.Count != 0)
+            if (profiles != null && profiles.Count != 0)
             {
                 AwsProfileComboBox.SelectedValue =_userSettings.AWSProfileName;
             }
@@ -57,40 +57,17 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 DeploymentProjectComboBox.Items.Add(projectName);
             }
-
-            foreach (var region in RegionEndpoint.EnumerableAllRegions)
-            {
-                AwsRegionComboBox.Items.Add(region.DisplayName);
-            }
-
-            directories = AwsUtils.ListActiveDirectories();
-            foreach (var directoryName in directories.Keys)
-            {
-               ADNameBox.Items.Add(directoryName);
-            }
-
-            List<string> arns = AwsUtils.ListSecretArns();
-            foreach (var arn in arns)
-            {
-                SecretArnBox.Items.Add(arn);
-            }
-
-            List<string> vpcs = AwsUtils.ListVpcIds();
-            foreach (var vpc in vpcs)
-            {
-                VpcBox.Items.Add(vpc);
-            }
         }
 
 
         private string GetProjectName(string projectPath)
         {
-            return Path.GetFileName(projectPath).Replace(".csproj", "");
+            return Path.GetFileNameWithoutExtension(projectPath);
         }
 
         private string GetSolutionName(string solutionPath)
         {
-            return Path.GetFileName(solutionPath).Replace(".sln", "");
+            return Path.GetFileNameWithoutExtension(solutionPath);
         }
         public static DeploymentParameters GetParameters(string solutionPath)
         {
@@ -241,15 +218,16 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         private void VpcBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             VpcSubnetsBox.IsEnabled = false;
-            LoadSubnets((string)VpcBox.SelectedValue);
+            string profleNameSelected = (string)AwsProfileComboBox.SelectedValue;
+            LoadSubnets((string)VpcBox.SelectedValue, profleNameSelected);
             VpcSubnetsBox.IsEnabled = true;
         }
 
-        private void LoadSubnets(string vpcId)
+        private void LoadSubnets(string vpcId, string profileName)
         {
             VpcSubnetsBox.Items.Clear();
-            var subnets = AwsUtils.ListVpcSubnets(vpcId);
-            foreach(var subnet in subnets)
+            var subnets = AwsUtils.ListVpcSubnets(vpcId, profileName);
+            foreach (var subnet in subnets)
             {
                 VpcSubnetsBox.Items.Add(subnet);
             }
@@ -257,7 +235,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void ADNameBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-             if(directories.TryGetValue((string) ADNameBox.SelectedValue, out var directoryId))
+            if (directories.TryGetValue((string)ADNameBox.SelectedValue, out var directoryId))
             {
                 ADIdBox.Text = directoryId;
             }
@@ -320,6 +298,32 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
             return IsValid;
 
+        private void AwsProfileComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            string profleNameSelected = (string)AwsProfileComboBox.SelectedValue;
+
+            foreach (var region in RegionEndpoint.EnumerableAllRegions)
+            {
+                AwsRegionComboBox.Items.Add(region.DisplayName);
+            }
+
+            directories = AwsUtils.ListActiveDirectories(profleNameSelected);
+            foreach (var directoryName in directories.Keys)
+            {
+                ADNameBox.Items.Add(directoryName);
+            }
+
+            List<string> arns = AwsUtils.ListSecretArns(profleNameSelected);
+            foreach (var arn in arns)
+            {
+                SecretArnBox.Items.Add(arn);
+            }
+
+            List<string> vpcs = AwsUtils.ListVpcIds(profleNameSelected);
+            foreach (var vpc in vpcs)
+            {
+                VpcBox.Items.Add(vpc);
+            }
         }
     }
 }

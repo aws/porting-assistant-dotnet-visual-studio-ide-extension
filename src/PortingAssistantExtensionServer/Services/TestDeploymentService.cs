@@ -73,10 +73,10 @@ namespace PortingAssistantExtensionServer
                 return 0;
             }
 
-            _logger.LogInformation($"start excuting ${request} .....");
+            _logger.LogInformation($"start excuting ${request.fileName + String.Join(" ", request.arguments)} .....");
             //CreateClientConnectionAsync(request.PipeName);
             var exitcode = RemoteCallUtils.Excute(request.fileName, request.arguments, OutputDataHandler);
-            _logger.LogInformation($"finish excuting ${request} with exit code {exitcode}");
+            _logger.LogInformation($"finish excuting ${request.fileName + String.Join(" ", request.arguments)} with exit code {exitcode}");
 
             return exitcode;
         }

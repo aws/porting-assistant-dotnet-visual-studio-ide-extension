@@ -53,7 +53,7 @@ namespace PortingAssistantVSExtensionClient.Utils
             return null;
         }
 
-        public static async Task<string> CreateDefaultBucketAsync(String profileName, String bucketName)
+        public static async Task<string> CreateDefaultBucketAsync(string profileName, string bucketName)
         {
             AWSCredentials credentials = GetAWSCredentials(profileName);
             using (var s3Client = new AmazonS3Client(credentials))
@@ -61,17 +61,24 @@ namespace PortingAssistantVSExtensionClient.Utils
                 // retry 3 times to create a random bucket
                 for (int i = 0; i < 3; i++)
                 {
-                    var uniqueBuecketName = bucketName + "-" + Path.GetRandomFileName();
-                    if (!await AmazonS3Util.DoesS3BucketExistV2Async(s3Client, bucketName))
+                    try
                     {
-                        var putBucketRequest = new PutBucketRequest
+                        var uniqueBuecketName = (bucketName + "-" + Path.GetRandomFileName()).ToLower();
+                        if (!await AmazonS3Util.DoesS3BucketExistV2Async(s3Client, uniqueBuecketName))
                         {
-                            BucketName = bucketName,
-                            UseClientRegion = true
-                        };
+                            var putBucketRequest = new PutBucketRequest
+                            {
+                                BucketName = uniqueBuecketName,
+                                UseClientRegion = true
+                            };
 
-                        PutBucketResponse putBucketResponse = await s3Client.PutBucketAsync(putBucketRequest);
-                        if (putBucketResponse.HttpStatusCode == System.Net.HttpStatusCode.OK) return uniqueBuecketName;
+                            PutBucketResponse putBucketResponse = await s3Client.PutBucketAsync(putBucketRequest);
+                            if (putBucketResponse.HttpStatusCode == System.Net.HttpStatusCode.OK) return uniqueBuecketName;
+                        }
+                    }
+                    catch
+                    {
+                        continue;
                     }
                 }
                 return "";
@@ -127,10 +134,11 @@ namespace PortingAssistantVSExtensionClient.Utils
             return errors;
         }
 
-        public static Dictionary<string, string> ListActiveDirectories()
+        public static Dictionary<string, string> ListActiveDirectories(string profileName)
         {
+            AWSCredentials credentials = GetAWSCredentials(profileName);
             Dictionary<string, string> directories = new Dictionary<string, string>();
-            using (var ds = new AmazonDirectoryServiceClient())
+            using (var ds = new AmazonDirectoryServiceClient(credentials))
             {
                 var directoriesResponse = ds.DescribeDirectories();
                 directories = directoriesResponse.DirectoryDescriptions.ToDictionary(d => d.Name, d => d.DirectoryId);
@@ -138,10 +146,11 @@ namespace PortingAssistantVSExtensionClient.Utils
             return directories;
         }
 
-        public static List<string> ListSecretArns()
+        public static List<string> ListSecretArns(string profileName)
         {
+            AWSCredentials credentials = GetAWSCredentials(profileName);
             List<string> secretArns = new List<string>();
-            using (var asm = new AmazonSecretsManagerClient())
+            using (var asm = new AmazonSecretsManagerClient(credentials))
             {
                 var listSecretsResponse = asm.ListSecrets(new Amazon.SecretsManager.Model.ListSecretsRequest()
                 {
@@ -153,10 +162,11 @@ namespace PortingAssistantVSExtensionClient.Utils
         }
 
 
-        public static List<string> ListVpcIds()
+        public static List<string> ListVpcIds(string profileName)
         {
+            AWSCredentials credentials = GetAWSCredentials(profileName);
             List<string> vpcList = new List<string>();
-            using (var ec2Client = new AmazonEC2Client())
+            using (var ec2Client = new AmazonEC2Client(credentials))
             {
                 var vpcs = ec2Client.DescribeVpcs();
                 vpcList = vpcs.Vpcs.Select(v => v.VpcId).ToList();
@@ -164,10 +174,11 @@ namespace PortingAssistantVSExtensionClient.Utils
             return vpcList;
         }
 
-        public static List<string> ListVpcSubnets(string vpcId)
+        public static List<string> ListVpcSubnets(string vpcId, string profileName)
         {
+            AWSCredentials credential = GetAWSCredentials(profileName);
             List<string> subnetsList = new List<string>();
-            using (var ec2Client = new AmazonEC2Client())
+            using (var ec2Client = new AmazonEC2Client(credential))
             {
                 DescribeSubnetsResponse subnetsResponse = ec2Client.DescribeSubnets(new DescribeSubnetsRequest()
                 {

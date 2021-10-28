@@ -121,13 +121,25 @@ namespace PortingAssistantVSExtensionClient.Commands
             */
 
             var tmpFolder = FilesUtils.GetTmpFolder();
+            var tmpPath = Path.Combine(tmpFolder, "deployment.json");
             var solutionPath = await CommandsCommon.GetSolutionPathAsync();
             DeploymentParameters parameters = TestDeploymentDialog.GetParameters(solutionPath);
 
-            var buildpath = await CommandsCommon.GetBuildOutputPathAsync(@"C:\Users\lwwnz\source\repos\testweb\testweb\testweb.csproj");
             // init deployment tool
             if (parameters.initDeploymentTool) await initDeploymentToolAsync(parameters.profileName, parameters.enableMetrics, tmpFolder);
 
+            await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
+                new TestDeploymentRequest()
+                {
+                    fileName = Common.Constants.DefaultDeploymentTool,
+                    arguments = new List<string> {
+                        "generate",
+                        "app-deployment",
+                        "--generate-cli-skeleton",
+                        "--cli-output-json",
+                        tmpPath
+                    },
+                });
 
             var AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             var ConfigurationFileName = Environment.GetEnvironmentVariable("DeploymentConfiguration") ?? Common.Constants.DefaultDeploymentConfiguration;
@@ -142,10 +154,15 @@ namespace PortingAssistantVSExtensionClient.Commands
             dynamic deploymentconfig = JObject.Parse(File.ReadAllText(deploymentjson));
 
             // configure the depolyment json from the inputs
-            deploymentconfig.applicationName = Path.GetFileName(solutionPath);
+            var buildpath = await CommandsCommon.GetBuildOutputPathAsync(parameters.buildFolderPath);
+
+            deploymentconfig.applicationName = parameters.deployname;
+            deploymentconfig.deploymentSource = "BUILD";
+            deploymentconfig.exposedPorts = configuration.ExposedPorts;
+
+            deploymentconfig.buildDefinitions.buildParameters.sourceType = "NETCORE";
             deploymentconfig.buildDefinitions.buildParameters.buildLocation = buildpath;
 
-            var tmpPath = Path.Combine(tmpFolder, "deployment.json");
             var outputPath = Path.Combine(tmpFolder, "deployment-output.json");
             File.WriteAllText(tmpPath, deploymentconfig.ToString());
 
@@ -184,20 +201,19 @@ namespace PortingAssistantVSExtensionClient.Commands
         private async Task initDeploymentToolAsync(string profileName, bool enableMetrics, string tmpFolder)
         {
             var uniqueBucketName = await AwsUtils.CreateDefaultBucketAsync(profileName, Common.Constants.DefaultDeploymentBucketName);
-            var initJsonPath = FilesUtils.GetInitJsonFilePath(uniqueBucketName, enableMetrics, tmpFolder);
+            var initJsonPath = FilesUtils.GetInitJsonFilePath(uniqueBucketName, enableMetrics, tmpFolder, profileName);
 
-            /*
-            await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
+            var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                 .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                 new TestDeploymentRequest()
                 {
                     fileName = Common.Constants.DefaultDeploymentTool,
                     arguments = new List<string> {
                         "init",
+                        "--init-json-file",
                         initJsonPath
                     },
                 });
-            */
         }
     }
 }

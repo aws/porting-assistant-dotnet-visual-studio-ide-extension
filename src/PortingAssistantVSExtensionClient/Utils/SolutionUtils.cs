@@ -44,7 +44,7 @@ namespace PortingAssistantVSExtensionClient.Utils
 
             foreach (Project project in dte.Solution.Projects)
             {
-                if(project.FullName.Equals(projectPath, StringComparison.OrdinalIgnoreCase))
+                if (project.FullName.Equals(projectPath, StringComparison.OrdinalIgnoreCase))
                 {
                     string fullPath = project.Properties.Item("FullPath").Value.ToString();
                     string outputPath = project.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString();

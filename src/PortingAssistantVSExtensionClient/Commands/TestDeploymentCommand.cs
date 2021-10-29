@@ -97,123 +97,169 @@ namespace PortingAssistantVSExtensionClient.Commands
         /// <param name="e">Event args.</param>
         private async void Execute(object sender, EventArgs e)
         {
-            if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
-            //if (!CommandsCommon.SetupPage()) return;
-            if (!CommandsCommon.IsDeploymentToolExist())
+            try
+            {
+                var tmpFolder = FilesUtils.GetTmpFolder();
+                var solutionPath = await CommandsCommon.GetSolutionPathAsync();
+                var outputPath = Path.Combine(tmpFolder, "deployment-output.json");
+
+                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
+                //if (!CommandsCommon.SetupPage()) return;
+                var IsBuildSucceed = await CommandsCommon.IsBuildSucceedAsync();
+
+                if (!IsBuildSucceed)
+                {
+                    NotificationUtils.ShowErrorMessageBox(package, "Please Build your project before deployment", "Build Failed");
+                    return;
+                }
+
+                // await CheckToolExistAsync();
+
+                var parameters = TestDeploymentDialog.GetParameters(solutionPath);
+
+                // init deployment tool
+                if (parameters.initDeploymentTool)
+                {
+                    await InitDeploymentToolAsync(parameters.profileName, parameters.enableMetrics, tmpFolder);
+                }
+
+                var deployemtJsonPath = await GetDeploymentConfigurationPathAsync(tmpFolder, parameters);
+
+                // deploy
+                var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
+                    .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
+                    new TestDeploymentRequest()
+                    {
+                        fileName = Common.Constants.DefaultDeploymentTool,
+                        arguments = new List<string> {
+                        "generate",
+                        "app-deployment",
+                        "--deploy",
+                        "--input-deployment-files",
+                        deployemtJsonPath,
+                        "--output-file",
+                        outputPath
+                        },
+                    });
+
+                // update results
+                dynamic result = JObject.Parse(File.ReadAllText(outputPath));
+                var status = result.deploymentStatus;
+                var url = result.appEndpoint;
+                if (response.status == 0 && status == "SUCCESS")
+                {
+                    NotificationUtils.ShowInfoMessageBox(package, $"Endpoint: http://{url}", "success deployed");
+                }
+                else
+                {
+                    NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
+                }
+            }
+            catch (Exception ex)
+            {
+                NotificationUtils.ShowErrorMessageBox(package, ex.Message, "failed");
+            }
+        }
+
+        private async Task CheckToolExistAsync()
+        {
+            try
             {
                 var resp = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                 .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                 new TestDeploymentRequest()
                 {
                     fileName = "init",
+                    arguments = new List<string>()
                 });
-                if (resp.status != 0) return;
-            }
+                if (resp.status != 0) throw new Exception("Could not found and Install deployment module");
 
 
-            var IsBuildSucceed = await CommandsCommon.IsBuildSucceedAsync();
-            /*
-            if (!IsBuildSucceed)
-            {
-                NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
-                return;
-            }
-            */
-
-            var tmpFolder = FilesUtils.GetTmpFolder();
-            var tmpPath = Path.Combine(tmpFolder, "deployment.json");
-            var solutionPath = await CommandsCommon.GetSolutionPathAsync();
-            DeploymentParameters parameters = TestDeploymentDialog.GetParameters(solutionPath);
-
-            // init deployment tool
-            if (parameters.initDeploymentTool) await initDeploymentToolAsync(parameters.profileName, parameters.enableMetrics, tmpFolder);
-
-            await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
-                new TestDeploymentRequest()
+                if (CommandsCommon.GetEulaType() != "AWS")
                 {
-                    fileName = Common.Constants.DefaultDeploymentTool,
-                    arguments = new List<string> {
+                    // TODO Pop EULA
+
+                    // Update Eula
+                    CommandsCommon.UpdateEula("AWS");
+                }
+            }
+            catch
+            {
+                throw new Exception("Check tool existence failed");
+            }
+        }
+
+        private async Task InitDeploymentToolAsync(string profileName, bool enableMetrics, string tmpFolder)
+        {
+            try
+            {
+                var uniqueBucketName = await AwsUtils.CreateDefaultBucketAsync(profileName, Common.Constants.DefaultDeploymentBucketName);
+                var initJsonPath = FilesUtils.GetInitJsonFilePath(uniqueBucketName, enableMetrics, tmpFolder, profileName);
+
+                var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
+                    .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
+                    new TestDeploymentRequest()
+                    {
+                        fileName = Common.Constants.DefaultDeploymentTool,
+                        arguments = new List<string> {
+                        "init",
+                        "--init-json-file",
+                        initJsonPath
+                        },
+                    });
+            }
+            catch
+            {
+                throw new Exception("init deployment tool failed");
+            }
+        }
+
+        private async Task<string> GetDeploymentConfigurationPathAsync(string tmpFolder, DeploymentParameters parameters)
+        {
+            try
+            {
+                var tmpPath = Path.Combine(tmpFolder, "deployment.json");
+                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
+                    new TestDeploymentRequest()
+                    {
+                        fileName = Common.Constants.DefaultDeploymentTool,
+                        arguments = new List<string> {
                         "generate",
                         "app-deployment",
                         "--generate-cli-skeleton",
                         "--cli-output-json",
                         tmpPath
-                    },
-                });
+                        },
+                    });
 
-            var AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var ConfigurationFileName = Environment.GetEnvironmentVariable("DeploymentConfiguration") ?? Common.Constants.DefaultDeploymentConfiguration;
-            var ConfigurationPath = Path.Combine(
-                AssemblyPath,
-                Common.Constants.ResourceFolder,
-                ConfigurationFileName);
+                var AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                var ConfigurationFileName = Environment.GetEnvironmentVariable("DeploymentConfiguration") ?? Common.Constants.DefaultDeploymentConfiguration;
+                var ConfigurationPath = Path.Combine(
+                    AssemblyPath,
+                    Common.Constants.ResourceFolder,
+                    ConfigurationFileName);
 
-            var deploymentjson = Path.Combine(AssemblyPath, Common.Constants.ResourceFolder, "deployment.json");
+                var deploymentjson = Path.Combine(AssemblyPath, Common.Constants.ResourceFolder, "deployment.json");
 
-            dynamic configuration = JObject.Parse(File.ReadAllText(ConfigurationPath));
-            dynamic deploymentconfig = JObject.Parse(File.ReadAllText(deploymentjson));
+                dynamic configuration = JObject.Parse(File.ReadAllText(ConfigurationPath));
+                dynamic deploymentconfig = JObject.Parse(File.ReadAllText(deploymentjson));
 
-            // configure the depolyment json from the inputs
-            var buildpath = await CommandsCommon.GetBuildOutputPathAsync(parameters.buildFolderPath);
+                // configure the depolyment json from the inputs
+                var buildpath = await CommandsCommon.GetBuildOutputPathAsync(parameters.selectedProject);
 
-            deploymentconfig.applicationName = parameters.deployname;
-            deploymentconfig.deploymentSource = "BUILD";
-            deploymentconfig.exposedPorts = configuration.ExposedPorts;
+                deploymentconfig.applicationName = parameters.deployname;
+                deploymentconfig.deploymentSource = "BUILD";
+                deploymentconfig.exposedPorts = configuration.ExposedPorts;
 
-            deploymentconfig.buildDefinitions.buildParameters.sourceType = "NETCORE";
-            deploymentconfig.buildDefinitions.buildParameters.buildLocation = buildpath;
-
-            var outputPath = Path.Combine(tmpFolder, "deployment-output.json");
-            File.WriteAllText(tmpPath, deploymentconfig.ToString());
-
-            // deploy
-            var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
-                .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
-                new TestDeploymentRequest()
-                {
-                    fileName = Common.Constants.DefaultDeploymentTool,
-                    arguments = new List<string> {
-                        "generate",
-                        "app-deployment",
-                        "--deploy",
-                        "--input-deployment-files",
-                        tmpPath,
-                        "--output-file",
-                        outputPath
-                    },
-                });
-
-            // update results
-
-            dynamic result = JObject.Parse(File.ReadAllText(outputPath));
-            var status = result.deploymentStatus;
-            var url = result.appEndpoint;
-            if (response.status == 0)
-            {
-                NotificationUtils.ShowInfoMessageBox(package, "success", "success");
+                deploymentconfig.buildDefinitions.buildParameters.sourceType = "NETCORE";
+                deploymentconfig.buildDefinitions.buildParameters.buildLocation = buildpath;
+                File.WriteAllText(tmpPath, deploymentconfig.ToString());
+                return tmpPath;
             }
-            else
+            catch
             {
-                NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
+                throw new Exception("Generate Deployement Configuration failed");
             }
-        }
-
-        private async Task initDeploymentToolAsync(string profileName, bool enableMetrics, string tmpFolder)
-        {
-            var uniqueBucketName = await AwsUtils.CreateDefaultBucketAsync(profileName, Common.Constants.DefaultDeploymentBucketName);
-            var initJsonPath = FilesUtils.GetInitJsonFilePath(uniqueBucketName, enableMetrics, tmpFolder, profileName);
-
-            var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
-                .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
-                new TestDeploymentRequest()
-                {
-                    fileName = Common.Constants.DefaultDeploymentTool,
-                    arguments = new List<string> {
-                        "init",
-                        "--init-json-file",
-                        initJsonPath
-                    },
-                });
         }
     }
 }

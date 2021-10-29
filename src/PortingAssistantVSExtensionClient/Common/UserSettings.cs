@@ -20,7 +20,7 @@ namespace PortingAssistantVSExtensionClient.Options
 
         private bool _isLoaded;
         public bool ShowWelcomePage;
-        public bool IsDeployementExist;
+        public string EULAType;
         public bool EnabledMetrics;
         public bool EnabledContinuousAssessment;
         public bool ApplyPortAction;
@@ -42,6 +42,7 @@ namespace PortingAssistantVSExtensionClient.Options
             this._languageServerStatus = new TaskCompletionSource<LanguageServerStatus>();
             this._languageServerStatus.SetResult(LanguageServerStatus.NOT_RUNNING);
             this.SolutionAssessed = false;
+            this.EULAType = "";
         }
 
         public void SetLanguageServerStatus(LanguageServerStatus status)
@@ -105,10 +106,10 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("DeploymentProfileName", profileName);
         }
 
-        public void UpdateIsDeploymentToolExist(bool IsDeployementExist)
+        public void UpdateEula(string eulaType)
         {
-            this.IsDeployementExist = IsDeployementExist;
-            Write("IsDeployementExist", IsDeployementExist);
+            this.EULAType = eulaType;
+            Write("EULAType", eulaType);
         }
         public void SaveAllSettings()
         {
@@ -119,7 +120,7 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("TargetFramework", TargetFramework);
             Write("ApplyPortAction", ApplyPortAction);
             Write("DeploymentProfileName", DeploymentProfileName);
-            Write("IsDeployementExist", IsDeployementExist);
+            Write("EULAType", EULAType);
         }
 
         public void LoadingAllSettings()
@@ -130,7 +131,7 @@ namespace PortingAssistantVSExtensionClient.Options
             AWSProfileName = (string)Read("AWSProfileName", "");
             ApplyPortAction = (bool)Read("ApplyPortAction", false);
             TargetFramework = (string)Read("TargetFramework", TargetFrameworkType.NO_SELECTION);
-            IsDeployementExist = (bool)Read("IsDeployementExist", false);
+            EULAType = (string)Read("EULAType", "");
             DeploymentProfileName = (string)Read("DeploymentProfileName", "");
             RootCacheFolder = Path.GetTempPath();
         }

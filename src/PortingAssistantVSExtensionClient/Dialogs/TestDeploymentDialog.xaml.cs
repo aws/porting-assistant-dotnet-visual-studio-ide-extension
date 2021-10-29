@@ -49,7 +49,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
             if (profiles != null && profiles.Count != 0)
             {
-                AwsProfileComboBox.SelectedValue =_userSettings.AWSProfileName;
+                AwsProfileComboBox.SelectedValue = _userSettings.AWSProfileName;
             }
 
             //init project
@@ -103,7 +103,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 HideDirectorySettings(true);
                 HideAdvanceSettings(false);
             }
-                
+
         }
 
         private void Back_Click_2(object sender, System.Windows.RoutedEventArgs e)
@@ -115,18 +115,26 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Next_Button_Click_3(object sender, System.Windows.RoutedEventArgs e)
         {
+            //validations
             if (IsInputValid())
             {
+                var selectedProfileName = (string)AwsProfileComboBox.SelectedValue;
+                var selectedProject = (string)DeploymentProjectComboBox.SelectedValue;
+                var initTool = selectedProfileName != _userSettings.AWSProfileName;
                 parameters = new DeploymentParameters()
                 {
-                    profileName = (string)AwsProfileComboBox.SelectedValue,
+                    profileName = selectedProfileName,
                     enableMetrics = _userSettings.EnabledMetrics,
-                    buildFolderPath = projectNames[(string)DeploymentProjectComboBox.SelectedValue],
+                    deployname = DeploymentNameTextBox.Text,
+                    selectedProject = projectNames[selectedProject],
                     directoryId = ADIdBox.Text,
                     domainSecretsArn = (string)SecretArnBox.SelectedValue,
                     servicePrincipalName = SecretPrincipalBox.Text,
-                    initDeploymentTool = true
+                    vpcId = VpcBox.Text,
+                    initDeploymentTool = initTool
                 };
+
+                if (initTool) _userSettings.UpdateDeploymentProfileName(selectedProfileName);
                 Close();
             }
         }
@@ -287,16 +295,17 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
             else if (AdvancedSettingsGrid.Visibility == System.Windows.Visibility.Visible)
             {
-                if(VpcBox.SelectedIndex == -1)
+                if (VpcBox.SelectedIndex == -1)
                 {
                     IsValid = false;
                 }
-                if(VpcSubnetsBox.SelectedIndex == -1)
+                if (VpcSubnetsBox.SelectedIndex == -1)
                 {
                     IsValid = false;
                 }
             }
             return IsValid;
+        }
 
         private void AwsProfileComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {

@@ -31,7 +31,7 @@ namespace PortingAssistantExtensionServer.Handlers
 
         public async Task<TestDeploymentResponse> Handle(TestDeploymentRequest request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"received deployment request: ${request} .....");
+            _logger.LogInformation($"received deployment request: ${request.fileName + string.Join(" ", request.arguments)} .....");
             var result = _testDeploymentService.Excute(request);
             return new TestDeploymentResponse()
             {

@@ -24,10 +24,16 @@ namespace PortingAssistantVSExtensionClient.Commands
             else return true;
         }
 
-        public static bool IsDeploymentToolExist()
+        public static string GetEulaType()
         {
-            return UserSettings.Instance.IsDeployementExist;
+            return UserSettings.Instance.EULAType;
         }
+
+        public static void UpdateEula(string eula)
+        {
+            UserSettings.Instance.UpdateEula(eula);
+        }
+
 
         public static readonly List<int> CommandIDs = new List<int>
         {

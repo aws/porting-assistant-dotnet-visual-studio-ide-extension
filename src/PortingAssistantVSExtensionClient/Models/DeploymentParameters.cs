@@ -11,7 +11,7 @@ namespace PortingAssistantVSExtensionClient.Models
         public string profileName { set; get; }
         public bool enableMetrics { set; get; }
         public bool initDeploymentTool { set; get; }
-        public string buildFolderPath { set; get; }
+        public string selectedProject { set; get; }
         public string deployname { get; set; }
         public string vpcId { set; get; }
         public string directoryId { set; get; }

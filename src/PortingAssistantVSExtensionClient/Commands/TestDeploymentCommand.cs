@@ -119,7 +119,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 var parameters = TestDeploymentDialog.GetParameters(solutionPath);
 
                 // init deployment tool
-                if (parameters.initDeploymentTool)
+                if (parameters.initDeploymentTool || !CommandsCommon.IsDeploymentInit())
                 {
                     await InitDeploymentToolAsync(parameters.profileName, parameters.enableMetrics, tmpFolder);
                 }
@@ -212,6 +212,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                         initJsonPath
                         },
                     });
+
+                CommandsCommon.UpdateInitStatus(response.status == 0);
             }
             catch
             {

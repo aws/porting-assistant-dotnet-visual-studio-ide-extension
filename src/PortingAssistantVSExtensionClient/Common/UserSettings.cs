@@ -28,6 +28,7 @@ namespace PortingAssistantVSExtensionClient.Options
         public string RootCacheFolder;
         public string TargetFramework;
         public string DeploymentProfileName;
+        public bool isInitialezed;
         public bool SolutionAssessed;
         private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
 
@@ -43,6 +44,7 @@ namespace PortingAssistantVSExtensionClient.Options
             this._languageServerStatus.SetResult(LanguageServerStatus.NOT_RUNNING);
             this.SolutionAssessed = false;
             this.EULAType = "";
+            this.isInitialezed = false;
         }
 
         public void SetLanguageServerStatus(LanguageServerStatus status)
@@ -106,6 +108,12 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("DeploymentProfileName", profileName);
         }
 
+        public void UpdateIsInitialezed(bool isInitialezed)
+        {
+            this.isInitialezed = isInitialezed;
+            Write("isInitialezed", isInitialezed);
+        }
+
         public void UpdateEula(string eulaType)
         {
             this.EULAType = eulaType;
@@ -121,6 +129,7 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("ApplyPortAction", ApplyPortAction);
             Write("DeploymentProfileName", DeploymentProfileName);
             Write("EULAType", EULAType);
+            Write("isInitialezed", isInitialezed);
         }
 
         public void LoadingAllSettings()
@@ -133,6 +142,7 @@ namespace PortingAssistantVSExtensionClient.Options
             TargetFramework = (string)Read("TargetFramework", TargetFrameworkType.NO_SELECTION);
             EULAType = (string)Read("EULAType", "");
             DeploymentProfileName = (string)Read("DeploymentProfileName", "");
+            isInitialezed = (bool)Read("isInitialezed", false);
             RootCacheFolder = Path.GetTempPath();
         }
 

@@ -34,6 +34,16 @@ namespace PortingAssistantVSExtensionClient.Commands
             UserSettings.Instance.UpdateEula(eula);
         }
 
+        public static bool IsDeploymentInit()
+        {
+            return UserSettings.Instance.isInitialezed;
+        }
+
+        public static void UpdateInitStatus(bool isInit)
+        {
+            UserSettings.Instance.UpdateIsInitialezed(isInit);
+        }
+
 
         public static readonly List<int> CommandIDs = new List<int>
         {

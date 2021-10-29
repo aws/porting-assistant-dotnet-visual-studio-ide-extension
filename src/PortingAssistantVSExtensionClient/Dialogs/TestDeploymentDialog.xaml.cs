@@ -71,18 +71,9 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         }
         public static DeploymentParameters GetParameters(string solutionPath)
         {
-            TestDeploymentDialog testDeploymenttDialog = GetInstance(solutionPath);
+            TestDeploymentDialog testDeploymenttDialog = new TestDeploymentDialog(solutionPath);
             testDeploymenttDialog.ShowModal();
             return testDeploymenttDialog.parameters;
-        }
-
-        private static TestDeploymentDialog GetInstance(string solutionPath)
-        {
-            if (Instance == null)
-            {
-                Instance = new TestDeploymentDialog(solutionPath);
-            }
-            return Instance;
         }
 
         private void Next_Button_Click_1(object sender, System.Windows.RoutedEventArgs e)

@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Imaging;
 using PortingAssistantVSExtensionClient.Common;
 using Microsoft.VisualStudio.Threading;
 using EnvDTE;
+using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
@@ -66,7 +67,28 @@ namespace PortingAssistantVSExtensionClient.Utils
                     Assumes.Present(factory);
                     IVsInfoBarUIElement element = factory.CreateInfoBar(infoBarModel);
                     host.AddInfoBar(element);
-                }  
+                }
+            }
+        }
+
+        public static async System.Threading.Tasks.Task ShowInfoBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string message, ImageMoniker status)
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            var shell = await ServiceProvider.GetServiceAsync(typeof(SVsShell)) as IVsShell;
+            if (shell != null)
+            {
+                shell.GetProperty((int)__VSSPROPID7.VSSPROPID_MainWindowInfoBarHost, out var obj);
+                var host = (IVsInfoBarHost)obj;
+
+                if (host != null)
+                {
+
+                    InfoBarModel infoBarModel = new InfoBarModel(message, status, isCloseButtonVisible: true);
+                    var factory = await ServiceProvider.GetServiceAsync(typeof(SVsInfoBarUIFactory)) as IVsInfoBarUIFactory;
+                    Assumes.Present(factory);
+                    IVsInfoBarUIElement element = factory.CreateInfoBar(infoBarModel);
+                    host.AddInfoBar(element);
+                }
             }
         }
 

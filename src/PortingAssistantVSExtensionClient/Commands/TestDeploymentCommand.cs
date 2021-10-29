@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -109,7 +110,7 @@ namespace PortingAssistantVSExtensionClient.Commands
 
                 if (!IsBuildSucceed)
                 {
-                    NotificationUtils.ShowErrorMessageBox(package, "Please Build your project before deployment", "Build Failed");
+                    NotificationUtils.ShowInfoBarAsync(package, "Please Build your project before deployment", KnownMonikers.StatusWarning);
                     return;
                 }
 
@@ -126,6 +127,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 var deployemtJsonPath = await GetDeploymentConfigurationPathAsync(tmpFolder, parameters);
 
                 // deploy
+                NotificationUtils.ShowInfoBarAsync(package, $"Start Deploy Project {Path.GetFileNameWithoutExtension(parameters.deployname)}!!!", KnownMonikers.StatusInformation);
                 var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                     .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                     new TestDeploymentRequest()
@@ -146,18 +148,21 @@ namespace PortingAssistantVSExtensionClient.Commands
                 dynamic result = JObject.Parse(File.ReadAllText(outputPath));
                 var status = result.deploymentStatus;
                 var url = result.appEndpoint;
+
+                // TODO add result management
+
                 if (response.status == 0 && status == "SUCCESS")
                 {
-                    NotificationUtils.ShowInfoMessageBox(package, $"Endpoint: http://{url}", "success deployed");
+                    NotificationUtils.ShowInfoBarAsync(package, $"Deploy Succeed, Endpoint: http://{url}", KnownMonikers.StatusInformation);
                 }
                 else
                 {
-                    NotificationUtils.ShowErrorMessageBox(package, "failed", "failed");
+                    NotificationUtils.ShowInfoBarAsync(package, "Deploy Failed, Please Check the logs for finding the root cuase", KnownMonikers.StatusError);
                 }
             }
             catch (Exception ex)
             {
-                NotificationUtils.ShowErrorMessageBox(package, ex.Message, "failed");
+                NotificationUtils.ShowInfoBarAsync(package, ex.Message, KnownMonikers.StatusError);
             }
         }
 

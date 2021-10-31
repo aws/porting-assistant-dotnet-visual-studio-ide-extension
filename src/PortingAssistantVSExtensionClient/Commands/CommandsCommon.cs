@@ -127,6 +127,12 @@ namespace PortingAssistantVSExtensionClient.Commands
             return SolutionUtils.GetBuildOutputPath(dte, projectPath);
         }
 
+        public static async void AddKerberosTemplatesToProject()
+        {
+            var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
+            KerborosSideCarUtils.AddKerberosTemplatesToProject(dte);
+        }
+
         public static async System.Threading.Tasks.Task<string> GetSolutionPathAsync()
         {
             var dte = await PAGlobalService.Instance.GetDTEServiceAsync();

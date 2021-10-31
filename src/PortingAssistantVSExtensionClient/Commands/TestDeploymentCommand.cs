@@ -114,6 +114,9 @@ namespace PortingAssistantVSExtensionClient.Commands
                     return;
                 }
 
+                // Copy kerberos templates
+                //CommandsCommon.AddKerberosTemplatesToProject();
+
                 // await CheckToolExistAsync();
 
                 var parameters = TestDeploymentDialog.GetParameters(solutionPath);

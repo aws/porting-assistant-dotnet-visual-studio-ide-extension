@@ -126,6 +126,15 @@
           "Microsoft.VisualStudio.SDK.Analyzers": "15.8.33"
         }
       },
+      "System.Configuration.ConfigurationManager": {
+        "type": "Direct",
+        "requested": "[5.0.0, )",
+        "resolved": "5.0.0",
+        "contentHash": "aM7cbfEfVNlEEOj3DsZP+2g9NRwbkyiAv2isQEzw7pnkDg9ekCU2m1cdJLM02Uq691OaCS91tooaxcEn8d0q5w==",
+        "dependencies": {
+          "System.Security.Permissions": "5.0.0"
+        }
+      },
       "System.Text.Json": {
         "type": "Direct",
         "requested": "[5.0.2, )",
@@ -1289,6 +1298,14 @@
         "dependencies": {
           "System.Security.Cryptography.Algorithms": "4.3.0",
           "System.Security.Cryptography.Encoding": "4.3.0"
+        }
+      },
+      "System.Security.Permissions": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "uE8juAhEkp7KDBCdjDIE3H9R1HJuEHqeqX8nLX9gmYKWwsqk3T5qZlPx8qle5DPKimC/Fy3AFTdV7HamgCh9qQ==",
+        "dependencies": {
+          "System.Security.AccessControl": "5.0.0"
         }
       },
       "System.Security.Principal.Windows": {

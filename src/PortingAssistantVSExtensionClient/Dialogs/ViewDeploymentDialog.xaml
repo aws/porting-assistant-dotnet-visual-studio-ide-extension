@@ -8,6 +8,14 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Height="450" Width="800">
     <Grid Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Width="800">
-        <DataGrid HorizontalAlignment="Center" VerticalAlignment="Top" Height="450" Margin="0,0,0,0"  Width="800"/>
+        <DataGrid x:Name="DeploymentTable" HorizontalAlignment="Center" VerticalAlignment="Top" Height="450" Margin="0,0,0,0"  Width="800">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Deployment name"  Binding="{Binding FirstName}" Width="150"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding LastName}" Width="80"/>
+                <DataGridTextColumn Header="Creation time" Binding="{Binding LastName}" Width="150"/>
+                <DataGridHyperlinkColumn Header="Deployment endpoint" Binding="{Binding Email}" Width="300"/>
+                <DataGridHyperlinkColumn Header="Manage" Binding="{Binding manageDeployment}" Width="80" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </ui:DialogWindow>

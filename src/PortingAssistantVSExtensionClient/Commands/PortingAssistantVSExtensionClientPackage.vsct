@@ -59,7 +59,7 @@
 			<Group guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PASolutionGroup" priority="0x0600">
 				<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" />
 			</Group>
-		</Groups>
+    </Groups>
 
 		<!--Buttons section. -->
 		<!--This section defines the elements the user can interact with, like a menu command or a button
@@ -190,13 +190,19 @@
 					<ButtonText>Documentation</ButtonText>
 				</Strings>
 			</Button>
-		  <Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidTestDeploymentCommand" priority="0x0308" type="Button">
+			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidTestDeploymentCommand" priority="0x0308" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
 				<Strings>
 					<ButtonText>Test Deployment</ButtonText>
 				</Strings>
 			</Button>
-		</Buttons>
+			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidViewDeploymentCommand" priority="0x0309" type="Button">
+				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
+				<Strings>
+					<ButtonText>View Deployment</ButtonText>
+				</Strings>
+			</Button>
+    </Buttons>
   </Commands>
 	
 	<VisibilityConstraints>
@@ -231,7 +237,7 @@
 			<IDSymbol value="0x0105" name="cmdidContactSupportCommand" />
 			<IDSymbol value="0x0106" name="cmdidDocumentCommand" />
 			<IDSymbol value="0x0107" name="cmdidTestDeploymentCommand" />
+			<IDSymbol value="0x0108" name="cmdidViewDeploymentCommand" />
 		</GuidSymbol>
- 
-	</Symbols>
+  </Symbols>
 </CommandTable>

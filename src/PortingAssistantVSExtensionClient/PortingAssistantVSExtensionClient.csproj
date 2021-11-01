@@ -64,10 +64,12 @@
     <Compile Include="Commands\SolutionAssessmentCommand.cs" />
     <Compile Include="Commands\SolutionPortingCommand.cs" />
     <Compile Include="Commands\TestDeploymentCommand.cs" />
+    <Compile Include="Commands\ViewDeploymentCommand.cs" />
     <Compile Include="Common\Constants.cs" />
     <Compile Include="Common\ExternalUrls.cs" />
     <Compile Include="Common\LanguageServerStatus.cs" />
     <Compile Include="Common\PAGlobalService.cs" />
+    <Compile Include="Common\PAInfoBarService.cs" />
     <Compile Include="Common\TargetFrameWorkType.cs" />
     <Compile Include="Dialogs\AddProfileDialog.xaml.cs">
       <DependentUpon>AddProfileDialog.xaml</DependentUpon>
@@ -80,6 +82,9 @@
     </Compile>
     <Compile Include="Dialogs\TestDeploymentDialog.xaml.cs">
       <DependentUpon>TestDeploymentDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ViewDeploymentDialog.xaml.cs">
+      <DependentUpon>ViewDeploymentDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\WelcomeDialog.xaml.cs">
       <DependentUpon>WelcomeDialog.xaml</DependentUpon>
@@ -219,6 +224,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\TestDeploymentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ViewDeploymentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

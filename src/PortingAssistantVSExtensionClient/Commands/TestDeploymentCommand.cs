@@ -110,7 +110,7 @@ namespace PortingAssistantVSExtensionClient.Commands
 
                 if (!IsBuildSucceed)
                 {
-                    NotificationUtils.ShowInfoBarAsync(package, "Please Build your project before deployment", KnownMonikers.StatusWarning);
+                    NotificationUtils.ShowInfoBar("Please Build your project before deployment", KnownMonikers.StatusWarning);
                     return;
                 }
 
@@ -130,7 +130,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 var deployemtJsonPath = await GetDeploymentConfigurationPathAsync(tmpFolder, parameters);
 
                 // deploy
-                NotificationUtils.ShowInfoBarAsync(package, $"Start Deploy Project {Path.GetFileNameWithoutExtension(parameters.deployname)}!!!", KnownMonikers.StatusInformation);
+                NotificationUtils.ShowInfoBar($"Start Deploy Project {Path.GetFileNameWithoutExtension(parameters.deployname)}!!!", KnownMonikers.StatusInformation);
                 var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                     .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                     new TestDeploymentRequest()
@@ -156,16 +156,16 @@ namespace PortingAssistantVSExtensionClient.Commands
 
                 if (response.status == 0 && status == "SUCCESS")
                 {
-                    NotificationUtils.ShowInfoBarAsync(package, $"Deploy Succeed, Endpoint: http://{url}", KnownMonikers.StatusInformation);
+                    NotificationUtils.ShowInfoBar($"Deploy Succeed, Endpoint: http://{url}",  KnownMonikers.StatusInformation, $"http://{url}");
                 }
                 else
                 {
-                    NotificationUtils.ShowInfoBarAsync(package, "Deploy Failed, Please Check the logs for finding the root cuase", KnownMonikers.StatusError);
+                    NotificationUtils.ShowInfoBar("Deploy Failed, Please Check the logs for finding the root cuase", KnownMonikers.StatusError);
                 }
             }
             catch (Exception ex)
             {
-                NotificationUtils.ShowInfoBarAsync(package, ex.Message, KnownMonikers.StatusError);
+                NotificationUtils.ShowInfoBar(ex.Message, KnownMonikers.StatusError);
             }
         }
 

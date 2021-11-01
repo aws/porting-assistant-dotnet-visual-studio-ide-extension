@@ -1,5 +1,6 @@
 ﻿using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using PortingAssistantVSExtensionClient.Common;
@@ -134,7 +135,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 {
                     var successfulMessage = $"The solution has been ported to {targetFramework}" + (UserSettings.Instance.ApplyPortAction ? $".{Environment.NewLine}Code changes have been applied" : "");
                     NotificationUtils.ShowInfoMessageBox(package, successfulMessage, "Porting successful");
-                    await NotificationUtils.ShowInfoBarAsync(package, successfulMessage);
+                    NotificationUtils.ShowInfoBar(successfulMessage, KnownMonikers.StatusInformation);
                     await NotificationUtils.UseStatusBarProgressAsync(2, 2, successfulMessage);
                 }
                 catch (Exception ex)

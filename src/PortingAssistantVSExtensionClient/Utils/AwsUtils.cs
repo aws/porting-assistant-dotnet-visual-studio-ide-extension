@@ -85,14 +85,6 @@ namespace PortingAssistantVSExtensionClient.Utils
             }
         }
 
-        private static async Task<List<Vpc>> GetVpcIdsAsync()
-        {
-            AWSCredentials credentials = GetAWSCredentials("test");
-            var ec2client = new AmazonEC2Client(credentials);
-            var vpcs = await ec2client.DescribeVpcsAsync();
-            return vpcs.Vpcs;
-        }
-
         public static void SaveProfile(string profileName, AwsCredential credential)
         {
             try
@@ -134,11 +126,11 @@ namespace PortingAssistantVSExtensionClient.Utils
             return errors;
         }
 
-        public static Dictionary<string, string> ListActiveDirectories(string profileName)
+        public static Dictionary<string, string> ListActiveDirectories(string profileName, Amazon.RegionEndpoint region)
         {
             AWSCredentials credentials = GetAWSCredentials(profileName);
             Dictionary<string, string> directories = new Dictionary<string, string>();
-            using (var ds = new AmazonDirectoryServiceClient(credentials))
+            using (var ds = new AmazonDirectoryServiceClient(credentials, region))
             {
                 var directoriesResponse = ds.DescribeDirectories();
                 directories = directoriesResponse.DirectoryDescriptions.ToDictionary(d => d.Name, d => d.DirectoryId);
@@ -146,11 +138,11 @@ namespace PortingAssistantVSExtensionClient.Utils
             return directories;
         }
 
-        public static List<string> ListSecretArns(string profileName)
+        public static List<string> ListSecretArns(string profileName, Amazon.RegionEndpoint region)
         {
             AWSCredentials credentials = GetAWSCredentials(profileName);
             List<string> secretArns = new List<string>();
-            using (var asm = new AmazonSecretsManagerClient(credentials))
+            using (var asm = new AmazonSecretsManagerClient(credentials, region))
             {
                 var listSecretsResponse = asm.ListSecrets(new Amazon.SecretsManager.Model.ListSecretsRequest()
                 {
@@ -162,11 +154,11 @@ namespace PortingAssistantVSExtensionClient.Utils
         }
 
 
-        public static List<string> ListVpcIds(string profileName)
+        public static List<string> ListVpcIds(string profileName, Amazon.RegionEndpoint region)
         {
             AWSCredentials credentials = GetAWSCredentials(profileName);
             List<string> vpcList = new List<string>();
-            using (var ec2Client = new AmazonEC2Client(credentials))
+            using (var ec2Client = new AmazonEC2Client(credentials, region))
             {
                 var vpcs = ec2Client.DescribeVpcs();
                 vpcList = vpcs.Vpcs.Select(v => v.VpcId).ToList();
@@ -174,11 +166,11 @@ namespace PortingAssistantVSExtensionClient.Utils
             return vpcList;
         }
 
-        public static List<string> ListVpcSubnets(string vpcId, string profileName)
+        public static List<string> ListVpcSubnets(string vpcId, string profileName, Amazon.RegionEndpoint region)
         {
             AWSCredentials credential = GetAWSCredentials(profileName);
             List<string> subnetsList = new List<string>();
-            using (var ec2Client = new AmazonEC2Client(credential))
+            using (var ec2Client = new AmazonEC2Client(credential, region))
             {
                 DescribeSubnetsResponse subnetsResponse = ec2Client.DescribeSubnets(new DescribeSubnetsRequest()
                 {

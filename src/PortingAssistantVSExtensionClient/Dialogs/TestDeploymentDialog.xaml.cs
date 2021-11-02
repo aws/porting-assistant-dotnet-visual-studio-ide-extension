@@ -30,7 +30,6 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         private Dictionary<string, string> directories = new Dictionary<string, string>();
         private readonly Dictionary<string, string> projectNames;
 
-        private static TestDeploymentDialog Instance;
         public TestDeploymentDialog(string solutionPath)
         {
             InitializeComponent();
@@ -56,6 +55,11 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             foreach (string projectName in projectNames.Keys)
             {
                 DeploymentProjectComboBox.Items.Add(projectName);
+            }
+
+            foreach (var region in RegionEndpoint.EnumerableAllRegions)
+            {
+                AwsRegionComboBox.Items.Add(region.SystemName);
             }
         }
 
@@ -83,6 +87,29 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 HideGeneralSettings(true);
                 HideDirectorySettings(false);
                 HideAdvanceSettings(true);
+
+                string profleNameSelected = (string)AwsProfileComboBox.SelectedValue;
+
+                directories = AwsUtils.ListActiveDirectories(profleNameSelected, RegionEndpoint.GetBySystemName(AwsRegionComboBox.Text));
+                foreach (var directoryName in directories.Keys)
+                {
+                    ADNameBox.Items.Clear();
+                    ADNameBox.Items.Add(directoryName);
+                }
+
+                List<string> arns = AwsUtils.ListSecretArns(profleNameSelected, RegionEndpoint.GetBySystemName(AwsRegionComboBox.Text));
+                foreach (var arn in arns)
+                {
+                    SecretArnBox.Items.Clear();
+                    SecretArnBox.Items.Add(arn);
+                }
+
+                List<string> vpcs = AwsUtils.ListVpcIds(profleNameSelected, RegionEndpoint.GetBySystemName(AwsRegionComboBox.Text));
+                foreach (var vpc in vpcs)
+                {
+                    VpcBox.Items.Clear();
+                    VpcBox.Items.Add(vpc);
+                }
             }
         }
 
@@ -218,14 +245,14 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
             VpcSubnetsBox.IsEnabled = false;
             string profleNameSelected = (string)AwsProfileComboBox.SelectedValue;
-            LoadSubnets((string)VpcBox.SelectedValue, profleNameSelected);
+            LoadSubnets((string)VpcBox.SelectedValue, profleNameSelected, RegionEndpoint.GetBySystemName(AwsRegionComboBox.Text));
             VpcSubnetsBox.IsEnabled = true;
         }
 
-        private void LoadSubnets(string vpcId, string profileName)
+        private void LoadSubnets(string vpcId, string profileName, RegionEndpoint region)
         {
             VpcSubnetsBox.Items.Clear();
-            var subnets = AwsUtils.ListVpcSubnets(vpcId, profileName);
+            var subnets = AwsUtils.ListVpcSubnets(vpcId, profileName, region);
             foreach (var subnet in subnets)
             {
                 VpcSubnetsBox.Items.Add(subnet);
@@ -296,34 +323,6 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 }
             }
             return IsValid;
-        }
-
-        private void AwsProfileComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            string profleNameSelected = (string)AwsProfileComboBox.SelectedValue;
-
-            foreach (var region in RegionEndpoint.EnumerableAllRegions)
-            {
-                AwsRegionComboBox.Items.Add(region.DisplayName);
-            }
-
-            directories = AwsUtils.ListActiveDirectories(profleNameSelected);
-            foreach (var directoryName in directories.Keys)
-            {
-                ADNameBox.Items.Add(directoryName);
-            }
-
-            List<string> arns = AwsUtils.ListSecretArns(profleNameSelected);
-            foreach (var arn in arns)
-            {
-                SecretArnBox.Items.Add(arn);
-            }
-
-            List<string> vpcs = AwsUtils.ListVpcIds(profleNameSelected);
-            foreach (var vpc in vpcs)
-            {
-                VpcBox.Items.Add(vpc);
-            }
         }
     }
 }

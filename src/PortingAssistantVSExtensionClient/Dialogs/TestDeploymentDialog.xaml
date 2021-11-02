@@ -31,8 +31,8 @@
                 <RowDefinition Height="60"/>
             </Grid.RowDefinitions>
             <Label Content="AWS Profile"  Grid.Row="0"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-            <ComboBox x:Name="AwsProfileComboBox"  Grid.Row="0" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180" SelectionChanged="AwsProfileComboBox_SelectionChanged"/>
-            <Label x:Name="ProfileErrorHint"  Content=""  Grid.Row="0"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />            
+            <ComboBox x:Name="AwsProfileComboBox"  Grid.Row="0" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
+            <Label x:Name="ProfileErrorHint"  Content=""  Grid.Row="0"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />
             <Label Content="AWS Region"  Grid.Row="1"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
             <ComboBox x:Name="AwsRegionComboBox"  Grid.Row="1" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
             <Label x:Name="RegioneErrorHint"  Content=""  Grid.Row="1"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />

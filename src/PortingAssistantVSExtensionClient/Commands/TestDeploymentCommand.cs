@@ -156,7 +156,7 @@ namespace PortingAssistantVSExtensionClient.Commands
 
                 if (response.status == 0 && status == "SUCCESS")
                 {
-                    NotificationUtils.ShowInfoBar($"Deploy Succeed, Endpoint: http://{url}",  KnownMonikers.StatusInformation, $"http://{url}");
+                    NotificationUtils.ShowInfoBar($"Deploy Succeed, Endpoint: http://{url}", KnownMonikers.StatusInformation, $"http://{url}");
                 }
                 else
                 {
@@ -249,10 +249,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                     Common.Constants.ResourceFolder,
                     ConfigurationFileName);
 
-                var deploymentjson = Path.Combine(AssemblyPath, Common.Constants.ResourceFolder, "deployment.json");
-
                 dynamic configuration = JObject.Parse(File.ReadAllText(ConfigurationPath));
-                dynamic deploymentconfig = JObject.Parse(File.ReadAllText(deploymentjson));
+                dynamic deploymentconfig = JObject.Parse(File.ReadAllText(tmpPath));
 
                 // configure the depolyment json from the inputs
                 var buildpath = await CommandsCommon.GetBuildOutputPathAsync(parameters.selectedProject);
@@ -263,6 +261,10 @@ namespace PortingAssistantVSExtensionClient.Commands
 
                 deploymentconfig.buildDefinitions.buildParameters.sourceType = "NETCORE";
                 deploymentconfig.buildDefinitions.buildParameters.buildLocation = buildpath;
+
+                deploymentconfig.ecsParameters.reuseResources.vpcId = parameters.vpcId;
+                deploymentconfig.eksParameters.reuseResources.vpcId = parameters.vpcId;
+
                 File.WriteAllText(tmpPath, deploymentconfig.ToString());
                 return tmpPath;
             }

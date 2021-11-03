@@ -120,6 +120,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 // await CheckToolExistAsync();
 
                 var parameters = TestDeploymentDialog.GetParameters(solutionPath);
+                if (parameters == null) return;
 
                 // init deployment tool
                 if (parameters.initDeploymentTool || !CommandsCommon.IsDeploymentInit())

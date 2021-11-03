@@ -85,25 +85,11 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             if (IsInputValid())
             {
                 HideGeneralSettings(true);
-                HideDirectorySettings(false);
+                HideVPCSettings(false);
                 HideAdvanceSettings(true);
+                HideReviewSettings(true);
 
                 string profleNameSelected = (string)AwsProfileComboBox.SelectedValue;
-
-                directories = AwsUtils.ListActiveDirectories(profleNameSelected, RegionEndpoint.GetBySystemName(AwsRegionComboBox.Text));
-                foreach (var directoryName in directories.Keys)
-                {
-                    ADNameBox.Items.Clear();
-                    ADNameBox.Items.Add(directoryName);
-                }
-
-                List<string> arns = AwsUtils.ListSecretArns(profleNameSelected, RegionEndpoint.GetBySystemName(AwsRegionComboBox.Text));
-                foreach (var arn in arns)
-                {
-                    SecretArnBox.Items.Clear();
-                    SecretArnBox.Items.Add(arn);
-                }
-
                 List<string> vpcs = AwsUtils.ListVpcIds(profleNameSelected, RegionEndpoint.GetBySystemName(AwsRegionComboBox.Text));
                 foreach (var vpc in vpcs)
                 {
@@ -118,20 +104,45 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             if (IsInputValid())
             {
                 HideGeneralSettings(true);
-                HideDirectorySettings(true);
+                HideVPCSettings(true);
                 HideAdvanceSettings(false);
+                HideReviewSettings(true);
             }
 
         }
 
+        private void Next_Button_Click_3(object sender, System.Windows.RoutedEventArgs e)
+        {
+            HideGeneralSettings(true);
+            HideVPCSettings(true);
+            HideAdvanceSettings(true);
+            HideReviewSettings(false);
+        }
         private void Back_Click_2(object sender, System.Windows.RoutedEventArgs e)
         {
             HideGeneralSettings(false);
-            HideDirectorySettings(true);
+            HideVPCSettings(true);
             HideAdvanceSettings(true);
+            HideReviewSettings(true);
         }
 
-        private void Next_Button_Click_3(object sender, System.Windows.RoutedEventArgs e)
+        private void Back_Button_Click_3(object sender, System.Windows.RoutedEventArgs e)
+        {
+            HideGeneralSettings(true);
+            HideVPCSettings(false);
+            HideAdvanceSettings(true);
+            HideReviewSettings(true);
+        }
+
+        private void Back_Button_Click_4(object sender, System.Windows.RoutedEventArgs e)
+        {
+            HideGeneralSettings(true);
+            HideVPCSettings(true);
+            HideAdvanceSettings(false);
+            HideReviewSettings(true);
+        }
+
+        private void Deploy_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             //validations
             if (IsInputValid())
@@ -145,9 +156,6 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                     enableMetrics = _userSettings.EnabledMetrics,
                     deployname = DeploymentNameTextBox.Text,
                     selectedProject = projectNames[selectedProject],
-                    directoryId = ADIdBox.Text,
-                    domainSecretsArn = (string)SecretArnBox.SelectedValue,
-                    servicePrincipalName = SecretPrincipalBox.Text,
                     vpcId = VpcBox.Text,
                     initDeploymentTool = initTool
                 };
@@ -157,36 +165,40 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
         }
 
-        private void Back_Button_Click_3(object sender, System.Windows.RoutedEventArgs e)
-        {
-            HideGeneralSettings(true);
-            HideDirectorySettings(false);
-            HideAdvanceSettings(true);
-        }
-
-
         private void AdvancedSettingsFrame_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (AdvancedSettingsGrid.Visibility == System.Windows.Visibility.Visible || !IsInputValid()) return;
             HideGeneralSettings(true);
-            HideDirectorySettings(true);
+            HideVPCSettings(true);
             HideAdvanceSettings(false);
-        }
-
-        private void DirectoryServiceFrame_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (DirectoryServicesGrid.Visibility == System.Windows.Visibility.Visible || !IsInputValid()) return;
-            HideGeneralSettings(true);
-            HideDirectorySettings(false);
-            HideAdvanceSettings(true);
+            HideReviewSettings(true);
         }
 
         private void GeneralSettingsFrame_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (GeneralSettingGrid.Visibility == System.Windows.Visibility.Visible || !IsInputValid()) return;
             HideGeneralSettings(false);
-            HideDirectorySettings(true);
+            HideVPCSettings(true);
             HideAdvanceSettings(true);
+            HideReviewSettings(true);
+        }
+
+        private void Review_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (ReviewGrid.Visibility == System.Windows.Visibility.Visible || !IsInputValid()) return;
+            HideGeneralSettings(true);
+            HideVPCSettings(true);
+            HideAdvanceSettings(true);
+            HideReviewSettings(false);
+        }
+
+        private void VPC_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (VPCGrid.Visibility == System.Windows.Visibility.Visible || !IsInputValid()) return;
+            HideGeneralSettings(true);
+            HideVPCSettings(false);
+            HideAdvanceSettings(true);
+            HideReviewSettings(true);
         }
 
         private void HideGeneralSettings(bool hide)
@@ -203,17 +215,17 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
         }
 
-        private void HideDirectorySettings(bool hide)
+        private void HideVPCSettings(bool hide)
         {
             if (hide)
             {
-                DirectoryServicesGrid.Visibility = System.Windows.Visibility.Hidden;
-                DirectoryServiceFrame.Fill = null;
+                VPCGrid.Visibility = System.Windows.Visibility.Hidden;
+                VPCFrame.Fill = null;
             }
             else
             {
-                DirectoryServicesGrid.Visibility = System.Windows.Visibility.Visible;
-                DirectoryServiceFrame.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SELECTED_BACKGROUND_COLOR));
+                VPCGrid.Visibility = System.Windows.Visibility.Visible;
+                VPCFrame.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SELECTED_BACKGROUND_COLOR));
             }
         }
 
@@ -231,15 +243,22 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
         }
 
-        private void CheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
+        private void HideReviewSettings(bool hide)
         {
-            ADGrid.Visibility = System.Windows.Visibility.Visible;
+            if (hide)
+            {
+                ReviewGrid.Visibility = System.Windows.Visibility.Hidden;
+                ReviewFrame.Fill = null;
+
+            }
+            else
+            {
+                ReviewGrid.Visibility = System.Windows.Visibility.Visible;
+                ReviewFrame.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(SELECTED_BACKGROUND_COLOR));
+            }
         }
 
-        private void CheckBox_Unchecked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            ADGrid.Visibility = System.Windows.Visibility.Hidden;
-        }
+        
 
         private void VpcBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -259,13 +278,6 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
         }
 
-        private void ADNameBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            if (directories.TryGetValue((string)ADNameBox.SelectedValue, out var directoryId))
-            {
-                ADIdBox.Text = directoryId;
-            }
-        }
 
         private bool IsInputValid()
         {
@@ -293,36 +305,34 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                     IsValid = false;
                 }
             }
-            else if (DirectoryServicesGrid.Visibility == System.Windows.Visibility.Visible)
+            else if (VPCGrid.Visibility == System.Windows.Visibility.Visible)
             {
-                if (UseAwsAdCheckBox.IsChecked.HasValue && UseAwsAdCheckBox.IsChecked.Value)
-                {
-                    if (string.IsNullOrEmpty(ADIdBox.Text))
-                    {
-                        IsValid = false;
-                    }
-                    if (SecretArnBox.SelectedIndex == -1)
-                    {
-                        IsValid = false;
-                    }
-                    if (string.IsNullOrEmpty(SecretPrincipalBox.Text))
-                    {
-                        IsValid = false;
-                    }
-                }
-            }
-            else if (AdvancedSettingsGrid.Visibility == System.Windows.Visibility.Visible)
-            {
-                if (VpcBox.SelectedIndex == -1)
+                if (ExistingVPCCheck.IsChecked.HasValue && ExistingVPCCheck.IsChecked.Value && VpcBox.SelectedIndex == -1)
                 {
                     IsValid = false;
                 }
-                if (VpcSubnetsBox.SelectedIndex == -1)
+                if (ExistingVPCCheck.IsChecked.HasValue && ExistingVPCCheck.IsChecked.Value && VpcSubnetsBox.SelectedIndex == -1)
                 {
                     IsValid = false;
                 }
             }
             return IsValid;
         }
+        private void Cancel_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        private void RadioButton_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ExistingVPCGrid.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        private void RadioButton_Checked_1(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ExistingVPCGrid.Visibility = System.Windows.Visibility.Hidden;
+        }
+
+       
     }
 }

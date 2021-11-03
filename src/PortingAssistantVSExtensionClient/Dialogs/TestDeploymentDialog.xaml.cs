@@ -156,7 +156,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                     enableMetrics = _userSettings.EnabledMetrics,
                     deployname = DeploymentNameTextBox.Text,
                     selectedProject = projectNames[selectedProject],
-                    vpcId = VpcBox.Text,
+                    vpcId = NewVPCCheck.IsChecked.HasValue && NewVPCCheck.IsChecked.Value ? "" : VpcBox.Text,
                     initDeploymentTool = initTool
                 };
 
@@ -258,7 +258,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
         }
 
-        
+
 
         private void VpcBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -333,6 +333,6 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             ExistingVPCGrid.Visibility = System.Windows.Visibility.Hidden;
         }
 
-       
+
     }
 }

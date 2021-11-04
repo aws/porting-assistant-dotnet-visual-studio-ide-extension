@@ -18,7 +18,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionUn
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionIntegTests", "..\tst\PortingAssistantExtensionIntegTests\PortingAssistantExtensionIntegTests.csproj", "{82311002-05CF-40B6-A5D1-9D7D6809A16C}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "PortingAssistantExtensionClientShared", "PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.shproj", "{90359DE2-01A5-4346-B513-4B057DE45EF8}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{90359de2-01a5-4346-b513-4b057de45ef8}*SharedItemsImports = 13
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{9dce8a66-0bac-455d-bb16-fb238ae5b8bb}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

@@ -8,8 +8,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="PortingAssistant.Client.Telemetry" Version="1.10.2" />
-		<PackageReference Include="PortingAssistant.Client.Common" Version="1.10.2" />
+		<PackageReference Include="PortingAssistant.Client.Telemetry" Version="1.11.13-alpha-g3ad7aeb11d" />
+		<PackageReference Include="PortingAssistant.Client.Common" Version="1.11.13-alpha-g3ad7aeb11d" />
 	</ItemGroup>
 
 </Project>

@@ -202,8 +202,29 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             try
             {
+                var initJsonPath = Path.Combine(tmpFolder, "init.json");
                 var uniqueBucketName = await AwsUtils.CreateDefaultBucketAsync(profileName, Common.Constants.DefaultDeploymentBucketName);
-                var initJsonPath = FilesUtils.GetInitJsonFilePath(uniqueBucketName, enableMetrics, tmpFolder, profileName);
+
+                await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
+                    .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
+                    new TestDeploymentRequest()
+                    {
+                        fileName = Common.Constants.DefaultDeploymentTool,
+                        arguments = new List<string> {
+                        "init",
+                        "--generate-cli-skeleton",
+                        "--cli-output-json",
+                        initJsonPath,
+                        "--advanced"
+                        },
+                    });
+
+                dynamic initJson = JObject.Parse(File.ReadAllText(initJsonPath));
+                initJson.awsProfile = profileName;
+                initJson.s3Bucket = uniqueBucketName;
+                initJson.disableTermNiceties = true;
+
+                File.WriteAllText(initJsonPath, initJson.ToString());
 
                 var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                     .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
@@ -219,7 +240,7 @@ namespace PortingAssistantVSExtensionClient.Commands
 
                 CommandsCommon.UpdateInitStatus(response.status == 0);
             }
-            catch
+            catch (Exception ex)
             {
                 throw new Exception("init deployment tool failed");
             }

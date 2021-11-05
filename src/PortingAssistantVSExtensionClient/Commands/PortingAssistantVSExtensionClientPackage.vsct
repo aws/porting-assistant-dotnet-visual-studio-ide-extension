@@ -59,7 +59,7 @@
 			<Group guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PASolutionGroup" priority="0x0600">
 				<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" />
 			</Group>
-    </Groups>
+		</Groups>
 
 		<!--Buttons section. -->
 		<!--This section defines the elements the user can interact with, like a menu command or a button
@@ -177,7 +177,7 @@
 				<Strings>
 					<ButtonText>Settings...</ButtonText>
 				</Strings>
-			 </Button>
+			</Button>
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidContactSupportCommand" priority="0x0306" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
 				<Strings>
@@ -193,18 +193,18 @@
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidTestDeploymentCommand" priority="0x0308" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
 				<Strings>
-					<ButtonText>Test Deployment</ButtonText>
+					<ButtonText>Run On AWS</ButtonText>
 				</Strings>
 			</Button>
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidViewDeploymentCommand" priority="0x0309" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
 				<Strings>
-					<ButtonText>View Deployment</ButtonText>
+					<ButtonText>View Running Applications</ButtonText>
 				</Strings>
 			</Button>
-    </Buttons>
-  </Commands>
-	
+		</Buttons>
+	</Commands>
+
 	<VisibilityConstraints>
 		<VisibilityItem guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="SolutionAssessmentCommandId" context="uiContextGuid" />
 		<VisibilityItem guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidAutoAssessmentCommand" context="uiContextGuid" />
@@ -239,5 +239,5 @@
 			<IDSymbol value="0x0107" name="cmdidTestDeploymentCommand" />
 			<IDSymbol value="0x0108" name="cmdidViewDeploymentCommand" />
 		</GuidSymbol>
-  </Symbols>
+	</Symbols>
 </CommandTable>

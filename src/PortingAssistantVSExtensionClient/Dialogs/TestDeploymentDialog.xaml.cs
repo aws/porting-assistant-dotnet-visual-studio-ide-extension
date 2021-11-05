@@ -107,6 +107,12 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 HideVPCSettings(true);
                 HideAdvanceSettings(false);
                 HideReviewSettings(true);
+
+                Review_Application_Name_Textblock.Text = DeploymentNameTextBox.Text;
+                Review_Prfile_Textblock.Text = (string)AwsProfileComboBox.SelectedValue;
+                Review_Project_Textblock.Text = (string)DeploymentProjectComboBox.SelectedValue;
+                Review_Region_Textblock.Text = (string)AwsRegionComboBox.SelectedValue;
+                Review_VPC_Textblock.Text = NewVPCCheck.IsChecked.HasValue && NewVPCCheck.IsChecked.Value ? "Create New VPC" : VpcBox.Text;
             }
 
         }
@@ -117,6 +123,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             HideVPCSettings(true);
             HideAdvanceSettings(true);
             HideReviewSettings(false);
+
         }
         private void Back_Click_2(object sender, System.Windows.RoutedEventArgs e)
         {

@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Commands\PortingAssistantVSExtensionClientPackage.cs">
+    <Compile Include="PortingAssistantVSExtensionClientPackage.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PortingAssistantVSExtensionClientPackage.vsct</DependentUpon>
@@ -101,7 +101,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="Commands\PortingAssistantVSExtensionClientPackage.vsct">
+    <VSCTCompile Include="PortingAssistantVSExtensionClientPackage.vsct">
       <Generator>VsctGenerator</Generator>
       <ResourceName>Menus.ctmenu</ResourceName>
       <LastGenOutput>PortingAssistantVSExtensionClientPackage.cs</LastGenOutput>

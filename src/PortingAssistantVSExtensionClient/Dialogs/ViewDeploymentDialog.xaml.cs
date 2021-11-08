@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
+using PortingAssistantVSExtensionClient.Options;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Documents;
@@ -44,25 +46,23 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
     public partial class ViewDeploymentDialog : DialogWindow
     {
+        private readonly UserSettings _userSettings;
         public ViewDeploymentDialog()
         {
             InitializeComponent();
+            _userSettings = UserSettings.Instance;
             this.Title = "View Deployment";
-            DeploymentDetail detail = new DeploymentDetail()
-            {
-                DeployName = "test",
-                Status = "Done",
-                CreationTime = "2021-10-21:00:00:00",
-                DeploymentEndpoint = new Uri("https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2")
-
-            };
-            ObservableCollection<DeploymentDetail> testList = new ObservableCollection<DeploymentDetail>() { detail };
-            DeploymentTable.DataContext = testList;
         }
 
         public static void Execute()
         {
             ViewDeploymentDialog viewDeploymentDialog = new ViewDeploymentDialog();
+            ObservableCollection<DeploymentDetail> list = new ObservableCollection<DeploymentDetail>();
+            foreach (var result in viewDeploymentDialog._userSettings.DeploymentResults)
+            {
+                list.Add(result.Value);
+            }
+            viewDeploymentDialog.DataContext = list;
             viewDeploymentDialog.ShowModal();
         }
 

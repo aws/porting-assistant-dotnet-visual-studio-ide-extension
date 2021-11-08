@@ -11,6 +11,9 @@ using System.Globalization;
 using System.IO;
 using PortingAssistantVSExtensionClient.Utils;
 using System.Threading.Tasks;
+using PortingAssistantVSExtensionClient.Dialogs;
+using System.Collections.Generic;
+using System.Text.Json;
 
 namespace PortingAssistantVSExtensionClient.Options
 {
@@ -30,6 +33,7 @@ namespace PortingAssistantVSExtensionClient.Options
         public string DeploymentProfileName;
         public bool isInitialezed;
         public bool SolutionAssessed;
+        public Dictionary<string, DeploymentDetail> DeploymentResults;
         private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
 
 
@@ -45,6 +49,7 @@ namespace PortingAssistantVSExtensionClient.Options
             this.SolutionAssessed = false;
             this.EULAType = "";
             this.isInitialezed = false;
+            this.DeploymentResults = new Dictionary<string, DeploymentDetail>();
         }
 
         public void SetLanguageServerStatus(LanguageServerStatus status)
@@ -119,6 +124,25 @@ namespace PortingAssistantVSExtensionClient.Options
             this.EULAType = eulaType;
             Write("EULAType", eulaType);
         }
+
+        public void UpdateDeploymentResult(DeploymentDetail deploymentDetail)
+        {
+            if (this.DeploymentResults.ContainsKey(deploymentDetail.DeployName))
+            {
+                this.DeploymentResults.Remove(deploymentDetail.DeployName);
+            }
+
+            this.DeploymentResults.Add(deploymentDetail.DeployName, deploymentDetail);
+            string result = JsonSerializer.Serialize(DeploymentResults);
+            Write("DeploymentResult", result);
+        }
+
+        public void RemoveDeploymentResult(string deploymentName)
+        {
+            this.DeploymentResults.Remove(deploymentName);
+            string result = JsonSerializer.Serialize(DeploymentResults);
+            Write("DeploymentResult", result);
+        }
         public void SaveAllSettings()
         {
             Write("ShowWelcomePage", ShowWelcomePage);
@@ -130,6 +154,7 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("DeploymentProfileName", DeploymentProfileName);
             Write("EULAType", EULAType);
             Write("isInitialezed", isInitialezed);
+            Write("DeploymentResult", JsonSerializer.Serialize(DeploymentResults));
         }
 
         public void LoadingAllSettings()
@@ -144,6 +169,7 @@ namespace PortingAssistantVSExtensionClient.Options
             DeploymentProfileName = (string)Read("DeploymentProfileName", "");
             isInitialezed = (bool)Read("isInitialezed", false);
             RootCacheFolder = Path.GetTempPath();
+            DeploymentResults = JsonSerializer.Deserialize<Dictionary<string, DeploymentDetail>>((string)Read("DeploymentResult", "{}"));
         }
 
         private object Read(string property, object defaultValue)

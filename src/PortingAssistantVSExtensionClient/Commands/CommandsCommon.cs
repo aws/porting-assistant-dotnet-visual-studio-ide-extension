@@ -44,6 +44,21 @@ namespace PortingAssistantVSExtensionClient.Commands
             UserSettings.Instance.UpdateIsInitialezed(isInit);
         }
 
+        public static Dictionary<string, DeploymentDetail> GetDeploymentResults()
+        {
+            return UserSettings.Instance.DeploymentResults;
+        }
+
+        public static void UpdateDeploymentResults(DeploymentDetail deploymentDetail)
+        {
+            UserSettings.Instance.UpdateDeploymentResult(deploymentDetail);
+        }
+
+        public static void RemoveFromDeploymentResults(string deploymentName)
+        {
+            UserSettings.Instance.RemoveDeploymentResult(deploymentName);
+        }
+
 
         public static readonly List<int> CommandIDs = new List<int>
         {

@@ -151,18 +151,28 @@ namespace PortingAssistantVSExtensionClient.Commands
 
                 // update results
                 dynamic result = JObject.Parse(File.ReadAllText(outputPath));
+                var applicationName = result.appId;
                 var status = result.deploymentStatus;
                 var url = result.appEndpoint;
+                DeploymentDetail deploymentDetail = new DeploymentDetail
+                {
+                    Status = status,
+                    DeployName = applicationName,
+                    CreationTime = DateTime.Now.ToString("MM\\/dd\\/yyyy h\\:mm tt"),
+                    DeploymentEndpoint = new Uri($"http://{url}")
+                };
 
+                CommandsCommon.UpdateDeploymentResults(deploymentDetail);
                 // TODO add result management
 
                 if (response.status == 0 && status == "SUCCESS")
                 {
-                    NotificationUtils.ShowInfoBar($"Deploy Succeed, Endpoint: http://{url}", KnownMonikers.StatusInformation, $"http://{url}");
+
+                    NotificationUtils.ShowInfoBar($"Deploy Succeed !, Endpoint: http://{url}", KnownMonikers.StatusInformation, $"http://{url}");
                 }
                 else
                 {
-                    NotificationUtils.ShowInfoBar("Deploy Failed, Please Check the logs for finding the root cuase", KnownMonikers.StatusError);
+                    NotificationUtils.ShowInfoBar("Deploy Failed !, Please Check the logs for finding the root cuase", KnownMonikers.StatusError);
                 }
             }
             catch (Exception ex)

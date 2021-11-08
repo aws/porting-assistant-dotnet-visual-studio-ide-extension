@@ -12,9 +12,8 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionTelemetry;
 using System.Text.Json;
-using PortingAssistant.Telemetry.Utils;
 using System.Net.Http;
-
+using PortingAssistantExtensionTelemetry.Utils;
 
 namespace PortingAssistantExtensionServer
 {

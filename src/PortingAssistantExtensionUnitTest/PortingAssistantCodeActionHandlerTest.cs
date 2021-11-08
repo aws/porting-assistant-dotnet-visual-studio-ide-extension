@@ -8,17 +8,19 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtensionServer;
 using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
+using PortingAssistantExtensionServer.Services;
 using PortingAssistantExtensionServer.TextDocumentModels;
+using PortingAssistantExtensionUnitTest.Common;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
+using TestParameters = PortingAssistantExtensionUnitTest.Common.TestParameters;
 
 namespace PortingAssistantExtensionUnitTest
 {

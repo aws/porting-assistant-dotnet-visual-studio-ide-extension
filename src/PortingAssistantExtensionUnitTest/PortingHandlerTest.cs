@@ -3,14 +3,16 @@ using Moq;
 using NUnit.Framework;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtensionServer;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
+using PortingAssistantExtensionServer.Services;
+using PortingAssistantExtensionUnitTest.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TestParameters = PortingAssistantExtensionUnitTest.Common.TestParameters;
 
 namespace PortingAssistantExtensionUnitTest
 {

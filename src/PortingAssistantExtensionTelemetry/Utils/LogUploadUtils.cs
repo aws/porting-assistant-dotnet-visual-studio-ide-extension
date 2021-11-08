@@ -13,11 +13,11 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortingAssistant.Telemetry.Utils
+namespace PortingAssistantExtensionTelemetry.Utils
 {
     public static class LogUploadUtils
     {
-        private static Boolean IsFileLocked(FileInfo file)
+        private static bool IsFileLocked(FileInfo file)
         {
             FileStream stream = null;
 
@@ -75,8 +75,8 @@ namespace PortingAssistant.Telemetry.Utils
                     dynamic log = new JObject();
                     log.timestamp = DateTime.Now.ToString();
                     log.logName = logName;
-                    var logDataInBytes = System.Text.Encoding.UTF8.GetBytes(logData);
-                    log.logData = System.Convert.ToBase64String(logDataInBytes);
+                    var logDataInBytes = Encoding.UTF8.GetBytes(logData);
+                    log.logData = Convert.ToBase64String(logDataInBytes);
 
                     dynamic body = new JObject();
                     body.requestMetadata = requestMetadata;
@@ -84,14 +84,14 @@ namespace PortingAssistant.Telemetry.Utils
 
                     var requestContent = new StringContent(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
 
-                    var requestUri = new Uri(String.Join("", telemetryConfiguration.InvokeUrl, PathTemplate));
+                    var requestUri = new Uri(string.Join("", telemetryConfiguration.InvokeUrl, PathTemplate));
                     var request = new HttpRequestMessage
                     {
                         Method = HttpMethod.Post,
                         RequestUri = requestUri,
                         Content = requestContent
                     };
-                    
+
                     request = await signer.Sign(request, "execute-api", region);
 
                     var response = await client.SendAsync(request);
@@ -108,14 +108,14 @@ namespace PortingAssistant.Telemetry.Utils
             }
         }
 
-        public static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e, TelemetryConfiguration teleConfig, string lastReadTokenFile, HttpClient client, string profile)
+        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, TelemetryConfiguration teleConfig, string lastReadTokenFile, HttpClient client, string profile)
         {
             try
             {
                 // Get files in directory and filter based on Suffix
-                string[] fileEntries = Directory.GetFiles(teleConfig.LogsPath).Where(f => (
+                string[] fileEntries = Directory.GetFiles(teleConfig.LogsPath).Where(f =>
                   teleConfig.Suffix.ToArray().Any(x => f.EndsWith(x))
-                  )).ToArray();
+                  ).ToArray();
                 // Get or Create fileLineNumberMap
                 var fileLineNumberMap = new Dictionary<string, int>();
                 if (File.Exists(lastReadTokenFile))
@@ -137,7 +137,7 @@ namespace PortingAssistant.Telemetry.Utils
                     {
                         logName = "portingAssistant-ide-logs";
                     }
-                    else 
+                    else
                     {
                         continue;
                     }

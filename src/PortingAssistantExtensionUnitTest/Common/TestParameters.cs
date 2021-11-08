@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortingAssistantExtensionUnitTest
+namespace PortingAssistantExtensionUnitTest.Common
 {
     public class TestParameters
     {
@@ -113,7 +113,7 @@ namespace PortingAssistantExtensionUnitTest
                     },
                     Recommendations = new PortingAssistant.Client.Model.Recommendations
                     {
-                        RecommendedActions = new List<PortingAssistant.Client.Model.RecommendedAction>
+                        RecommendedActions = new List<RecommendedAction>
                         {
                             new ApiRecommendation
                             {

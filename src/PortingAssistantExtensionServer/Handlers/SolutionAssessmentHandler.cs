@@ -8,6 +8,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using System.Linq;
 using System.Collections.Generic;
+using PortingAssistantExtensionServer.Services;
 
 namespace PortingAssistantExtensionServer.Handlers
 {

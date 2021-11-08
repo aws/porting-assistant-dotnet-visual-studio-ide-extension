@@ -108,6 +108,9 @@ namespace PortingAssistantVSExtensionClient
             set;
         }
 
+        bool ILanguageClient.ShowNotificationOnInitializeFailed => true;
+
+
         public static async Task UpdateUserSettingsAsync()
         {
             if (Instance == null || Instance.PortingAssistantRpc == null) return;
@@ -213,6 +216,14 @@ namespace PortingAssistantVSExtensionClient
                 return "0.0.1";
             }
            
+        }
+
+        public Task<InitializationFailureContext> OnServerInitializeFailedAsync(ILanguageClientInitializationInfo initializationState)
+        {
+            var error = initializationState;
+            Console.WriteLine(error.IsInitialized);
+            Console.WriteLine(error.StatusMessage);
+            return (Task<InitializationFailureContext>)Task.CompletedTask;
         }
     }
 }

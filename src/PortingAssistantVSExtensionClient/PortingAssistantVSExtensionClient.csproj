@@ -74,6 +74,9 @@
     <Compile Include="Dialogs\AddProfileDialog.xaml.cs">
       <DependentUpon>AddProfileDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\EULADialog.xaml.cs">
+      <DependentUpon>EULADialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\PortingDialog.xaml.cs">
       <DependentUpon>PortingDialog.xaml</DependentUpon>
     </Compile>
@@ -122,22 +125,10 @@
     <Compile Include="Utils\SolutionUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\test-script.ps1">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <None Include="packages.lock.json" />
     <Content Include="Resources\setup.ps1">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\test-script.bat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Resources\abc.bat">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Resources\deploymentconfiguration.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -208,6 +199,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Dialogs\AddProfileDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\EULADialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

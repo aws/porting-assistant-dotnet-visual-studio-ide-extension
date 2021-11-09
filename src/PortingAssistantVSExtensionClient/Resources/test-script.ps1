@@ -1,1 +1,0 @@
-﻿& "C:\TestCli\PortingAssistant.Client.CLI.exe" -s C:\testsolutions\Miniblog.Core-master\Miniblog.Core.sln -o C:\output

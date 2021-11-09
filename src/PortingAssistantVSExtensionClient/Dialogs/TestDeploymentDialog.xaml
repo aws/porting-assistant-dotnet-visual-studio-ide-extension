@@ -26,23 +26,28 @@
 
         <Grid x:Name="GeneralSettingGrid" Visibility="Visible" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="0" Background="White">
             <Grid.RowDefinitions>
-                <RowDefinition Height="70"/>
-                <RowDefinition Height="70"/>
-                <RowDefinition Height="70"/>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="80"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="60"/>
             </Grid.RowDefinitions>
-            <Label Content="AWS Profile"  Grid.Row="0"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
+            <Label Content="AWS Profile"  Grid.Row="0"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontWeight="Bold" />
             <ComboBox x:Name="AwsProfileComboBox"  Grid.Row="0" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
-            <Label x:Name="ProfileErrorHint"  Content=""  Grid.Row="0"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />
-            <Label Content="AWS Region"  Grid.Row="1"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
-            <ComboBox x:Name="AwsRegionComboBox"  Grid.Row="1" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
-            <Label x:Name="RegioneErrorHint"  Content=""  Grid.Row="1"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />
-            <Label Content="Project"  Grid.Row="2"  HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top"/>
-            <ComboBox x:Name="DeploymentProjectComboBox"  Grid.Row="2" Margin="25,25,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
-            <Label Content="Application Name"  Grid.Row="3"  HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top"/>
-            <TextBox x:Name="DeploymentNameTextBox" Grid.Row="3" Height="25" Margin="25,25,0,0" TextWrapping="Wrap"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"  Opacity="0.8"/>
-            <Label Content="10 characters maximum. Only alphanumeric characters are allowed.(spaces, dash, sp.chars)"  Grid.Row="3"  HorizontalAlignment="Left" Margin="20,50,0,0" VerticalAlignment="Top" Opacity="0.81"/>
+            <Label x:Name="ProfileErrorHint"  Content=""  Grid.Row="0"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" Foreground="Red"/>
+            <Label Content="AWS Region"  Grid.Row="1"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontWeight="Bold" />
+            <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Choose a region where this deployment and all associated AWS resources exist or will be created within." />
+            <ComboBox x:Name="AwsRegionComboBox"  Grid.Row="1" Margin="25,50,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
+            <Label x:Name="RegioneErrorHint"  Content=""  Grid.Row="1"  Margin="220,50,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" Foreground="Red" />
+            <Label Content="Project"  Grid.Row="2"  HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+            <TextBlock Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Choose the project whose resources will be utilized for the test deployment." />
+            <ComboBox x:Name="DeploymentProjectComboBox"  Grid.Row="2" Margin="25,50,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
+            <Label x:Name="ProjectErrorHint"  Content=""  Grid.Row="2"  Margin="220,50,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" Foreground="Red"/>
+            <Label Content="Application Name (Deployment Name)"  Grid.Row="3"  HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+            <TextBlock Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Enter a name for this application." />
+            <TextBox x:Name="DeploymentNameTextBox" Grid.Row="3" Height="25" Margin="25,50,0,0" TextWrapping="Wrap"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"  Opacity="0.8"/>
+            <Label x:Name="DeploymentNameErrorHint"  Content=""  Grid.Row="3"  Margin="220,50,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />
+            <TextBlock TextWrapping="Wrap" Text="100 characters maximum. Only alphanumeric characters are allowed.(spaces, dash, sp.chars)"  Grid.Row="3"  HorizontalAlignment="Left" Margin="20,75,0,0" VerticalAlignment="Top" Opacity="0.81"/>
             <Button Content="Run" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,30,20" VerticalAlignment="Bottom" Width="80" IsEnabled="False"/>
             <Button Content="Next" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,120,20" VerticalAlignment="Bottom" Width="80" Click="Next_Button_Click_1"/>
             <Button Content="Back" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,210,20" VerticalAlignment="Bottom" Width="80" IsEnabled="False"/>
@@ -62,8 +67,10 @@
             <RadioButton  x:Name="ExistingVPCCheck" Content="Choose an existing(AWS) VPC" Grid.Row="1" HorizontalAlignment="Left" Margin="25,20,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked"/>
             <Grid x:Name="ExistingVPCGrid" Grid.Row="1" Visibility="Hidden" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <ComboBox x:Name="VpcBox"   HorizontalAlignment="Left" VerticalAlignment="Top" Margin="45,40,0,0"  Width="280" SelectionChanged="VpcBox_SelectionChanged"/>
+                <Label x:Name="VpcErrorHint"  Content=""    Margin="350,40,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" Foreground="Red"/>
                 <Label Content="VPC subnets"   Margin="40,60,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" />
                 <ComboBox x:Name="VpcSubnetsBox"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="45,85,0,0"  Width="280"/>
+                <Label x:Name="VpcSubnetErrorHint"  Content=""    Margin="350,85,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" Foreground="Red"/>
             </Grid>
             <RadioButton x:Name="NewVPCCheck" Content="Create a new AWS VPC for this test deployment" Grid.Row="1" HorizontalAlignment="Left" Margin="25,120,0,0" VerticalAlignment="Top" Checked="RadioButton_Checked_1"/>
             <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="45,140,20,0" TextWrapping="Wrap" Text="Builds and deploys into a new AWS environment consisting of the VPC, subnets, NAT gateway, security groups, bastion hosts, and other infrastracture components." Opacity="0.8" />
@@ -77,23 +84,17 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
                 <RowDefinition Height="60"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Review the following Summary Settings." />
-            <Label Content="Step 1 - General Setting"  Grid.Row="1"  Margin="20,0,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="14"/>
-            <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Provision a logically section of the AWS cloud to lauch AWS resources. The VPC in which .Net application will be deployed on." />
-
-            <Label Content="Step 2 - VPC"  Grid.Row="2"  Margin="20,0,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="14"/>
-            <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Provision a logically section of the AWS cloud to lauch AWS resources. The VPC in which .Net application will be deployed on." />
-
-            <Label Content="Step 3 - Advanced (optinoal)"  Grid.Row="3"  Margin="20,0,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontSize="14"/>
-            <TextBlock Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Provision a logically section of the AWS cloud to lauch AWS resources. The VPC in which .Net application will be deployed on." />
+            <TextBlock Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Manual configuration with Json editing" FontWeight="Bold" />
+            <TextBlock Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,55,20,0" TextWrapping="Wrap"><Run Text="Additional parameters such as () may be customized by directly editing the Porting Assistant Test Deployment "></Run><Hyperlink x:Name="JsonFileUrl" Click="JsonFileUrl_Click">JSON file</Hyperlink></TextBlock>
+            <Rectangle Grid.Row="1" Fill="#FFF1EFD8" HorizontalAlignment="Left" Height="40" Margin="25,15,0,0"  VerticalAlignment="Top" Width="500"/>
+            <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="40,25,20,0" Width="550" TextWrapping="Wrap" Text="Any edits made to the json file will persist locally for the future deployments." />
             <Button Content="Run" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,30,20" VerticalAlignment="Bottom" Width="80" IsEnabled="False"/>
             <Button Content="Next" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,120,20" VerticalAlignment="Bottom" Width="80" Click="Next_Button_Click_3"/>
             <Button Content="Back" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,210,20" VerticalAlignment="Bottom" Width="80" Click="Back_Button_Click_3"/>
             <Button Content="Cancel" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,300,20" VerticalAlignment="Bottom" Width="80" Click="Cancel_Click"/>
+            
         </Grid>
 
         <Grid x:Name="ReviewGrid" Visibility="Hidden" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="0" Background="White">

@@ -100,6 +100,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             try
             {
+                if (!EULADialog.EnsureExecute()) return;
                 var tmpFolder = FilesUtils.GetTmpFolder();
                 var solutionPath = await CommandsCommon.GetSolutionPathAsync();
                 var outputPath = Path.Combine(tmpFolder, "deployment-output.json");

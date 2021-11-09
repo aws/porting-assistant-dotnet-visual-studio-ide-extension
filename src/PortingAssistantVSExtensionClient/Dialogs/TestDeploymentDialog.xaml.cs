@@ -15,6 +15,7 @@ using PortingAssistantVSExtensionClient.Models;
 using System.Windows.Media;
 using System.Linq;
 using Amazon;
+using System.Reflection;
 
 namespace PortingAssistantVSExtensionClient.Dialogs
 {
@@ -29,6 +30,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         private readonly string SolutionPath;
         private Dictionary<string, string> directories = new Dictionary<string, string>();
         private readonly Dictionary<string, string> projectNames;
+        private readonly string JsonConfigurationPath;
 
         public TestDeploymentDialog(string solutionPath)
         {
@@ -36,10 +38,13 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             _userSettings = UserSettings.Instance;
             this.SolutionPath = solutionPath;
             this.Title = "Test Deployment";
+            this.JsonConfigurationPath = "\"" + Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                Common.Constants.ResourceFolder,
+                "deploymentconfiguration.json") + "\"";
             DeploymentNameTextBox.Text = GetSolutionName(SolutionPath);
             var projectFiles = SolutionUtils.GetProjectPath(SolutionPath);
             projectNames = projectFiles.Where(p => p.Length != 0).ToDictionary(p => GetProjectName(p), p => p);
-
             //init profile
             List<string> profiles = AwsUtils.ListProfiles();
             foreach (string profile in profiles)
@@ -340,6 +345,9 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             ExistingVPCGrid.Visibility = System.Windows.Visibility.Hidden;
         }
 
-
+        private void JsonFileUrl_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Process.Start(JsonConfigurationPath);
+        }
     }
 }

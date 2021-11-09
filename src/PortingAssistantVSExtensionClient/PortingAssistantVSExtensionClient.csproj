@@ -139,7 +139,7 @@
     <PackageReference Include="AWSSDK.Core">
       <Version>3.7.3.5</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.9.31025.194" ExcludeAssets="runtime">
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.31902.203" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.31">

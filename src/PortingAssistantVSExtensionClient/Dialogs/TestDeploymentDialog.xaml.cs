@@ -301,20 +301,36 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                     ProfileErrorHint.Content = "please select an AWS profile";
                     IsValid = false;
                 }
+                else
+                {
+                    ProfileErrorHint.Content = "";
+                }
                 if (AwsRegionComboBox.SelectedIndex == -1)
                 {
                     RegioneErrorHint.Content = "please select an AWS Region";
                     IsValid = false;
                 }
+                else
+                {
+                    RegioneErrorHint.Content = "";
+                }
                 if (DeploymentProjectComboBox.SelectedIndex == -1)
                 {
-
+                    ProjectErrorHint.Content = "please select an project to deploy";
                     IsValid = false;
+                }
+                else
+                {
+                    ProjectErrorHint.Content = "";
                 }
                 if (string.IsNullOrEmpty(DeploymentNameTextBox.Text))
                 {
-
+                    DeploymentNameErrorHint.Content = "please enter deployment name";
                     IsValid = false;
+                }
+                else
+                {
+                    DeploymentNameErrorHint.Content = "";
                 }
             }
             else if (VPCGrid.Visibility == System.Windows.Visibility.Visible)
@@ -322,10 +338,20 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 if (ExistingVPCCheck.IsChecked.HasValue && ExistingVPCCheck.IsChecked.Value && VpcBox.SelectedIndex == -1)
                 {
                     IsValid = false;
+                    VpcErrorHint.Content = "please select a vpc";
+                }
+                else
+                {
+                    VpcErrorHint.Content = "";
                 }
                 if (ExistingVPCCheck.IsChecked.HasValue && ExistingVPCCheck.IsChecked.Value && VpcSubnetsBox.SelectedIndex == -1)
                 {
                     IsValid = false;
+                    VpcSubnetErrorHint.Content = "please select a vpc subnet";
+                }
+                else
+                {
+                    VpcSubnetErrorHint.Content = "":
                 }
             }
             return IsValid;

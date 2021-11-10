@@ -36,6 +36,7 @@
             <ComboBox x:Name="AwsProfileComboBox"  Grid.Row="0" Margin="25,35,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
             <Label x:Name="ProfileErrorHint"  Content=""  Grid.Row="0"  Margin="220,35,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" Foreground="Red"/>
             <Label Content="AWS Region"  Grid.Row="1"  Margin="20,10,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top" FontWeight="Bold" />
+            <TextBlock Grid.Row="1" Margin="100,15,0,0"> <Hyperlink NavigateUri="http://www.google.com" RequestNavigate="Hyperlink_RequestNavigate">info</Hyperlink></TextBlock>
             <TextBlock Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Choose a region where this deployment and all associated AWS resources exist or will be created within." />
             <ComboBox x:Name="AwsRegionComboBox"  Grid.Row="1" Margin="25,50,0,0"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"/>
             <Label x:Name="RegioneErrorHint"  Content=""  Grid.Row="1"  Margin="220,50,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" Foreground="Red" />

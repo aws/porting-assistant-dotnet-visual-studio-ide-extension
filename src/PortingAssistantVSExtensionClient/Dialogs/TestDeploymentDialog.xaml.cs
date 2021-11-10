@@ -351,7 +351,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 }
                 else
                 {
-                    VpcSubnetErrorHint.Content = "":
+                    VpcSubnetErrorHint.Content = "";
                 }
             }
             return IsValid;
@@ -374,6 +374,12 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         private void JsonFileUrl_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             Process.Start(JsonConfigurationPath);
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
     }
 }

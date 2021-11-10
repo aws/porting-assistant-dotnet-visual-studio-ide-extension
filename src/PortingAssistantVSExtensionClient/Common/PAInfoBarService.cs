@@ -58,8 +58,8 @@ namespace PortingAssistantVSExtensionClient.Common
                     return;
                 }
 
-                InfoBarTextSpan[] spans = new InfoBarTextSpan[] { new InfoBarTextSpan(message)};
-                InfoBarActionItem[] actions = new InfoBarActionItem[] { new InfoBarHyperlink("view me", url) };
+                InfoBarTextSpan[] spans = new InfoBarTextSpan[] { new InfoBarTextSpan(message) };
+                InfoBarActionItem[] actions = new InfoBarActionItem[] { new InfoBarHyperlink("View now", url) };
 
                 InfoBarModel infoBarModel = null;
                 if (string.IsNullOrEmpty(url))

@@ -100,7 +100,8 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             try
             {
-                if (!EULADialog.EnsureExecute()) return;
+                // await CheckToolExistAsync();
+
                 var tmpFolder = FilesUtils.GetTmpFolder();
                 var solutionPath = await CommandsCommon.GetSolutionPathAsync();
                 var outputPath = Path.Combine(tmpFolder, "deployment-output.json");
@@ -118,7 +119,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 // Copy kerberos templates
                 //CommandsCommon.AddKerberosTemplatesToProject();
 
-                // await CheckToolExistAsync();
+
 
                 var parameters = TestDeploymentDialog.GetParameters(solutionPath);
                 if (parameters == null) return;
@@ -132,7 +133,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 var deployemtJsonPath = await GetDeploymentConfigurationPathAsync(tmpFolder, parameters);
 
                 // deploy
-                NotificationUtils.ShowInfoBar($"Start Deploy Project {Path.GetFileNameWithoutExtension(parameters.deployname)}!!!", KnownMonikers.StatusInformation);
+                NotificationUtils.ShowInfoBar($"Start to deploy your project {Path.GetFileNameWithoutExtension(parameters.deployname)} on AWS.", KnownMonikers.StatusInformation);
                 var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                     .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                     new TestDeploymentRequest()
@@ -168,11 +169,11 @@ namespace PortingAssistantVSExtensionClient.Commands
                 if (response.status == 0 && status == "SUCCESS")
                 {
 
-                    NotificationUtils.ShowInfoBar($"Deploy Succeed !, Endpoint: http://{url}", KnownMonikers.StatusInformation, $"http://{url}");
+                    NotificationUtils.ShowInfoBar($"Succeed running your project on AWS, please view the endpoint: http://{url}", KnownMonikers.StatusInformation, $"http://{url}");
                 }
                 else
                 {
-                    NotificationUtils.ShowInfoBar("Deploy Failed !, Please Check the logs for finding the root cuase", KnownMonikers.StatusError);
+                    NotificationUtils.ShowInfoBar("Failed to deploy on AWS, Please Check the logs for finding the root cuase", KnownMonikers.StatusError);
                 }
             }
             catch (Exception ex)
@@ -185,6 +186,7 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             try
             {
+                /*
                 var resp = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                 .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                 new TestDeploymentRequest()
@@ -194,13 +196,13 @@ namespace PortingAssistantVSExtensionClient.Commands
                 });
                 if (resp.status != 0) throw new Exception("Could not found and Install deployment module");
 
-
+                */
                 if (CommandsCommon.GetEulaType() != "AWS")
                 {
                     // TODO Pop EULA
-
+                    if (!EULADialog.EnsureExecute()) return;
                     // Update Eula
-                    CommandsCommon.UpdateEula("AWS");
+                    // CommandsCommon.UpdateEula("AWS");
                 }
             }
             catch

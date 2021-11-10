@@ -17,6 +17,15 @@
           "AWSSDK.Core": "[3.7.3.5, 4.0.0)"
         }
       },
+      "AWSSDK.CloudFormation": {
+        "type": "Direct",
+        "requested": "[3.7.5.38, )",
+        "resolved": "3.7.5.38",
+        "contentHash": "E0TF4SlJ96ZO3XLSX5cIT9Sa9jX3pPMOyd2z3milz5hVnPmVKCYMPIqIjxZPMw5Rmh0vtnrEgUQKZ0vGJ2/H3g==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.3.34, 4.0.0)"
+        }
+      },
       "AWSSDK.DirectoryService": {
         "type": "Direct",
         "requested": "[3.7.1.32, )",
@@ -153,8 +162,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.3.24",
-        "contentHash": "zsFgTcreatZxnVo3K23kKGr2rFiencqoo8sBuFiqGA89EEPBKWZo7+1HwWQR1GZyvR4WoiAZUEslZ+KM6sUunw=="
+        "resolved": "3.7.3.34",
+        "contentHash": "xzYOFlMDRuvWU441GZTUMOIVKuXtTwMvJKNK+HLq93v94aTTp9l7l2RdM5S3ABs1AX0PIzMbgZ4w6iqLwr//Qw=="
       },
       "EnvDTE": {
         "type": "Transitive",

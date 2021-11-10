@@ -47,8 +47,9 @@
             <Label Content="Application Name (Deployment Name)"  Grid.Row="3"  HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
             <TextBlock Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,30,20,0" TextWrapping="Wrap" Text="Enter a name for this application." />
             <TextBox x:Name="DeploymentNameTextBox" Grid.Row="3" Height="25" Margin="25,50,0,0" TextWrapping="Wrap"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="180"  Opacity="0.8"/>
-            <Label x:Name="DeploymentNameErrorHint"  Content=""  Grid.Row="3"  Margin="220,50,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" />
-            <TextBlock TextWrapping="Wrap" Text="100 characters maximum. Only alphanumeric characters are allowed.(spaces, dash, sp.chars)"  Grid.Row="3"  HorizontalAlignment="Left" Margin="20,75,0,0" VerticalAlignment="Top" Opacity="0.81"/>
+            <Label x:Name="DeploymentNameErrorHint"  Content=""  Grid.Row="3"  Margin="220,50,0,0" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="200" Foreground="Red"/>
+            <CheckBox x:Name="OverWriteCheck" Visibility="Hidden" Content="Overwrite the existing application" Grid.Row="3"  Margin="25,75,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBlock x:Name="ApplicationNameBlock" TextWrapping="Wrap" Visibility="Visible" Text="100 characters maximum. Only alphanumeric characters are allowed.(spaces, dash, sp.chars)"  Grid.Row="3"  HorizontalAlignment="Left" Margin="20,75,0,0" VerticalAlignment="Top" Opacity="0.81"/>
             <Button Content="Run" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,30,20" VerticalAlignment="Bottom" Width="80" IsEnabled="False"/>
             <Button Content="Next" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,120,20" VerticalAlignment="Bottom" Width="80" Click="Next_Button_Click_1"/>
             <Button Content="Back" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,210,20" VerticalAlignment="Bottom" Width="80" IsEnabled="False"/>
@@ -95,7 +96,7 @@
             <Button Content="Next" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,120,20" VerticalAlignment="Bottom" Width="80" Click="Next_Button_Click_3"/>
             <Button Content="Back" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,210,20" VerticalAlignment="Bottom" Width="80" Click="Back_Button_Click_3"/>
             <Button Content="Cancel" Grid.Row="5" HorizontalAlignment="Right" Margin="0,0,300,20" VerticalAlignment="Bottom" Width="80" Click="Cancel_Click"/>
-            
+
         </Grid>
 
         <Grid x:Name="ReviewGrid" Visibility="Hidden" Margin="0,0,0,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="0" Background="White">

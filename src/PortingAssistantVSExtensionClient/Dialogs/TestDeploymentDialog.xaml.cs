@@ -316,16 +316,21 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 }
                 if (DeploymentProjectComboBox.SelectedIndex == -1)
                 {
-                    ProjectErrorHint.Content = "please select an project to deploy";
+                    ProjectErrorHint.Content = "please select a target project";
                     IsValid = false;
                 }
-                else
-                {
-                    ProjectErrorHint.Content = "";
-                }
+
                 if (string.IsNullOrEmpty(DeploymentNameTextBox.Text))
                 {
-                    DeploymentNameErrorHint.Content = "please enter deployment name";
+                    DeploymentNameErrorHint.Content = "Application Name cannot be empty";
+                    IsValid = false;
+                }
+
+                if (AwsProfileComboBox.SelectedIndex != -1 && AwsRegionComboBox.SelectedIndex != -1 && IsDuplicatedApplicatoinName() && !(OverWriteCheck.IsChecked.HasValue && OverWriteCheck.IsChecked.Value))
+                {
+                    DeploymentNameErrorHint.Content = "The seleted application name exists, please check the box if you want to overwrite it or choose a different name";
+                    OverWriteCheck.Visibility = System.Windows.Visibility.Visible;
+                    ApplicationNameBlock.Visibility = System.Windows.Visibility.Hidden;
                     IsValid = false;
                 }
                 else
@@ -380,6 +385,13 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
+        }
+        private bool IsDuplicatedApplicatoinName()
+        {
+            string profleNameSelected = (string)AwsProfileComboBox.SelectedValue;
+            var existingStacks = AwsUtils.ListCFstacks(profleNameSelected, RegionEndpoint.GetBySystemName(AwsRegionComboBox.Text));
+            var localDeployments = _userSettings.DeploymentResults.Keys;
+            return localDeployments.Any(r => r.Contains(DeploymentNameTextBox.Text)) && existingStacks.Any(r => r.Contains(DeploymentNameTextBox.Text));
         }
     }
 }

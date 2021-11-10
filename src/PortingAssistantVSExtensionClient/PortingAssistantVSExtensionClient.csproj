@@ -161,6 +161,9 @@
     <PackageReference Include="AWSSDK.APIGateway">
       <Version>3.7.2.11</Version>
     </PackageReference>
+    <PackageReference Include="AWSSDK.CloudFormation">
+      <Version>3.7.5.38</Version>
+    </PackageReference>
     <PackageReference Include="AWSSDK.EC2">
       <Version>3.7.34.1</Version>
     </PackageReference>

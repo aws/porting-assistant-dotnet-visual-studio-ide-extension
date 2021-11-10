@@ -28,7 +28,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Submit_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if(AgreeTermsCheck.IsChecked.HasValue && AgreeTermsCheck.IsChecked.Value)
+            if (AgreeTermsCheck.IsChecked.HasValue && AgreeTermsCheck.IsChecked.Value)
             {
                 ClickResult = true;
                 Close();

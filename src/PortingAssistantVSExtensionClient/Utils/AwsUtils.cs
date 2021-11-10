@@ -1,4 +1,5 @@
-﻿using Amazon.DirectoryService;
+﻿using Amazon.CloudFormation;
+using Amazon.DirectoryService;
 using Amazon.EC2;
 using Amazon.EC2.Model;
 using Amazon.Runtime;
@@ -164,6 +165,20 @@ namespace PortingAssistantVSExtensionClient.Utils
                 vpcList = vpcs.Vpcs.Select(v => v.VpcId).ToList();
             }
             return vpcList;
+        }
+
+        public static List<string> ListCFstacks(string profileName, Amazon.RegionEndpoint region)
+        {
+            AWSCredentials credentials = GetAWSCredentials(profileName);
+            List<string> stackList = new List<string>();
+            using (var cfnClient = new AmazonCloudFormationClient(credentials, region))
+            {
+                var stacks = cfnClient.ListStacks();
+                stackList = stacks.StackSummaries.Select(s => s.StackName).ToList();
+            }
+
+            return stackList;
+
         }
 
         public static List<string> ListVpcSubnets(string vpcId, string profileName, Amazon.RegionEndpoint region)

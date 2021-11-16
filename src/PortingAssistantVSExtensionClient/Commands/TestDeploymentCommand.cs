@@ -292,11 +292,15 @@ namespace PortingAssistantVSExtensionClient.Commands
 
                 deploymentconfig.applicationName = parameters.deployname;
                 deploymentconfig.deploymentSource = "BUILD";
-                deploymentconfig.exposedPorts = configuration.ExposedPorts;
+
+                deploymentconfig.exposedPorts = configuration.exposedports;
 
                 deploymentconfig.buildDefinitions.buildParameters.sourceType = "NETCORE";
                 deploymentconfig.buildDefinitions.buildParameters.buildLocation = buildpath;
 
+                deploymentconfig.ecsParameters.cpu = configuration.cpu;
+                deploymentconfig.ecsParameters.memory = configuration.memory;
+                deploymentconfig.ecsParameters.enableCloudwatchLogging = true;
                 deploymentconfig.ecsParameters.reuseResources.vpcId = parameters.vpcId;
                 deploymentconfig.eksParameters.reuseResources.vpcId = parameters.vpcId;
 

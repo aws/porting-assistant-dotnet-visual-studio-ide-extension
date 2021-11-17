@@ -22,7 +22,7 @@
         <TextBlock Grid.Row="1"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,20,10,0" TextWrapping="Wrap" Text="Please read the following End User License Agreement. " />
         <ScrollViewer Grid.Row="2" HorizontalAlignment="Left" Height="300" Margin="25,20,0,0" VerticalAlignment="Top" Width="500">
             <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" Padding="10" >
-                <Run Text="You can use App2Container to generate container images for one or more applications running on Windows or Linux servers that are compatible with the Open Containers Initiative (OCI). This includes commercial off-the-shelf applications (COTs). App2Container does not need source code for the application to containerize it.
+                <Run x:Name="eulaContent" Text="You can use App2Container to generate container images for one or more applications running on Windows or Linux servers that are compatible with the Open Containers Initiative (OCI). This includes commercial off-the-shelf applications (COTs). App2Container does not need source code for the application to containerize it.
 
 You can use App2Container directly on the application servers that are running your applications, or perform the containerization and deployment steps on a worker machine.
 

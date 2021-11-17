@@ -33,6 +33,7 @@ namespace PortingAssistantVSExtensionClient.Common
         public const string DefaultDeploymentConfiguration = "deploymentconfiguration.json";
         public const string DefaultDeploymentTool = "app2container.exe";
         public const string DefaultDeploymentBucketName = "PortingAssistant-Test-Deployment";
+        public const string DefaultMainfestSource = "";
 
         public const string ResourceFolder = "Resources";
     }

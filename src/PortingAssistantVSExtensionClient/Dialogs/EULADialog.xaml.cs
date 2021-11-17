@@ -14,9 +14,10 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             this.Title = "License agreement";
         }
 
-        public static bool EnsureExecute()
+        public static bool EnsureExecute(string eula)
         {
             EULADialog eulaDialog = new EULADialog();
+            eulaDialog.eulaContent.Text = eula;
             eulaDialog.ShowModal();
             return eulaDialog.ClickResult;
         }

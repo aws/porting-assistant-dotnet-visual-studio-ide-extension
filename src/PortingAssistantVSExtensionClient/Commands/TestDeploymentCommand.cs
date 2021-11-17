@@ -100,15 +100,10 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             try
             {
-                // await CheckToolExistAsync();
-
-                var tmpFolder = FilesUtils.GetTmpFolder();
-                var solutionPath = await CommandsCommon.GetSolutionPathAsync();
-                var outputPath = Path.Combine(tmpFolder, "deployment-output.json");
-
-                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 //if (!CommandsCommon.SetupPage()) return;
                 var IsBuildSucceed = await CommandsCommon.IsBuildSucceedAsync();
+                var tmpFolder = FilesUtils.GetTmpFolder();
+                var solutionPath = await CommandsCommon.GetSolutionPathAsync();
 
                 if (!IsBuildSucceed)
                 {
@@ -116,10 +111,16 @@ namespace PortingAssistantVSExtensionClient.Commands
                     return;
                 }
 
+                //await CheckMainFestAndPopEulaAsync(Common.Constants.DefaultMainfestSource, tmpFolder);
+                //await CheckToolExistAsync();
+
+                var outputPath = Path.Combine(tmpFolder, "deployment-output.json");
+
+                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
+
+
                 // Copy kerberos templates
                 //CommandsCommon.AddKerberosTemplatesToProject();
-
-
 
                 var parameters = TestDeploymentDialog.GetParameters(solutionPath);
                 if (parameters == null) return;
@@ -186,7 +187,6 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             try
             {
-                /*
                 var resp = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                 .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                 new TestDeploymentRequest()
@@ -196,14 +196,6 @@ namespace PortingAssistantVSExtensionClient.Commands
                 });
                 if (resp.status != 0) throw new Exception("Could not found and Install deployment module");
 
-                */
-                if (CommandsCommon.GetEulaType() != "AWS")
-                {
-                    // TODO Pop EULA
-                    if (!EULADialog.EnsureExecute()) return;
-                    // Update Eula
-                    // CommandsCommon.UpdateEula("AWS");
-                }
             }
             catch
             {
@@ -211,6 +203,35 @@ namespace PortingAssistantVSExtensionClient.Commands
             }
         }
 
+        private async Task CheckMainFestAndPopEulaAsync(string source, string tmpFolder)
+        {
+            var mainfest = Path.Combine(tmpFolder, "mainfest.json");
+            var resp = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
+                .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
+                new TestDeploymentRequest()
+                {
+                    fileName = "Invoke-WebRequest",
+                    arguments = new List<string>
+                    {
+                        "-Uri",
+                        source,
+                        "-OutFile",
+                        mainfest,
+                    }
+                });
+
+            dynamic mainfestJson = JObject.Parse(File.ReadAllText(mainfest));
+            string eulaType = mainfestJson.eulaType;
+            string eulaContent = mainfestJson.eula;
+
+            if (CommandsCommon.GetEulaType() != eulaType)
+            {
+                // TODO Pop EULA replace the
+                if (!EULADialog.EnsureExecute(eulaContent)) return;
+                // Update Eula
+                CommandsCommon.UpdateEula(eulaType);
+            }
+        }
         private async Task InitDeploymentToolAsync(string profileName, bool enableMetrics, string tmpFolder)
         {
             try
@@ -232,12 +253,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                         },
                     });
 
-                dynamic initJson = JObject.Parse(File.ReadAllText(initJsonPath));
-                initJson.awsProfile = profileName;
-                initJson.s3Bucket = uniqueBucketName;
-                initJson.disableTermNiceties = true;
-
-                File.WriteAllText(initJsonPath, initJson.ToString());
+                FilesUtils.GetInitJsonReady(initJsonPath, profileName, uniqueBucketName);
 
                 var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                     .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
@@ -264,6 +280,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             try
             {
                 var tmpPath = Path.Combine(tmpFolder, "deployment.json");
+                var buildpath = await CommandsCommon.GetBuildOutputPathAsync(parameters.selectedProject);
                 await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                     new TestDeploymentRequest()
                     {
@@ -277,34 +294,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                         },
                     });
 
-                var AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                var ConfigurationFileName = Environment.GetEnvironmentVariable("DeploymentConfiguration") ?? Common.Constants.DefaultDeploymentConfiguration;
-                var ConfigurationPath = Path.Combine(
-                    AssemblyPath,
-                    Common.Constants.ResourceFolder,
-                    ConfigurationFileName);
-
-                dynamic configuration = JObject.Parse(File.ReadAllText(ConfigurationPath));
-                dynamic deploymentconfig = JObject.Parse(File.ReadAllText(tmpPath));
-
-                // configure the depolyment json from the inputs
-                var buildpath = await CommandsCommon.GetBuildOutputPathAsync(parameters.selectedProject);
-
-                deploymentconfig.applicationName = parameters.deployname;
-                deploymentconfig.deploymentSource = "BUILD";
-
-                deploymentconfig.exposedPorts = configuration.exposedports;
-
-                deploymentconfig.buildDefinitions.buildParameters.sourceType = "NETCORE";
-                deploymentconfig.buildDefinitions.buildParameters.buildLocation = buildpath;
-
-                deploymentconfig.ecsParameters.cpu = configuration.cpu;
-                deploymentconfig.ecsParameters.memory = configuration.memory;
-                deploymentconfig.ecsParameters.enableCloudwatchLogging = true;
-                deploymentconfig.ecsParameters.reuseResources.vpcId = parameters.vpcId;
-                deploymentconfig.eksParameters.reuseResources.vpcId = parameters.vpcId;
-
-                File.WriteAllText(tmpPath, deploymentconfig.ToString());
+                FilesUtils.GetDeploymentJsonReady(tmpPath, parameters, buildpath);
                 return tmpPath;
             }
             catch

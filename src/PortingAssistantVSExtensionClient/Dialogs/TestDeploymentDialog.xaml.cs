@@ -326,7 +326,14 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                     IsValid = false;
                 }
 
-                if (AwsProfileComboBox.SelectedIndex != -1 && AwsRegionComboBox.SelectedIndex != -1 && IsDuplicatedApplicatoinName() && !(OverWriteCheck.IsChecked.HasValue && OverWriteCheck.IsChecked.Value))
+                if (AwsProfileComboBox.SelectedIndex != -1 && AwsRegionComboBox.SelectedIndex != -1 && IsDuplicatedApplicatoinNameCF() && !IsDuplicatedApplicatoinNameLocal())
+                {
+                    DeploymentNameErrorHint.Content = "The seleted application name exists, please choose a different name";
+                    OverWriteCheck.Visibility = System.Windows.Visibility.Hidden;
+                    ApplicationNameBlock.Visibility = System.Windows.Visibility.Hidden;
+                    IsValid = false;
+                }
+                else if (AwsProfileComboBox.SelectedIndex != -1 && AwsRegionComboBox.SelectedIndex != -1 && IsDuplicatedApplicatoinNameLocal() && IsDuplicatedApplicatoinNameCF() && !(OverWriteCheck.IsChecked.HasValue && OverWriteCheck.IsChecked.Value))
                 {
                     DeploymentNameErrorHint.Content = "The seleted application name exists, please check the box if you want to overwrite it or choose a different name";
                     OverWriteCheck.Visibility = System.Windows.Visibility.Visible;
@@ -386,12 +393,18 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
         }
-        private bool IsDuplicatedApplicatoinName()
+        private bool IsDuplicatedApplicatoinNameLocal()
+        {
+            var localDeployments = _userSettings.DeploymentResults.Keys;
+            return localDeployments.Any(r => r.Contains(DeploymentNameTextBox.Text));
+        }
+
+        private bool IsDuplicatedApplicatoinNameCF()
         {
             string profleNameSelected = (string)AwsProfileComboBox.SelectedValue;
             var existingStacks = AwsUtils.ListCFstacks(profleNameSelected, RegionEndpoint.GetBySystemName(AwsRegionComboBox.Text));
-            var localDeployments = _userSettings.DeploymentResults.Keys;
-            return localDeployments.Any(r => r.Contains(DeploymentNameTextBox.Text)) && existingStacks.Any(r => r.Contains(DeploymentNameTextBox.Text));
+            return existingStacks.Any(r => r.Contains(DeploymentNameTextBox.Text));
+
         }
     }
 }

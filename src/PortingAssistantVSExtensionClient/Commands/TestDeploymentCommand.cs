@@ -134,7 +134,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 var deployemtJsonPath = await GetDeploymentConfigurationPathAsync(tmpFolder, parameters);
 
                 // deploy
-                NotificationUtils.ShowInfoBar($"Start to deploy your project {Path.GetFileNameWithoutExtension(parameters.deployname)} on AWS.", KnownMonikers.StatusInformation);
+                NotificationUtils.ShowInfoBar($"Starting to deploy your project {Path.GetFileNameWithoutExtension(parameters.deployname)} on AWS.", KnownMonikers.StatusInformation);
                 var response = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                     .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                     new TestDeploymentRequest()
@@ -211,6 +211,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             if (resp.status != 0) return;
             var mainfest = resp.message;
 
+            // parse mainfest
             dynamic mainfestJson = JObject.Parse(File.ReadAllText(mainfest));
             string eulaType = mainfestJson.eulaType;
             string eulaContent = mainfestJson.eula;

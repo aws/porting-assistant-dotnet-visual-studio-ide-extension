@@ -28,19 +28,18 @@ namespace PortingAssistantExtensionServer.Utils
             return null;
         }
 
-        public static Boolean download(String url, String location)
+        public static string GetTmpFolder()
         {
-            try
+            var tmpFolder = Path.Combine(Path.GetTempPath(), "PortingAssistant", Path.GetRandomFileName());
+            if (!Directory.Exists(tmpFolder)) Directory.CreateDirectory(tmpFolder);
+            return tmpFolder;
+        }
+
+        public static void Download(String url, String location)
+        {
+            using (WebClient myWebClient = new WebClient())
             {
-                using (WebClient myWebClient = new WebClient())
-                {
-                    myWebClient.DownloadFile(url, location);
-                }
-                return true;
-            }
-            catch
-            {
-                return false;
+                myWebClient.DownloadFile(url, location);
             }
         }
     }

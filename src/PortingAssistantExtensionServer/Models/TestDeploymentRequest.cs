@@ -7,7 +7,8 @@ namespace PortingAssistantExtensionServer.Models
 {
     public class TestDeploymentRequest : IRequest<TestDeploymentResponse>
     {
-        public string fileName { get; set; }
+        public string excutionType { get; set; }
+        public string command { get; set; }
         public List<string> arguments { get; set; }
     }
 }

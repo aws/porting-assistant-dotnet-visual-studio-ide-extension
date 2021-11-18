@@ -9,5 +9,6 @@ namespace PortingAssistantVSExtensionClient.Models
     public class TestDeploymentResponse
     {
         public int status;
+        public string message;
     }
 }

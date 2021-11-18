@@ -111,7 +111,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                     return;
                 }
 
-                //await CheckMainFestAndPopEulaAsync(Common.Constants.DefaultMainfestSource, tmpFolder);
+                //await CheckMainFestAndPopEulaAsync();
                 //await CheckToolExistAsync();
 
                 var outputPath = Path.Combine(tmpFolder, "deployment-output.json");
@@ -139,7 +139,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                     .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                     new TestDeploymentRequest()
                     {
-                        fileName = Common.Constants.DefaultDeploymentTool,
+                        excutionType = "RunCommand",
+                        command = Common.Constants.DefaultDeploymentTool,
                         arguments = new List<string> {
                         "generate",
                         "app-deployment",
@@ -185,40 +186,30 @@ namespace PortingAssistantVSExtensionClient.Commands
 
         private async Task CheckToolExistAsync()
         {
-            try
+            var resp = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
+            .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
+            new TestDeploymentRequest()
             {
-                var resp = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
-                .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
-                new TestDeploymentRequest()
-                {
-                    fileName = "init",
-                    arguments = new List<string>()
-                });
-                if (resp.status != 0) throw new Exception("Could not found and Install deployment module");
-
-            }
-            catch
-            {
-                throw new Exception("Check tool existence failed");
-            }
+                excutionType = "CheckToolExist",
+                command = "",
+                arguments = new List<string>()
+            });
+            if (resp.status != 0) throw new Exception("Could not found and Install deployment tool");
         }
 
-        private async Task CheckMainFestAndPopEulaAsync(string source, string tmpFolder)
+        private async Task CheckMainFestAndPopEulaAsync()
         {
-            var mainfest = Path.Combine(tmpFolder, "mainfest.json");
             var resp = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc
                 .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                 new TestDeploymentRequest()
                 {
-                    fileName = "Invoke-WebRequest",
-                    arguments = new List<string>
-                    {
-                        "-Uri",
-                        source,
-                        "-OutFile",
-                        mainfest,
-                    }
+                    excutionType = "CheckMainFest",
+                    command = "",
+                    arguments = new List<string>()
                 });
+
+            if (resp.status != 0) return;
+            var mainfest = resp.message;
 
             dynamic mainfestJson = JObject.Parse(File.ReadAllText(mainfest));
             string eulaType = mainfestJson.eulaType;
@@ -231,6 +222,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 // Update Eula
                 CommandsCommon.UpdateEula(eulaType);
             }
+
         }
         private async Task InitDeploymentToolAsync(string profileName, bool enableMetrics, string tmpFolder)
         {
@@ -243,7 +235,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                     .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                     new TestDeploymentRequest()
                     {
-                        fileName = Common.Constants.DefaultDeploymentTool,
+                        excutionType = "RunCommand",
+                        command = Common.Constants.DefaultDeploymentTool,
                         arguments = new List<string> {
                         "init",
                         "--generate-cli-skeleton",
@@ -259,7 +252,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                     .InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                     new TestDeploymentRequest()
                     {
-                        fileName = Common.Constants.DefaultDeploymentTool,
+                        excutionType = "RunCommand",
+                        command = Common.Constants.DefaultDeploymentTool,
                         arguments = new List<string> {
                         "init",
                         "--init-json-file",
@@ -284,7 +278,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                 await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<TestDeploymentResponse>("deploySolution",
                     new TestDeploymentRequest()
                     {
-                        fileName = Common.Constants.DefaultDeploymentTool,
+                        excutionType = "RunCommand",
+                        command = Common.Constants.DefaultDeploymentTool,
                         arguments = new List<string> {
                         "generate",
                         "app-deployment",

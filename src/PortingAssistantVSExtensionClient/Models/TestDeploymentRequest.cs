@@ -8,7 +8,11 @@ namespace PortingAssistantVSExtensionClient.Models
 {
     public class TestDeploymentRequest
     {
-        public string fileName { get; set; }
-        public List<string> arguments { get; set; }
+        public string excutionType { get; set; }
+        public string command { get; set; }
+        public List<string> arguments
+        {
+            get; set;
+        }
     }
 }

@@ -6,18 +6,18 @@ namespace PortingAssistantExtensionServer.Utils
 {
     public static class RemoteCallUtils
     {
-        public static int Excute(String FileName, List<String> args, DataReceivedEventHandler OutputHandler)
+        public static int Excute(String FileName, List<String> args, DataReceivedEventHandler OutputDataHandler, DataReceivedEventHandler ErrorOutputHandler, int timeout = 360000)
         {
             var startInfo = GetProcessInfo(FileName, args);
             try
             {
                 using (Process exeProcess = Process.Start(startInfo))
                 {
-                    exeProcess.OutputDataReceived += OutputHandler;
-                    exeProcess.ErrorDataReceived += OutputHandler;
+                    exeProcess.OutputDataReceived += OutputDataHandler;
+                    exeProcess.ErrorDataReceived += ErrorOutputHandler;
                     exeProcess.BeginOutputReadLine();
                     exeProcess.BeginErrorReadLine();
-                    exeProcess.WaitForExit();
+                    exeProcess.WaitForExit(timeout);
                     return exeProcess.ExitCode;
                 }
             }

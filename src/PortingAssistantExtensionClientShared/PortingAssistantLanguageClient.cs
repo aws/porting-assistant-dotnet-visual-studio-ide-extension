@@ -21,6 +21,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Task = System.Threading.Tasks.Task;
+using static System.Diagnostics.FileVersionInfo;
+using System.Text.RegularExpressions;
 
 namespace PortingAssistantVSExtensionClient
 {
@@ -142,6 +144,7 @@ namespace PortingAssistantVSExtensionClient
                 stdInPipeName = $"{Common.Constants.InPipeName}{LaunchTime}";
                 stdOutPipeName = $"{Common.Constants.OutPipeName}{LaunchTime}";
                 var extensionVersion = GetExtensionVersion();
+                var clientVersion = GetVisualStudioVersion();
                 var (readerPipe, writerPipe) = CreateConnectionPipe(stdInPipeName, stdOutPipeName);
                 
                 if (File.Exists(LanguageServerPath))
@@ -152,7 +155,7 @@ namespace PortingAssistantVSExtensionClient
                         WorkingDirectory = Path.GetDirectoryName(LanguageServerPath),
                         UseShellExecute = false,
                         CreateNoWindow = true,
-                        Arguments = $"{ConfigurationPath} {stdOutPipeName} {stdInPipeName} {extensionVersion}"
+                        Arguments = $"{ConfigurationPath} {stdOutPipeName} {stdInPipeName} {extensionVersion} {clientVersion}"
                     };
                     Process process = new Process { StartInfo = info };
                     if (process.Start())
@@ -217,6 +220,23 @@ namespace PortingAssistantVSExtensionClient
             }
            
         }
+
+        private string GetVisualStudioVersion()
+
+        {
+            FileVersionInfo versionInfo;
+            try
+            {
+                var msenvPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "msenv.dll");
+                versionInfo = GetVersionInfo(msenvPath);
+            }
+            catch (FileNotFoundException)
+            { return null; }
+            var version = Regex.Match(versionInfo.FileVersion, @"D([\d\.]+)");
+            return version.Success ? version.Groups[1].Value : null;
+
+        }
+
 #if Dev17
         public Task<InitializationFailureContext> OnServerInitializeFailedAsync(ILanguageClientInitializationInfo initializationState)
         {

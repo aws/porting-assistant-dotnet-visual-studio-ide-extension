@@ -67,6 +67,7 @@ namespace PortingAssistantExtensionServer.Services
                     triggerType,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
+                    PALanguageServerConfiguration.VisualStudioVersion,
                     DateTime.Now.Subtract(startTime).TotalMilliseconds);
                 }
                 CreateClientConnectionAsync(request.PipeName);
@@ -133,7 +134,14 @@ namespace PortingAssistantExtensionServer.Services
                         selectedApi?.Recommendations?.RecommendedActions?.Add(action);
                     });
 
-                    Collector.FileAssessmentCollect(selectedApis, runId, triggerType, _request.settings.TargetFramework, PALanguageServerConfiguration.ExtensionVersion);
+                    Collector.FileAssessmentCollect(
+                        selectedApis, 
+                        runId, 
+                        triggerType,
+                        _request.settings.TargetFramework, 
+                        PALanguageServerConfiguration.ExtensionVersion,
+                        PALanguageServerConfiguration.VisualStudioVersion
+                        );
                 }
                 return result;
             }
@@ -322,6 +330,7 @@ namespace PortingAssistantExtensionServer.Services
                     triggerType,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
+                    PALanguageServerConfiguration.VisualStudioVersion,
                     diagnostics.Count);
             }
             return diagnostics;

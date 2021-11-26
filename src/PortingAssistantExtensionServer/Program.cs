@@ -33,8 +33,8 @@ namespace PortingAssistantExtensionServer
                 var stdInPipeName = args.Length == 1 ? Common.Constants.stdDebugInPipeName : args[1];
                 var stdOutPipeName = args.Length == 1 ? Common.Constants.stdDebugOutPipeName : args[2];
                 Common.PALanguageServerConfiguration.ExtensionVersion = args.Length == 1 ? "0.0.0" : args[3];
-                var vsClientVersion = args.Length == 1 ? "16.0" : args[4];
-                Common.PALanguageServerConfiguration.VisualStudioVersion = vsClientVersion;
+                var vsClientVersion = args.Length == 1 ? "unkwown" : args[4];
+                Common.PALanguageServerConfiguration.VisualStudioVersion = GetVSVersion(vsClientVersion);
                 Console.WriteLine($"Porting Assistant Version is {Common.PALanguageServerConfiguration.ExtensionVersion}");
                 Console.WriteLine($"Visual Studio Version is {Common.PALanguageServerConfiguration.VisualStudioVersion}");
                 var portingAssistantConfiguration = JsonSerializer.Deserialize<PortingAssistantIDEConfiguration>(File.ReadAllText(config));
@@ -116,6 +116,22 @@ namespace PortingAssistantExtensionServer
                 Console.WriteLine("Connected");
             }
             return (pipeline1.Input, pipeline2.Output);
+        }
+
+        private static string GetVSVersion(string vsClientVersion)
+        {
+            
+            try
+            {
+                var vs2022 = Version.Parse("17.0");
+                var version = Version.Parse(vsClientVersion);
+                if (version.CompareTo(vs2022) >= 0) return Common.Constants.VS2022;
+                else return Common.Constants.VS2019;
+            }
+            catch (Exception)
+            {
+                return Common.Constants.VS_UNKNOWN;
+            }
         }
     }
 }

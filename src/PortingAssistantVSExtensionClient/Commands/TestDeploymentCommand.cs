@@ -175,7 +175,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 }
                 else
                 {
-                    NotificationUtils.ShowInfoBar("Failed to deploy on AWS, Please Check the logs for finding the root cuase", KnownMonikers.StatusError);
+                    NotificationUtils.ShowInfoBar("Failed to deploy to AWS, please check logs for root cause", KnownMonikers.StatusError);
                 }
             }
             catch (Exception ex)

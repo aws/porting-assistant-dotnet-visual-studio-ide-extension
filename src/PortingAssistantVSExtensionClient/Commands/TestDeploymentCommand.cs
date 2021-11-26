@@ -171,7 +171,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 if (response.status == 0 && status == "SUCCESS")
                 {
 
-                    NotificationUtils.ShowInfoBar($"Succeed running your project on AWS, please view the endpoint: http://{url}", KnownMonikers.StatusInformation, $"http://{url}");
+                    NotificationUtils.ShowInfoBar($"Succeeded running your project on AWS, please view endpoint: http://{url}", KnownMonikers.StatusInformation, $"http://{url}");
                 }
                 else
                 {

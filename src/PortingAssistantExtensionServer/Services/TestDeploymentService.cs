@@ -11,14 +11,35 @@ using System.Text;
 
 namespace PortingAssistantExtensionServer
 {
-    internal class TestDeploymentService : BaseService, IDisposable
+    internal interface ITestDeploymentService
+    {
+        public int DownloadManifest(string source);
+
+        public int InitDeploymentTool();
+
+        public TestDeploymentResponse Execute(TestDeploymentRequest request);
+
+        public int DownloadAndInstallTool(string source, string toolname);
+
+    }
+    internal class TestDeploymentService : BaseService, ITestDeploymentService
     {
         private readonly ILogger<TestDeploymentService> _logger;
         private readonly string tmpFolder;
+        private readonly IRemoteCallUtils _remoteCallUtils;
+
         public TestDeploymentService(ILogger<TestDeploymentService> logger)
         {
             _logger = logger;
             tmpFolder = FileUtils.GetTmpFolder();
+            _remoteCallUtils = new RemoteCallUtils(_logger);
+        }
+
+        public TestDeploymentService(ILogger<TestDeploymentService> logger, IRemoteCallUtils remoteCallUtils)
+        {
+            _logger = logger;
+            tmpFolder = FileUtils.GetTmpFolder();
+            _remoteCallUtils = remoteCallUtils;
         }
 
         // Upgrade or Download Deployment Tool
@@ -31,7 +52,7 @@ namespace PortingAssistantExtensionServer
                 if (exists)
                 {
                     var args = new List<String> { "upgrade" };
-                    var exitcode = RemoteCallUtils.Excute(command, args, OutputDataHandler, ErrorOutputHandler);
+                    var exitcode = _remoteCallUtils.Execute(command, args);
                     if (exitcode == 0) _logger.LogInformation("Deployment tool exists and upgrade success");
                     else _logger.LogInformation("Deployment tool exists but upgarde failed");
                     return exitcode;
@@ -51,7 +72,7 @@ namespace PortingAssistantExtensionServer
         }
 
         // Download Mainfest file
-        public int DownloadMainfest(string source)
+        public int DownloadManifest(string source)
         {
             try
             {
@@ -67,7 +88,7 @@ namespace PortingAssistantExtensionServer
 
         }
 
-        public TestDeploymentResponse Excute(TestDeploymentRequest request)
+        public TestDeploymentResponse Execute(TestDeploymentRequest request)
         {
             // take a init command from front
             if (request.excutionType == "CheckToolExist")
@@ -79,41 +100,25 @@ namespace PortingAssistantExtensionServer
                 };
             }
 
-            if (request.excutionType == "CheckMainFest")
+            if (request.excutionType == "CheckManiFest")
             {
-                var status = DownloadMainfest(Constants.Mainfestpath);
+                var status = DownloadManifest(Constants.Manifestpath);
                 return new TestDeploymentResponse
                 {
                     status = status,
-                    message = Path.Combine(tmpFolder, "mainfest.json")
+                    message = Path.Combine(tmpFolder, "manifest.json")
                 };
             }
 
             _logger.LogInformation($"start excuting ${request.command + String.Join(" ", request.arguments)} .....");
             //CreateClientConnectionAsync(request.PipeName);
-            var exitcode = RemoteCallUtils.Excute(request.command, request.arguments, OutputDataHandler, ErrorOutputHandler);
+            var exitcode = _remoteCallUtils.Execute(request.command, request.arguments);
             _logger.LogInformation($"finish excuting ${request.command + String.Join(" ", request.arguments)} with exit code {exitcode}");
 
             return new TestDeploymentResponse
             {
                 status = exitcode
             };
-        }
-
-        private void OutputDataHandler(object sendingProcess, DataReceivedEventArgs outLine)
-        {
-            if (!String.IsNullOrEmpty(outLine.Data))
-            {
-                _logger.LogInformation(outLine.Data);
-            }
-        }
-
-        private void ErrorOutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
-        {
-            if (!String.IsNullOrEmpty(outLine.Data))
-            {
-                _logger.LogError(outLine.Data);
-            }
         }
 
         public int DownloadAndInstallTool(string source, string toolname)
@@ -131,7 +136,7 @@ namespace PortingAssistantExtensionServer
                 }
                 var installPath = Path.Combine(tmpfolder, Constants.InstallPath);
 
-                var exitcode = RemoteCallUtils.Excute("powershell.exe", new List<string> { installPath, "-acceptEula", "true" }, OutputDataHandler, ErrorOutputHandler);
+                var exitcode = _remoteCallUtils.Execute("powershell.exe", new List<string> { installPath, "-acceptEula", "true" });
 
                 // Clean and Delete tmp folder
                 Directory.Delete(tmpfolder, true);
@@ -143,9 +148,6 @@ namespace PortingAssistantExtensionServer
                 return -1;
             }
         }
-
-        public void Dispose()
-        {
-        }
     }
+
 }

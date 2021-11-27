@@ -32,7 +32,7 @@ namespace PortingAssistantExtensionServer.Handlers
         public async Task<TestDeploymentResponse> Handle(TestDeploymentRequest request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"received deployment request: ${request.command + string.Join(" ", request.arguments)} .....");
-            return _testDeploymentService.Excute(request);
+            return _testDeploymentService.Execute(request);
         }
     }
 }

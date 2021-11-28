@@ -12,6 +12,7 @@ namespace PortingAssistantVSExtensionClient.Common
 		public const string NETCOREAPP31 = "netcoreapp3.1";
 		public const string NET50 = "net5.0";
 		public const string NET60 = "net6.0";
+		// net6.0 only available on visual studio 2022
 		public static readonly List<string> ALL_SElECTION = new List<string>
 			 {
 				 NETCOREAPP31,

@@ -26,6 +26,9 @@ namespace PortingAssistantVSExtensionClient.Options
             {
                 _optionsPageControl.TargeFrameworks.Items.Add(framwork);
             }
+#if Dev16
+            _optionsPageControl.TargeFrameworks.Items.Remove(TargetFrameworkType.NET60);
+#endif
         }
 
         protected override UIElement Child { get { return _optionsPageControl; } }
@@ -42,9 +45,15 @@ namespace PortingAssistantVSExtensionClient.Options
 
         void LoadSettings()
         {
-            _optionsPageControl.TargeFrameworks.SelectedItem = _userSettings.TargetFramework; 
+            _optionsPageControl.TargeFrameworks.SelectedItem = _userSettings.TargetFramework;
+#if Dev16
+            if (_optionsPageControl.TargeFrameworks.SelectedItem != null && _optionsPageControl.TargeFrameworks.SelectedItem.Equals(TargetFrameworkType.NET60.ToString()))
+            {
+                _optionsPageControl.TargeFrameworks.SelectedItem = TargetFrameworkType.NETCOREAPP31.ToString();
+            }
+#endif
         }
-        
+
         void Save()
         {
             _userSettings.TargetFramework = (string)_optionsPageControl.TargeFrameworks.SelectedValue;

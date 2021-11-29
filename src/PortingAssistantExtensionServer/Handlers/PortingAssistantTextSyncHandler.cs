@@ -12,6 +12,7 @@ using System.IO;
 using PortingAssistantExtensionServer.TextDocumentModels;
 using Microsoft.Extensions.Logging;
 using System;
+using PortingAssistantExtensionServer.Services;
 
 namespace PortingAssistantExtensionServer.Handlers
 {

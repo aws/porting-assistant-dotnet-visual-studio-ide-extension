@@ -2,13 +2,12 @@
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
 using PortingAssistantExtensionServer.Models;
-using PortingAssistantExtensionServer.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PortingAssistantExtensionServer
+namespace PortingAssistantExtensionServer.Services
 {
     class PortingService : BaseService, IDisposable
     {

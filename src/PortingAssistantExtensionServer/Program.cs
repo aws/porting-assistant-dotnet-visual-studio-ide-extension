@@ -12,9 +12,8 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionTelemetry;
 using System.Text.Json;
-using PortingAssistant.Telemetry.Utils;
 using System.Net.Http;
-
+using PortingAssistantExtensionTelemetry.Utils;
 
 namespace PortingAssistantExtensionServer
 {
@@ -34,11 +33,15 @@ namespace PortingAssistantExtensionServer
                 var stdInPipeName = args.Length == 1 ? Common.Constants.stdDebugInPipeName : args[1];
                 var stdOutPipeName = args.Length == 1 ? Common.Constants.stdDebugOutPipeName : args[2];
                 Common.PALanguageServerConfiguration.ExtensionVersion = args.Length == 1 ? "0.0.0" : args[3];
+                var vsClientVersion = args.Length == 1 ? "unkwown" : args[4];
+                Common.PALanguageServerConfiguration.VisualStudioVersion = GetVSVersion(vsClientVersion);
+                Console.WriteLine($"Porting Assistant Version is {Common.PALanguageServerConfiguration.ExtensionVersion}");
+                Console.WriteLine($"Visual Studio Version is {Common.PALanguageServerConfiguration.VisualStudioVersion}");
                 var portingAssistantConfiguration = JsonSerializer.Deserialize<PortingAssistantIDEConfiguration>(File.ReadAllText(config));
                 
                 var outputTemplate = Common.Constants.DefaultOutputTemplate;
-                var isConsole = args.Length == 4 && args[3].Equals("--console");
-                if (args.Length == 4 && !args[3].Equals("--console"))
+                var isConsole = args.Length == 5 && args[4].Equals("--console");
+                if (args.Length == 5 && !args[4].Equals("--console"))
                 {
                     outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (Porting Assistant IDE Extension) (" + args[3] + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
                 }
@@ -113,6 +116,22 @@ namespace PortingAssistantExtensionServer
                 Console.WriteLine("Connected");
             }
             return (pipeline1.Input, pipeline2.Output);
+        }
+
+        private static string GetVSVersion(string vsClientVersion)
+        {
+            
+            try
+            {
+                var vs2022 = Version.Parse("17.0");
+                var version = Version.Parse(vsClientVersion);
+                if (version.CompareTo(vs2022) >= 0) return Common.Constants.VS2022;
+                else return Common.Constants.VS2019;
+            }
+            catch (Exception)
+            {
+                return Common.Constants.VS_UNKNOWN;
+            }
         }
     }
 }

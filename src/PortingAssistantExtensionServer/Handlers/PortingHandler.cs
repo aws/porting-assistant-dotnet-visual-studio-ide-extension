@@ -3,6 +3,7 @@ using PortingAssistantExtensionServer.Models;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
+using PortingAssistantExtensionServer.Services;
 
 namespace PortingAssistantExtensionServer.Handlers
 {

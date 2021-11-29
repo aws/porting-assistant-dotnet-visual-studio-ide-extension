@@ -10,7 +10,7 @@ namespace PortingAssistantExtensionTelemetry
 {
     public static class Collector
     {
-        public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string runId, string triggerType, string targetFramework, string extensionVersion, double time)
+        public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string runId, string triggerType, string targetFramework, string extensionVersion, string visualStudioVersion, double time)
         {
             var sha256hash = SHA256.Create();
             var date = DateTime.Now;
@@ -22,6 +22,7 @@ namespace PortingAssistantExtensionTelemetry
                 RunId = runId,
                 TriggerType = triggerType,
                 PortingAssistantExtensionVersion = extensionVersion,
+                VisualStudioClientVersion = visualStudioVersion,
                 TargetFramework = targetFramework,
                 TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                 SolutionPath = GetHash(sha256hash, solutionDetail.SolutionFilePath),
@@ -43,6 +44,7 @@ namespace PortingAssistantExtensionTelemetry
                     RunId = runId,
                     TriggerType = triggerType,
                     PortingAssistantExtensionVersion = extensionVersion,
+                    VisualStudioClientVersion = visualStudioVersion,
                     TargetFramework = targetFramework,
                     sourceFrameworks = projectAnalysisResult.TargetFrameworks,
                     TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
@@ -69,6 +71,7 @@ namespace PortingAssistantExtensionTelemetry
                         RunId = runId,
                         TriggerType = triggerType,
                         PortingAssistantExtensionVersion = extensionVersion,
+                        VisualStudioClientVersion = visualStudioVersion,
                         TargetFramework = targetFramework,
                         TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                         pacakgeName = nuget.Value.Result.PackageVersionPair.PackageId,
@@ -87,12 +90,12 @@ namespace PortingAssistantExtensionTelemetry
                     selectedApi?.Recommendations?.RecommendedActions?.Add(action);
                 });
 
-                FileAssessmentCollect(selectedApis, runId, triggerType, targetFramework, extensionVersion);
+                FileAssessmentCollect(selectedApis, runId, triggerType, targetFramework, extensionVersion, visualStudioVersion);
             });
         }
 
 
-        public static void FileAssessmentCollect(IEnumerable<ApiAnalysisResult> selectedApis , string runId, string triggerType, string targetFramework, string extensionVersion)
+        public static void FileAssessmentCollect(IEnumerable<ApiAnalysisResult> selectedApis , string runId, string triggerType, string targetFramework, string extensionVersion, string visualStudioVersion)
         {
             var date = DateTime.Now;
             var apiMetrics = selectedApis.GroupBy(elem => new
@@ -108,6 +111,7 @@ namespace PortingAssistantExtensionTelemetry
                 RunId = runId,
                 TriggerType = triggerType,
                 PortingAssistantExtensionVersion = extensionVersion,
+                VisualStudioClientVersion = visualStudioVersion,
                 TargetFramework = targetFramework,
                 TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
                 name = group.First().CodeEntityDetails.Name,
@@ -123,7 +127,7 @@ namespace PortingAssistantExtensionTelemetry
             apiMetrics.ToList().ForEach(metric => TelemetryCollector.Collect(metric));
         }
 
-        public static void ContinuousAssessmentCollect(SourceFileAnalysisResult result, string runId, string triggerType, string targetFramework, string extensionVersion, int diagnostics)
+        public static void ContinuousAssessmentCollect(SourceFileAnalysisResult result, string runId, string triggerType, string targetFramework, string extensionVersion, string visualStudioVersion, int diagnostics)
         {
             var timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm");
 
@@ -133,6 +137,7 @@ namespace PortingAssistantExtensionTelemetry
                 TimeStamp = timeStamp,
                 MetricsType = MetricsType.codeFile,
                 PortingAssistantExtensionVersion = extensionVersion,
+                VisualStudioClientVersion = visualStudioVersion,
                 TargetFramework = targetFramework,
                 Diagnostics = diagnostics,
                 RunId = runId,

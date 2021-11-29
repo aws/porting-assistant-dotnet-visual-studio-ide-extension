@@ -19,12 +19,11 @@ using Codelyzer.Analysis.Model;
 using Constants = PortingAssistantExtensionServer.Common.Constants;
 using System.IO.Pipes;
 using System.Runtime.CompilerServices;
-using PortingAssistantExtensionServer.Services;
 using PortingAssistantExtensionTelemetry;
 
 [assembly: InternalsVisibleTo("PortingAssistantExtensionUnitTest")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
-namespace PortingAssistantExtensionServer
+namespace PortingAssistantExtensionServer.Services
 {
     internal class AnalysisService : BaseService, IDisposable
     {
@@ -57,7 +56,7 @@ namespace PortingAssistantExtensionServer
                 Cleanup();
                 _request = request;
                 var startTime = DateTime.Now;
-                runId = System.Guid.NewGuid().ToString();
+                runId = Guid.NewGuid().ToString();
                 var triggerType = "InitialRequest";
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
                 if (PALanguageServerConfiguration.EnabledMetrics)
@@ -68,6 +67,7 @@ namespace PortingAssistantExtensionServer
                     triggerType,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
+                    PALanguageServerConfiguration.VisualStudioVersion,
                     DateTime.Now.Subtract(startTime).TotalMilliseconds);
                 }
                 CreateClientConnectionAsync(request.PipeName);
@@ -128,18 +128,26 @@ namespace PortingAssistantExtensionServer
                     var allActions = result.SelectMany(a => a.RecommendedActions);
                     var selectedApis = result.SelectMany(s => s.ApiAnalysisResults);
 
-                    allActions.ToList().ForEach(action => {
+                    allActions.ToList().ForEach(action =>
+                    {
                         var selectedApi = selectedApis.FirstOrDefault(s => s.CodeEntityDetails.TextSpan.Equals(action.TextSpan));
                         selectedApi?.Recommendations?.RecommendedActions?.Add(action);
                     });
 
-                    Collector.FileAssessmentCollect(selectedApis, runId, triggerType, _request.settings.TargetFramework, PALanguageServerConfiguration.ExtensionVersion);
+                    Collector.FileAssessmentCollect(
+                        selectedApis, 
+                        runId, 
+                        triggerType,
+                        _request.settings.TargetFramework, 
+                        PALanguageServerConfiguration.ExtensionVersion,
+                        PALanguageServerConfiguration.VisualStudioVersion
+                        );
                 }
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "incremental assessment failed with error: " );
+                _logger.LogError(ex, "incremental assessment failed with error: ");
                 return new List<SourceFileAnalysisResult>
                     {
                         new SourceFileAnalysisResult
@@ -168,7 +176,8 @@ namespace PortingAssistantExtensionServer
 
                 foreach (var projectAnalysisResult in solutionAnalysisResult.ProjectAnalysisResults)
                 {
-                    if (string.IsNullOrEmpty(projectAnalysisResult.ProjectFilePath)) {
+                    if (string.IsNullOrEmpty(projectAnalysisResult.ProjectFilePath))
+                    {
                         // Very likely AssessSolutionAsync has encountered exception and returned empty SolutionAnalysisResult.
                         continue;
                     }
@@ -243,7 +252,7 @@ namespace PortingAssistantExtensionServer
                                 }
                                 return "";
                             });
-                        var message = $"Porting Assistant: {name} is incompatible for target framework {_request.settings.TargetFramework} " + String.Join(", ", rcommnadation);
+                        var message = $"Porting Assistant: {name} is incompatible for target framework {_request.settings.TargetFramework} " + string.Join(", ", rcommnadation);
                         var range = GetRange(api.CodeEntityDetails.TextSpan);
                         var location = new Location()
                         {
@@ -321,6 +330,7 @@ namespace PortingAssistantExtensionServer
                     triggerType,
                     _request.settings.TargetFramework,
                     PALanguageServerConfiguration.ExtensionVersion,
+                    PALanguageServerConfiguration.VisualStudioVersion,
                     diagnostics.Count);
             }
             return diagnostics;

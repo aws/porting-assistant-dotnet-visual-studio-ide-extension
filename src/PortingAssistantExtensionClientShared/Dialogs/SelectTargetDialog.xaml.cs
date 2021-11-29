@@ -17,6 +17,9 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 TargetFrameWorkDropDown.Items.Add(framwork);
             }
+#if Dev16
+            TargetFrameWorkDropDown.Items.Remove(TargetFrameworkType.NET60);
+#endif
             TargetFrameWorkDropDown.SelectedValue = TargetFrameworkType.NO_SELECTION;
             this.Title = "Choose a Target Framework";
         }

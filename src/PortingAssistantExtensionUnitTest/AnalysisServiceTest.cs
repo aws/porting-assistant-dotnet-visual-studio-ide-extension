@@ -4,11 +4,11 @@ using NUnit.Framework;
 using OmniSharp.Extensions.LanguageServer.Protocol;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtensionServer;
 using PortingAssistantExtensionServer.Models;
+using PortingAssistantExtensionServer.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TestParameters = PortingAssistantExtensionUnitTest.TestParameters;
+using TestParameters = PortingAssistantExtensionUnitTest.Common.TestParameters;
 
 namespace PortingAssistantExtensionUnitTest
 {

@@ -7,6 +7,7 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistant.Client.Client;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
+using PortingAssistantExtensionServer.Services;
 using System;
 using System.Collections.Immutable;
 using System.IO.Pipelines;

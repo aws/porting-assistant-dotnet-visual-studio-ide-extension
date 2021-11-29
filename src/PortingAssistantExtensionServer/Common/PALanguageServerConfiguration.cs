@@ -10,6 +10,8 @@
 
         private static string _extensionVersion { get; set; }
 
+        private static string _visualStudioVersion { get; set; }
+
         static PALanguageServerConfiguration()
         {
             _enabledContinuousAssessment = false;
@@ -63,6 +65,18 @@
             set
             {
                 _extensionVersion = value;
+            }
+        }
+
+        public static string VisualStudioVersion
+        {
+            get
+            {
+                return _visualStudioVersion;
+            }
+            set
+            {
+                _visualStudioVersion = value;
             }
         }
 

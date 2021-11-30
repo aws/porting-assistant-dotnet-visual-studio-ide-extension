@@ -33,7 +33,7 @@ namespace PortingAssistantExtensionServer
                 var stdInPipeName = args.Length == 1 ? Common.Constants.stdDebugInPipeName : args[1];
                 var stdOutPipeName = args.Length == 1 ? Common.Constants.stdDebugOutPipeName : args[2];
                 Common.PALanguageServerConfiguration.ExtensionVersion = args.Length == 1 ? "0.0.0" : args[3];
-                var vsClientVersion = args.Length == 1 ? "unkwown" : args[4];
+                var vsClientVersion = args.Length == 1 ? Common.Constants.VS_UNKNOWN : args[4];
                 Common.PALanguageServerConfiguration.VisualStudioVersion = GetVSVersion(vsClientVersion);
                 Console.WriteLine($"Porting Assistant Version is {Common.PALanguageServerConfiguration.ExtensionVersion}");
                 Console.WriteLine($"Visual Studio Version is {Common.PALanguageServerConfiguration.VisualStudioVersion}");

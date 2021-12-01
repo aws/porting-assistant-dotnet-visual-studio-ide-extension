@@ -12,6 +12,6 @@
         public const string VS2019 = "VS2019";
         public const string VS2022 = "VS2022";
         public const string VS_UNKNOWN = "VS_UNKNOWN";
-
+        public const int maxNumberOfGetDiagnosticExceptions = 5;
     }
 }

@@ -196,8 +196,6 @@ namespace PortingAssistantExtensionServer.Services
                     int numberOfExceptions = 0;
                     foreach (var sourceFileAnalysisResult in projectAnalysisResult.SourceFileAnalysisResults)
                     {
-                        const int maxNumberOfExceptions = 5;
-
                         if (string.IsNullOrEmpty(sourceFileAnalysisResult.SourceFilePath))
                         {
                             continue;
@@ -215,7 +213,7 @@ namespace PortingAssistantExtensionServer.Services
                         {
                             numberOfExceptions++;
                             _logger.LogError(ex, string.Format("Get diagnostic failed {0} times with error: ", numberOfExceptions));
-                            if (numberOfExceptions > maxNumberOfExceptions)
+                            if (numberOfExceptions > Constants.maxNumberOfGetDiagnosticExceptions)
                             {
                                 throw new Exception("Get diagnostic exceeded maximum number of exceptions allowed");
                             }

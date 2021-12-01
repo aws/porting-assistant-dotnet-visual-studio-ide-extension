@@ -8,6 +8,7 @@ using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionServer.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 using TestParameters = PortingAssistantExtensionUnitTest.Common.TestParameters;
 
 namespace PortingAssistantExtensionUnitTest
@@ -73,6 +74,29 @@ namespace PortingAssistantExtensionUnitTest
             Assert.AreEqual(diagnosticResult[DocumentUri.FromFileSystemPath("/test/test")][0].Message,
                 "Porting Assistant: System.Web.Mvc.Controller.View() is incompatible for target framework netcoreapp3.1 Replace API with 12.0.3, Replace namespace with 12.0.3, Replace Source Package System.Web.Mvc-5.2.7 with 12.0.3, Upgrade Source Package System.Web.Mvc-5.2.7 to version 12.0.3");
             Assert.AreEqual(diagnosticResult[DocumentUri.FromFileSystemPath("/test/test")][1].Message, "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.");
+        }
+
+        [Test]
+        public async Task GetDiagnosticWithEmptyPathsAsync()
+        {
+            var solutionAnalysisResult = new SolutionAnalysisResult
+            {
+                ProjectAnalysisResults = new List<ProjectAnalysisResult>
+                {
+                    new ProjectAnalysisResult
+                    {
+                        SourceFileAnalysisResults = new List<SourceFileAnalysisResult>
+                        {
+                            new SourceFileAnalysisResult { },
+                        }
+                    }
+                }
+            };
+            var diagnosticResult = await _analysisService.GetDiagnosticsAsync(Task.FromResult(solutionAnalysisResult));
+            Assert.AreEqual(diagnosticResult.Count, 0);
+            solutionAnalysisResult.ProjectAnalysisResults[0].ProjectFilePath = "NonEmptyPath";
+            diagnosticResult = await _analysisService.GetDiagnosticsAsync(Task.FromResult(solutionAnalysisResult));
+            Assert.AreEqual(diagnosticResult.Count, 0);
         }
 
         [Test]

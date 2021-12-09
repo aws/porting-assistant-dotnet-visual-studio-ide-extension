@@ -36,6 +36,7 @@ namespace PortingAssistantExtensionServer.Services
                     .SelectMany(project => project.PackageAnalysisResults.Values
                     .Select(package => package?.Result)).ToList();
                 ProjectPathToDetails = solutionAnalysisResult.ProjectAnalysisResults
+                    .Where(projectAnalysisResult => !string.IsNullOrEmpty(projectAnalysisResult.ProjectFilePath))
                     .Select(p => new ProjectDetails()
                     {
                         ProjectName = p.ProjectName,

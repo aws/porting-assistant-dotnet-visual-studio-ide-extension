@@ -8,6 +8,7 @@ using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionServer.Services;
 using PortingAssistantExtensionUnitTest.Common;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TestParameters = PortingAssistantExtensionUnitTest.Common.TestParameters;
@@ -72,6 +73,28 @@ namespace PortingAssistantExtensionUnitTest
 
             _clientMock.Verify(client => client.AnalyzeSolutionAsync(It.IsAny<string>(),
                 It.IsAny<AnalyzerSettings>()), Times.Exactly(1));
+        }
+
+        [Test]
+        public async Task SolutionAssessmentReturnsNullAsync()
+        {
+            var solutionAnalysisResult = new SolutionAnalysisResult
+            {
+                ProjectAnalysisResults = new List<ProjectAnalysisResult>
+                {
+                    new ProjectAnalysisResult
+                    {
+                        ProjectFilePath = "validfilepath",
+                    },
+                    new ProjectAnalysisResult
+                    {
+                        ProjectFilePath = null,
+                    }
+                }
+            };
+
+            await _portingService.GetPackageAnalysisResultAsync(Task.FromResult(solutionAnalysisResult));
+            _portingLoggerMock.VerifyNoOtherCalls();
         }
     }
 }

@@ -10,5 +10,6 @@ namespace PortingAssistantVSExtensionClient.Models
     {
         public int incompatibleAPis;
         public int incompatiblePacakges;
+        public bool hasWebFormsProject;
     }
 }

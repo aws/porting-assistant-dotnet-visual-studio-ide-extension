@@ -43,6 +43,7 @@ namespace PortingAssistantExtensionServer.Services
                         ProjectFilePath = p.ProjectFilePath,
                         ProjectGuid = p.ProjectGuid,
                         ProjectType = p.ProjectType,
+                        FeatureType = p.FeatureType,
                         TargetFrameworks = p.TargetFrameworks,
                         PackageReferences = p.PackageReferences,
                         ProjectReferences = p.ProjectReferences,

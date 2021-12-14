@@ -58,10 +58,20 @@ namespace PortingAssistantExtensionServer.Handlers
                 });
             }
 
+            var solutionAnalysisResultResolved = await solutionAnalysisResult.ConfigureAwait(true);
+
+            foreach(var p in solutionAnalysisResultResolved.ProjectAnalysisResults)
+            {
+                _logger.LogInformation("Feature Type: " + p.FeatureType);
+            }
+
+            var hasWebForms = solutionAnalysisResultResolved.ProjectAnalysisResults.Any(p => p.FeatureType == "WebForms");
+
             return new AnalyzeSolutionResponse()
             {
                 incompatibleAPis = 1,
-                incompatiblePacakges = 1
+                incompatiblePacakges = 1,
+                hasWebFormsProject = solutionAnalysisResultResolved.ProjectAnalysisResults.Any(p => p.FeatureType == "WebForms")
             };
         }
     }

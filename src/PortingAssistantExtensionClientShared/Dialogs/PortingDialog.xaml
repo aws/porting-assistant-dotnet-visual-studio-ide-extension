@@ -21,7 +21,7 @@
         <Label Content="Porting is final and cannot be undone." HorizontalAlignment="Left" Margin="40,15,0,20" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" FontSize="14"/>
         <TextBlock x:Name="WebFormsText" Margin="40,0,0,0" VerticalAlignment="Bottom" Grid.Column="0" Grid.Row="1" FontSize="14" Height="32">WebForms Projects will be Ported to Blazor.</TextBlock>
         <CheckBox x:Name="ApplyPortActionCheck" Content="  Select check box to apply recommended source code changes &#xD;&#xA;  (indicated by wavy underlines in your source code).&#xA;" HorizontalAlignment="Left" Margin="15,0,0,0" VerticalAlignment="Top" Grid.Column="0" Grid.Row="2" />
-        <Button Content="Cancel" HorizontalAlignment="Right" Margin="0,0,98,-30" VerticalAlignment="Bottom" Width="75" Grid.Column="0"  Grid.Row="2" Height="20" Click="Button_Click"/>
-        <Button Content="Port" HorizontalAlignment="Right" Margin="0,0,9,-30" VerticalAlignment="Bottom" Width="75" Grid.Column="0"  Grid.Row="2" Height="20" Click="Button_Click_1"/>
+        <Button Content="Port" HorizontalAlignment="Right" Margin="10,10,10,-30" VerticalAlignment="Bottom" Width="75" Grid.Column="0"  Grid.Row="3" Height="20" Click="Button_Click_1"/>
+        <Button Content="Cancel" HorizontalAlignment="Right" Margin="10,10,95,-30" VerticalAlignment="Bottom" Width="75" Grid.Column="0"  Grid.Row="3" Height="20" Click="Button_Click"/>
     </Grid>
 </ui:DialogWindow>

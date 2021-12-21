@@ -27,6 +27,8 @@ namespace PortingAssistantVSExtensionClient.Options
         public string RootCacheFolder;
         public string TargetFramework;
         public bool SolutionAssessed;
+        public bool SolutionHasWebFormsProject;
+
         private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
         
 

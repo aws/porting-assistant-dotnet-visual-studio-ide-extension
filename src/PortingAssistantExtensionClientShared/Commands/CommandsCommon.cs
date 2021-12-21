@@ -119,9 +119,11 @@ namespace PortingAssistantVSExtensionClient.Commands
             };
             await NotificationUtils.UseStatusBarProgressAsync(1, 2, "Porting Assistant is assessing the solution");
             
-            await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>(
+            var analyzeSolutionResponse = await PortingAssistantLanguageClient.Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<AnalyzeSolutionResponse>(
                 "analyzeSolution",
-                analyzeSolutionRequest);            
+                analyzeSolutionRequest);
+
+            UserSettings.Instance.SolutionHasWebFormsProject = analyzeSolutionResponse.hasWebFormsProject;
         }
 
         public static async System.Threading.Tasks.Task RunPortingAsync(string SolutionFile, List<string> ProjectFiles, string pipeName, string portingFile)

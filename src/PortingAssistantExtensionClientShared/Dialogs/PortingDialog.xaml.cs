@@ -26,6 +26,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             bitmap.EndInit();
             InfoSign.Source = bitmap;
             this.ApplyPortActionCheck.IsChecked = false;
+            this.WebFormsText.Visibility = UserSettings.Instance.SolutionHasWebFormsProject ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
             this.Title = $"Port {portingFile} to {_userSettings.TargetFramework}";
         }
 

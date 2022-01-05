@@ -259,9 +259,9 @@ namespace PortingAssistantExtensionServer.Services
                                     case RecommendedActionType.ReplacePackage:
                                         return $"Replace Source Package { package.PackageId}-{package.Version} with " + r.Description;
                                     case RecommendedActionType.ReplaceApi:
-                                        return "Replace API with " + r.Description;
+                                        return r.Description;
                                     case RecommendedActionType.ReplaceNamespace:
-                                        return "Replace namespace with " + r.Description;
+                                        return r.Description;
                                     case RecommendedActionType.NoRecommendation:
                                         break;
                                     default:

@@ -140,7 +140,7 @@
       {
         "fileName": "StoreManagerController.cs",
         "compatCode": "PA0002",
-        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
+        "message": "Add package Microsoft.EntityFrameworkCore. Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore.",
         "Range": {
           "Start": {
             "Line": 3,
@@ -157,7 +157,7 @@
       {
         "fileName": "InitializeSimpleMembershipAttribute.cs",
         "compatCode": "PA0002",
-        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
+        "message": "Add package Microsoft.EntityFrameworkCore. Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore.",
         "Range": {
           "Start": {
             "Line": 1,
@@ -174,7 +174,7 @@
       {
         "fileName": "AccountModels.cs",
         "compatCode": "PA0002",
-        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
+        "message": "Add package Microsoft.EntityFrameworkCore. Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore.",
         "Range": {
           "Start": {
             "Line": 4,
@@ -191,7 +191,7 @@
       {
         "fileName": "MusicStoreEntities.cs",
         "compatCode": "PA0002",
-        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
+        "message": "Add package Microsoft.EntityFrameworkCore. Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore.",
         "Range": {
           "Start": {
             "Line": 0,
@@ -225,7 +225,7 @@
       {
         "fileName": "SampleData.cs",
         "compatCode": "PA0002",
-        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
+        "message": "Add package Microsoft.EntityFrameworkCore. Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore.",
         "Range": {
           "Start": {
             "Line": 4,

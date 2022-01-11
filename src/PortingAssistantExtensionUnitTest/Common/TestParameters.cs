@@ -126,7 +126,7 @@ namespace PortingAssistantExtensionUnitTest.Common
                             },
                             new RecommendedAction
                             {
-                                Description = "12.0.3",
+                                Description = "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
                                 RecommendedActionType = RecommendedActionType.ReplaceApi,
                                 TargetCPU = null,
                                 TextChanges = null,
@@ -134,7 +134,7 @@ namespace PortingAssistantExtensionUnitTest.Common
                             },
                             new RecommendedAction
                             {
-                                Description = "12.0.3",
+                                Description = "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
                                 RecommendedActionType = RecommendedActionType.ReplaceNamespace,
                                 TargetCPU = null,
                                 TextChanges = null,

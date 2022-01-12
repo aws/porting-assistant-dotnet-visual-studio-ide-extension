@@ -4,7 +4,7 @@
       {
         "fileName": "DataSettingsManager.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Hosting.HostingEnvironment.MapPath(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Hosting.HostingEnvironment.MapPath(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 22,
@@ -102,7 +102,7 @@
       {
         "fileName": "FakeHttpSessionState.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.SessionState.SessionStateItemCollection.GetEnumerator() is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.SessionState.SessionStateItemCollection.GetEnumerator() is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 50,
@@ -166,23 +166,6 @@
         }
       }
     ],
-    "EngineContext.cs": [
-      {
-        "fileName": "EngineContext.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Configuration.ConfigurationManager.GetSection(string) is incompatible for target framework netcoreapp3.1 Replace API with Use configuration appropriate for your application model.  For portable Framework Components, expose API for configuration on type.",
-        "Range": {
-          "Start": {
-            "Line": 21,
-            "Character": 29
-          },
-          "End": {
-            "Line": 21,
-            "Character": 73
-          }
-        }
-      }
-    ],
     "ContainerManager.cs": [
       {
         "fileName": "ContainerManager.cs",
@@ -204,15 +187,15 @@
       {
         "fileName": "NopEngine.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Configuration.ConfigurationManager.GetSection(string) is incompatible for target framework netcoreapp3.1 Replace API with Use configuration appropriate for your application model.  For portable Framework Components, expose API for configuration on type.",
+        "message": "Porting Assistant: Autofac.ContainerBuilder.Build(Autofac.Builder.ContainerBuildOptions) is incompatible for target framework netcoreapp3.1 Upgrade Source Package Autofac-3.1.1 to version 4.0.0",
         "Range": {
           "Start": {
-            "Line": 31,
-            "Character": 25
+            "Line": 56,
+            "Character": 53
           },
           "End": {
-            "Line": 31,
-            "Character": 69
+            "Line": 56,
+            "Character": 68
           }
         }
       }
@@ -221,7 +204,7 @@
       {
         "fileName": "PluginManager.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Hosting.HostingEnvironment.MapPath(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Hosting.HostingEnvironment.MapPath(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 62,
@@ -255,7 +238,7 @@
       {
         "fileName": "WebHelper.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Hosting.HostingEnvironment.MapPath(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Hosting.HostingEnvironment.MapPath(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 303,
@@ -272,7 +255,7 @@
       {
         "fileName": "BaseEfDataProvider.cs",
         "compatCode": "PA0002",
-        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
+        "message": "Add package Microsoft.EntityFrameworkCore. Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore.",
         "Range": {
           "Start": {
             "Line": 1,
@@ -629,7 +612,7 @@
       {
         "fileName": "SqlServerDataProvider.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Hosting.HostingEnvironment.MapPath(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Hosting.HostingEnvironment.MapPath(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 34,
@@ -663,7 +646,7 @@
       {
         "fileName": "IDbContext.cs",
         "compatCode": "PA0002",
-        "message": "Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore. Also, package Microsoft.EntityFrameworkCore will be added.",
+        "message": "Add package Microsoft.EntityFrameworkCore. Replace System.Data.Entity namespace with Microsoft.EntityFrameworkCore.",
         "Range": {
           "Start": {
             "Line": 2,
@@ -2005,16 +1988,16 @@
     "CompareProductsService.cs": [
       {
         "fileName": "CompareProductsService.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.HttpCookieCollection.Get(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "compatCode": "PA0002",
+        "message": "Replace HttpContextBase in namespace System.Web with HttpContext in namespace Microsoft.AspNetCore.Http.",
         "Range": {
           "Start": {
-            "Line": 46,
-            "Character": 39
+            "Line": 19,
+            "Character": 25
           },
           "End": {
-            "Line": 46,
-            "Character": 101
+            "Line": 19,
+            "Character": 40
           }
         }
       }
@@ -2022,16 +2005,16 @@
     "RecentlyViewedProductsService.cs": [
       {
         "fileName": "RecentlyViewedProductsService.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.HttpCookieCollection.Get(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "compatCode": "PA0002",
+        "message": "Replace HttpContextBase in namespace System.Web with HttpContext in namespace Microsoft.AspNetCore.Http.",
         "Range": {
           "Start": {
-            "Line": 51,
-            "Character": 39
+            "Line": 14,
+            "Character": 25
           },
           "End": {
-            "Line": 51,
-            "Character": 109
+            "Line": 14,
+            "Character": 40
           }
         }
       }
@@ -2121,23 +2104,6 @@
         }
       }
     ],
-    "CustomerReportService.cs": [
-      {
-        "fileName": "CustomerReportService.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Collections.Generic.IEnumerable<<anonymous type: Nop.Core.Domain.Customers.Customer c, Nop.Core.Domain.Orders.Order o>>.Sum<<anonymous type: Nop.Core.Domain.Customers.Customer c, Nop.Core.Domain.Orders.Order o>>(System.Func<<anonymous type: Nop.Core.Domain.Customers.Customer c, Nop.Core.Domain.Orders.Order o>, decimal>) is incompatible for target framework netcoreapp3.1 ",
-        "Range": {
-          "Start": {
-            "Line": 89,
-            "Character": 42
-          },
-          "End": {
-            "Line": 89,
-            "Character": 68
-          }
-        }
-      }
-    ],
     "ExportManager.cs": [
       {
         "fileName": "ExportManager.cs",
@@ -2159,7 +2125,7 @@
       {
         "fileName": "FormsAuthenticationService.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Security.FormsAuthentication.Encrypt(System.Web.Security.FormsAuthenticationTicket) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Security.FormsAuthentication.Encrypt(System.Web.Security.FormsAuthenticationTicket) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 36,
@@ -2168,23 +2134,6 @@
           "End": {
             "Line": 36,
             "Character": 69
-          }
-        }
-      }
-    ],
-    "OrderReportService.cs": [
-      {
-        "fileName": "OrderReportService.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Collections.Generic.IEnumerable<Nop.Core.Domain.Orders.Order>.Sum<Nop.Core.Domain.Orders.Order>(System.Func<Nop.Core.Domain.Orders.Order, decimal>) is incompatible for target framework netcoreapp3.1 ",
-        "Range": {
-          "Start": {
-            "Line": 116,
-            "Character": 62
-          },
-          "End": {
-            "Line": 116,
-            "Character": 89
           }
         }
       }
@@ -2202,83 +2151,6 @@
           "End": {
             "Line": 83,
             "Character": 109
-          }
-        }
-      }
-    ],
-    "Settings.Designer.cs": [
-      {
-        "fileName": "Settings.Designer.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Configuration.SettingsBase.Synchronized(System.Configuration.SettingsBase) is incompatible for target framework netcoreapp3.1 ",
-        "Range": {
-          "Start": {
-            "Line": 17,
-            "Character": 62
-          },
-          "End": {
-            "Line": 17,
-            "Character": 143
-          }
-        }
-      },
-      {
-        "fileName": "Settings.Designer.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Configuration.SettingsBase.Synchronized(System.Configuration.SettingsBase) is incompatible for target framework netcoreapp3.1 ",
-        "Range": {
-          "Start": {
-            "Line": 17,
-            "Character": 62
-          },
-          "End": {
-            "Line": 17,
-            "Character": 143
-          }
-        }
-      },
-      {
-        "fileName": "Settings.Designer.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Configuration.SettingsBase.Synchronized(System.Configuration.SettingsBase) is incompatible for target framework netcoreapp3.1 ",
-        "Range": {
-          "Start": {
-            "Line": 17,
-            "Character": 62
-          },
-          "End": {
-            "Line": 17,
-            "Character": 143
-          }
-        }
-      },
-      {
-        "fileName": "Settings.Designer.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Configuration.SettingsBase.Synchronized(System.Configuration.SettingsBase) is incompatible for target framework netcoreapp3.1 ",
-        "Range": {
-          "Start": {
-            "Line": 17,
-            "Character": 62
-          },
-          "End": {
-            "Line": 17,
-            "Character": 143
-          }
-        }
-      },
-      {
-        "fileName": "Settings.Designer.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Configuration.SettingsBase.Synchronized(System.Configuration.SettingsBase) is incompatible for target framework netcoreapp3.1 ",
-        "Range": {
-          "Start": {
-            "Line": 17,
-            "Character": 62
-          },
-          "End": {
-            "Line": 17,
-            "Character": 143
           }
         }
       }
@@ -2321,7 +2193,7 @@
       {
         "fileName": "Reference.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 83,
@@ -2336,7 +2208,7 @@
       {
         "fileName": "Reference.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 90,
@@ -2351,7 +2223,7 @@
       {
         "fileName": "Reference.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 78,
@@ -2366,7 +2238,7 @@
       {
         "fileName": "Reference.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 218,
@@ -2381,7 +2253,7 @@
       {
         "fileName": "Reference.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 197,
@@ -2891,7 +2763,7 @@
       {
         "fileName": "ExceptionAssert.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: NUnit.Framework.Assert.AreEqual(object, object) is incompatible for target framework netcoreapp3.1 Upgrade Source Package NUnit-2.6.2 to version 3.10.0",
+        "message": "Porting Assistant: NUnit.Framework.Assert.AreEqual(object, object) is incompatible for target framework netcoreapp3.1 Upgrade Source Package NUnit-2.6.2 to version 3.13.0",
         "Range": {
           "Start": {
             "Line": 26,
@@ -2908,7 +2780,7 @@
       {
         "fileName": "TestExtensions.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: NUnit.Framework.Assert.IsNull(object) is incompatible for target framework netcoreapp3.1 Upgrade Source Package NUnit-2.6.2 to version 3.10.0",
+        "message": "Porting Assistant: NUnit.Framework.Assert.IsNull(object) is incompatible for target framework netcoreapp3.1 Upgrade Source Package NUnit-2.6.2 to version 3.13.0",
         "Range": {
           "Start": {
             "Line": 9,
@@ -2942,7 +2814,7 @@
       {
         "fileName": "TypeAssert.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: NUnit.Framework.Assert.IsNull(object) is incompatible for target framework netcoreapp3.1 Upgrade Source Package NUnit-2.6.2 to version 3.10.0",
+        "message": "Porting Assistant: NUnit.Framework.Assert.IsNull(object) is incompatible for target framework netcoreapp3.1 Upgrade Source Package NUnit-2.6.2 to version 3.13.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -3343,7 +3215,7 @@
       {
         "fileName": "RouteTestingExtensions.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Routing.RouteCollection.GetRouteData(System.Web.HttpContextBase) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Routing.RouteCollection.GetRouteData(System.Web.HttpContextBase) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 140,
@@ -3598,7 +3470,7 @@
       {
         "fileName": "CreditCardValidatorTests.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.AbstractValidator<Nop.Web.MVC.Tests.Public.Validators.Person>.RuleFor<string>(System.Linq.Expressions.Expression<System.Func<Nop.Web.MVC.Tests.Public.Validators.Person, string>>) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.AbstractValidator<Nop.Web.MVC.Tests.Public.Validators.Person>.RuleFor<string>(System.Linq.Expressions.Expression<System.Func<Nop.Web.MVC.Tests.Public.Validators.Person, string>>) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 19,
@@ -3852,7 +3724,7 @@
       {
         "fileName": "PaymentInfoValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Plugin.Payments.Manual.Models.PaymentInfoModel, string>.WithMessage<Nop.Plugin.Payments.Manual.Models.PaymentInfoModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Plugin.Payments.Manual.Models.PaymentInfoModel, string>.WithMessage<Nop.Plugin.Payments.Manual.Models.PaymentInfoModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 18,
@@ -3867,7 +3739,7 @@
       {
         "fileName": "PaymentInfoValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Plugin.Payments.AuthorizeNet.Models.PaymentInfoModel, string>.WithMessage<Nop.Plugin.Payments.AuthorizeNet.Models.PaymentInfoModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Plugin.Payments.AuthorizeNet.Models.PaymentInfoModel, string>.WithMessage<Nop.Plugin.Payments.AuthorizeNet.Models.PaymentInfoModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 18,
@@ -3882,7 +3754,7 @@
       {
         "fileName": "PaymentInfoValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Plugin.Payments.PayPalDirect.Models.PaymentInfoModel, string>.WithMessage<Nop.Plugin.Payments.PayPalDirect.Models.PaymentInfoModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Plugin.Payments.PayPalDirect.Models.PaymentInfoModel, string>.WithMessage<Nop.Plugin.Payments.PayPalDirect.Models.PaymentInfoModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 18,
@@ -3912,28 +3784,11 @@
         }
       }
     ],
-    "HadSpentAmountDiscountRequirementRule.cs": [
-      {
-        "fileName": "HadSpentAmountDiscountRequirementRule.cs",
-        "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Collections.Generic.IEnumerable<Nop.Core.Domain.Orders.Order>.Sum<Nop.Core.Domain.Orders.Order>(System.Func<Nop.Core.Domain.Orders.Order, decimal>) is incompatible for target framework netcoreapp3.1 ",
-        "Range": {
-          "Start": {
-            "Line": 47,
-            "Character": 34
-          },
-          "End": {
-            "Line": 47,
-            "Character": 63
-          }
-        }
-      }
-    ],
     "BaseNopController.cs": [
       {
         "fileName": "BaseNopController.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Routing.RouteValueDictionary.Add(string, object) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Routing.RouteValueDictionary.Add(string, object) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 97,
@@ -4699,16 +4554,16 @@
     "InstallationLocalizationService.cs": [
       {
         "fileName": "InstallationLocalizationService.cs",
-        "compatCode": "PA0002",
-        "message": "Replace HttpContextBase in namespace System.Web with HttpContext in namespace Microsoft.AspNetCore.Http.",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: System.Web.HttpCookieCollection.Remove(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
-            "Line": 33,
+            "Line": 59,
             "Character": 12
           },
           "End": {
-            "Line": 33,
-            "Character": 15
+            "Line": 59,
+            "Character": 67
           }
         }
       }
@@ -5392,7 +5247,7 @@
       {
         "fileName": "BlogPostValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Blogs.BlogPostModel, string>.When<Nop.Web.Models.Blogs.BlogPostModel, string>(System.Func<Nop.Web.Models.Blogs.BlogPostModel, bool>, FluentValidation.ApplyConditionTo) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Blogs.BlogPostModel, string>.When<Nop.Web.Models.Blogs.BlogPostModel, string>(System.Func<Nop.Web.Models.Blogs.BlogPostModel, bool>, FluentValidation.ApplyConditionTo) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5407,7 +5262,7 @@
       {
         "fileName": "BlogPostValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Blogs.BlogPostModel, string>.WithMessage<Nop.Admin.Models.Blogs.BlogPostModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Blogs.BlogPostModel, string>.WithMessage<Nop.Admin.Models.Blogs.BlogPostModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5424,7 +5279,7 @@
       {
         "fileName": "EditForumPostValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Boards.EditForumPostModel, string>.WithMessage<Nop.Web.Models.Boards.EditForumPostModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Boards.EditForumPostModel, string>.WithMessage<Nop.Web.Models.Boards.EditForumPostModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5441,7 +5296,7 @@
       {
         "fileName": "EditForumTopicValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Boards.EditForumTopicModel, string>.WithMessage<Nop.Web.Models.Boards.EditForumTopicModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Boards.EditForumTopicModel, string>.WithMessage<Nop.Web.Models.Boards.EditForumTopicModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5458,7 +5313,7 @@
       {
         "fileName": "ProductEmailAFriendValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Catalog.ProductEmailAFriendModel, string>.WithMessage<Nop.Web.Models.Catalog.ProductEmailAFriendModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Catalog.ProductEmailAFriendModel, string>.WithMessage<Nop.Web.Models.Catalog.ProductEmailAFriendModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5475,7 +5330,7 @@
       {
         "fileName": "ProductReviewsValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Catalog.ProductReviewsModel, string>.When<Nop.Web.Models.Catalog.ProductReviewsModel, string>(System.Func<Nop.Web.Models.Catalog.ProductReviewsModel, bool>, FluentValidation.ApplyConditionTo) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Catalog.ProductReviewsModel, string>.When<Nop.Web.Models.Catalog.ProductReviewsModel, string>(System.Func<Nop.Web.Models.Catalog.ProductReviewsModel, bool>, FluentValidation.ApplyConditionTo) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5492,7 +5347,7 @@
       {
         "fileName": "AddressValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Common.AddressModel, string>.WithMessage<Nop.Web.Models.Common.AddressModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Common.AddressModel, string>.WithMessage<Nop.Web.Models.Common.AddressModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 11,
@@ -5507,7 +5362,7 @@
       {
         "fileName": "AddressValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Common.AddressModel, string>.When<Nop.Admin.Models.Common.AddressModel, string>(System.Func<Nop.Admin.Models.Common.AddressModel, bool>, FluentValidation.ApplyConditionTo) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Common.AddressModel, string>.When<Nop.Admin.Models.Common.AddressModel, string>(System.Func<Nop.Admin.Models.Common.AddressModel, bool>, FluentValidation.ApplyConditionTo) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5524,7 +5379,7 @@
       {
         "fileName": "InstallValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Install.InstallModel, string>.WithMessage<Nop.Web.Models.Install.InstallModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Install.InstallModel, string>.WithMessage<Nop.Web.Models.Install.InstallModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5541,7 +5396,7 @@
       {
         "fileName": "NewsItemValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.News.NewsItemModel, string>.When<Nop.Web.Models.News.NewsItemModel, string>(System.Func<Nop.Web.Models.News.NewsItemModel, bool>, FluentValidation.ApplyConditionTo) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.News.NewsItemModel, string>.When<Nop.Web.Models.News.NewsItemModel, string>(System.Func<Nop.Web.Models.News.NewsItemModel, bool>, FluentValidation.ApplyConditionTo) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5556,7 +5411,7 @@
       {
         "fileName": "NewsItemValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.News.NewsItemModel, string>.WithMessage<Nop.Admin.Models.News.NewsItemModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.News.NewsItemModel, string>.WithMessage<Nop.Admin.Models.News.NewsItemModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5573,7 +5428,7 @@
       {
         "fileName": "PasswordRecoveryConfirmValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Customer.PasswordRecoveryConfirmModel, string>.WithMessage<Nop.Web.Models.Customer.PasswordRecoveryConfirmModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Customer.PasswordRecoveryConfirmModel, string>.WithMessage<Nop.Web.Models.Customer.PasswordRecoveryConfirmModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 11,
@@ -5590,7 +5445,7 @@
       {
         "fileName": "PasswordRecoveryValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Customer.PasswordRecoveryModel, string>.WithMessage<Nop.Web.Models.Customer.PasswordRecoveryModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Customer.PasswordRecoveryModel, string>.WithMessage<Nop.Web.Models.Customer.PasswordRecoveryModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5607,7 +5462,7 @@
       {
         "fileName": "SendPrivateMessageValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.PrivateMessages.SendPrivateMessageModel, string>.WithMessage<Nop.Web.Models.PrivateMessages.SendPrivateMessageModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.PrivateMessages.SendPrivateMessageModel, string>.WithMessage<Nop.Web.Models.PrivateMessages.SendPrivateMessageModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5624,7 +5479,7 @@
       {
         "fileName": "WishlistEmailAFriendValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.ShoppingCart.WishlistEmailAFriendModel, string>.WithMessage<Nop.Web.Models.ShoppingCart.WishlistEmailAFriendModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.ShoppingCart.WishlistEmailAFriendModel, string>.WithMessage<Nop.Web.Models.ShoppingCart.WishlistEmailAFriendModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5641,7 +5496,7 @@
       {
         "fileName": "ChangePasswordValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Customer.ChangePasswordModel, string>.WithMessage<Nop.Web.Models.Customer.ChangePasswordModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Customer.ChangePasswordModel, string>.WithMessage<Nop.Web.Models.Customer.ChangePasswordModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 11,
@@ -5658,7 +5513,7 @@
       {
         "fileName": "RegisterValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Customer.RegisterModel, string>.WithMessage<Nop.Web.Models.Customer.RegisterModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Customer.RegisterModel, string>.WithMessage<Nop.Web.Models.Customer.RegisterModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 11,
@@ -5675,7 +5530,7 @@
       {
         "fileName": "CustomerInfoValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Customer.CustomerInfoModel, string>.WithMessage<Nop.Web.Models.Customer.CustomerInfoModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Customer.CustomerInfoModel, string>.WithMessage<Nop.Web.Models.Customer.CustomerInfoModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 11,
@@ -5692,7 +5547,7 @@
       {
         "fileName": "ContactUsValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Common.ContactUsModel, string>.WithMessage<Nop.Web.Models.Common.ContactUsModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Web.Models.Common.ContactUsModel, string>.WithMessage<Nop.Web.Models.Common.ContactUsModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -5726,7 +5581,7 @@
       {
         "fileName": "ContollerExtensions.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Routing.RouteData.GetRequiredString(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Routing.RouteData.GetRequiredString(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 53,
@@ -5811,15 +5666,15 @@
       {
         "fileName": "AdminTabStripCreated.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: TabStripItemFactory is incompatible for target framework netcoreapp3.1 ",
+        "message": "Porting Assistant: Web is incompatible for target framework netcoreapp3.1 ",
         "Range": {
           "Start": {
-            "Line": 10,
-            "Character": 36
+            "Line": 1,
+            "Character": 14
           },
           "End": {
-            "Line": 10,
-            "Character": 55
+            "Line": 1,
+            "Character": 17
           }
         }
       }
@@ -5862,7 +5717,7 @@
       {
         "fileName": "GuidConstraint.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Routing.RouteValueDictionary.ContainsKey(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Routing.RouteValueDictionary.ContainsKey(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 16,
@@ -5930,7 +5785,7 @@
       {
         "fileName": "GenericPathRouteExtensions.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Routing.RouteCollection.Add(string, System.Web.Routing.RouteBase) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Routing.RouteCollection.Add(string, System.Web.Routing.RouteBase) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 53,
@@ -5998,7 +5853,7 @@
       {
         "fileName": "BaseNopPaymentController.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FormCollection is incompatible for target framework netcoreapp3.1 Replace namespace with Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Http.",
+        "message": "Porting Assistant: FormCollection is incompatible for target framework netcoreapp3.1 Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Http.",
         "Range": {
           "Start": {
             "Line": 8,
@@ -6032,7 +5887,7 @@
       {
         "fileName": "EmbeddedViewVirtualPathProvider.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Hosting.VirtualPathProvider.FileExists(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Hosting.VirtualPathProvider.FileExists(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 47,
@@ -6049,7 +5904,7 @@
       {
         "fileName": "LocalizedRoute.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Routing.Route.GetRouteData(System.Web.HttpContextBase) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Routing.Route.GetRouteData(System.Web.HttpContextBase) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 93,
@@ -6066,7 +5921,7 @@
       {
         "fileName": "LocalizedRouteExtensions.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Routing.RouteCollection.Add(string, System.Web.Routing.RouteBase) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Routing.RouteCollection.Add(string, System.Web.Routing.RouteBase) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 53,
@@ -6166,7 +6021,7 @@
       {
         "fileName": "HtmlExtensions.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.UI.Control.RenderControl(System.Web.UI.HtmlTextWriter) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.UI.Control.RenderControl(System.Web.UI.HtmlTextWriter) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 15,
@@ -6347,19 +6202,36 @@
         }
       }
     ],
+    "TelerikLocalizationService.cs": [
+      {
+        "fileName": "TelerikLocalizationService.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Web is incompatible for target framework netcoreapp3.1 ",
+        "Range": {
+          "Start": {
+            "Line": 6,
+            "Character": 54
+          },
+          "End": {
+            "Line": 6,
+            "Character": 57
+          }
+        }
+      }
+    ],
     "TelerikLocalizationServiceFactory.cs": [
       {
         "fileName": "TelerikLocalizationServiceFactory.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: ILocalizationService is incompatible for target framework netcoreapp3.1 ",
+        "message": "Porting Assistant: Web is incompatible for target framework netcoreapp3.1 ",
         "Range": {
           "Start": {
-            "Line": 15,
-            "Character": 15
+            "Line": 1,
+            "Character": 14
           },
           "End": {
-            "Line": 15,
-            "Character": 35
+            "Line": 1,
+            "Character": 17
           }
         }
       }
@@ -6368,7 +6240,7 @@
       {
         "fileName": "ThemeableBuildManagerViewEngine .cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Compilation.BuildManager.GetObjectFactory(string, bool) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Compilation.BuildManager.GetObjectFactory(string, bool) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 9,
@@ -6487,15 +6359,15 @@
       {
         "fileName": "NetAdvDirectoryService.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: TreeViewItemModel is incompatible for target framework netcoreapp3.1 ",
+        "message": "Porting Assistant: Web is incompatible for target framework netcoreapp3.1 ",
         "Range": {
           "Start": {
-            "Line": 23,
-            "Character": 35
+            "Line": 6,
+            "Character": 14
           },
           "End": {
-            "Line": 23,
-            "Character": 52
+            "Line": 6,
+            "Character": 17
           }
         }
       }
@@ -6504,15 +6376,15 @@
       {
         "fileName": "INetAdvDirectoryService.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: TreeViewItemModel is incompatible for target framework netcoreapp3.1 ",
+        "message": "Porting Assistant: Web is incompatible for target framework netcoreapp3.1 ",
         "Range": {
           "Start": {
-            "Line": 15,
-            "Character": 20
+            "Line": 4,
+            "Character": 14
           },
           "End": {
-            "Line": 15,
-            "Character": 37
+            "Line": 4,
+            "Character": 17
           }
         }
       }
@@ -6589,7 +6461,7 @@
       {
         "fileName": "Pager.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Routing.RouteValueDictionary.ContainsKey(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Routing.RouteValueDictionary.ContainsKey(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 292,
@@ -6657,15 +6529,15 @@
       {
         "fileName": "AdminMenuPlugin.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: MenuItemBuilder is incompatible for target framework netcoreapp3.1 ",
+        "message": "Porting Assistant: Web is incompatible for target framework netcoreapp3.1 ",
         "Range": {
           "Start": {
-            "Line": 17,
-            "Character": 27
+            "Line": 1,
+            "Character": 14
           },
           "End": {
-            "Line": 17,
-            "Character": 42
+            "Line": 1,
+            "Character": 17
           }
         }
       }
@@ -6673,16 +6545,16 @@
     "WebWorkContext.cs": [
       {
         "fileName": "WebWorkContext.cs",
-        "compatCode": "PA0002",
-        "message": "Replace HttpContextBase in namespace System.Web with HttpContext in namespace Microsoft.AspNetCore.Http.",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: System.Web.HttpCookieCollection.Remove(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
-            "Line": 29,
-            "Character": 25
+            "Line": 88,
+            "Character": 16
           },
           "End": {
-            "Line": 29,
-            "Character": 40
+            "Line": 88,
+            "Character": 72
           }
         }
       }
@@ -6836,6 +6708,23 @@
           "End": {
             "Line": 43,
             "Character": 43
+          }
+        }
+      }
+    ],
+    "ImageBrowserController.cs": [
+      {
+        "fileName": "ImageBrowserController.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Web is incompatible for target framework netcoreapp3.1 ",
+        "Range": {
+          "Start": {
+            "Line": 2,
+            "Character": 14
+          },
+          "End": {
+            "Line": 2,
+            "Character": 17
           }
         }
       }
@@ -7584,6 +7473,23 @@
           "End": {
             "Line": 25,
             "Character": 18
+          }
+        }
+      }
+    ],
+    "NewsLetterSubscriptionListModel.cs": [
+      {
+        "fileName": "NewsLetterSubscriptionListModel.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Web is incompatible for target framework netcoreapp3.1 ",
+        "Range": {
+          "Start": {
+            "Line": 2,
+            "Character": 14
+          },
+          "End": {
+            "Line": 2,
+            "Character": 17
           }
         }
       }
@@ -8629,7 +8535,7 @@
       {
         "fileName": "CategoryValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.CategoryModel, string>.WithMessage<Nop.Admin.Models.Catalog.CategoryModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.CategoryModel, string>.WithMessage<Nop.Admin.Models.Catalog.CategoryModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8646,7 +8552,7 @@
       {
         "fileName": "ProductTagValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ProductTagModel, string>.WithMessage<Nop.Admin.Models.Catalog.ProductTagModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ProductTagModel, string>.WithMessage<Nop.Admin.Models.Catalog.ProductTagModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8663,7 +8569,7 @@
       {
         "fileName": "ManufacturerValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ManufacturerModel, string>.WithMessage<Nop.Admin.Models.Catalog.ManufacturerModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ManufacturerModel, string>.WithMessage<Nop.Admin.Models.Catalog.ManufacturerModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8680,7 +8586,7 @@
       {
         "fileName": "VendorValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Vendors.VendorModel, string>.WithMessage<Nop.Admin.Models.Vendors.VendorModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Vendors.VendorModel, string>.WithMessage<Nop.Admin.Models.Vendors.VendorModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8697,7 +8603,7 @@
       {
         "fileName": "StoreValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Stores.StoreModel, string>.WithMessage<Nop.Admin.Models.Stores.StoreModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Stores.StoreModel, string>.WithMessage<Nop.Admin.Models.Stores.StoreModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8714,7 +8620,7 @@
       {
         "fileName": "ScheduleTaskValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Tasks.ScheduleTaskModel, string>.WithMessage<Nop.Admin.Models.Tasks.ScheduleTaskModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Tasks.ScheduleTaskModel, string>.WithMessage<Nop.Admin.Models.Tasks.ScheduleTaskModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 11,
@@ -8731,7 +8637,7 @@
       {
         "fileName": "NewsLetterSubscriptionValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Messages.NewsLetterSubscriptionModel, string>.WithMessage<Nop.Admin.Models.Messages.NewsLetterSubscriptionModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Messages.NewsLetterSubscriptionModel, string>.WithMessage<Nop.Admin.Models.Messages.NewsLetterSubscriptionModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8748,7 +8654,7 @@
       {
         "fileName": "CheckoutAttributeValueValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Orders.CheckoutAttributeValueModel, string>.WithMessage<Nop.Admin.Models.Orders.CheckoutAttributeValueModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Orders.CheckoutAttributeValueModel, string>.WithMessage<Nop.Admin.Models.Orders.CheckoutAttributeValueModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8765,7 +8671,7 @@
       {
         "fileName": "CheckoutAttributeValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Orders.CheckoutAttributeModel, string>.WithMessage<Nop.Admin.Models.Orders.CheckoutAttributeModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Orders.CheckoutAttributeModel, string>.WithMessage<Nop.Admin.Models.Orders.CheckoutAttributeModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8782,7 +8688,7 @@
       {
         "fileName": "CampaignValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Messages.CampaignModel, string>.WithMessage<Nop.Admin.Models.Messages.CampaignModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Messages.CampaignModel, string>.WithMessage<Nop.Admin.Models.Messages.CampaignModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8799,7 +8705,7 @@
       {
         "fileName": "PluginValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Plugins.PluginModel, string>.WithMessage<Nop.Admin.Models.Plugins.PluginModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Plugins.PluginModel, string>.WithMessage<Nop.Admin.Models.Plugins.PluginModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8816,7 +8722,7 @@
       {
         "fileName": "PollAnswerValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Polls.PollAnswerModel, string>.WithMessage<Nop.Admin.Models.Polls.PollAnswerModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Polls.PollAnswerModel, string>.WithMessage<Nop.Admin.Models.Polls.PollAnswerModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8833,7 +8739,7 @@
       {
         "fileName": "PollValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Polls.PollModel, string>.WithMessage<Nop.Admin.Models.Polls.PollModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Polls.PollModel, string>.WithMessage<Nop.Admin.Models.Polls.PollModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8850,7 +8756,7 @@
       {
         "fileName": "OrderSettingsValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Settings.OrderSettingsModel, int>.WithMessage<Nop.Admin.Models.Settings.OrderSettingsModel, int>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Settings.OrderSettingsModel, int>.WithMessage<Nop.Admin.Models.Settings.OrderSettingsModel, int>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 11,
@@ -8867,7 +8773,7 @@
       {
         "fileName": "SettingValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Settings.SettingModel, string>.WithMessage<Nop.Admin.Models.Settings.SettingModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Settings.SettingModel, string>.WithMessage<Nop.Admin.Models.Settings.SettingModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8884,7 +8790,7 @@
       {
         "fileName": "RewardPointsSettingsValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Settings.RewardPointsSettingsModel, int>.WithMessage<Nop.Admin.Models.Settings.RewardPointsSettingsModel, int>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Settings.RewardPointsSettingsModel, int>.WithMessage<Nop.Admin.Models.Settings.RewardPointsSettingsModel, int>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 11,
@@ -8901,7 +8807,7 @@
       {
         "fileName": "TopicValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Topics.TopicModel, string>.WithMessage<Nop.Admin.Models.Topics.TopicModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Topics.TopicModel, string>.WithMessage<Nop.Admin.Models.Topics.TopicModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8918,7 +8824,7 @@
       {
         "fileName": "MessageTemplateValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Messages.MessageTemplateModel, string>.WithMessage<Nop.Admin.Models.Messages.MessageTemplateModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Messages.MessageTemplateModel, string>.WithMessage<Nop.Admin.Models.Messages.MessageTemplateModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8935,7 +8841,7 @@
       {
         "fileName": "EmailAccountValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilder<Nop.Admin.Models.Messages.EmailAccountModel, string>.NotEmpty<Nop.Admin.Models.Messages.EmailAccountModel, string>() is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilder<Nop.Admin.Models.Messages.EmailAccountModel, string>.NotEmpty<Nop.Admin.Models.Messages.EmailAccountModel, string>() is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8952,7 +8858,7 @@
       {
         "fileName": "StateProvinceValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Directory.StateProvinceModel, string>.WithMessage<Nop.Admin.Models.Directory.StateProvinceModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Directory.StateProvinceModel, string>.WithMessage<Nop.Admin.Models.Directory.StateProvinceModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8969,7 +8875,7 @@
       {
         "fileName": "CountryValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Directory.CountryModel, string>.WithMessage<Nop.Admin.Models.Directory.CountryModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Directory.CountryModel, string>.WithMessage<Nop.Admin.Models.Directory.CountryModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -8986,7 +8892,7 @@
       {
         "fileName": "ProductReviewValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ProductReviewModel, string>.WithMessage<Nop.Admin.Models.Catalog.ProductReviewModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ProductReviewModel, string>.WithMessage<Nop.Admin.Models.Catalog.ProductReviewModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9003,7 +8909,7 @@
       {
         "fileName": "DiscountValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Discounts.DiscountModel, string>.WithMessage<Nop.Admin.Models.Discounts.DiscountModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Discounts.DiscountModel, string>.WithMessage<Nop.Admin.Models.Discounts.DiscountModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9020,7 +8926,7 @@
       {
         "fileName": "ProductVariantAttributeValueModelValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ProductModel.ProductVariantAttributeValueModel, string>.WithMessage<Nop.Admin.Models.Catalog.ProductModel.ProductVariantAttributeValueModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ProductModel.ProductVariantAttributeValueModel, string>.WithMessage<Nop.Admin.Models.Catalog.ProductModel.ProductVariantAttributeValueModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9037,7 +8943,7 @@
       {
         "fileName": "SpecificationAttributeOptionValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.SpecificationAttributeOptionModel, string>.WithMessage<Nop.Admin.Models.Catalog.SpecificationAttributeOptionModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.SpecificationAttributeOptionModel, string>.WithMessage<Nop.Admin.Models.Catalog.SpecificationAttributeOptionModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9054,7 +8960,7 @@
       {
         "fileName": "SpecificationAttributeValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.SpecificationAttributeModel, string>.WithMessage<Nop.Admin.Models.Catalog.SpecificationAttributeModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.SpecificationAttributeModel, string>.WithMessage<Nop.Admin.Models.Catalog.SpecificationAttributeModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9071,7 +8977,7 @@
       {
         "fileName": "ProductAttributeValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ProductAttributeModel, string>.WithMessage<Nop.Admin.Models.Catalog.ProductAttributeModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ProductAttributeModel, string>.WithMessage<Nop.Admin.Models.Catalog.ProductAttributeModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9088,7 +8994,7 @@
       {
         "fileName": "CustomerRoleValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Customers.CustomerRoleModel, string>.WithMessage<Nop.Admin.Models.Customers.CustomerRoleModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Customers.CustomerRoleModel, string>.WithMessage<Nop.Admin.Models.Customers.CustomerRoleModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9105,7 +9011,7 @@
       {
         "fileName": "CustomerValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Customers.CustomerModel, string>.WithMessage<Nop.Admin.Models.Customers.CustomerModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Customers.CustomerModel, string>.WithMessage<Nop.Admin.Models.Customers.CustomerModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 13,
@@ -9122,7 +9028,7 @@
       {
         "fileName": "ForumGroupValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Forums.ForumGroupModel, string>.WithMessage<Nop.Admin.Models.Forums.ForumGroupModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Forums.ForumGroupModel, string>.WithMessage<Nop.Admin.Models.Forums.ForumGroupModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9139,7 +9045,7 @@
       {
         "fileName": "ForumValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Forums.ForumModel, string>.WithMessage<Nop.Admin.Models.Forums.ForumModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Forums.ForumModel, string>.WithMessage<Nop.Admin.Models.Forums.ForumModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9156,7 +9062,7 @@
       {
         "fileName": "QueuedEmailValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Messages.QueuedEmailModel, int>.WithMessage<Nop.Admin.Models.Messages.QueuedEmailModel, int>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Messages.QueuedEmailModel, int>.WithMessage<Nop.Admin.Models.Messages.QueuedEmailModel, int>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9173,7 +9079,7 @@
       {
         "fileName": "ShippingMethodValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Shipping.ShippingMethodModel, string>.WithMessage<Nop.Admin.Models.Shipping.ShippingMethodModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Shipping.ShippingMethodModel, string>.WithMessage<Nop.Admin.Models.Shipping.ShippingMethodModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9190,7 +9096,7 @@
       {
         "fileName": "TaxCategoryValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Tax.TaxCategoryModel, string>.WithMessage<Nop.Admin.Models.Tax.TaxCategoryModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Tax.TaxCategoryModel, string>.WithMessage<Nop.Admin.Models.Tax.TaxCategoryModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9207,7 +9113,7 @@
       {
         "fileName": "MeasureDimensionValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Directory.MeasureDimensionModel, string>.WithMessage<Nop.Admin.Models.Directory.MeasureDimensionModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Directory.MeasureDimensionModel, string>.WithMessage<Nop.Admin.Models.Directory.MeasureDimensionModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9224,7 +9130,7 @@
       {
         "fileName": "MeasureWeightValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Directory.MeasureWeightModel, string>.WithMessage<Nop.Admin.Models.Directory.MeasureWeightModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Directory.MeasureWeightModel, string>.WithMessage<Nop.Admin.Models.Directory.MeasureWeightModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9241,7 +9147,7 @@
       {
         "fileName": "CurrencyValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Directory.CurrencyModel, string>.WithMessage<Nop.Admin.Models.Directory.CurrencyModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Directory.CurrencyModel, string>.WithMessage<Nop.Admin.Models.Directory.CurrencyModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 12,
@@ -9258,7 +9164,7 @@
       {
         "fileName": "LanguageResourceValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Localization.LanguageResourceModel, string>.WithMessage<Nop.Admin.Models.Localization.LanguageResourceModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Localization.LanguageResourceModel, string>.WithMessage<Nop.Admin.Models.Localization.LanguageResourceModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9275,7 +9181,7 @@
       {
         "fileName": "LanguageValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Localization.LanguageModel, string>.WithMessage<Nop.Admin.Models.Localization.LanguageModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Localization.LanguageModel, string>.WithMessage<Nop.Admin.Models.Localization.LanguageModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 11,
@@ -9292,7 +9198,7 @@
       {
         "fileName": "ProductValidator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ProductModel, string>.WithMessage<Nop.Admin.Models.Catalog.ProductModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 6.4.0",
+        "message": "Porting Assistant: FluentValidation.IRuleBuilderOptions<Nop.Admin.Models.Catalog.ProductModel, string>.WithMessage<Nop.Admin.Models.Catalog.ProductModel, string>(string) is incompatible for target framework netcoreapp3.1 Upgrade Source Package FluentValidation-4.0.0.1 to version 10.0.0",
         "Range": {
           "Start": {
             "Line": 10,
@@ -9624,6 +9530,23 @@
         }
       }
     ],
+    "UPSShipmentTracker.cs": [
+      {
+        "fileName": "UPSShipmentTracker.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Protocols is incompatible for target framework netcoreapp3.1 ",
+        "Range": {
+          "Start": {
+            "Line": 9,
+            "Character": 26
+          },
+          "End": {
+            "Line": 9,
+            "Character": 35
+          }
+        }
+      }
+    ],
     "UPSComputationMethod.cs": [
       {
         "fileName": "UPSComputationMethod.cs",
@@ -9679,15 +9602,15 @@
       {
         "fileName": "FedexComputationMethod.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: RouteValueDictionary is incompatible for target framework netcoreapp3.1 ",
+        "message": "Porting Assistant: Protocols is incompatible for target framework netcoreapp3.1 ",
         "Range": {
           "Start": {
-            "Line": 830,
-            "Character": 96
+            "Line": 8,
+            "Character": 26
           },
           "End": {
-            "Line": 830,
-            "Character": 116
+            "Line": 8,
+            "Character": 35
           }
         }
       }
@@ -9730,7 +9653,7 @@
       {
         "fileName": "TrackService.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(string, object[]) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 44,
@@ -9739,6 +9662,23 @@
           "End": {
             "Line": 45,
             "Character": 46
+          }
+        }
+      }
+    ],
+    "FedexShipmentTracker.cs": [
+      {
+        "fileName": "FedexShipmentTracker.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Protocols is incompatible for target framework netcoreapp3.1 ",
+        "Range": {
+          "Start": {
+            "Line": 3,
+            "Character": 26
+          },
+          "End": {
+            "Line": 3,
+            "Character": 35
           }
         }
       }
@@ -10036,7 +9976,7 @@
       {
         "fileName": "PaymentGoogleCheckoutController.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 68,
@@ -10053,7 +9993,7 @@
       {
         "fileName": "GoogleCheckoutPaymentProcessor.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration(string) is incompatible for target framework netcoreapp3.1 Replace API with System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
+        "message": "Porting Assistant: System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration(string) is incompatible for target framework netcoreapp3.1 System.Web (AKA classic ASP.NET) won't be ported to .NET Core. See https://aka.ms/unsupported-netfx-api.",
         "Range": {
           "Start": {
             "Line": 597,
@@ -10172,15 +10112,15 @@
       {
         "fileName": "OpenIdClaimsResponseClaimsTranslator.cs",
         "compatCode": "PA0001",
-        "message": "Porting Assistant: ClaimsResponse is incompatible for target framework netcoreapp3.1 ",
+        "message": "Porting Assistant: Extensions is incompatible for target framework netcoreapp3.1 ",
         "Range": {
           "Start": {
-            "Line": 8,
-            "Character": 74
+            "Line": 3,
+            "Character": 28
           },
           "End": {
-            "Line": 8,
-            "Character": 88
+            "Line": 3,
+            "Character": 38
           }
         }
       }

@@ -93,6 +93,10 @@ namespace PortingAssistantExtensionTelemetry.Utils
                     };
 
                     request = await signer.Sign(request, "execute-api", region);
+                    if (!string.IsNullOrEmpty(awsCredentials.GetCredentials().Token))
+                    {
+                        request.Headers.Add("x-amz-security-token", awsCredentials.GetCredentials().Token);
+                    }
 
                     var response = await client.SendAsync(request);
                     await response.Content.ReadAsStringAsync();

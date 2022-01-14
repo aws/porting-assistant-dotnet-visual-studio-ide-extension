@@ -1,6 +1,5 @@
 ﻿using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
-using Aws4RequestSigner;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PortingAssistantVSExtensionClient.Models;
@@ -8,9 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Amazon;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
@@ -99,17 +100,10 @@ namespace PortingAssistantVSExtensionClient.Utils
             TelemetryConfiguration telemetryConfiguration
             )
         {
-            const string PathTemplate = "/put-log-data";
             try
             {
-                var client = new HttpClient();
                 var profileName = profile;
                 var region = telemetryConfiguration.Region;
-                var signer = new AWS4RequestSigner
-                    (
-                    awsCredentials.AwsAccessKeyId,
-                    awsCredentials.AwsSecretKey
-                    );
 
                 dynamic requestMetadata = new JObject();
                 requestMetadata.version = "1.0";
@@ -125,19 +119,21 @@ namespace PortingAssistantVSExtensionClient.Utils
                 body.requestMetadata = requestMetadata;
                 body.log = log;
                 var requestContent = new StringContent(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
-                var requestUri = new Uri(String.Join("", telemetryConfiguration.InvokeUrl, PathTemplate));
-                var request = new HttpRequestMessage
+                var config = new TelemetryConfig()
                 {
-                    Method = HttpMethod.Post,
-                    RequestUri = requestUri,
-                    Content = requestContent
+                    RegionEndpoint = RegionEndpoint.GetBySystemName(region),
+                    MaxErrorRetry = 2,
+                    ServiceURL = telemetryConfiguration.InvokeUrl,
                 };
-                request = await signer.Sign(request, "execute-api", region);
-                var response = await client.SendAsync(request);
-                return response.StatusCode == System.Net.HttpStatusCode.OK;
+                var client = new TelemetryClient(awsCredentials.AwsAccessKeyId, awsCredentials.AwsSecretKey, config);
+                var contentString = await requestContent.ReadAsStringAsync();
+                var telemetryRequest = new TelemetryRequest(telemetryConfiguration.ServiceName, contentString);
+                var telemetryResponse = await client.SendAsync(telemetryRequest);
+                return telemetryResponse.HttpStatusCode == HttpStatusCode.OK;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }

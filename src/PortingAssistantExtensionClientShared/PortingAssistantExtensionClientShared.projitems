@@ -59,6 +59,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\NotificationUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\PipeUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SolutionUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\TelemetryClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\TelemetryConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\TelemetryRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)Dialogs\AddProfileDialog.xaml">

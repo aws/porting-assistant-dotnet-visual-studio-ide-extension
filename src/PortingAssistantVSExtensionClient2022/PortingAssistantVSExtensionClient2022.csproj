@@ -81,9 +81,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Aws4RequestSigner">
-      <Version>1.0.3</Version>
-    </PackageReference>
     <PackageReference Include="AWSSDK.APIGateway">
       <Version>3.7.2.49</Version>
     </PackageReference>

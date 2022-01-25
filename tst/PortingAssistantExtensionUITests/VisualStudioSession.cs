@@ -20,10 +20,11 @@ namespace PortingAssistantExtensionUITests
     public class VisualStudioSession
     {
         protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723";
-        private const string VSAppId = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe";
+        private const string VS2019AppId = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe";
         protected const string winAppDriverExe = "C:\\Program Files (x86)\\Windows Application Driver\\WinAppDriver.exe";
-        private const string testSolutionsDir = "C:\\ide-ui-test-solutions";
-        private const string testSolutionsZip = "C:\\ide-ui-test-solutions.zip";
+        protected const string testSolutionsDir = "D:\\ide-ui-test-solutions";
+        protected const string testSolutionsZip = "D:\\ide-ui-test-solutions.zip";
+
         private static bool firstTimeSetupRequired = true;
 
         protected static WindowsDriver<WindowsElement> session;
@@ -45,12 +46,11 @@ namespace PortingAssistantExtensionUITests
 
         private static void ResetTestSolutions()
         {
-            // assumes that test solutions are located in c:\ drive
             if (Directory.Exists(testSolutionsDir))
             {
                 Directory.Delete(testSolutionsDir, true);
             }
-            ZipFile.ExtractToDirectory(testSolutionsZip, "C:\\");
+            ZipFile.ExtractToDirectory(testSolutionsZip, Directory.GetParent(testSolutionsDir).FullName);
         }
 
         private static void StartWinAppDriver()
@@ -69,7 +69,7 @@ namespace PortingAssistantExtensionUITests
             if (session == null)
             {
                 DesiredCapabilities appCapabilities = new DesiredCapabilities();
-                appCapabilities.SetCapability("app", VSAppId);
+                appCapabilities.SetCapability("app", VS2019AppId);
                 appCapabilities.SetCapability("appArguments", "/NoSplash " + testSolution);
                 appCapabilities.SetCapability("ms:waitForAppLaunch", "30");
                 session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities, TimeSpan.FromMinutes(1));
@@ -165,7 +165,7 @@ namespace PortingAssistantExtensionUITests
         protected static void ClickPortingAssistantMenuElement(string menuItem)
         {
             session.FindElementByName("Extensions").Click();
-            session.FindElementByXPath("//Window[@ClassName=\"Popup\"]/MenuItem[@ClassName=\"MenuItem\"][@Name=\"Porting Assistant For .Net\"]").Click();
+            session.FindElementByXPath("//Window[@ClassName=\"Popup\"]/MenuItem[starts-with(@Name, \"Porting Assistant\")]").Click();
             
             if (!string.IsNullOrEmpty(menuItem))
             {

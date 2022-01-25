@@ -50,8 +50,9 @@ namespace PortingAssistantExtensionUITests
 
         [TestInitialize]
         public void ClassInitialize()
-        {   
-            Setup(@"C:\ide-ui-test-solutions\mvcmusicstore\sourceCode\mvcmusicstore\MvcMusicStore.sln");
+        {
+            var solutionPath = $"{testSolutionsDir}\\mvcmusicstore\\sourceCode\\mvcmusicstore\\MvcMusicStore.sln";
+            Setup(solutionPath);
         }
 
         [TestCleanup]

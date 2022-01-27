@@ -1,13 +1,13 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
+using Newtonsoft.Json;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Models;
 using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 
 namespace PortingAssistantVSExtensionClient.Dialogs
 {
@@ -47,7 +47,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             var credentail = new AwsCredential(AccesskeyID.Text, secretAccessKey.Text);
             try
             {
-                this.TelemetryConfiguration = JsonSerializer.Deserialize<PortingAssistantIDEConfiguration>(File.ReadAllText(ConfigurationPath)).TelemetryConfiguration;
+                this.TelemetryConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(ConfigurationPath)).TelemetryConfiguration;
                 errors = AwsUtils.ValidateProfile(ProfileName.Text, credentail);
                 if (errors.TryGetValue("profile", out string error1))
                 {

@@ -93,8 +93,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="System.Text.Json">
-      <Version>5.0.2</Version>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

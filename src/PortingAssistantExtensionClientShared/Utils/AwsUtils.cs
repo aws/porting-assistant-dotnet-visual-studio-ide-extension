@@ -103,8 +103,7 @@ namespace PortingAssistantVSExtensionClient.Utils
             try
             {
                 var profileName = profile;
-                var region = telemetryConfiguration.Region;
-
+                var region = String.IsNullOrEmpty(telemetryConfiguration.Region)?"us-east-1": telemetryConfiguration.Region;
                 dynamic requestMetadata = new JObject();
                 requestMetadata.version = "1.0";
                 requestMetadata.service = telemetryConfiguration.ServiceName;

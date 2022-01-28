@@ -131,6 +131,10 @@ namespace PortingAssistantExtensionUITests
 
                 foreach (StackSummary summary in listResponse.StackSummaries)
                 {
+                    if (!summary.StackName.Contains(deploymentName.ToLower()))
+                    {
+                        continue;
+                    }
                     if (summary.TemplateDescription == "This CloudFormation template deploys an ECR repo and CodeBuild Project.")
                     {
                         var deleteRepoResponse = ecrClient.DeleteRepository(new DeleteRepositoryRequest { RepositoryName = summary.StackName, Force = true });

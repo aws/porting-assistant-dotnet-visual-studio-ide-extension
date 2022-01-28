@@ -220,11 +220,22 @@ namespace PortingAssistantExtensionUITests
             session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
         }
 
+        protected static bool WaitForElementWithId(string id, int timeout = 60)
+        {
+            return WaitForElement(session, "", timeout, id);
+        }
+
+        /// <summary>
+        /// Waits for element with given xpath
+        /// </summary>
+        /// <param name="xPath">xpath of element to wait for</param>
+        /// <param name="timeout">total seconds to wait, default value is 60</param>
+        /// <returns></returns>
         protected static bool WaitForElement(string xPath, int timeout = 60)
         {
             return WaitForElement(session, xPath, timeout);
         }
-        protected static bool WaitForElement(WindowsDriver<WindowsElement> driver, string xPath, int timeout = 60)
+        protected static bool WaitForElement(WindowsDriver<WindowsElement> driver, string xPath, int timeout = 60, string automationId = "")
         {
             var timer = new Stopwatch();
             timer.Start();
@@ -236,7 +247,14 @@ namespace PortingAssistantExtensionUITests
                 }
                 try
                 {
-                    driver.FindElementByXPath(xPath);
+                    if (string.IsNullOrEmpty(automationId))
+                    {
+                        driver.FindElementByXPath(xPath);
+                    }
+                    else
+                    {
+                        driver.FindElementByAccessibilityId(automationId);
+                    }
                     break;
                 }
                 catch

@@ -25,9 +25,9 @@ namespace PortingAssistantExtensionUITests
     /// Tests the controls for the IDE extension
     /// </summary>
     [TestClass]
-    public class ControlsTest : VisualStudioSession 
+    public class ControlsTestVs2022 : VisualStudioSession 
     {
-        public ControlsTest() : base(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe") { }
+        public ControlsTestVs2022() : base(@"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe") { }
 
         [TestMethod]
         public void TestChangeTargetFramework()

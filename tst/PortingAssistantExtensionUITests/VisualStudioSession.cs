@@ -25,7 +25,7 @@ namespace PortingAssistantExtensionUITests
         protected const string testSolutionsDir = "D:\\ide-ui-test-solutions";
         protected const string testSolutionsZip = "D:\\ide-ui-test-solutions.zip";
 
-        private static bool firstTimeSetupRequired = true;
+        private static bool firstTimeSetupRequired = false;
 
         protected static WindowsDriver<WindowsElement> session;
         protected static Process winAppDriver;
@@ -220,7 +220,20 @@ namespace PortingAssistantExtensionUITests
             session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
         }
 
-        protected static bool WaitForElement(string xPath, int timeout = 60)
+        protected static void AddAWSProfile(string profileName, string accessKey, string secretAccessKey)
+        {
+            session.FindElementByName("Extensions").Click();
+            session.FindElementByXPath("//Window[@ClassName=\"Popup\"]/MenuItem[starts-with(@Name, \"Porting Assistant\")]").Click();
+            session.FindElementByXPath($"//Window[@ClassName=\"Popup\"]/MenuItem[@ClassName=\"MenuItem\"][@Name=\"{"Settings..."}\"]").Click();
+            session.FindElementByName("Data usage sharing").Click();
+            session.FindElementByName("Add a Named Profile").Click();
+            session.FindElementByAccessibilityId("ProfileName").SendKeys(profileName);
+            session.FindElementByAccessibilityId("AccesskeyID").SendKeys(accessKey);
+            session.FindElementByAccessibilityId("secretAccessKey").SendKeys(secretAccessKey);
+            session.FindElementByName("Save Profile").Click();
+        }
+
+        protected static bool WaitForElement(string xPath, int timeout = 120)
         {
             return WaitForElement(session, xPath, timeout);
         }

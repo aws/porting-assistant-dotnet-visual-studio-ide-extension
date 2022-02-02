@@ -50,6 +50,18 @@ namespace PortingAssistantExtensionUITests
             ClickPortingAssistantMenuElement("Documentation");
         }
 
+        [TestMethod]
+        public void Net6ExistsVS2022()
+        {
+            ClickPortingAssistantMenuElement("Settings...");
+            session.FindElementByName("General").Click();
+            // This not a typo, the automation id is missing the last t
+            var frameworksBox = session.FindElementByAccessibilityId("TargeFrameworks");
+            frameworksBox.Click();
+            session.FindElementByXPath($"//Window[@ClassName=\"Popup\"]/ListItem[@Name=\"net6.0\"][@ClassName=\"ListBoxItem\"]").Click();
+            session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
+        }
+
         [TestInitialize]
         public void ClassInitialize()
         {

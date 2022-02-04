@@ -22,10 +22,10 @@ namespace PortingAssistantExtensionUITests
         protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723";
         private const string VS2019AppId = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe";
         protected const string winAppDriverExe = "C:\\Program Files (x86)\\Windows Application Driver\\WinAppDriver.exe";
-        protected const string testSolutionsDir = "D:\\ide-ui-test-solutions";
-        protected const string testSolutionsZip = "D:\\ide-ui-test-solutions.zip";
+        protected const string testSolutionsDir = "C:\\ide-ui-test-solutions";
+        protected const string testSolutionsZip = "C:\\ide-ui-test-solutions.zip";
 
-        private static bool firstTimeSetupRequired = false;
+        private static bool firstTimeSetupRequired = true;
 
         protected static WindowsDriver<WindowsElement> session;
         protected static Process winAppDriver;

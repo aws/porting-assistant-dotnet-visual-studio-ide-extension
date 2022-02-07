@@ -33,6 +33,13 @@ namespace PortingAssistantExtensionIntegTests
             ["StarWars-WithFix-PortResults.zip"] = new string[] { "StarWars-WithFix-PortResults", "StarWars.sln", "StarWars.json" }
         };
 
+        protected static class TargetFramework
+        {
+            public const string DotnetCoreApp31 = "netcoreapp3.1";
+            public const string Dotnet5 = "net5.0";
+            public const string Dotnet6 = "net6.0";
+        }
+
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {  
@@ -80,8 +87,10 @@ namespace PortingAssistantExtensionIntegTests
             ProcessHelper.getInstance().StopServer();
         }
 
-       [Test]
-        public async Task TestMvcMusicStoreAsync()
+        [TestCase(TargetFramework.Dotnet6)]
+        [TestCase(TargetFramework.Dotnet5)]
+        [TestCase(TargetFramework.DotnetCoreApp31)]
+        public async Task TestMvcMusicStoreAsync(string targetFramework)
         {
             InitializeTestResource("MvcMusicStore.zip");
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
@@ -91,17 +100,19 @@ namespace PortingAssistantExtensionIntegTests
                 return;
             }
 
-            Boolean result = await TestSolutionAsync(projectInfo, NETCOREAPP31);
+            Boolean result = await TestSolutionAsync(projectInfo, targetFramework);
             Console.WriteLine("Verification TestMvcMusicStore Result: " + result);
             Assert.IsTrue(result);
 
-            Boolean portResult = await TestPortSolutionAsync(projectInfo, NETCOREAPP31, false);
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, targetFramework, false);
             Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
             Assert.IsTrue(portResult);
         }
 
-        [Test]
-        public async Task TestMvcMusicStorePortingOnlyNegativeAsync()
+        [TestCase(TargetFramework.Dotnet6)]
+        [TestCase(TargetFramework.Dotnet5)]
+        [TestCase(TargetFramework.DotnetCoreApp31)]
+        public async Task TestMvcMusicStorePortingOnlyNegativeAsync(string targetFramework)
         {
             InitializeTestResource("MvcMusicStore.zip");
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
@@ -111,13 +122,15 @@ namespace PortingAssistantExtensionIntegTests
                 return;
             }
 
-            Boolean portResult = await TestPortSolutionAsync(projectInfo, NETCOREAPP31, false, false);
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, targetFramework, false, false);
             Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
             Assert.IsFalse(portResult);
         }
 
-        [Test]
-        public async Task TestMvcMusicStoreWithFixAsync()
+        [TestCase(TargetFramework.Dotnet6)]
+        [TestCase(TargetFramework.Dotnet5)]
+        [TestCase(TargetFramework.DotnetCoreApp31)]
+        public async Task TestMvcMusicStoreWithFixAsync(string targetFramework)
         {
             InitializeTestResource("MvcMusicStore.zip");
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
@@ -127,17 +140,19 @@ namespace PortingAssistantExtensionIntegTests
                 return;
             }
 
-            Boolean result = await TestSolutionAsync(projectInfo, NETCOREAPP31);
+            Boolean result = await TestSolutionAsync(projectInfo, targetFramework);
             Console.WriteLine("Verification TestMvcMusicStore Result: " + result);
             Assert.IsTrue(result);
 
-            Boolean portResult = await TestPortSolutionAsync(projectInfo, NETCOREAPP31, true);
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, targetFramework, true);
             Console.WriteLine("Porting Verification TestMvcMusicStore Result: " + portResult);
             Assert.IsTrue(portResult);
         }
 
-        [Test]
-        public async Task TestMiniblogCoreAsync()
+        [TestCase(TargetFramework.Dotnet6)]
+        [TestCase(TargetFramework.Dotnet5)]
+        [TestCase(TargetFramework.DotnetCoreApp31)]
+        public async Task TestMiniblogCoreAsync(string targetFramework)
         {
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("Miniblog.Core-master"));
             if (projectInfo == null)
@@ -146,11 +161,11 @@ namespace PortingAssistantExtensionIntegTests
                 return;
             }
 
-            Boolean result = await TestSolutionAsync(projectInfo, NETCOREAPP31);
+            Boolean result = await TestSolutionAsync(projectInfo, targetFramework);
             Console.WriteLine("Verification MiniblogCore Result: " + result);
             Assert.IsTrue(result);
 
-            Boolean portResult = await TestPortSolutionAsync(projectInfo, NETCOREAPP31, false);
+            Boolean portResult = await TestPortSolutionAsync(projectInfo, targetFramework, false);
             Console.WriteLine("Porting Verification TestMiniblogCore Result: " + portResult);
             Assert.IsTrue(portResult);
 
@@ -176,8 +191,10 @@ namespace PortingAssistantExtensionIntegTests
             Assert.IsTrue(portResult);
         }
 
-        [Test]
-        public async Task TestNopCommerceAsync()
+        [TestCase(TargetFramework.Dotnet6)]
+        [TestCase(TargetFramework.Dotnet5)]
+        [TestCase(TargetFramework.DotnetCoreApp31)]
+        public async Task TestNopCommerceAsync(string targetFramework)
         {
             InitializeTestResource("NopCommerce-3.1.zip");
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("NopCommerce-3.1"));
@@ -187,13 +204,15 @@ namespace PortingAssistantExtensionIntegTests
                 return;
             }
 
-            Boolean result = await TestSolutionAsync(projectInfo, NETCOREAPP31);
+            Boolean result = await TestSolutionAsync(projectInfo, targetFramework);
             Console.WriteLine("Verification Test NopCommerce Result: " + result);
             Assert.IsTrue(result);
         }
 
-        [Test]
-        public async Task TestPortSingleProjectAsync()
+        [TestCase(TargetFramework.Dotnet6)]
+        [TestCase(TargetFramework.Dotnet5)]
+        [TestCase(TargetFramework.DotnetCoreApp31)]
+        public async Task TestPortSingleProjectAsync(string targetFramework)
         {
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("StarWars"));
             if (projectInfo == null)
@@ -201,7 +220,7 @@ namespace PortingAssistantExtensionIntegTests
                 Assert.IsTrue(false);
                 return;
             }
-            Boolean portResult = await TestPortSolutionAsync(projectInfo,  NETCOREAPP31, true, true, "StarWars.Core");
+            Boolean portResult = await TestPortSolutionAsync(projectInfo,  targetFramework, true, true, "StarWars.Core");
             Console.WriteLine("Porting Verification StarWars Result: " + portResult);
             Assert.IsTrue(portResult);
         }

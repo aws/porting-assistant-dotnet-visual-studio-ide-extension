@@ -88,6 +88,8 @@
     <Compile Include="CustomServerTest.cs" />
     <Compile Include="Metric.cs" />
     <Compile Include="ControlsTest.cs" />
+    <Compile Include="ProfileTests.cs" />
+    <Compile Include="NET6Test.cs" />
     <Compile Include="VisualStudioSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

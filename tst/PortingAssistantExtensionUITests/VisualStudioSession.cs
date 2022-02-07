@@ -20,10 +20,10 @@ namespace PortingAssistantExtensionUITests
     public class VisualStudioSession
     {
         protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723";
-        private string _vsAppId = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe";
+        private const string VS2019AppId = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe";
         protected const string winAppDriverExe = "C:\\Program Files (x86)\\Windows Application Driver\\WinAppDriver.exe";
-        protected const string testSolutionsDir = "D:\\ide-ui-test-solutions";
-        protected const string testSolutionsZip = "D:\\ide-ui-test-solutions.zip";
+        protected const string testSolutionsDir = "C:\\ide-ui-test-solutions";
+        protected const string testSolutionsZip = "C:\\ide-ui-test-solutions.zip";
 
         private static bool firstTimeSetupRequired = true;
 
@@ -74,7 +74,7 @@ namespace PortingAssistantExtensionUITests
             if (session == null)
             {
                 DesiredCapabilities appCapabilities = new DesiredCapabilities();
-                appCapabilities.SetCapability("app", _vsAppId);
+                appCapabilities.SetCapability("app", VS2019AppId);
                 appCapabilities.SetCapability("appArguments", "/NoSplash " + testSolution);
                 appCapabilities.SetCapability("ms:waitForAppLaunch", "30");
                 session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities, TimeSpan.FromMinutes(1));
@@ -225,7 +225,20 @@ namespace PortingAssistantExtensionUITests
             session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
         }
 
-        protected static bool WaitForElement(string xPath, int timeout = 60)
+        protected static void AddAWSProfile(string profileName, string accessKey, string secretAccessKey)
+        {
+            session.FindElementByName("Extensions").Click();
+            session.FindElementByXPath("//Window[@ClassName=\"Popup\"]/MenuItem[starts-with(@Name, \"Porting Assistant\")]").Click();
+            session.FindElementByXPath($"//Window[@ClassName=\"Popup\"]/MenuItem[@ClassName=\"MenuItem\"][@Name=\"{"Settings..."}\"]").Click();
+            session.FindElementByName("Data usage sharing").Click();
+            session.FindElementByName("Add a Named Profile").Click();
+            session.FindElementByAccessibilityId("ProfileName").SendKeys(profileName);
+            session.FindElementByAccessibilityId("AccesskeyID").SendKeys(accessKey);
+            session.FindElementByAccessibilityId("secretAccessKey").SendKeys(secretAccessKey);
+            session.FindElementByName("Save Profile").Click();
+        }
+
+        protected static bool WaitForElement(string xPath, int timeout = 120)
         {
             return WaitForElement(session, xPath, timeout);
         }

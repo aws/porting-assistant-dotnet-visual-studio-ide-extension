@@ -2,6 +2,7 @@
 using OpenQA.Selenium;
 using System.Diagnostics;
 using OpenQA.Selenium.Interactions;
+using System.IO;
 
 namespace PortingAssistantExtensionUITests
 {
@@ -50,8 +51,10 @@ namespace PortingAssistantExtensionUITests
 
         [TestInitialize]
         public void ClassInitialize()
-        {   
-            Setup(@"C:\ide-ui-test-solutions\mvcmusicstore\sourceCode\mvcmusicstore\MvcMusicStore.sln");
+        {
+            Assert.IsTrue(File.Exists(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe"));
+            var solutionPath = $"{testSolutionsDir}\\mvcmusicstore\\sourceCode\\mvcmusicstore\\MvcMusicStore.sln";
+            Setup(solutionPath);
         }
 
         [TestCleanup]

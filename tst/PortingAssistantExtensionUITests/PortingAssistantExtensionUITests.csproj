@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="ControlsTestVs2022.cs" />
     <Compile Include="CustomServerTestVs2022.cs" />
+    <Compile Include="ProfileTestsVs2022.cs" />
     <Compile Include="Secret.cs" />
     <Compile Include="ExpectedValues.cs" />
     <Compile Include="CustomServerTest.cs" />

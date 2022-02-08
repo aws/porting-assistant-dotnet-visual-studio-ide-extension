@@ -20,7 +20,7 @@ namespace PortingAssistantExtensionUITests
     public class VisualStudioSession
     {
         protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723";
-        private const string VS2019AppId = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe";
+        private string _vsAppId = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe";
         protected const string winAppDriverExe = "C:\\Program Files (x86)\\Windows Application Driver\\WinAppDriver.exe";
         protected const string testSolutionsDir = "C:\\ide-ui-test-solutions";
         protected const string testSolutionsZip = "C:\\ide-ui-test-solutions.zip";
@@ -74,7 +74,7 @@ namespace PortingAssistantExtensionUITests
             if (session == null)
             {
                 DesiredCapabilities appCapabilities = new DesiredCapabilities();
-                appCapabilities.SetCapability("app", VS2019AppId);
+                appCapabilities.SetCapability("app", _vsAppId);
                 appCapabilities.SetCapability("appArguments", "/NoSplash " + testSolution);
                 appCapabilities.SetCapability("ms:waitForAppLaunch", "30");
                 session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities, TimeSpan.FromMinutes(1));

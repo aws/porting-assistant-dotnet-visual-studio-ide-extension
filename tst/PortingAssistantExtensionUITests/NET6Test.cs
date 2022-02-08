@@ -12,6 +12,7 @@ namespace PortingAssistantExtensionUITests
     [TestClass]
     public class NET6Test : VisualStudioSession
     {
+        public NET6Test() : base(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe") { }
         [TestMethod]
         [ExpectedException(typeof(System.InvalidOperationException))]
         public void Net6DoesNotExistsVS2019()

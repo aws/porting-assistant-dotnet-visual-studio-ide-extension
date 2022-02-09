@@ -100,6 +100,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             {
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 if (!CommandsCommon.SetupPage()) return;
+                // Verify Target framework selection before disabling all commands.
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;

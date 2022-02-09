@@ -100,15 +100,16 @@ namespace PortingAssistantVSExtensionClient.Commands
             {
                 if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
                 if (!CommandsCommon.SetupPage()) return;
-                CommandsCommon.EnableAllCommand(false);
-                var SolutionFile = await CommandsCommon.GetSolutionPathAsync();
-                SolutionName = Path.GetFileName(SolutionFile);
+                // Verify TargetFramework selection from user's setting before doing any actions.
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
                 {
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
+                CommandsCommon.EnableAllCommand(false);
+                string solutionFile = await CommandsCommon.GetSolutionPathAsync();
+                SolutionName = Path.GetFileName(solutionFile);
                 string pipeName = Guid.NewGuid().ToString();
-                CommandsCommon.RunAssessmentAsync(SolutionFile, pipeName);
+                await CommandsCommon.RunAssessmentAsync(solutionFile, pipeName);
                 PipeUtils.StartListenerConnection(pipeName, GetAssessmentCompletionTasks(this.package, SolutionName));
             }
             catch (Exception ex)

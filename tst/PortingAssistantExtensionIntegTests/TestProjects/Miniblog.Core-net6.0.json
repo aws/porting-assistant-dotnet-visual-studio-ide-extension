@@ -1,0 +1,225 @@
+{
+  "FileCompatResults": {
+    "AccountController.cs": [
+      {
+        "fileName": "AccountController.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Microsoft.AspNetCore.Mvc.Controller.View() is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 28,
+            "Character": 19
+          },
+          "End": {
+            "Line": 28,
+            "Character": 30
+          }
+        }
+      }
+    ],
+    "BlogController.cs": [
+      {
+        "fileName": "BlogController.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Microsoft.AspNetCore.Mvc.Controller.View(string, object) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 41,
+            "Character": 23
+          },
+          "End": {
+            "Line": 41,
+            "Character": 52
+          }
+        }
+      }
+    ],
+    "RobotsController.cs": [
+      {
+        "fileName": "RobotsController.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: System.Text.StringBuilder.Append(object?) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 39,
+            "Character": 12
+          },
+          "End": {
+            "Line": 44,
+            "Character": 42
+          }
+        }
+      }
+    ],
+    "SharedController.cs": [
+      {
+        "fileName": "SharedController.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Microsoft.AspNetCore.Mvc.Controller.View(object) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 6,
+            "Character": 40
+          },
+          "End": {
+            "Line": 6,
+            "Character": 75
+          }
+        }
+      }
+    ],
+    "Comment.cs": [
+      {
+        "fileName": "Comment.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: System.Text.StringBuilder.Append(string?) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 43,
+            "Character": 16
+          },
+          "End": {
+            "Line": 43,
+            "Character": 84
+          }
+        }
+      }
+    ],
+    "LoginViewModel.cs": [
+      {
+        "fileName": "LoginViewModel.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Required is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 6,
+            "Character": 9
+          },
+          "End": {
+            "Line": 6,
+            "Character": 17
+          }
+        }
+      }
+    ],
+    "Post.cs": [
+      {
+        "fileName": "Post.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: string.Replace(string, string?, System.StringComparison) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 39,
+            "Character": 26
+          },
+          "End": {
+            "Line": 40,
+            "Character": 84
+          }
+        }
+      }
+    ],
+    "Resources.Designer.cs": [
+      {
+        "fileName": "Resources.Designer.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: System.Resources.ResourceManager.GetString(string, System.Globalization.CultureInfo?) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 67,
+            "Character": 23
+          },
+          "End": {
+            "Line": 67,
+            "Character": 120
+          }
+        }
+      }
+    ],
+    "BlogUserServices.cs": [
+      {
+        "fileName": "BlogUserServices.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivation.Pbkdf2(string, byte[], Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivationPrf, int, int) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 21,
+            "Character": 28
+          },
+          "End": {
+            "Line": 26,
+            "Character": 43
+          }
+        }
+      }
+    ],
+    "FileBlogService.cs": [
+      {
+        "fileName": "FileBlogService.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: System.IO.Path.Combine(string, string) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 42,
+            "Character": 26
+          },
+          "End": {
+            "Line": 42,
+            "Character": 62
+          }
+        }
+      }
+    ],
+    "InMemoryBlogServiceBase.cs": [
+      {
+        "fileName": "InMemoryBlogServiceBase.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: IHttpContextAccessor is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 14,
+            "Character": 42
+          },
+          "End": {
+            "Line": 14,
+            "Character": 62
+          }
+        }
+      }
+    ],
+    "MetaWeblogService.cs": [
+      {
+        "fileName": "MetaWeblogService.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Cookies is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 2,
+            "Character": 46
+          },
+          "End": {
+            "Line": 2,
+            "Character": 53
+          }
+        }
+      }
+    ],
+    "Startup.cs": [
+      {
+        "fileName": "Startup.cs",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Microsoft.Extensions.Hosting.IHostBuilder.ConfigureWebHostDefaults(System.Action<Microsoft.AspNetCore.Hosting.IWebHostBuilder>) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 31,
+            "Character": 12
+          },
+          "End": {
+            "Line": 38,
+            "Character": 22
+          }
+        }
+      }
+    ]
+  }
+}

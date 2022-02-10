@@ -30,7 +30,10 @@ namespace PortingAssistantExtensionIntegTests
             ["MvcMusicStore-WithFix-PortResults.zip"] = new string[] { "MvcMusicStore-WithFix-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["MvcMusicStore-net50-PortResults.zip"] = new string[] { "MvcMusicStore-net50-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json", "MvcMusicStorePort.json" },
             ["NopCommerce-3.1-PortResults.zip"] = new string[] { "NopCommerce-3.1-PortResults", "NopCommerce.sln", "NopCommerce.json" },
-            ["StarWars-WithFix-PortResults.zip"] = new string[] { "StarWars-WithFix-PortResults", "StarWars.sln", "StarWars.json" }
+            ["StarWars-WithFix-PortResults.zip"] = new string[] { "StarWars-WithFix-PortResults", "StarWars.sln", "StarWars.json" },
+            ["MvcMusicStore-WithFix-net50-PortResults.zip"] = new string[] { "MvcMusicStore-WithFix-net50-PortResults", "MvcMusicStore.sln", "MvcMusicStore.json" },
+            ["Miniblog.Core-master-net50-PortResults.zip"] = new string[] { "Miniblog.Core-master-net50-PortResults", "Miniblog.Core.sln", "Miniblog.Core.json" },
+            ["StarWars-WithFix-net50-PortResults.zip"] = new string[] { "StarWars-WithFix-net50-PortResults", "StarWars.sln", "StarWars.json" },
         };
 
         protected static class TargetFramework
@@ -240,8 +243,8 @@ namespace PortingAssistantExtensionIntegTests
             {
                 string solutionPath = Path.Combine(tempProjectRoot, projectInfo[0]);
                 string solutionName = projectInfo[1];
-                string jsonFile = Path.Combine(zipRootFolderPath, projectInfo[2]);
-
+                string jsonFile = Path.Combine(zipRootFolderPath, Path.GetFileNameWithoutExtension(projectInfo[2]) + $"-{targetFramework}" + Path.GetExtension(projectInfo[2]));
+                
                 StartLanguageServer();
 
                 client = new PAIntegTestClient(solutionPath, solutionName);

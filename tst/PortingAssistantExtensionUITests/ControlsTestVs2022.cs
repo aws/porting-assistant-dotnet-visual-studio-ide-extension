@@ -26,9 +26,9 @@ namespace PortingAssistantExtensionUITests
     /// Tests the controls for the IDE extension
     /// </summary>
     [TestClass]
-    public class ControlsTest : VisualStudioSession 
+    public class ControlsTestVs2022 : VisualStudioSession 
     {
-        public ControlsTest() : base(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe") { }
+        public ControlsTestVs2022() : base(@"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe") { }
 
         [TestMethod]
         public void TestChangeTargetFramework()
@@ -51,10 +51,22 @@ namespace PortingAssistantExtensionUITests
             ClickPortingAssistantMenuElement("Documentation");
         }
 
+        [TestMethod]
+        public void Net6ExistsVS2022()
+        {
+            ClickPortingAssistantMenuElement("Settings...");
+            session.FindElementByName("General").Click();
+            // This not a typo, the automation id is missing the last t
+            var frameworksBox = session.FindElementByAccessibilityId("TargeFrameworks");
+            frameworksBox.Click();
+            session.FindElementByXPath($"//Window[@ClassName=\"Popup\"]/ListItem[@Name=\"net6.0\"][@ClassName=\"ListBoxItem\"]").Click();
+            session.FindElementByXPath("//Button[@ClassName=\"Button\"][@Name=\"OK\"]").Click();
+        }
+
         [TestInitialize]
         public void ClassInitialize()
         {
-            Assert.IsTrue(File.Exists(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe"));
+            Assert.IsTrue(File.Exists(@"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe"));
             var solutionPath = $"{testSolutionsDir}\\mvcmusicstore\\sourceCode\\mvcmusicstore\\MvcMusicStore.sln";
             Setup(solutionPath);
         }

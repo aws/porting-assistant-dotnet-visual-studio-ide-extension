@@ -4,12 +4,12 @@ using System.IO;
 namespace PortingAssistantExtensionUITests
 {
     [TestClass]
-    public class CustomServerTest : VisualStudioSession 
+    public class CustomServerTestVs2022 : VisualStudioSession 
     {
         private readonly string portingResultsFile;
         private readonly string solutionFile;
 
-        public CustomServerTest() : base(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe")
+        public CustomServerTestVs2022() : base(@"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe")
         {
             portingResultsFile = $"{testSolutionsDir}\\CustomServer\\PortSolutionResult.json";
             solutionFile = $"{testSolutionsDir}\\CustomServer\\CustomServer.sln";
@@ -31,7 +31,6 @@ namespace PortingAssistantExtensionUITests
         [TestInitialize]
         public void ClassInitialize()
         {
-            Assert.IsTrue(File.Exists(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe"));
             Setup(solutionFile);
         }
 

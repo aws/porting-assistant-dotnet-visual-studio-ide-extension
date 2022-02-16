@@ -10,9 +10,9 @@ using OpenQA.Selenium;
 namespace PortingAssistantExtensionUITests
 {
     [TestClass]
-    public class ProfileTests : VisualStudioSession
+    public class ProfileTests2022 : VisualStudioSession
     {
-        public ProfileTests() : base(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe") { }
+        public ProfileTests2022() : base(@"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe") { }
 
         [TestMethod]
         public void InvalidProfileTest()
@@ -63,7 +63,7 @@ namespace PortingAssistantExtensionUITests
         [TestInitialize]
         public void ClassInitialize()
         {
-            Assert.IsTrue(File.Exists(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe"));
+            Assert.IsTrue(File.Exists(@"C:\Program Files\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.exe"));
             var solutionPath = $"{testSolutionsDir}\\mvcmusicstore\\sourceCode\\mvcmusicstore\\MvcMusicStore.sln";
             Setup(solutionPath);
         }

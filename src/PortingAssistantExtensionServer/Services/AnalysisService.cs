@@ -203,9 +203,10 @@ namespace PortingAssistantExtensionServer.Services
                         try
                         {
                             var sourceFileUri = DocumentUri.FromFileSystemPath(sourceFileAnalysisResult.SourceFilePath);
-                            var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
-                            if (!FileToFirstDiagnostics.ContainsKey(sourceFileUri))
+                            
+                            if (sourceFileUri != null && !FileToFirstDiagnostics.ContainsKey(sourceFileUri))
                             {
+                                var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
                                 FileToFirstDiagnostics.Add(sourceFileUri, diagnostics);
                             }
                         }

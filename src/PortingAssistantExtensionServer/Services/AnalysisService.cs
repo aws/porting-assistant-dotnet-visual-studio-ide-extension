@@ -182,7 +182,7 @@ namespace PortingAssistantExtensionServer.Services
                         continue;
                     }
                     var projectFileUri = DocumentUri.FromFileSystemPath(projectAnalysisResult.ProjectFilePath);
-                    if (!FileToProjectAnalyssiResult.ContainsKey(projectFileUri))
+                    if (projectFileUri != null && !FileToProjectAnalyssiResult.ContainsKey(projectFileUri))
                     {
                         FileToProjectAnalyssiResult.Add(projectFileUri, new ProjectAnalysisResult
                         {

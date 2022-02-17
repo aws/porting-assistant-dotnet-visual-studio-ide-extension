@@ -4,12 +4,14 @@ using NUnit.Framework;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtensionServer;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
-using PortingAssistantExtensionTelemetry.Interface;
+using PortingAssistantExtensionServer.Services;
+using PortingAssistantExtensionUnitTest.Common;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using TestParameters = PortingAssistantExtensionUnitTest.Common.TestParameters;
 
 namespace PortingAssistantExtensionUnitTest
 {
@@ -21,9 +23,10 @@ namespace PortingAssistantExtensionUnitTest
         private Mock<ITextDocumentLanguageServer> _textDocumentLanguageServer;
 
         private Mock<ILogger<AnalysisService>> _analysisLoggerMock;
+        private Mock<ILogger<PortingService>> _portingLoggerMock;
         private Mock<IPortingAssistantClient> _clientMock;
-        private Mock<ITelemetryCollector> _telemetryMock;
         private AnalysisService _analysisService;
+        private PortingService _portingService;
 
         private SolutionAnalysisResult _solutionAnalysisResult = TestParameters.TestSolutionAnalysisResult;
 
@@ -38,17 +41,20 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock = new Mock<IPortingAssistantClient>();
             _analysisLoggerMock = new Mock<ILogger<AnalysisService>>();
-            _telemetryMock = new Mock<ITelemetryCollector>();
+            _portingLoggerMock = new Mock<ILogger<PortingService>>();
             _textDocumentLanguageServer = new Mock<ITextDocumentLanguageServer>();
 
             _analysisService = new AnalysisService(_analysisLoggerMock.Object,
-                _clientMock.Object, _telemetryMock.Object);
+                _clientMock.Object);
+            _portingService = new PortingService(_portingLoggerMock.Object,
+                _clientMock.Object);
+
 
             _languageServer = new Mock<ILanguageServerFacade>();
             _logger = new Mock<ILogger<SolutionAssessmentHandler>>();
 
             _solutionAssessmentHandler = new SolutionAssessmentHandler(_logger.Object, _languageServer.Object,
-                _analysisService);
+                _analysisService, _portingService);
         }
 
         [SetUp]
@@ -67,6 +73,28 @@ namespace PortingAssistantExtensionUnitTest
 
             _clientMock.Verify(client => client.AnalyzeSolutionAsync(It.IsAny<string>(),
                 It.IsAny<AnalyzerSettings>()), Times.Exactly(1));
+        }
+
+        [Test]
+        public async Task SolutionAssessmentReturnsNullAsync()
+        {
+            var solutionAnalysisResult = new SolutionAnalysisResult
+            {
+                ProjectAnalysisResults = new List<ProjectAnalysisResult>
+                {
+                    new ProjectAnalysisResult
+                    {
+                        ProjectFilePath = "validfilepath",
+                    },
+                    new ProjectAnalysisResult
+                    {
+                        ProjectFilePath = null,
+                    }
+                }
+            };
+
+            await _portingService.GetPackageAnalysisResultAsync(Task.FromResult(solutionAnalysisResult));
+            _portingLoggerMock.VerifyNoOtherCalls();
         }
     }
 }

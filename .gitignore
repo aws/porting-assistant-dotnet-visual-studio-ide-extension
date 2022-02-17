@@ -43,8 +43,8 @@ dlldata.c
 # DNX
 project.lock.json
 artifacts/
-
-*_i.c
+*.exe 
+_i.c
 *_p.c
 *_i.h
 *.ilk

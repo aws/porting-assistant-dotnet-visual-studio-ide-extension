@@ -9,17 +9,18 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server.Capabilities;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtensionServer;
 using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
+using PortingAssistantExtensionServer.Services;
 using PortingAssistantExtensionServer.TextDocumentModels;
-using PortingAssistantExtensionTelemetry.Interface;
+using PortingAssistantExtensionUnitTest.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using TestParameters = PortingAssistantExtensionUnitTest.Common.TestParameters;
 
 namespace PortingAssistantExtensionUnitTest
 {
@@ -33,9 +34,10 @@ namespace PortingAssistantExtensionUnitTest
         private Mock<ITextDocumentLanguageServer> _textDocumentLanguageServer;
 
         private Mock<ILogger<AnalysisService>> _analysisLoggerMock;
+        private Mock<ILogger<PortingService>> _portingLoggerMock;
         private Mock<IPortingAssistantClient> _clientMock;
-        private Mock<ITelemetryCollector> _telemetryMock;
         private AnalysisService _analysisService;
+        private PortingService _portingService;
 
         private SolutionAnalysisResult _solutionAnalysisResult = TestParameters.TestSolutionAnalysisResult;
         private SourceFileAnalysisResult _sourceFileAnalysisResult = TestParameters.TestSourceFileAnalysisResult;
@@ -113,11 +115,13 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock = new Mock<IPortingAssistantClient>();
             _analysisLoggerMock = new Mock<ILogger<AnalysisService>>();
-            _telemetryMock = new Mock<ITelemetryCollector>();
+            _portingLoggerMock = new Mock<ILogger<PortingService>>();
             _textDocumentLanguageServer = new Mock<ITextDocumentLanguageServer>();
 
             _analysisService = new AnalysisService(_analysisLoggerMock.Object,
-                _clientMock.Object, _telemetryMock.Object);
+                _clientMock.Object);
+            _portingService = new PortingService(_portingLoggerMock.Object,
+                _clientMock.Object);
 
             _languageServer = new Mock<ILanguageServerFacade>();
             _logger = new Mock<ILogger<PortingAssistantTextSyncHandler>>();
@@ -125,8 +129,8 @@ namespace PortingAssistantExtensionUnitTest
             _loggerSolutionHandler = new Mock<ILogger<SolutionAssessmentHandler>>();
 
             _solutionAssessmentHandler = new SolutionAssessmentHandler(_loggerSolutionHandler.Object, _languageServer.Object,
-               _analysisService);
-            _portingAssistantTextSyncHandler = new PortingAssistantTextSyncHandler(_languageServer.Object, _analysisService, 
+               _analysisService, _portingService);
+            _portingAssistantTextSyncHandler = new PortingAssistantTextSyncHandler(_languageServer.Object, _analysisService,
                 _logger.Object);
 
             _portingAssistantTextSyncHandler.SetCapability(new OmniSharp.Extensions.LanguageServer.Protocol.Client.Capabilities.SynchronizationCapability
@@ -145,7 +149,7 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock.Setup(client => client.AnalyzeSolutionAsync(It.IsAny<string>(),
                 It.IsAny<AnalyzerSettings>())).Returns(Task.FromResult(_solutionAnalysisResult));
-            _clientMock.Setup(client => client.AnalyzeFileAsync(It.IsAny<string>(), It.IsAny<string>(), 
+            _clientMock.Setup(client => client.AnalyzeFileAsync(It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<List<string>>(),
                 It.IsAny<RootNodes>(), It.IsAny<ExternalReferences>(), It.IsAny<AnalyzerSettings>()))
                 .Returns(Task.FromResult(new List<SourceFileAnalysisResult> { _sourceFileAnalysisResult }));

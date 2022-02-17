@@ -1,0 +1,42 @@
+version: 2
+registries:
+  porting-assistant-nuget:
+    type: nuget-feed
+    url: https://s3-us-west-2.amazonaws.com/aws.portingassistant.dotnet.download/nuget/index.json
+  nuget-org:
+    type: nuget-feed
+    url: https://api.nuget.org/v3/index.json
+updates:
+  - package-ecosystem: "nuget"
+    directory: "src/PortingAssistantExtensionServer/"
+    registries:
+      - porting-assistant-nuget
+      - nuget-org
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "OmniSharp.Extensions.Language*"
+  - package-ecosystem: "nuget"
+    directory: "src/PortingAssistantExtensionTelemetry/"
+    registries:
+      - porting-assistant-nuget
+      - nuget-org
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "nuget"
+    directory: "src/PortingAssistantExtensionUnitTest/"
+    registries:
+      - porting-assistant-nuget
+      - nuget-org
+    schedule:
+      interval: "daily"
+    ignore:
+      - dependency-name: "OmniSharp.Extensions.Language*"
+      - dependency-name: "Microsoft.VisualStudio.SDK"
+  - package-ecosystem: "nuget"
+    directory: "src/PortingAssistantVSExtensionClient/"
+    registries:
+      - porting-assistant-nuget
+      - nuget-org
+    schedule:
+      interval: "daily"

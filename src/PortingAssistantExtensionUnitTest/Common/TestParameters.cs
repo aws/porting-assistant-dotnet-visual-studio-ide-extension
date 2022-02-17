@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PortingAssistantExtensionUnitTest
+namespace PortingAssistantExtensionUnitTest.Common
 {
     public class TestParameters
     {
@@ -18,7 +18,7 @@ namespace PortingAssistantExtensionUnitTest
             Version = "5.2.7"
         };
 
-        public static readonly RecommendedAction TestRecommendedAction = new RecommendedAction
+        public static readonly RecommendedAction TestReplaceNamespaceRecommendedAction = new RecommendedAction
         {
             Description = "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
             RecommendedActionType = RecommendedActionType.ReplaceNamespace,
@@ -39,6 +39,11 @@ namespace PortingAssistantExtensionUnitTest
                 StartCharPosition = 1,
                 StartLinePosition = 5
             }
+        };
+
+        public static readonly RecommendedAction TestUpgradePackageRecommendedAction = new RecommendedAction
+        {
+            RecommendedActionType = RecommendedActionType.UpgradePackage
         };
 
         private static readonly Dictionary<PackageVersionPair, Task<PackageAnalysisResult>> _packageAnalysisResult = new Dictionary<PackageVersionPair, Task<PackageAnalysisResult>>
@@ -108,7 +113,7 @@ namespace PortingAssistantExtensionUnitTest
                     },
                     Recommendations = new PortingAssistant.Client.Model.Recommendations
                     {
-                        RecommendedActions = new List<PortingAssistant.Client.Model.RecommendedAction>
+                        RecommendedActions = new List<RecommendedAction>
                         {
                             new ApiRecommendation
                             {
@@ -121,7 +126,7 @@ namespace PortingAssistantExtensionUnitTest
                             },
                             new RecommendedAction
                             {
-                                Description = "12.0.3",
+                                Description = "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
                                 RecommendedActionType = RecommendedActionType.ReplaceApi,
                                 TargetCPU = null,
                                 TextChanges = null,
@@ -129,7 +134,7 @@ namespace PortingAssistantExtensionUnitTest
                             },
                             new RecommendedAction
                             {
-                                Description = "12.0.3",
+                                Description = "Replace System.Web.Mvc namespace with Microsoft.AspNetCore.Mvc.",
                                 RecommendedActionType = RecommendedActionType.ReplaceNamespace,
                                 TargetCPU = null,
                                 TextChanges = null,
@@ -157,7 +162,7 @@ namespace PortingAssistantExtensionUnitTest
             },
             RecommendedActions = new List<RecommendedAction>
             {
-               TestRecommendedAction
+               TestReplaceNamespaceRecommendedAction
             }
         };
 

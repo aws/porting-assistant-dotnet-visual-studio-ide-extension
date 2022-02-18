@@ -182,7 +182,7 @@ namespace PortingAssistantExtensionServer.Services
                         continue;
                     }
                     var projectFileUri = DocumentUri.FromFileSystemPath(projectAnalysisResult.ProjectFilePath);
-                    if (!FileToProjectAnalyssiResult.ContainsKey(projectFileUri))
+                    if (projectFileUri != null && !FileToProjectAnalyssiResult.ContainsKey(projectFileUri))
                     {
                         FileToProjectAnalyssiResult.Add(projectFileUri, new ProjectAnalysisResult
                         {
@@ -203,9 +203,9 @@ namespace PortingAssistantExtensionServer.Services
                         try
                         {
                             var sourceFileUri = DocumentUri.FromFileSystemPath(sourceFileAnalysisResult.SourceFilePath);
-                            var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
-                            if (!FileToFirstDiagnostics.ContainsKey(sourceFileUri))
+                            if (sourceFileUri != null && !FileToFirstDiagnostics.ContainsKey(sourceFileUri))
                             {
+                                var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
                                 FileToFirstDiagnostics.Add(sourceFileUri, diagnostics);
                             }
                         }

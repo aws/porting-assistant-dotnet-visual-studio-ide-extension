@@ -99,10 +99,11 @@ namespace PortingAssistantExtensionTelemetry.Utils
             }
         }
 
-        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile)
+        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, bool shareMetric, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile)
         {
             try
             {
+                if (!shareMetric) return;
                 // Get files in directory and filter based on Suffix
                 string[] fileEntries = Directory.GetFiles(teleConfig.LogsPath).Where(f =>
                   teleConfig.Suffix.ToArray().Any(x => f.EndsWith(x))

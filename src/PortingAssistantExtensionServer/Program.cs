@@ -14,6 +14,7 @@ using PortingAssistantExtensionTelemetry;
 using System.Text.Json;
 using System.Net.Http;
 using PortingAssistantExtensionTelemetry.Utils;
+using PortingAssistantExtensionServer.Common;
 
 namespace PortingAssistantExtensionServer
 {
@@ -75,7 +76,7 @@ namespace PortingAssistantExtensionServer
                 
                 logTimer.Interval = Convert.ToDouble(portingAssistantConfiguration.TelemetryConfiguration.LogTimerInterval);
                 var lastReadTokenFile = Path.Combine(portingAssistantConfiguration.TelemetryConfiguration.LogsPath, "lastToken.json");
-                logTimer.Elapsed += (source, e) => LogUploadUtils.OnTimedEvent(source, e, portingAssistantConfiguration.TelemetryConfiguration, lastReadTokenFile, Common.PALanguageServerConfiguration.AWSProfileName); ;
+                logTimer.Elapsed += (source, e) => LogUploadUtils.OnTimedEvent(source, e, PALanguageServerConfiguration.EnabledMetrics, portingAssistantConfiguration.TelemetryConfiguration, lastReadTokenFile, Common.PALanguageServerConfiguration.AWSProfileName); ;
                 logTimer.AutoReset = true;
                 logTimer.Enabled = true;
                 

@@ -59,17 +59,15 @@ namespace PortingAssistantExtensionServer.Services
                 runId = Guid.NewGuid().ToString();
                 var triggerType = "InitialRequest";
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
-                if (PALanguageServerConfiguration.EnabledMetrics)
-                {
-                    Collector.SolutionAssessmentCollect(
-                    solutionAnalysisResult,
-                    runId,
-                    triggerType,
-                    _request.settings.TargetFramework,
-                    PALanguageServerConfiguration.ExtensionVersion,
-                    PALanguageServerConfiguration.VisualStudioVersion,
-                    DateTime.Now.Subtract(startTime).TotalMilliseconds);
-                }
+
+                Collector.SolutionAssessmentCollect(
+                solutionAnalysisResult,
+                runId,
+                triggerType,
+                _request.settings.TargetFramework,
+                PALanguageServerConfiguration.ExtensionVersion,
+                PALanguageServerConfiguration.VisualStudioVersion,
+                DateTime.Now.Subtract(startTime).TotalMilliseconds);
                 CreateClientConnectionAsync(request.PipeName);
                 return solutionAnalysisResult;
             }
@@ -122,27 +120,26 @@ namespace PortingAssistantExtensionServer.Services
                         SourceFileName = Path.GetFileNameWithoutExtension(codeFile.NormalizedPath)
                     });
                 }
-                if (PALanguageServerConfiguration.EnabledMetrics)
+
+                var triggerType = "ContinuousAssessmentRequest";
+                var allActions = result.SelectMany(a => a.RecommendedActions);
+                var selectedApis = result.SelectMany(s => s.ApiAnalysisResults);
+
+                allActions.ToList().ForEach(action =>
                 {
-                    var triggerType = "ContinuousAssessmentRequest";
-                    var allActions = result.SelectMany(a => a.RecommendedActions);
-                    var selectedApis = result.SelectMany(s => s.ApiAnalysisResults);
+                    var selectedApi = selectedApis.FirstOrDefault(s => s.CodeEntityDetails.TextSpan.Equals(action.TextSpan));
+                    selectedApi?.Recommendations?.RecommendedActions?.Add(action);
+                });
 
-                    allActions.ToList().ForEach(action =>
-                    {
-                        var selectedApi = selectedApis.FirstOrDefault(s => s.CodeEntityDetails.TextSpan.Equals(action.TextSpan));
-                        selectedApi?.Recommendations?.RecommendedActions?.Add(action);
-                    });
+                Collector.FileAssessmentCollect(
+                    selectedApis,
+                    runId,
+                    triggerType,
+                    _request.settings.TargetFramework,
+                    PALanguageServerConfiguration.ExtensionVersion,
+                    PALanguageServerConfiguration.VisualStudioVersion
+                    );
 
-                    Collector.FileAssessmentCollect(
-                        selectedApis, 
-                        runId, 
-                        triggerType,
-                        _request.settings.TargetFramework, 
-                        PALanguageServerConfiguration.ExtensionVersion,
-                        PALanguageServerConfiguration.VisualStudioVersion
-                        );
-                }
                 return result;
             }
             catch (Exception ex)
@@ -339,17 +336,16 @@ namespace PortingAssistantExtensionServer.Services
             var result = await AssessFileAsync(document, false);
             var sourceFileAnalysisResult = result.FirstOrDefault();
             var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
-            if (PALanguageServerConfiguration.EnabledMetrics)
-            {
-                Collector.ContinuousAssessmentCollect(
-                    sourceFileAnalysisResult,
-                    runId,
-                    triggerType,
-                    _request.settings.TargetFramework,
-                    PALanguageServerConfiguration.ExtensionVersion,
-                    PALanguageServerConfiguration.VisualStudioVersion,
-                    diagnostics.Count);
-            }
+
+            Collector.ContinuousAssessmentCollect(
+                sourceFileAnalysisResult,
+                runId,
+                triggerType,
+                _request.settings.TargetFramework,
+                PALanguageServerConfiguration.ExtensionVersion,
+                PALanguageServerConfiguration.VisualStudioVersion,
+                diagnostics.Count);
+
             return diagnostics;
         }
 

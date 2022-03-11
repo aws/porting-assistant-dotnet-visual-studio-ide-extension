@@ -7,19 +7,19 @@ using IDE_UITest.UI;
 namespace IDE_UITest
 {
     [Collection("Collection2")]
-    public class AssessWorkflowTests : TestBase, IDisposable
+    public class AssessWorkflowTestsVs2019 : TestBase, IDisposable
     {
 
         private GlobalFixture _fixture;
         private readonly ITestOutputHelper output;
         private VSMainView root;
-        public AssessWorkflowTests(GlobalFixture fixture, ITestOutputHelper output) :  base(output)
+        public AssessWorkflowTestsVs2019(GlobalFixture fixture, ITestOutputHelper output) :  base(output)
         {
             VS2019ProcessID = 0;
             this.output = output;
             _fixture = fixture;
             var solutionPath = _fixture.InputData["assess-solution-path1"];
-            root = LaunchVSWithSolution(solutionPath);
+            root = LaunchVSWithSolution(_fixture.Vs2019Location , solutionPath);
             Assert.True(root != null, $"Fail to get visual studio main window after loading solution {solutionPath}");
         }
 

@@ -14,6 +14,8 @@ namespace IDE_UITest
     {
         public IConfigurationSection InputData { get; set; }
         public IConfigurationSection AwsAuth { get; set; }
+        public string Vs2019Location  { get; set; }
+        public string Vs2022Location { get; set; }
         public GlobalFixture()
         {
             // Called once before running all tests in IDE_UITest
@@ -23,6 +25,9 @@ namespace IDE_UITest
                 .Build();
             InputData = config.GetSection("input");
             AwsAuth = config.GetSection("aws");
+            var vslocations = config.GetSection("vslocation");
+            Vs2019Location = vslocations["2019"];
+            Vs2022Location = vslocations["2022"];
         }
         
         public void Dispose()

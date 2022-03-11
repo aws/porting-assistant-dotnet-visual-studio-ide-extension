@@ -7,12 +7,12 @@ using IDE_UITest.Helper;
 namespace IDE_UITest
 {
     [Collection("Collection1")]
-    public class SettingsTests : TestBase, IDisposable
+    public class SettingsTestsVs2019 : TestBase, IDisposable
     {
         private GlobalFixture _fixture;
         private readonly ITestOutputHelper output;
         private Helper.Secret awsSecret;
-        public SettingsTests(GlobalFixture fixture, ITestOutputHelper output) : base(output)
+        public SettingsTestsVs2019(GlobalFixture fixture, ITestOutputHelper output) : base(output)
         {
             VS2019ProcessID = 0;
             _fixture = fixture;
@@ -23,7 +23,7 @@ namespace IDE_UITest
         [Fact]
         public void LaunchVS2019WithoutCode_SetupTargetAndNewProfile()
         {
-            var root = LaunchVSWithoutCode();
+            var root = LaunchVSWithoutCode(_fixture.Vs2019Location);
             //verify optionWindow is launched
             var optionsWin = root.OpenSettingsOption();
             output.WriteLine("Choose Porting Assistant Extension from menu");
@@ -42,7 +42,7 @@ namespace IDE_UITest
         [Fact]
         public void LaunchVS2019WithoutCode_CancelNewProfileCreation()
         {
-            var root = LaunchVSWithoutCode();
+            var root = LaunchVSWithoutCode(_fixture.Vs2019Location);
             //verify optionWindow is launched
             var optionsWin = root.OpenSettingsOption();
             optionsWin.ClearCache();

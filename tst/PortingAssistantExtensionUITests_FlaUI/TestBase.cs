@@ -16,7 +16,6 @@ namespace IDE_UITest
 
     public class TestBase: IDisposable
     {
-        public const string VS2019ExePath = @"C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.exe";
         const string VS2019Name = "WorkflowHostView";
         public int VS2019ProcessID;
         public AutomationElement Desktop;
@@ -53,10 +52,10 @@ namespace IDE_UITest
             return retry.Result;
         }
 
-        public VSMainView LaunchVSWithoutCode()
+        public VSMainView LaunchVSWithoutCode(string vsLocation)
         {
             AutomationElement loadWindow;
-            LaunchingVS(out loadWindow);
+            LaunchingVS(vsLocation, out loadWindow);
             Assert.Equal(VS2019Name, loadWindow.AutomationId);
             output.WriteLine("find main window");
             GetToCodeWorkflowView userControl = GetToCodeWorkflowView(loadWindow);
@@ -64,10 +63,10 @@ namespace IDE_UITest
             return GetVSMainView();
         }
 
-        public VSMainView LaunchVSWithSolution(string solutionPath)
+        public VSMainView LaunchVSWithSolution(string vsLocation, string solutionPath)
         {
             AutomationElement loadWindow;
-            LaunchingVS(out loadWindow);
+            LaunchingVS(vsLocation, out loadWindow);
             Assert.Equal(VS2019Name, loadWindow.AutomationId);
             output.WriteLine("find main window");
             GetToCodeWorkflowView userControl = GetToCodeWorkflowView(loadWindow);
@@ -98,9 +97,9 @@ namespace IDE_UITest
 
         
 
-        private void LaunchingVS(out AutomationElement loadWindow)
+        private void LaunchingVS(string vsLocation, out AutomationElement loadWindow)
         {
-            var app = FlaUI.Core.Application.Launch(VS2019ExePath);
+            var app = FlaUI.Core.Application.Launch(vsLocation);
             VS2019ProcessID = app.ProcessId;
             output.WriteLine($"Visual Studio 2019 process id is [{VS2019ProcessID}]");
 
@@ -115,7 +114,6 @@ namespace IDE_UITest
             if (VS2019ProcessID == 0) return;
             Process vs2019Process = Process.GetProcessById(VS2019ProcessID);
             vs2019Process?.Kill(true);
-
         }
     }
 

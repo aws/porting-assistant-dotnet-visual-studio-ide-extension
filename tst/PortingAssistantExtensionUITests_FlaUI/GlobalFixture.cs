@@ -24,6 +24,7 @@ namespace IDE_UITest
             InputData = config.GetSection("input");
             AwsAuth = config.GetSection("aws");
         }
+        
         public void Dispose()
         {
             //shut down visual studio

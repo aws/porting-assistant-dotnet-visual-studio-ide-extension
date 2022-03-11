@@ -88,7 +88,7 @@ namespace IDE_UITest.UI
             runFullAssessmentMenuItem.Invoke();
         }
 
-        private void WaitTillAssessmentFinished(int timeoutSec= 60)
+        private void WaitTillAssessmentFinished(int timeoutSec= 120)
         {
             var infoBarControl = Retry.Find(() => FindFirstChild(e => e.ByAutomationId("InfoBarControl").
               And(e.ByClassName("InfoBarControl").

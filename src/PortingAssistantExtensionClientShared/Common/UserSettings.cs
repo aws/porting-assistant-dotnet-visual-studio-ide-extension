@@ -28,6 +28,7 @@ namespace PortingAssistantVSExtensionClient.Options
         public string TargetFramework;
         public bool SolutionAssessed;
         public bool SolutionHasWebFormsProject;
+        public bool EnabledDefaultCredentials;
 
         private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
         
@@ -36,6 +37,7 @@ namespace PortingAssistantVSExtensionClient.Options
 
         private UserSettings()
         {
+            
             ThreadHelper.ThrowIfNotOnUIThread();
             var sm = new ShellSettingsManager(ServiceProvider.GlobalProvider);
             _settingStore = sm.GetWritableSettingsStore(SettingsScope.UserSettings);
@@ -106,6 +108,7 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("AWSProfileName", AWSProfileName);
             Write("TargetFramework", TargetFramework);
             Write("ApplyPortAction", ApplyPortAction);
+            Write("EnabledDefaultCredentials", EnabledDefaultCredentials);
         }
 
         public void LoadingAllSettings()
@@ -113,6 +116,7 @@ namespace PortingAssistantVSExtensionClient.Options
             ShowWelcomePage = (bool)Read("ShowWelcomePage", true);
             EnabledMetrics = (bool)Read("EnabledMetrics", true);
             EnabledContinuousAssessment = (bool)Read("EnabledContinuousAssessment", false);
+            EnabledDefaultCredentials = (bool)Read("EnabledDefaultCredentials", false);
             AWSProfileName = (string)Read("AWSProfileName", "");
             ApplyPortAction = (bool)Read("ApplyPortAction", false);
             TargetFramework = (string)Read("TargetFramework", TargetFrameworkType.NO_SELECTION);

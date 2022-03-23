@@ -104,7 +104,7 @@ namespace PortingAssistantVSExtensionClient.Utils
             }
         }
 
-        private static async Task<bool> VerifyUserAsync
+        public static async Task<bool> VerifyUserAsync
             (
             string profile,
             AwsCredential awsCredentials,

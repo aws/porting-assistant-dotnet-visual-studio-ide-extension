@@ -30,7 +30,7 @@ namespace PortingAssistantExtensionServer
                 {
                     throw new ArgumentException("Must provide a config file");
                 }
-                var config = args[0];
+                var config = "D:\\Users\\kanikaul\\repos\\ide-ext\\src\\PortingAssistantVSExtensionClient2022\\Resources\\porting-assistant-config.json";
                 var stdInPipeName = args.Length == 1 ? Common.Constants.stdDebugInPipeName : args[1];
                 var stdOutPipeName = args.Length == 1 ? Common.Constants.stdDebugOutPipeName : args[2];
                 Common.PALanguageServerConfiguration.ExtensionVersion = args.Length == 1 ? "0.0.0" : args[3];
@@ -76,7 +76,7 @@ namespace PortingAssistantExtensionServer
                 
                 logTimer.Interval = Convert.ToDouble(portingAssistantConfiguration.TelemetryConfiguration.LogTimerInterval);
                 var lastReadTokenFile = Path.Combine(portingAssistantConfiguration.TelemetryConfiguration.LogsPath, "lastToken.json");
-                logTimer.Elapsed += (source, e) => LogUploadUtils.OnTimedEvent(source, e, PALanguageServerConfiguration.EnabledMetrics, portingAssistantConfiguration.TelemetryConfiguration, lastReadTokenFile, Common.PALanguageServerConfiguration.AWSProfileName); ;
+                logTimer.Elapsed += (source, e) => LogUploadUtils.OnTimedEvent(source, e, PALanguageServerConfiguration.EnabledMetrics, portingAssistantConfiguration.TelemetryConfiguration, lastReadTokenFile, Common.PALanguageServerConfiguration.AWSProfileName, Common.PALanguageServerConfiguration.EnabledDefaultCredentials); ;
                 logTimer.AutoReset = true;
                 logTimer.Enabled = true;
                 

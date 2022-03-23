@@ -17,6 +17,8 @@ namespace PortingAssistantVSExtensionClient.Options
 
         private readonly UserSettings _userSettings;
 
+        private bool awsProfileFlag = true;
+
         public DataSharingOption()
         {
             _userSettings = UserSettings.Instance;
@@ -49,7 +51,16 @@ namespace PortingAssistantVSExtensionClient.Options
 
         void Save()
         {
-            _userSettings.AWSProfileName = (string)_dataSharingoptionsPageControl.Profiles.SelectedValue;
+            if (_dataSharingoptionsPageControl.AWSProfileSelect.IsChecked != null &&
+                (bool)_dataSharingoptionsPageControl.AWSProfileSelect.IsChecked)
+            {
+                _userSettings.AWSProfileName = (string)_dataSharingoptionsPageControl.Profiles.SelectedValue;
+            }
+            else
+            {
+                _userSettings.AWSProfileName = "DEFAULT_PROFILE";
+                _userSettings.EnabledDefaultCredentials = true;
+            }
             _userSettings.EnabledMetrics = _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked ?? false;
             _userSettings.SaveAllSettings();
             PortingAssistantLanguageClient.UpdateUserSettingsAsync();

@@ -11,6 +11,7 @@
         private static string _extensionVersion { get; set; }
 
         private static string _visualStudioVersion { get; set; }
+        private static bool _enabledDefaultCredentials { get; set; }
 
         private static string _visualStudioFullVersion { get; set; }
 
@@ -18,6 +19,7 @@
         {
             _enabledContinuousAssessment = false;
             _enabledMetrics = false;
+            _enabledDefaultCredentials = false;
             _awsProfileName = "";
             _extensionVersion = "";
         }
@@ -79,6 +81,18 @@
             set
             {
                 _visualStudioVersion = value;
+            }
+        }
+
+        public static bool EnabledDefaultCredentials
+        {
+            get
+            {
+                return _enabledDefaultCredentials;
+            }
+            set
+            {
+                _enabledDefaultCredentials = value;
             }
         }
 

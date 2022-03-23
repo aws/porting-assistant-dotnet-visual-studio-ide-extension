@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
-             mc:Ignorable="d" Height="672" Width="550">
+             mc:Ignorable="d" Height="688" Width="550">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -67,8 +67,9 @@
         <Label Content="AWS Secret Access Key" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Top" Width="150" Height="30" Grid.Column="0" Grid.Row="3"/>
         <TextBox x:Name="secretAccessKey" HorizontalAlignment="Left"  Margin="30,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Height="30" Grid.Column="0" Grid.Row="3" AutomationProperties.HelpText="Please enter AWS secret access key"/>
         <Label x:Name="WarningSecretKey" Content="" HorizontalAlignment="Left" Margin="30,60,0,0" VerticalAlignment="Top" Width="480" Height="30" Foreground="Red" FontSize="10" Grid.Column="0" Grid.Row="3"/>
-        <Label Content="AWS Session Token (Optional)" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Center" Width="176" Height="30" Grid.Column="0" Grid.Row="4"/>
-        <TextBox x:Name="sessionToken" HorizontalAlignment="Left" Margin="30,0,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Height="129" Grid.Column="0" Grid.Row="6" AutomationProperties.HelpText="Please enter AWS session token"/>
+        <Label Content="AWS Session Token (Optional)" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Top" Width="176" Height="30" Grid.Column="0" Grid.Row="4"/>
+        <Label Content="Allows you to create profiles with short term credentials."  HorizontalAlignment="Left" Margin="30,20,0,0" VerticalAlignment="Top" Width="455" Height="30" Grid.Column="0" Grid.Row="4"/>
+        <TextBox x:Name="sessionToken" HorizontalAlignment="Left" Margin="30,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Height="129" Grid.Column="0" Grid.Row="4" AutomationProperties.HelpText="Please enter AWS session token"/>
         <Label x:Name="WarningValidation" Content="" HorizontalAlignment="Left" Margin="30,5,0,0" VerticalAlignment="Top" Width="280" Height="30" Foreground="Red" FontSize="10" Grid.Column="0" Grid.Row="7"/>
         <Button Content="Cancel" HorizontalAlignment="Right" Margin="10,10,110,10" VerticalAlignment="Bottom" Width="90" Height="30" Background="{x:Null}" BorderThickness="0" Click="Button_Click_1" Grid.Column="0" Grid.Row="8"/>
         <Button Content="Save Profile" HorizontalAlignment="Right" Margin="10,10,20,10" VerticalAlignment="Bottom" Width="90" Height="30" Click="Button_Click" Grid.Column="0" Grid.Row="8"/>

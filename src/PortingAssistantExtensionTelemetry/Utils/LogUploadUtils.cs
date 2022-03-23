@@ -49,6 +49,7 @@ namespace PortingAssistantExtensionTelemetry.Utils
             string logName,
             string logData,
             string profile,
+            bool enabledDefaultCredentials,
             TelemetryConfiguration telemetryConfiguration
             )
         {
@@ -56,41 +57,55 @@ namespace PortingAssistantExtensionTelemetry.Utils
             {
                 var chain = new CredentialProfileStoreChain();
                 AWSCredentials awsCredentials;
-                var profileName = profile;
-                var region = telemetryConfiguration.Region;
-                if (chain.TryGetAWSCredentials(profileName, out awsCredentials))
+
+                if (enabledDefaultCredentials)
                 {
-                    dynamic requestMetadata = new JObject();
-                    requestMetadata.version = "1.0";
-                    requestMetadata.service = telemetryConfiguration.ServiceName;
-                    requestMetadata.token = "12345678";
-                    requestMetadata.description = telemetryConfiguration.Description;
-
-                    dynamic log = new JObject();
-                    log.timestamp = DateTime.Now.ToString();
-                    log.logName = logName;
-                    var logDataInBytes = Encoding.UTF8.GetBytes(logData);
-                    log.logData = Convert.ToBase64String(logDataInBytes);
-
-                    dynamic body = new JObject();
-                    body.requestMetadata = requestMetadata;
-                    body.log = log;
-
-                    var requestContent = new StringContent(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
-                    var config = new TelemetryClientConfig()
+                    awsCredentials = FallbackCredentialsFactory.GetCredentials();
+                    if (awsCredentials == null)
                     {
-                        RegionEndpoint = RegionEndpoint.GetBySystemName(region),
-                        MaxErrorRetry = 2,
-                        ServiceURL = telemetryConfiguration.InvokeUrl,
-                    };
-                    var client = new TelemetryClient(awsCredentials, config);
-                    var contentString = await requestContent.ReadAsStringAsync();
-                    var telemetryRequest = new TelemetryRequest(telemetryConfiguration.ServiceName, contentString);
-                    var telemetryResponse = await client.SendAsync(telemetryRequest);
-                    return telemetryResponse.HttpStatusCode == HttpStatusCode.OK;
+                        Console.WriteLine("Invalid Credentials.");
+                        return false;
+                    }
                 }
-                Console.WriteLine("Invalid Credentials.");
-                return false;
+                else
+                {
+                    var profileName = profile;
+                    if (!chain.TryGetAWSCredentials(profileName, out awsCredentials))
+                    {
+                        Console.WriteLine("Invalid Credentials.");
+                        return false;
+                    }
+                }
+
+                var region = telemetryConfiguration.Region;
+                dynamic requestMetadata = new JObject();
+                requestMetadata.version = "1.0";
+                requestMetadata.service = telemetryConfiguration.ServiceName;
+                requestMetadata.token = "12345678";
+                requestMetadata.description = telemetryConfiguration.Description;
+
+                dynamic log = new JObject();
+                log.timestamp = DateTime.Now.ToString();
+                log.logName = logName;
+                var logDataInBytes = Encoding.UTF8.GetBytes(logData);
+                log.logData = Convert.ToBase64String(logDataInBytes);
+
+                dynamic body = new JObject();
+                body.requestMetadata = requestMetadata;
+                body.log = log;
+
+                var requestContent = new StringContent(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
+                var config = new TelemetryClientConfig()
+                {
+                    RegionEndpoint = RegionEndpoint.GetBySystemName(region),
+                    MaxErrorRetry = 2,
+                    ServiceURL = telemetryConfiguration.InvokeUrl,
+                };
+                var client = new TelemetryClient(awsCredentials, config);
+                var contentString = await requestContent.ReadAsStringAsync();
+                var telemetryRequest = new TelemetryRequest(telemetryConfiguration.ServiceName, contentString);
+                var telemetryResponse = await client.SendAsync(telemetryRequest);
+                return telemetryResponse.HttpStatusCode == HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
@@ -99,7 +114,7 @@ namespace PortingAssistantExtensionTelemetry.Utils
             }
         }
 
-        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, bool shareMetric, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile)
+        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, bool shareMetric, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile, bool enabledDefaultCredentials)
         {
             try
             {
@@ -174,14 +189,14 @@ namespace PortingAssistantExtensionTelemetry.Utils
                                     if (logs.Count >= 1000)
                                     {
                                         // logs.TrimToSize();
-                                        success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, teleConfig).Result;
+                                        success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, enabledDefaultCredentials, teleConfig).Result;
                                         if (success) { logs = new ArrayList(); };
                                     }
                                 }
 
                                 if (logs.Count != 0)
                                 {
-                                    success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, teleConfig).Result;
+                                    success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, enabledDefaultCredentials, teleConfig).Result;
                                 }
                                 if (success)
                                 {

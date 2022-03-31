@@ -140,6 +140,6 @@
       <RemoveFiles Include="$(LanguageServerPath)**" />
     </ItemGroup>
     <Delete Files="@(RemoveFiles)" />
-    <Exec Command="dotnet publish $(ProjectDir)..\PortingAssistantExtensionServer\PortingAssistantExtensionServer.csproj -c Release -f netcoreapp3.1 -p:PublishSingleFile=true -r win-x64 --self-contained false   -o $(ProjectDir)\PortingAssistantLanguageServer\" />
+    <Exec Command="dotnet publish $(ProjectDir)..\PortingAssistantExtensionServer\PortingAssistantExtensionServer.csproj -c Release -p:PublishSingleFile=true -p:IncludeAllContentForSelfExtract=true -p:IncludeSymbolsInSingleFile=false -r win-x64 --self-contained false -o $(ProjectDir)\PortingAssistantLanguageServer\" />
   </Target>
 </Project>

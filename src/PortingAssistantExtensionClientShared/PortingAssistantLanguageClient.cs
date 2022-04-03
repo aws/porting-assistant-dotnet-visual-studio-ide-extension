@@ -240,8 +240,12 @@ namespace PortingAssistantVSExtensionClient
 #if Dev17
         public Task<InitializationFailureContext> OnServerInitializeFailedAsync(ILanguageClientInitializationInfo initializationState)
         {
-            var error = initializationState;
-            return (Task<InitializationFailureContext>)Task.CompletedTask;
+            var failureMessage = initializationState?.InitializationException?.ToString() ?? "Unknown reason for initialization failure.";
+            return Task.CompletedTask as Task<InitializationFailureContext>
+                   ?? Task.FromResult(new InitializationFailureContext
+                   {
+                       FailureMessage = failureMessage
+                   });
         }
 #endif
     }

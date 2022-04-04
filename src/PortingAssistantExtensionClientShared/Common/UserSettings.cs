@@ -36,7 +36,9 @@ namespace PortingAssistantVSExtensionClient.Options
 
         private UserSettings()
         {
+#if !Dev17
             ThreadHelper.ThrowIfNotOnUIThread();
+#endif
             var sm = new ShellSettingsManager(ServiceProvider.GlobalProvider);
             _settingStore = sm.GetWritableSettingsStore(SettingsScope.UserSettings);
             this._languageServerStatus = new TaskCompletionSource<LanguageServerStatus>();

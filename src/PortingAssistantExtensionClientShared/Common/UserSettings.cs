@@ -44,6 +44,7 @@ namespace PortingAssistantVSExtensionClient.Options
             this._languageServerStatus = new TaskCompletionSource<LanguageServerStatus>();
             this._languageServerStatus.SetResult(LanguageServerStatus.NOT_RUNNING);
             this.SolutionAssessed = false;
+            this.EnabledDefaultCredentials = false;
         }
 
         public void SetLanguageServerStatus(LanguageServerStatus status)

@@ -85,7 +85,11 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 AddProfileButton.IsEnabled = false;
             }
-            WarningBar.Content = "";
+
+            if (WarningBarDefaultCreds != null)
+            {
+                WarningBar.Content = "";
+            }
 
             ThreadHelper.JoinableTaskFactory.Run(async delegate {
                 var result = await ValidateSDKCredentialsAsync();
@@ -102,8 +106,10 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 }
             });
 
-
-            WarningBar.Content = "";
+            if (WarningBarDefaultCreds != null)
+            {
+                WarningBar.Content = "";
+            }
         }
 
         private async Task<string> ValidateSDKCredentialsAsync()
@@ -148,8 +154,10 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             {
                 WarningBar.Content = "Profile is required";
             }
-
-            WarningBarDefaultCreds.Content = "";
+            if (WarningBarDefaultCreds != null)
+            {
+                WarningBarDefaultCreds.Content = "";
+            }    
         }
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -165,6 +173,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 (bool)AWSProfileSelect.IsChecked)
             {
                 _userSettings.AWSProfileName = (string)Profiles.SelectedValue;
+                _userSettings.EnabledDefaultCredentials = true;
             }
             else
             {

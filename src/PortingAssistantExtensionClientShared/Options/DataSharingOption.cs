@@ -55,12 +55,14 @@ namespace PortingAssistantVSExtensionClient.Options
                 (bool)_dataSharingoptionsPageControl.AWSProfileSelect.IsChecked)
             {
                 _userSettings.AWSProfileName = (string)_dataSharingoptionsPageControl.Profiles.SelectedValue;
+                _userSettings.EnabledDefaultCredentials = false;
             }
             else
             {
                 _userSettings.AWSProfileName = "DEFAULT_PROFILE";
                 _userSettings.EnabledDefaultCredentials = true;
             }
+
             _userSettings.EnabledMetrics = _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked ?? false;
             _userSettings.SaveAllSettings();
             PortingAssistantLanguageClient.UpdateUserSettingsAsync();

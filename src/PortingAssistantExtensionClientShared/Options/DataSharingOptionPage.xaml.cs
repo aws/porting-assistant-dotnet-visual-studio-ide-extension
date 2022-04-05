@@ -1,4 +1,5 @@
 ﻿using Amazon.Runtime;
+using Amazon.Runtime.CredentialManagement;
 using Microsoft.VisualStudio.Shell;
 using Newtonsoft.Json;
 using PortingAssistantVSExtensionClient.Dialogs;
@@ -70,6 +71,14 @@ namespace PortingAssistantVSExtensionClient.Options
             {
                 AddProfileButton.IsEnabled = false;
             }
+            if (WarningBar != null)
+            {
+                WarningBar.Content = "";
+            }
+            if (WarningBarDefaultCreds != null)
+            {
+                WarningBarDefaultCreds.Content = "Validating Default AWS Credentials.";
+            }
 
             ThreadHelper.JoinableTaskFactory.Run(async delegate {
                 var result = await ValidateSDKCredentialsAsync();
@@ -90,7 +99,33 @@ namespace PortingAssistantVSExtensionClient.Options
             WarningBar.Content = "";
         }
 
-        private async Task<string> ValidateSDKCredentialsAsync()
+        public async Task<string> ValidateAWSProfileAsync(string profile)
+        {
+            var chain = new CredentialProfileStoreChain();
+            AWSCredentials awsCredentials;
+            if (!chain.TryGetAWSCredentials(profile, out awsCredentials))
+            {
+                return "No Credentials found for profile";
+            }
+            else
+            {
+                var immutableCredentials = await awsCredentials.GetCredentialsAsync();
+                AwsCredential awsCredential = new AwsCredential(immutableCredentials.AccessKey, immutableCredentials.SecretKey, immutableCredentials.Token);
+                this.TelemetryConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(this.ConfigurationPath)).TelemetryConfiguration;
+
+                if (await AwsUtils.VerifyUserAsync(profile, awsCredential, this.TelemetryConfiguration))
+                {
+                    return "Success";
+                }
+                else
+                {
+                    return "Credentials asosciated with profile do not have valid permissions.";
+                }
+            }
+
+        }
+
+        public async Task<string> ValidateSDKCredentialsAsync()
         {
             var credentials = FallbackCredentialsFactory.GetCredentials();
             if (credentials == null)
@@ -128,12 +163,14 @@ namespace PortingAssistantVSExtensionClient.Options
             {
                 AddProfileButton.IsEnabled = true;
             }
+            if (WarningBarDefaultCreds != null)
+            {
+                WarningBarDefaultCreds.Content = "";
+            }
             if (Profiles != null && (Profiles.SelectedItem == null || Profiles.SelectedItem.Equals("")))
             {
                 WarningBar.Content = "Profile is required";
             }
-
-            WarningBarDefaultCreds.Content = "";
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

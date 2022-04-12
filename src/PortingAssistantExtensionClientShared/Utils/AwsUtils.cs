@@ -19,11 +19,19 @@ namespace PortingAssistantVSExtensionClient.Utils
     {
         public string AwsAccessKeyId;
         public string AwsSecretKey;
+        public string SessionToken = "";
 
         public AwsCredential(string AwsAccessKeyId, string AwsSecretKey)
         {
             this.AwsAccessKeyId = AwsAccessKeyId;
             this.AwsSecretKey = AwsSecretKey;
+        }
+
+        public AwsCredential(string AwsAccessKeyId, string AwsSecretKey, string SessionToken)
+        {
+            this.AwsAccessKeyId = AwsAccessKeyId;
+            this.AwsSecretKey = AwsSecretKey;
+            this.SessionToken = SessionToken;
         }
     }
 
@@ -47,6 +55,10 @@ namespace PortingAssistantVSExtensionClient.Utils
                                     AccessKey = credential.AwsAccessKeyId,
                                     SecretKey = credential.AwsSecretKey
                                 });
+                if (!String.IsNullOrEmpty(credential.SessionToken))
+                {
+                    profile.Options.Token = credential.SessionToken;
+                }
                 profile.Region = Amazon.RegionEndpoint.USEast1;
                 sharedProfile.RegisterProfile(profile);
             }
@@ -54,7 +66,6 @@ namespace PortingAssistantVSExtensionClient.Utils
             {
                 Console.WriteLine(ex.Message);
             }
-            
         }
 
         public static Dictionary<string, string> ValidateProfile(
@@ -124,7 +135,15 @@ namespace PortingAssistantVSExtensionClient.Utils
                     MaxErrorRetry = 2,
                     ServiceURL = telemetryConfiguration.InvokeUrl,
                 };
-                var client = new TelemetryClient(awsCredentials.AwsAccessKeyId, awsCredentials.AwsSecretKey, config);
+                TelemetryClient client;
+                if (String.IsNullOrEmpty(awsCredentials.SessionToken))
+                {
+                    client = new TelemetryClient(awsCredentials.AwsAccessKeyId, awsCredentials.AwsSecretKey, config);
+                }
+                else
+                {
+                    client = new TelemetryClient(awsCredentials.AwsAccessKeyId, awsCredentials.AwsSecretKey, awsCredentials.SessionToken, config);
+                }
                 var contentString = await requestContent.ReadAsStringAsync();
                 var telemetryRequest = new TelemetryRequest(telemetryConfiguration.ServiceName, contentString);
                 var telemetryResponse = await client.SendAsync(telemetryRequest);

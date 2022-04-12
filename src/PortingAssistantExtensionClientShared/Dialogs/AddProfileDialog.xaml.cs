@@ -44,11 +44,19 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
 
             var errors = new Dictionary<string, string>();
-            var credentail = new AwsCredential(AccesskeyID.Text, secretAccessKey.Text);
+            AwsCredential credential;
+            if(String.IsNullOrEmpty(sessionToken.Text))
+            {
+                credential = new AwsCredential(AccesskeyID.Text, secretAccessKey.Text);
+            }
+            else
+            {
+                credential = new AwsCredential(AccesskeyID.Text, secretAccessKey.Text, sessionToken.Text);
+            }
             try
             {
                 this.TelemetryConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(ConfigurationPath)).TelemetryConfiguration;
-                errors = AwsUtils.ValidateProfile(ProfileName.Text, credentail);
+                errors = AwsUtils.ValidateProfile(ProfileName.Text, credential);
                 if (errors.TryGetValue("profile", out string error1))
                 {
                     WarningProfileName.Content = error1;
@@ -76,9 +84,9 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 if (errors.Count == 0)
                 {
                     WarningValidation.Content = "validating AWS profile, please wait";
-                    var task = AwsUtils.ValidateProfile(ProfileName.Text, credentail, TelemetryConfiguration);
+                    var task = AwsUtils.ValidateProfile(ProfileName.Text, credential, TelemetryConfiguration);
                     ThreadHelper.JoinableTaskFactory.Run(async delegate {
-                        var result = await AwsUtils.ValidateProfile(ProfileName.Text, credentail, TelemetryConfiguration);
+                        var result = await AwsUtils.ValidateProfile(ProfileName.Text, credential, TelemetryConfiguration);
                         WarningValidation.Content = result;
                     });
                 }

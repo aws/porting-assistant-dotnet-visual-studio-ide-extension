@@ -13,5 +13,6 @@ namespace PortingAssistantExtensionTelemetry.Model
         public string TimeStamp { get; set; }
         public string RunId { get; set; }
         public string TriggerType { get; set; }
+        public string VisualStudioClientFullVersion { get; set; }
     }
 }

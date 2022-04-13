@@ -12,6 +12,8 @@
 
         private static string _visualStudioVersion { get; set; }
 
+        private static string _visualStudioFullVersion { get; set; }
+
         static PALanguageServerConfiguration()
         {
             _enabledContinuousAssessment = false;
@@ -77,6 +79,18 @@
             set
             {
                 _visualStudioVersion = value;
+            }
+        }
+
+        public static string VisualStudioFullVersion
+        {
+            get
+            {
+                return _visualStudioFullVersion;
+            }
+            set
+            {
+                _visualStudioFullVersion = value;
             }
         }
 

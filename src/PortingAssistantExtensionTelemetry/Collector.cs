@@ -10,7 +10,11 @@ namespace PortingAssistantExtensionTelemetry
 {
     public static class Collector
     {
-        public static void SolutionAssessmentCollect(SolutionAnalysisResult result, string runId, string triggerType, string targetFramework, string extensionVersion, string visualStudioVersion, double time)
+        public static void SolutionAssessmentCollect(
+            SolutionAnalysisResult result, string runId, string triggerType,
+            string targetFramework, string extensionVersion,
+            string visualStudioVersion, double time,
+            string visualStudioFullVersion)
         {
             var sha256hash = SHA256.Create();
             var date = DateTime.Now;
@@ -30,6 +34,7 @@ namespace PortingAssistantExtensionTelemetry
                 SolutionGuid = result.SolutionDetails.SolutionGuid,
                 RepositoryUrl = result.SolutionDetails.RepositoryUrl,
                 AnalysisTime = time,
+                VisualStudioClientFullVersion = visualStudioFullVersion,
             };
             TelemetryCollector.Collect<SolutionMetrics>(solutionMetrics);
 
@@ -53,7 +58,8 @@ namespace PortingAssistantExtensionTelemetry
                     numNugets = projectAnalysisResult.PackageReferences.Count,
                     numReferences = projectAnalysisResult.ProjectReferences.Count,
                     isBuildFailed = projectAnalysisResult.IsBuildFailed,
-                    compatibilityResult = projectAnalysisResult.ProjectCompatibilityResult
+                    compatibilityResult = projectAnalysisResult.ProjectCompatibilityResult,
+                    VisualStudioClientFullVersion = visualStudioFullVersion
                 };
                 TelemetryCollector.Collect<ProjectMetrics>(projectMetrics);
 
@@ -77,6 +83,7 @@ namespace PortingAssistantExtensionTelemetry
                         pacakgeName = nuget.Value.Result.PackageVersionPair.PackageId,
                         packageVersion = nuget.Value.Result.PackageVersionPair.Version,
                         compatibility = nuget.Value.Result.CompatibilityResults[targetFramework].Compatibility,
+                        VisualStudioClientFullVersion = visualStudioFullVersion
                     };
                     TelemetryCollector.Collect<NugetMetrics>(nugetMetrics);
                 }
@@ -90,12 +97,15 @@ namespace PortingAssistantExtensionTelemetry
                     selectedApi?.Recommendations?.RecommendedActions?.Add(action);
                 });
 
-                FileAssessmentCollect(selectedApis, runId, triggerType, targetFramework, extensionVersion, visualStudioVersion);
+                FileAssessmentCollect(selectedApis, runId, triggerType, targetFramework, extensionVersion, visualStudioVersion, visualStudioFullVersion);
             });
         }
 
 
-        public static void FileAssessmentCollect(IEnumerable<ApiAnalysisResult> selectedApis , string runId, string triggerType, string targetFramework, string extensionVersion, string visualStudioVersion)
+        public static void FileAssessmentCollect(
+            IEnumerable<ApiAnalysisResult> selectedApis, string runId,
+            string triggerType, string targetFramework, string extensionVersion,
+            string visualStudioVersion, string visualStudioFullVersion)
         {
             var date = DateTime.Now;
             var apiMetrics = selectedApis.GroupBy(elem => new
@@ -122,12 +132,17 @@ namespace PortingAssistantExtensionTelemetry
                 packageVersion = group.First().CodeEntityDetails.Package.Version,
                 apiType = group.First().CodeEntityDetails.CodeEntityType.ToString(),
                 hasActions = group.First().Recommendations.RecommendedActions.Any(action => action.RecommendedActionType != RecommendedActionType.NoRecommendation),
-                apiCounts = group.Count()
+                apiCounts = group.Count(),
+                VisualStudioClientFullVersion = visualStudioFullVersion
             });
             apiMetrics.ToList().ForEach(metric => TelemetryCollector.Collect(metric));
         }
 
-        public static void ContinuousAssessmentCollect(SourceFileAnalysisResult result, string runId, string triggerType, string targetFramework, string extensionVersion, string visualStudioVersion, int diagnostics)
+        public static void ContinuousAssessmentCollect(
+            SourceFileAnalysisResult result, string runId, string triggerType,
+            string targetFramework, string extensionVersion,
+            string visualStudioVersion, int diagnostics,
+            string visualStudioFullVersion)
         {
             var timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm");
 
@@ -141,7 +156,8 @@ namespace PortingAssistantExtensionTelemetry
                 TargetFramework = targetFramework,
                 Diagnostics = diagnostics,
                 RunId = runId,
-                TriggerType = triggerType
+                TriggerType = triggerType,
+                VisualStudioClientFullVersion = visualStudioFullVersion
             });
         }
 

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Options"
-             mc:Ignorable="d" d:DesignWidth="465" Height="470" Width="460">
+             mc:Ignorable="d" d:DesignWidth="465" Height="490" Width="460">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -15,7 +15,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <GroupBox Header="Porting Assistant for .NET" HorizontalAlignment="Stretch" Height="320" Margin="0,10,0,0" Grid.RowSpan="5" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" FontSize="14">
+        <GroupBox Header="Porting Assistant for .NET" HorizontalAlignment="Stretch" Height="335" Margin="0,10,0,0" Grid.RowSpan="5" Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" FontSize="14">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="460"/>
@@ -27,17 +27,19 @@
                 </Grid.RowDefinitions>
                 <CheckBox x:Name="EnableMetricCheck" Content="I agree to share my usage data with Porting Assistant for .NET and to receive &#xD;&#xA;communications regarding my feedback about the tool." HorizontalAlignment="Left" Margin="5,15,0,0"  Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" Checked="CheckBox_Checked" Height="40" Width="430"/>
                 <RadioButton x:Name="AWSProfileSelect" FontWeight="Bold" GroupName="CredentialsSelection" Checked="AWSProfile_Checked" IsChecked="True" Content="Use AWS Profile" Grid.Row="1" FontSize="14" Margin="10,10,0,0"/>
-                <TextBox Background="{x:Null}" BorderThickness="0" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="30,35,0,51" FontSize="14" Grid.Row="1" Width="405">Select an AWS Profile. You can also add AWS named profile using the AWS CLI.</TextBox>
+                <TextBlock TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="30,35,0,51" FontSize="14" Grid.Row="1" Width="405">Select a named profile defined in the shared AWS credentials file.
+                    <Hyperlink NavigateUri="https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html" Click="Hyperlink_Click_2">Learn More</Hyperlink>
+                </TextBlock>
                 <Label x:Name="AwsProfileLabel" Content="AWS Named Profile" HorizontalAlignment="Left" Margin="26,80,0,0" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Width="140"/>
                 <ComboBox x:Name="Profiles" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="266" Height="22" Margin="30,110,0,0" Grid.Row="1" Grid.Column="0" SelectionChanged="Profiles_SelectionChanged"/>
                 <Label x:Name="WarningBar" Content="" HorizontalAlignment="Left" Margin="30,135,0,0" Grid.Row="1" Grid.Column="0" Foreground="Red" VerticalAlignment="Top" Width="125"/>
                 <Button x:Name="AddProfileButton" Content="Add a Named Profile" HorizontalAlignment="Left" Margin="300,110,0,0" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Width="140" Height="20" FontSize="12" Background="{x:Null}" BorderThickness="0" Cursor="Hand" Foreground="Blue" Click="Button_Click"/>
                 <RadioButton x:Name="SDKChainSelect" FontWeight="Bold" GroupName="CredentialsSelection" Checked="SDKChain_Checked"  Content="Use the AWS SDK Default Provider Chain" Grid.Row="2" FontSize="14" Margin="10,5,0,0"/>
-                <TextBox Background="{x:Null}" BorderThickness="0" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="30,30,0,0" FontSize="14" Grid.Row="2">Uses the Default Provider chain to look for credentials.</TextBox>
-                <Label x:Name="WarningBarDefaultCreds" Content="" HorizontalAlignment="Left" Margin="26,45,0,0" Grid.Row="2" Grid.Column="0" Foreground="Red"/>
+                <TextBlock TextWrapping="WrapWithOverflow" HorizontalAlignment="Left" Margin="30,30,0,0" FontSize="14" Grid.Row="2" Width="410">The AWS SDK for .NET searches for credentials in a predefined order and automatically selects the first available set. <Hyperlink NavigateUri="https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/creds-assign.html" Click="Hyperlink_Click_3">Learn More</Hyperlink></TextBlock>
+                <Label x:Name="WarningBarDefaultCreds" Content="" HorizontalAlignment="Left" Margin="26,65,0,0" Grid.Row="2" Grid.Column="0" Foreground="Red"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Porting Assistant for .NET data usage sharing" HorizontalAlignment="Stretch" Height="140" Margin="0,330,0,0" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" FontWeight="Bold">
+        <GroupBox Header="Porting Assistant for .NET data usage sharing" HorizontalAlignment="Stretch" Height="140" Margin="0,345,0,0" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" FontWeight="Bold">
             <TextBlock TextWrapping="Wrap" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="112" Margin="5,10,0,0" Grid.Row="0" Grid.Column="0" FontWeight="Normal"><Run BaselineAlignment="TextTop" Text="When you share your usage data, Porting Assistant for .NET collects information only about the public NuGet packages, APIs, build errors, and stack traces. This information is used to make Porting Assistant for .NET better, for example, by improving the package and API replacement recommendations. Porting Assistant for .NET does not collect any identifying information about you. "/><Hyperlink NavigateUri="https://docs.aws.amazon.com/portingassistant/latest/userguide/how-porting-assistant-works.html#porting-assistant-information-collected" Click="Hyperlink_Click">To learn more, see Information Collected</Hyperlink></TextBlock>
         </GroupBox>
     </Grid>

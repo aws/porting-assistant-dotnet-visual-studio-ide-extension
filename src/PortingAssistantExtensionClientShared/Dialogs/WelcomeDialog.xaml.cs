@@ -232,6 +232,16 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             System.Diagnostics.Process.Start(ExternalUrls.ServiceTerms);
         }
 
+        private void Hyperlink_Click_4(object sender, System.Windows.RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(ExternalUrls.SharedCredFile);
+        }
+
+        private void Hyperlink_Click_5(object sender, System.Windows.RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(ExternalUrls.DefaultSDKCreds);
+        }
+
         private void Button_Click_2(object sender, System.Windows.RoutedEventArgs e)
         {
             Close();

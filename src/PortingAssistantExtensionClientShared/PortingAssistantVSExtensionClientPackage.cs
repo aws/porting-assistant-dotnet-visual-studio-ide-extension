@@ -1,7 +1,8 @@
-﻿using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+﻿
+using Microsoft.VisualStudio.Shell;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Options;
+using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -65,8 +66,14 @@ namespace PortingAssistantVSExtensionClient
             await PortingAssistantVSExtensionClient.Commands.DisplaySettings.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.ContactSupportCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.DocumentCommand.InitializeAsync(this);
+            var task = Task.Run(async () => {
+                for (; ; )
+                {
+                    await Task.Delay(900000);
+                    await AwsUtils.ValidateProfileAsync();
+                }
+            });
         }
-
-        #endregion
+    #endregion
     }
 }

@@ -12,6 +12,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Amazon;
+using PortingAssistantVSExtensionClient.Options;
+using PortingAssistantVSExtensionClient.Common;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
@@ -19,11 +21,19 @@ namespace PortingAssistantVSExtensionClient.Utils
     {
         public string AwsAccessKeyId;
         public string AwsSecretKey;
+        public string SessionToken = "";
 
         public AwsCredential(string AwsAccessKeyId, string AwsSecretKey)
         {
             this.AwsAccessKeyId = AwsAccessKeyId;
             this.AwsSecretKey = AwsSecretKey;
+        }
+
+        public AwsCredential(string AwsAccessKeyId, string AwsSecretKey, string SessionToken)
+        {
+            this.AwsAccessKeyId = AwsAccessKeyId;
+            this.AwsSecretKey = AwsSecretKey;
+            this.SessionToken = SessionToken;
         }
     }
 
@@ -47,6 +57,10 @@ namespace PortingAssistantVSExtensionClient.Utils
                                     AccessKey = credential.AwsAccessKeyId,
                                     SecretKey = credential.AwsSecretKey
                                 });
+                if (!String.IsNullOrEmpty(credential.SessionToken))
+                {
+                    profile.Options.Token = credential.SessionToken;
+                }
                 profile.Region = Amazon.RegionEndpoint.USEast1;
                 sharedProfile.RegisterProfile(profile);
             }
@@ -54,7 +68,6 @@ namespace PortingAssistantVSExtensionClient.Utils
             {
                 Console.WriteLine(ex.Message);
             }
-            
         }
 
         public static Dictionary<string, string> ValidateProfile(
@@ -93,7 +106,7 @@ namespace PortingAssistantVSExtensionClient.Utils
             }
         }
 
-        private static async Task<bool> VerifyUserAsync
+        public static async Task<bool> VerifyUserAsync
             (
             string profile,
             AwsCredential awsCredentials,
@@ -124,7 +137,15 @@ namespace PortingAssistantVSExtensionClient.Utils
                     MaxErrorRetry = 2,
                     ServiceURL = telemetryConfiguration.InvokeUrl,
                 };
-                var client = new TelemetryClient(awsCredentials.AwsAccessKeyId, awsCredentials.AwsSecretKey, config);
+                TelemetryClient client;
+                if (String.IsNullOrEmpty(awsCredentials.SessionToken))
+                {
+                    client = new TelemetryClient(awsCredentials.AwsAccessKeyId, awsCredentials.AwsSecretKey, config);
+                }
+                else
+                {
+                    client = new TelemetryClient(awsCredentials.AwsAccessKeyId, awsCredentials.AwsSecretKey, awsCredentials.SessionToken, config);
+                }
                 var contentString = await requestContent.ReadAsStringAsync();
                 var telemetryRequest = new TelemetryRequest(telemetryConfiguration.ServiceName, contentString);
                 var telemetryResponse = await client.SendAsync(telemetryRequest);
@@ -135,6 +156,57 @@ namespace PortingAssistantVSExtensionClient.Utils
                 Console.WriteLine(ex.Message);
                 return false;
             }
+        }
+
+        public static async Task<AwsCredential> GetAwsCredentialsAsync(bool enabledDefaultCredentials, string profileName)
+        {
+            var chain = new CredentialProfileStoreChain();
+            AWSCredentials awsCredentials;
+
+            if (enabledDefaultCredentials)
+            {
+                awsCredentials = FallbackCredentialsFactory.GetCredentials();
+                if (awsCredentials == null)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (!chain.TryGetAWSCredentials(profileName, out awsCredentials))
+                {
+                    return null;
+                }
+            }
+
+            var immutableCredentials = await awsCredentials.GetCredentialsAsync();
+            AwsCredential awsCredential = new AwsCredential(immutableCredentials.AccessKey, immutableCredentials.SecretKey, immutableCredentials.Token);
+
+            return awsCredential;
+        }
+
+
+        public static async Task<bool> ValidateProfileAsync()
+        {
+            if (UserSettings.Instance.AWSProfileName != null || UserSettings.Instance.EnabledDefaultCredentials)
+            {
+                AwsCredential awsCredentials = await GetAwsCredentialsAsync(UserSettings.Instance.EnabledDefaultCredentials, UserSettings.Instance.AWSProfileName);
+
+                var AssemblyPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                var ConfigurationFileName = Environment.GetEnvironmentVariable("ConfigurationJson") ?? Common.Constants.DefaultConfigurationFile;
+                var ConfigurationPath = System.IO.Path.Combine(
+                    AssemblyPath,
+                    Common.Constants.ResourceFolder,
+                    ConfigurationFileName);
+                var TelemetryConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(ConfigurationPath)).TelemetryConfiguration;
+
+                if (awsCredentials == null || !await AwsUtils.VerifyUserAsync("", awsCredentials, TelemetryConfiguration))
+                {
+                    await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "AWS Credentials associated with Porting Assistant for .NET may have Expired. Please refresh credentials.");
+                    return false;
+                }
+            }  
+            return true;
         }
     }
 }

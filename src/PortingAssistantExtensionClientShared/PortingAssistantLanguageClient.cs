@@ -64,6 +64,7 @@ namespace PortingAssistantVSExtensionClient
                 EnabledContinuousAssessment = UserSettings.Instance.EnabledContinuousAssessment,
                 EnabledMetrics = UserSettings.Instance.EnabledMetrics,
                 AWSProfileName = UserSettings.Instance.AWSProfileName,
+                EnabledDefaultCredentials = UserSettings.Instance.EnabledDefaultCredentials
             }
         });
 
@@ -121,6 +122,7 @@ namespace PortingAssistantVSExtensionClient
                 EnabledContinuousAssessment = UserSettings.Instance.EnabledContinuousAssessment,
                 EnabledMetrics = UserSettings.Instance.EnabledMetrics,
                 AWSProfileName = UserSettings.Instance.AWSProfileName,
+                EnabledDefaultCredentials = UserSettings.Instance.EnabledDefaultCredentials
             };
             await Instance.PortingAssistantRpc.InvokeWithParameterObjectAsync<bool>("updateSettings", request);
         }

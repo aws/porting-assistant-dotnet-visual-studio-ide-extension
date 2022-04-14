@@ -10,6 +10,7 @@ namespace PortingAssistantVSExtensionClient.Models
     {
         public bool EnabledMetrics { get; set; }
         public bool EnabledContinuousAssessment { get; set; }
+        public bool EnabledDefaultCredentials { get; set; } = false;
         public string AWSProfileName { get; set; }
     }
 }

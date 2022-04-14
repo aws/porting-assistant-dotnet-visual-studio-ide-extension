@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Net;
 using PortingAssistant.Client.Telemetry;
 using Amazon;
+using Serilog;
 
 namespace PortingAssistantExtensionTelemetry.Utils
 {
@@ -44,62 +45,99 @@ namespace PortingAssistantExtensionTelemetry.Utils
             return false;
         }
 
+        private static AWSCredentials GetAWSCredentials(string profile, bool enabledDefaultCredentials)
+        {
+            var chain = new CredentialProfileStoreChain();
+            AWSCredentials awsCredentials;
+
+            if (enabledDefaultCredentials)
+            {
+                awsCredentials = FallbackCredentialsFactory.GetCredentials();
+                if (awsCredentials == null)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                var profileName = profile;
+                if (!chain.TryGetAWSCredentials(profileName, out awsCredentials))
+                {
+                    return null;
+                }
+            }
+
+            return awsCredentials;
+        }
         private static async Task<bool> PutLogData
             (
             string logName,
             string logData,
             string profile,
+            bool enabledDefaultCredentials,
+            string paVersion,
             TelemetryConfiguration telemetryConfiguration
             )
         {
             try
             {
-                var chain = new CredentialProfileStoreChain();
-                AWSCredentials awsCredentials;
-                var profileName = profile;
-                var region = telemetryConfiguration.Region;
-                if (chain.TryGetAWSCredentials(profileName, out awsCredentials))
+                var outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (Porting Assistant IDE Extension) (" + paVersion + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
+                var logConfiguration = new LoggerConfiguration().Enrich.FromLogContext()
+                    .MinimumLevel.Warning()
+                    .WriteTo.File(
+                        telemetryConfiguration.LogFilePath,
+                        rollingInterval: RollingInterval.Day,
+                        rollOnFileSizeLimit: true,
+                        outputTemplate: outputTemplate);
+
+                Log.Logger = logConfiguration.CreateLogger();
+
+                AWSCredentials awsCredentials = GetAWSCredentials(profile, enabledDefaultCredentials);
+
+                if (awsCredentials == null)
                 {
-                    dynamic requestMetadata = new JObject();
-                    requestMetadata.version = "1.0";
-                    requestMetadata.service = telemetryConfiguration.ServiceName;
-                    requestMetadata.token = "12345678";
-                    requestMetadata.description = telemetryConfiguration.Description;
-
-                    dynamic log = new JObject();
-                    log.timestamp = DateTime.Now.ToString();
-                    log.logName = logName;
-                    var logDataInBytes = Encoding.UTF8.GetBytes(logData);
-                    log.logData = Convert.ToBase64String(logDataInBytes);
-
-                    dynamic body = new JObject();
-                    body.requestMetadata = requestMetadata;
-                    body.log = log;
-
-                    var requestContent = new StringContent(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
-                    var config = new TelemetryClientConfig()
-                    {
-                        RegionEndpoint = RegionEndpoint.GetBySystemName(region),
-                        MaxErrorRetry = 2,
-                        ServiceURL = telemetryConfiguration.InvokeUrl,
-                    };
-                    var client = new TelemetryClient(awsCredentials, config);
-                    var contentString = await requestContent.ReadAsStringAsync();
-                    var telemetryRequest = new TelemetryRequest(telemetryConfiguration.ServiceName, contentString);
-                    var telemetryResponse = await client.SendAsync(telemetryRequest);
-                    return telemetryResponse.HttpStatusCode == HttpStatusCode.OK;
+                    Log.Logger.Error("Log Upload Failed due to Invalid Credentials");
+                    return false;
                 }
-                Console.WriteLine("Invalid Credentials.");
-                return false;
+
+                var region = telemetryConfiguration.Region;
+                dynamic requestMetadata = new JObject();
+                requestMetadata.version = "1.0";
+                requestMetadata.service = telemetryConfiguration.ServiceName;
+                requestMetadata.token = "12345678";
+                requestMetadata.description = telemetryConfiguration.Description;
+
+                dynamic log = new JObject();
+                log.timestamp = DateTime.Now.ToString();
+                log.logName = logName;
+                var logDataInBytes = Encoding.UTF8.GetBytes(logData);
+                log.logData = Convert.ToBase64String(logDataInBytes);
+
+                dynamic body = new JObject();
+                body.requestMetadata = requestMetadata;
+                body.log = log;
+
+                var requestContent = new StringContent(body.ToString(Formatting.None), Encoding.UTF8, "application/json");
+                var config = new TelemetryClientConfig()
+                {
+                    RegionEndpoint = RegionEndpoint.GetBySystemName(region),
+                    MaxErrorRetry = 2,
+                    ServiceURL = telemetryConfiguration.InvokeUrl,
+                };
+                var client = new TelemetryClient(awsCredentials, config);
+                var contentString = await requestContent.ReadAsStringAsync();
+                var telemetryRequest = new TelemetryRequest(telemetryConfiguration.ServiceName, contentString);
+                var telemetryResponse = await client.SendAsync(telemetryRequest);
+                return telemetryResponse.HttpStatusCode == HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Logger.Error("Log Upload Failed: " + ex.Message);
                 return false;
             }
         }
 
-        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, bool shareMetric, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile)
+        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, bool shareMetric, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile, bool enabledDefaultCredentials, string paVersion)
         {
             try
             {
@@ -174,14 +212,14 @@ namespace PortingAssistantExtensionTelemetry.Utils
                                     if (logs.Count >= 1000)
                                     {
                                         // logs.TrimToSize();
-                                        success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, teleConfig).Result;
+                                        success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, enabledDefaultCredentials, paVersion, teleConfig).Result;
                                         if (success) { logs = new ArrayList(); };
                                     }
                                 }
 
                                 if (logs.Count != 0)
                                 {
-                                    success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, teleConfig).Result;
+                                    success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, enabledDefaultCredentials, paVersion, teleConfig).Result;
                                 }
                                 if (success)
                                 {
@@ -196,7 +234,7 @@ namespace PortingAssistantExtensionTelemetry.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Logger.Error("Log Upload Failed: " + ex.Message);
             }
         }
     }

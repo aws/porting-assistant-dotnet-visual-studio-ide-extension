@@ -183,7 +183,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 (bool)AWSProfileSelect.IsChecked)
             {
                 _userSettings.AWSProfileName = (string)Profiles.SelectedValue;
-                _userSettings.EnabledDefaultCredentials = true;
+                _userSettings.EnabledDefaultCredentials = false;
             }
             else
             {

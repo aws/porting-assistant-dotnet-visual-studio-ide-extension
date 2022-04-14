@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Net;
 using PortingAssistant.Client.Telemetry;
 using Amazon;
+using Serilog;
 
 namespace PortingAssistantExtensionTelemetry.Utils
 {
@@ -44,37 +45,59 @@ namespace PortingAssistantExtensionTelemetry.Utils
             return false;
         }
 
+        private static AWSCredentials GetAWSCredentials(string profile, bool enabledDefaultCredentials)
+        {
+            var chain = new CredentialProfileStoreChain();
+            AWSCredentials awsCredentials;
+
+            if (enabledDefaultCredentials)
+            {
+                awsCredentials = FallbackCredentialsFactory.GetCredentials();
+                if (awsCredentials == null)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                var profileName = profile;
+                if (!chain.TryGetAWSCredentials(profileName, out awsCredentials))
+                {
+                    return null;
+                }
+            }
+
+            return awsCredentials;
+        }
         private static async Task<bool> PutLogData
             (
             string logName,
             string logData,
             string profile,
             bool enabledDefaultCredentials,
+            string paVersion,
             TelemetryConfiguration telemetryConfiguration
             )
         {
             try
             {
-                var chain = new CredentialProfileStoreChain();
-                AWSCredentials awsCredentials;
+                var outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (Porting Assistant IDE Extension) (" + paVersion + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
+                var logConfiguration = new LoggerConfiguration().Enrich.FromLogContext()
+                    .MinimumLevel.Warning()
+                    .WriteTo.File(
+                        telemetryConfiguration.LogFilePath,
+                        rollingInterval: RollingInterval.Day,
+                        rollOnFileSizeLimit: true,
+                        outputTemplate: outputTemplate);
 
-                if (enabledDefaultCredentials)
+                Log.Logger = logConfiguration.CreateLogger();
+
+                AWSCredentials awsCredentials = GetAWSCredentials(profile, enabledDefaultCredentials);
+
+                if (awsCredentials == null)
                 {
-                    awsCredentials = FallbackCredentialsFactory.GetCredentials();
-                    if (awsCredentials == null)
-                    {
-                        Console.WriteLine("Invalid Credentials.");
-                        return false;
-                    }
-                }
-                else
-                {
-                    var profileName = profile;
-                    if (!chain.TryGetAWSCredentials(profileName, out awsCredentials))
-                    {
-                        Console.WriteLine("Invalid Credentials.");
-                        return false;
-                    }
+                    Log.Logger.Error("Log Upload Failed due to Invalid Credentials");
+                    return false;
                 }
 
                 var region = telemetryConfiguration.Region;
@@ -109,12 +132,12 @@ namespace PortingAssistantExtensionTelemetry.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Logger.Error("Log Upload Failed: " + ex.Message);
                 return false;
             }
         }
 
-        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, bool shareMetric, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile, bool enabledDefaultCredentials)
+        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, bool shareMetric, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile, bool enabledDefaultCredentials, string paVersion)
         {
             try
             {
@@ -189,14 +212,14 @@ namespace PortingAssistantExtensionTelemetry.Utils
                                     if (logs.Count >= 1000)
                                     {
                                         // logs.TrimToSize();
-                                        success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, enabledDefaultCredentials, teleConfig).Result;
+                                        success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, enabledDefaultCredentials, paVersion, teleConfig).Result;
                                         if (success) { logs = new ArrayList(); };
                                     }
                                 }
 
                                 if (logs.Count != 0)
                                 {
-                                    success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, enabledDefaultCredentials, teleConfig).Result;
+                                    success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, enabledDefaultCredentials, paVersion, teleConfig).Result;
                                 }
                                 if (success)
                                 {
@@ -211,7 +234,7 @@ namespace PortingAssistantExtensionTelemetry.Utils
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Logger.Error("Log Upload Failed: " + ex.Message);
             }
         }
     }

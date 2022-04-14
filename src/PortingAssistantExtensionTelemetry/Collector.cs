@@ -14,7 +14,8 @@ namespace PortingAssistantExtensionTelemetry
             SolutionAnalysisResult result, string runId, string triggerType,
             string targetFramework, string extensionVersion,
             string visualStudioVersion, double time,
-            string visualStudioFullVersion)
+            string visualStudioFullVersion,
+            bool useDefaultCredentials)
         {
             var sha256hash = SHA256.Create();
             var date = DateTime.Now;
@@ -35,6 +36,7 @@ namespace PortingAssistantExtensionTelemetry
                 RepositoryUrl = result.SolutionDetails.RepositoryUrl,
                 AnalysisTime = time,
                 VisualStudioClientFullVersion = visualStudioFullVersion,
+                UsingDefaultCreds = useDefaultCredentials,
             };
             TelemetryCollector.Collect<SolutionMetrics>(solutionMetrics);
 

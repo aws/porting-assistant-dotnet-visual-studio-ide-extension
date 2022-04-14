@@ -68,7 +68,8 @@ namespace PortingAssistantExtensionServer.Services
                 PALanguageServerConfiguration.ExtensionVersion,
                 PALanguageServerConfiguration.VisualStudioVersion,
                 DateTime.Now.Subtract(startTime).TotalMilliseconds,
-                PALanguageServerConfiguration.VisualStudioFullVersion);
+                PALanguageServerConfiguration.VisualStudioFullVersion,
+                PALanguageServerConfiguration.EnabledDefaultCredentials);
                 CreateClientConnectionAsync(request.PipeName);
                 return solutionAnalysisResult;
             }

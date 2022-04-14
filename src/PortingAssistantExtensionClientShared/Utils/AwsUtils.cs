@@ -158,34 +158,45 @@ namespace PortingAssistantVSExtensionClient.Utils
             }
         }
 
+        public static async Task<AwsCredential> GetAwsCredentialsAsync(bool enabledDefaultCredentials, string profileName)
+        {
+            var chain = new CredentialProfileStoreChain();
+            AWSCredentials awsCredentials;
+
+            if (enabledDefaultCredentials)
+            {
+                awsCredentials = FallbackCredentialsFactory.GetCredentials();
+                if (awsCredentials == null)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (!chain.TryGetAWSCredentials(profileName, out awsCredentials))
+                {
+                    return null;
+                }
+            }
+
+            var immutableCredentials = await awsCredentials.GetCredentialsAsync();
+            AwsCredential awsCredential = new AwsCredential(immutableCredentials.AccessKey, immutableCredentials.SecretKey, immutableCredentials.Token);
+
+            return awsCredential;
+        }
+
+
         public static async Task<bool> ValidateProfileAsync()
         {
             if (UserSettings.Instance.AWSProfileName != null || UserSettings.Instance.EnabledDefaultCredentials)
             {
-                var chain = new CredentialProfileStoreChain();
-                AWSCredentials awsCredentials;
-
-                if (UserSettings.Instance.EnabledDefaultCredentials)
+                AwsCredential awsCredentials = await GetAwsCredentialsAsync(UserSettings.Instance.EnabledDefaultCredentials, UserSettings.Instance.AWSProfileName);
+                if (awsCredentials == null)
                 {
-                    awsCredentials = FallbackCredentialsFactory.GetCredentials();
-                    if (awsCredentials == null)
-                    {
-                        await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "AWS Credentials associated with Porting Assistant for .NET Expired. Please refresh credentials.");
-                        return false;
-                    }
-                }
-                else
-                {
-                    var profileName = UserSettings.Instance.AWSProfileName;
-                    if (!chain.TryGetAWSCredentials(profileName, out awsCredentials))
-                    {
-                        await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "AWS Credentials associated with Porting Assistant for .NET Expired. Please refresh credentials.");
-                        return false;
-                    }
+                    await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "AWS Credentials associated with Porting Assistant for .NET may have Expired. Please refresh credentials.");
+                    return false;
                 }
 
-                var immutableCredentials = await awsCredentials.GetCredentialsAsync();
-                AwsCredential awsCredential = new AwsCredential(immutableCredentials.AccessKey, immutableCredentials.SecretKey, immutableCredentials.Token);
                 var AssemblyPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 var ConfigurationFileName = Environment.GetEnvironmentVariable("ConfigurationJson") ?? Common.Constants.DefaultConfigurationFile;
                 var ConfigurationPath = System.IO.Path.Combine(
@@ -194,13 +205,12 @@ namespace PortingAssistantVSExtensionClient.Utils
                     ConfigurationFileName);
                 var TelemetryConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(ConfigurationPath)).TelemetryConfiguration;
 
-                if (!await AwsUtils.VerifyUserAsync("", awsCredential, TelemetryConfiguration))
+                if (!await AwsUtils.VerifyUserAsync("", awsCredentials, TelemetryConfiguration))
                 {
-                    await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "AWS Credentials associated with Porting Assistant for .NET Expired. Please refresh credentials");
+                    await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "AWS Credentials associated with Porting Assistant for .NET may have Expired. Please refresh credentials");
                     return false;
                 }
-                return true;
-            }
+            }  
             return true;
         }
     }

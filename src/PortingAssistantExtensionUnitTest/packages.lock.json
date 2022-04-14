@@ -1888,7 +1888,6 @@
       "portingassistantextensiontelemetry": {
         "type": "Project",
         "dependencies": {
-          "PortingAssistant.Client.Client": "2.1.8",
           "PortingAssistant.Client.Common": "2.1.8",
           "PortingAssistant.Client.Telemetry": "2.1.8"
         }

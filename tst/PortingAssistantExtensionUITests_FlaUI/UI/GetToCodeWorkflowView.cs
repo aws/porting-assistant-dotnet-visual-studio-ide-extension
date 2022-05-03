@@ -2,8 +2,6 @@
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Tools;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace IDE_UITest.UI
@@ -33,7 +31,7 @@ namespace IDE_UITest.UI
                 And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))),
                 new RetrySettings
                 {
-                    Timeout = TimeSpan.FromSeconds(3),
+                    Timeout = TimeSpan.FromSeconds(5),
                     Interval = TimeSpan.FromMilliseconds(500)
                 }).As<FileBrowserWindow>();
             Assert.True(fileBrowserWin!= null, "File browser window should appear");

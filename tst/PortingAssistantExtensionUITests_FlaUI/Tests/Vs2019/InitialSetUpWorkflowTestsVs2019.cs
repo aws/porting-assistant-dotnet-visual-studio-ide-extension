@@ -37,7 +37,7 @@ namespace IDE_UITest.Tests.Vs2019
             output.WriteLine("Install Porting Assistant Extension for Visual Studio 2019");
 
             var solutionPath = _fixture.InputData["assess-solution-path1"];
-            root = LaunchVSWithSolutionWithSecurityWarning(_fixture.Vs2019Location, solutionPath);
+            root = LaunchVSWithSolution(_fixture.Vs2019Location, solutionPath);
             Assert.True(root != null, $"Fail to get visual studio main window after loading solution {solutionPath}");
 
             var getStartWindow = root.OpenStartUpView();

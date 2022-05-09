@@ -95,7 +95,7 @@ namespace IDE_UITest
                           And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))),
                           new RetrySettings
                           {
-                              Timeout = TimeSpan.FromSeconds(420),
+                              Timeout = TimeSpan.FromSeconds(600),
                               Interval = TimeSpan.FromSeconds(1),
                               ThrowOnTimeout = false,
                           }).AsWindow();
@@ -134,7 +134,7 @@ namespace IDE_UITest
             }
 
             return WaitForElement(() => Desktop.FindFirstChild(e => e.ByAutomationId("VisualStudioMainWindow").
-                And(e.ByName(name))), 300).AsWindow().As<VSMainView>();
+                And(e.ByName(name))), 600).AsWindow().As<VSMainView>();
             
         }
 

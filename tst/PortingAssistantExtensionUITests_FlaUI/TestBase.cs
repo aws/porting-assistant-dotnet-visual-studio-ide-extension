@@ -128,14 +128,29 @@ namespace IDE_UITest
         private VSMainView GetVSMainView(string solutionPath = "")
         {
             var name = "Microsoft Visual Studio (Administrator)";
-            if (!string.IsNullOrEmpty(solutionPath)) 
+            if (!string.IsNullOrEmpty(solutionPath))
             {
                 name = $"{Path.GetFileNameWithoutExtension(solutionPath)} - Microsoft Visual Studio (Administrator)";
             }
 
-            return WaitForElement(() => Desktop.FindFirstChild(e => e.ByAutomationId("VisualStudioMainWindow").
-                And(e.ByName(name))), 600).AsWindow().As<VSMainView>();
-            
+            Desktop.WaitUntilEnabled();
+
+            Retry.WhileFalse(() => Desktop?.FindAllChildren().Length > 0, TimeSpan.FromSeconds(2));
+            System.Threading.Thread.Sleep(8000);
+
+            var vsMainView = Retry.Find(() => Desktop.FindFirstChild(e => e.ByAutomationId("VisualStudioMainWindow").
+                          And(e.ByName(name))),
+                          new RetrySettings
+                          {
+                              Timeout = TimeSpan.FromSeconds(600),
+                              Interval = TimeSpan.FromSeconds(1),
+                              ThrowOnTimeout = true,
+                              TimeoutMessage = "Cannot find main window " + name,
+                          }).AsWindow().As<VSMainView>();
+
+
+
+            return vsMainView;
         }
 
         private void LaunchingVS(string vsLocation, out AutomationElement loadWindow)

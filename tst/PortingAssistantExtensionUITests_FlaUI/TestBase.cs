@@ -136,7 +136,7 @@ namespace IDE_UITest
             Desktop.WaitUntilEnabled();
 
             Retry.WhileFalse(() => Desktop?.FindAllChildren().Length > 0, TimeSpan.FromSeconds(2));
-            System.Threading.Thread.Sleep(8000);
+            System.Threading.Thread.Sleep(18000);
 
             var vsMainView = Retry.Find(() => Desktop.FindFirstChild(e => e.ByAutomationId("VisualStudioMainWindow").
                           And(e.ByName(name))),

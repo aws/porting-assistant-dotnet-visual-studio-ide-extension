@@ -133,9 +133,6 @@ namespace IDE_UITest
                 name = $"{Path.GetFileNameWithoutExtension(solutionPath)} - Microsoft Visual Studio (Administrator)";
             }
 
-            Desktop.WaitUntilEnabled();
-
-            Retry.WhileFalse(() => Desktop?.FindAllChildren().Length > 0, TimeSpan.FromSeconds(2));
             System.Threading.Thread.Sleep(18000);
 
             var vsMainView = Retry.Find(() => Desktop.FindFirstChild(e => e.ByAutomationId("VisualStudioMainWindow").

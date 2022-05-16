@@ -9,6 +9,7 @@ namespace IDE_UITest.UI
     {
         public GetStartedWindow(FrameworkAutomationElementBase frameworkAutomationElement) : base(frameworkAutomationElement)
         {
+        
         }
 
         public Button SaveBtn => WaitForElement(() => FindFirstChild(e => e.ByName(" Save ")).AsButton());

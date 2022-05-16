@@ -23,7 +23,6 @@ namespace PortingAssistantExtensionTelemetry.Utils
         private static bool IsFileLocked(FileInfo file)
         {
             FileStream stream = null;
-
             try
             {
                 stream = file.Open

@@ -70,7 +70,10 @@ namespace PortingAssistantVSExtensionClient
                 for (; ; )
                 {
                     await Task.Delay(900000);
-                    await AwsUtils.ValidateProfileAsync();
+                    if (AwsUtils.isDismissed)
+                    {
+                        await AwsUtils.ValidateProfileAsync();
+                    }
                 }
             });
         }

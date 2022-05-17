@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using Amazon;
 using PortingAssistantVSExtensionClient.Options;
 using PortingAssistantVSExtensionClient.Common;
+using Microsoft.VisualStudio.Shell;
+using PortingAssistantExtensionClientShared.Utils;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
@@ -40,6 +42,7 @@ namespace PortingAssistantVSExtensionClient.Utils
     public static class AwsUtils
     {
         private static readonly SharedCredentialsFile sharedProfile = new SharedCredentialsFile();
+        public static bool isDismissed = true;
         public static List<string> ListProfiles()
         {
             return sharedProfile.ListProfileNames();
@@ -202,7 +205,8 @@ namespace PortingAssistantVSExtensionClient.Utils
 
                 if (awsCredentials == null || !await AwsUtils.VerifyUserAsync("", awsCredentials, TelemetryConfiguration))
                 {
-                    await NotificationUtils.ShowInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "AWS Credentials associated with Porting Assistant for .NET may have Expired. Please refresh credentials.");
+                    var creds = new CredentialsNotifications();
+                    await creds.ShowCredentialsInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "AWS Credentials associated with Porting Assistant for .NET may have Expired. Please refresh credentials.");
                     return false;
                 }
             }  

@@ -56,6 +56,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)PortingAssistantLanguageClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PortingAssistantVSExtensionClientPackage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\AwsUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CredentialsNotifications.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\NotificationUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\PipeUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SolutionUtils.cs" />

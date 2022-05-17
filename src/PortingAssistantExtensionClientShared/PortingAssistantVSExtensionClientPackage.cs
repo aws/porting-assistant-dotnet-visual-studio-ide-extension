@@ -71,7 +71,6 @@ namespace PortingAssistantVSExtensionClient
                 {
                     await Task.Delay(900000);
                     await AwsUtils.ValidateProfileAsync();
-
                 }
             });
         }

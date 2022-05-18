@@ -36,7 +36,7 @@ namespace PortingAssistantExtensionClientShared.Utils
                     IVsInfoBarUIElement element = factory.CreateInfoBar(infoBarModel);
                     element.Advise(this, out _cookie);
                     host.AddInfoBar(element);
-                    AwsUtils.isDismissed = false;
+                    AwsUtils.isCredsNotificationDismissed = false;
                 }
             }
         }
@@ -47,7 +47,7 @@ namespace PortingAssistantExtensionClientShared.Utils
             infoBarUIElement.Unadvise(_cookie);
             infoBarUIElement.Close();
 
-            AwsUtils.isDismissed = true;
+            AwsUtils.isCredsNotificationDismissed = true;
         }
 
         void IVsInfoBarUIEvents.OnClosed(IVsInfoBarUIElement infoBarUIElement)

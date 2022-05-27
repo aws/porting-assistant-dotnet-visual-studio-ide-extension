@@ -42,7 +42,7 @@ namespace PortingAssistantVSExtensionClient.Utils
     public static class AwsUtils
     {
         private static readonly SharedCredentialsFile sharedProfile = new SharedCredentialsFile();
-        public static bool isCredsNotificationDismissed = true;
+        public static bool IsCredsNotificationDismissed = true;
         public static List<string> ListProfiles()
         {
             return sharedProfile.ListProfileNames();
@@ -203,7 +203,7 @@ namespace PortingAssistantVSExtensionClient.Utils
                     ConfigurationFileName);
                 var TelemetryConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(ConfigurationPath)).TelemetryConfiguration;
 
-                if ((awsCredentials == null || !await AwsUtils.VerifyUserAsync("", awsCredentials, TelemetryConfiguration)) &&  isCredsNotificationDismissed) 
+                if ((awsCredentials == null || !await AwsUtils.VerifyUserAsync("", awsCredentials, TelemetryConfiguration)) &&  AwsUtils.IsCredsNotificationDismissed) 
                 {
                     var creds = new CredentialsNotifications();
                     await creds.ShowCredentialsInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "AWS Credentials associated with Porting Assistant for .NET may have Expired. Please refresh credentials.");

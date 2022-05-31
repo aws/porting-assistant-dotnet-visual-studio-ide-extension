@@ -1,10 +1,9 @@
 ﻿using Xunit;
 using System;
-using System.Diagnostics;
 using Xunit.Abstractions;
 using IDE_UITest.UI;
 
-namespace IDE_UITest
+namespace IDE_UITest.Tests.Vs2019
 {
     [Collection("Collection2")]
     public class AssessWorkflowTestsVs2019 : TestBase, IDisposable
@@ -15,15 +14,16 @@ namespace IDE_UITest
         private VSMainView root;
         public AssessWorkflowTestsVs2019(GlobalFixture fixture, ITestOutputHelper output) :  base(output)
         {
-            VS2019ProcessID = 0;
+            VSProcessID = 0;
             this.output = output;
             _fixture = fixture;
             var solutionPath = _fixture.InputData["assess-solution-path1"];
-            root = LaunchVSWithSolution(_fixture.Vs2019Location , solutionPath);
+            root = LaunchVSWithSolutionWithSecurityWarning(_fixture.Vs2019Location , solutionPath);
             Assert.True(root != null, $"Fail to get visual studio main window after loading solution {solutionPath}");
         }
 
         [Fact]
+        [Trait("Category", "Smoke")]
         public void RunAssessFromAnalyzeMenu()
         {
             root.RunFullAssessFromAnalyzeMenu();
@@ -33,6 +33,7 @@ namespace IDE_UITest
         }
 
         [Fact]
+        [Trait("Category", "Smoke")]
         public void RunAssessFromExtensionsMenu()
         {
             root.RunFullAssessFromExtensionsMenu();
@@ -41,6 +42,7 @@ namespace IDE_UITest
         }
 
         [Fact]
+        [Trait("Category", "Smoke")]
         public void RunAssessFromSolutionExplorer()
         {
             root.RunFullAssessFromSolutionExplorer();

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+
+
+	<DataCollectionRunSettings>
+		<DataCollectors>
+			<DataCollector uri="datacollector://microsoft/VideoRecorder/1.0" assemblyQualifiedName="Microsoft.VisualStudio.TestTools.DataCollection.VideoRecorder.VideoRecorderDataCollector, Microsoft.VisualStudio.TestTools.DataCollection.VideoRecorder, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" friendlyName="Screen and Voice Recorder">
+			</DataCollector>
+		</DataCollectors>
+	</DataCollectionRunSettings>
+
+
+	<!-- Configuration for loggers -->
+	<LoggerRunSettings>
+		<Loggers>
+			<Logger friendlyName="console" enabled="True">
+				<Configuration>
+					<Verbosity>quiet</Verbosity>
+				</Configuration>
+			</Logger>
+			<Logger friendlyName="trx" enabled="True">
+				<Configuration>
+					<LogFileName>foo.trx</LogFileName>
+				</Configuration>
+			</Logger>
+			<Logger friendlyName="html" enabled="True">
+				<Configuration>
+					<LogFileName>foo.html</LogFileName>
+				</Configuration>
+			</Logger>
+			<Logger friendlyName="blame" enabled="True" />
+		</Loggers>
+	</LoggerRunSettings>
+
+
+</RunSettings>

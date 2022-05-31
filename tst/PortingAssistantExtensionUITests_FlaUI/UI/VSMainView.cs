@@ -2,8 +2,7 @@
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Tools;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
 using Xunit;
 using System.Linq;
 
@@ -46,7 +45,7 @@ namespace IDE_UITest.UI
             ExtensionMenu.WaitUntilClickable();
             ExtensionMenu.DrawHighlight();
             ExtensionMenu.Invoke();
-            var paExtensionMenuItem = ExtensionMenu.Items.Find(e => e.Name.StartsWith("Porting Assistant For .Net")).AsMenuItem();
+            var paExtensionMenuItem = ExtensionMenu.Items.Find(e => e.Name.StartsWith("Porting Assistant For")).AsMenuItem();
             Assert.NotNull(paExtensionMenuItem);
             paExtensionMenuItem.DrawHighlight();
             paExtensionMenuItem.Invoke();
@@ -88,7 +87,7 @@ namespace IDE_UITest.UI
             runFullAssessmentMenuItem.Invoke();
         }
 
-        private void WaitTillAssessmentFinished(int timeoutSec= 120)
+        public void WaitTillAssessmentFinished(int timeoutSec= 120)
         {
             var infoBarControl = Retry.Find(() => FindFirstChild(e => e.ByAutomationId("InfoBarControl").
               And(e.ByClassName("InfoBarControl").
@@ -100,8 +99,8 @@ namespace IDE_UITest.UI
                     ThrowOnTimeout = true,
                     TimeoutMessage = $"Fail to finish assessment within {timeoutSec} seconds"
                 });
-            var errorListTabItem= ShowErrorListView();
-            errorListTabItem.SearchPAErrorWarningItems();
+             /*var errorListTabItem= ShowErrorListView();
+             errorListTabItem.SearchPAErrorWarningItems();*/
         }
 
         private void ClickRunAssessFromMenu(string menuName)
@@ -190,7 +189,7 @@ namespace IDE_UITest.UI
                 }).As<GetStartedWindow>();
             if (getStartWindow != null)
             {
-                getStartWindow.SelectAwsProfile();
+                getStartWindow.SelectAwsProfile("default");
                 return true;
             }
             return false;
@@ -281,12 +280,12 @@ namespace IDE_UITest.UI
         private Window ShowSolutionExplorerView() 
         {
             bool findSolutionExplorer = false;
-            var solutionExplorerPane = WaitForElement(() => DockRootPane.FindFirstChild(e => e.ByName("Solution Explorer").
+            var solutionExplorerPane = WaitForElement(() => DockRootPane.FindFirstDescendant(e => e.ByName("Solution Explorer").
                 And(e.ByClassName("ViewPresenter"))), out findSolutionExplorer).AsWindow();
             if (!findSolutionExplorer) {
                 
                 OpenViewByNameFromViewMenu("Solution Explorer");
-                solutionExplorerPane = WaitForElement(() => DockRootPane.FindFirstChild(e => e.ByName("Solution Explorer").
+                solutionExplorerPane = WaitForElement(() => DockRootPane.FindFirstDescendant(e => e.ByName("Solution Explorer").
                     And(e.ByClassName("ViewPresenter"))), out findSolutionExplorer, 10).AsWindow();
             }
             return solutionExplorerPane;
@@ -307,6 +306,51 @@ namespace IDE_UITest.UI
             var viewMenuItemByName = viewMenuItem.Items.Find(e => e.Name == viewName).AsMenuItem();
             viewMenuItemByName.DrawHighlight();
             viewMenuItemByName.Invoke();
+        }
+
+        public GetStartedWindow OpenStartUpView()
+        {
+            ClickRunAssessFromMenu("Analyze");
+            var getStartWindow = Retry.Find(() => FindFirstChild(e => e.ByName("Get started").
+              And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))),
+                new RetrySettings
+                {
+                    Timeout = TimeSpan.FromSeconds(1200),
+                    Interval = TimeSpan.FromSeconds(5),
+                    ThrowOnTimeout = false
+                }).As<GetStartedWindow>();
+            getStartWindow.DrawHighlight();
+            return getStartWindow;
+        }
+
+        public void SelectTargetFrameworkWhenSetUp()
+        {
+            var selectTargetFrameworkWindow = Retry.Find(() => FindFirstChild(e => e.ByName("Choose a Target Framework").
+              And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))),
+                new RetrySettings
+                {
+                    Timeout = TimeSpan.FromSeconds(120),
+                    Interval = TimeSpan.FromSeconds(5),
+                    ThrowOnTimeout = false
+                }).As<Window>();
+            if(selectTargetFrameworkWindow != null)
+            {
+                var targetFrameworkComboBox = WaitForElement(() => selectTargetFrameworkWindow.FindFirstDescendant(
+                    e => e.ByAutomationId("TargetFrameWorkDropDown").And(e.ByControlType(FlaUI.Core.Definitions.ControlType.ComboBox)))).AsComboBox();
+                targetFrameworkComboBox.DrawHighlight();
+                targetFrameworkComboBox.Expand();
+                Retry.WhileFalse(() =>
+                {
+                    var listItems = selectTargetFrameworkWindow.FindAllDescendants(e => e.ByControlType(FlaUI.Core.Definitions.ControlType.ListItem));
+                    return listItems?.Length > 0;
+                });
+                var listItems = selectTargetFrameworkWindow.FindAllDescendants(e => e.ByControlType(FlaUI.Core.Definitions.ControlType.ListItem));
+                targetFrameworkComboBox.Select(listItems.FirstOrDefault().Name);
+                var okBtn = WaitForElement(() => selectTargetFrameworkWindow.FindFirstChild(e => e.ByName("OK")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Button)))).AsButton();
+                okBtn.DrawHighlight();
+                okBtn.Invoke();
+            }
         }
     }
 }

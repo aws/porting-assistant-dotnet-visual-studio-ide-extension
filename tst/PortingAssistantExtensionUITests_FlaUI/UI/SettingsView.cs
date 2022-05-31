@@ -1,7 +1,6 @@
 ﻿using FlaUI.Core;
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Tools;
-using IDE_UITest.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +42,12 @@ namespace IDE_UITest.UI
 
         internal AutomationElement ToLearnMoreHyperLink => WaitForElement(() => DataUsageSharingGroup.FindFirstDescendant(e => e.ByClassName("Hyperlink").
           And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Hyperlink))));
+
+        internal RadioButton UseAWSProfileRadioButton => WaitForElement(() => PAGroup.FindFirstChild(e => e.ByAutomationId("AWSProfileSelect").
+            And(e.ByControlType(FlaUI.Core.Definitions.ControlType.RadioButton))).AsRadioButton());
+        internal RadioButton DefaultProviderChainRadioButton => WaitForElement(() => PAGroup.FindFirstChild(e => e.ByAutomationId("SDKChainSelect").
+            And(e.ByControlType(FlaUI.Core.Definitions.ControlType.RadioButton))).AsRadioButton());
+
         public void SelectTargetFrameWork(string targetfw)
         {
             AutomationElement[] listItems = GetTargetFrameworkOptions();
@@ -77,7 +82,7 @@ namespace IDE_UITest.UI
         {
             var tfOptions = GetTargetFrameworkOptions().Select(i => i.Name).ToList();
             var expectedOptions2019 = new List<string>() { "netcoreapp3.1", "net5.0" };
-            var expectedOptions2022 = new List<string>() {  "net6.0" };
+            var expectedOptions2022 = new List<string>() { "netcoreapp3.1", "net5.0", "net6.0" };
             switch (vsVersion) {
                 case Constants.Version.VS2019:
                     Assert.True(expectedOptions2019.All(tfOptions.Contains), 
@@ -85,7 +90,7 @@ namespace IDE_UITest.UI
                     break;
                 case Constants.Version.VS2022:
                     Assert.True(expectedOptions2022.All(tfOptions.Contains),
-                        "Expect target framework option for visualstudio 2022 is net6");
+                        "Expect target framework option for visualstudio 2022 is netcoreapp3.1, net5 and net6");
                     break;
             }
         }
@@ -97,6 +102,19 @@ namespace IDE_UITest.UI
             OkBtn.Invoke();
         }
 
+        public void SelectDefaultSDKChainRadioButton()
+        {
+            DefaultProviderChainRadioButton.WaitUntilClickable();
+            DefaultProviderChainRadioButton.DrawHighlight();
+            DefaultProviderChainRadioButton.Click();
+        }
+
+        public void SelectAWSProfileRadioButton()
+        {
+            UseAWSProfileRadioButton.DrawHighlight();
+            UseAWSProfileRadioButton.Click();
+        }
+
         public void SelectAwsProfileByName(string name)
         {
             List<AutomationElement> listItems = GetAvailableAwsProfiles();
@@ -104,9 +122,28 @@ namespace IDE_UITest.UI
             ProfilesComboBox.Select(name);
         }
 
+        public void CheckSwitchAwsProfile()
+        {
+            List<AutomationElement> listItems = GetAvailableAwsProfiles();
+            listItems.FirstOrDefault().DrawHighlight();
+            ProfilesComboBox.Select(listItems.FirstOrDefault().Name);
+            if (listItems.Count > 1)
+            {
+                listItems.LastOrDefault().DrawHighlight();
+                ProfilesComboBox.Select(listItems.LastOrDefault().Name);
+            }
+        }
+
+        public void TestProfileRadioButton()
+        {
+            SelectDefaultSDKChainRadioButton();
+            SelectAWSProfileRadioButton();
+        }
+
         private List<AutomationElement> GetAvailableAwsProfiles()
         {
             SwitchToDataSharingCategory();
+            TestProfileRadioButton();
             ProfilesComboBox.DrawHighlight();
             ProfilesComboBox.Expand();
             Retry.WhileFalse(() =>
@@ -135,23 +172,33 @@ namespace IDE_UITest.UI
 
         internal void CreateNewAwsProfile(string name, string assessKey, string secretKey)
         {
-            AddProfileBtn.WaitUntilClickable();
-            AddProfileBtn.Invoke();
-            var addNewProfileDialog = Retry.Find(() => FindFirstChild(e => e.ByName("Add a Named Profile").And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))),
-            
-                new RetrySettings
-                {
-                    Timeout = TimeSpan.FromSeconds(2),
-                    ThrowOnTimeout = true,
-                    TimeoutMessage = "Fail to open add new profile window"
-                }).As<AddNewProfileDialog>() ;
-
+            var addNewProfileDialog = OpenNewAwsProfileDialog();
             addNewProfileDialog.SaveNewProfile(name, assessKey, secretKey);
             Retry.WhileNotNull(()=> FindFirstChild(e => e.ByName("Add a Named Profile").And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))),
                 timeout:TimeSpan.FromSeconds(2),throwOnTimeout: true,timeoutMessage: "Fail to close [Add a New Profile] window by saving"
             );
         }
 
+        internal void CheckNewAwsProfileValidation(string name, string assessKey, string secretKey)
+        {
+            var addNewProfileDialog = OpenNewAwsProfileDialog();
+            addNewProfileDialog.SaveNewProfile(name, assessKey, secretKey);
+            addNewProfileDialog.CheckInvalidProfileWarning();
+        }
+
+        internal AddNewProfileDialog OpenNewAwsProfileDialog()
+        {
+            AddProfileBtn.WaitUntilClickable();
+            AddProfileBtn.Invoke();
+            return Retry.Find(() => FindFirstChild(e => e.ByName("Add a Named Profile").And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))),
+
+                new RetrySettings
+                {
+                    Timeout = TimeSpan.FromSeconds(2),
+                    ThrowOnTimeout = true,
+                    TimeoutMessage = "Fail to open add new profile window"
+                }).As<AddNewProfileDialog>();
+        }
 
         internal void VerifyToLearnMoreHyperlinkInDataSharing()
         {
@@ -160,6 +207,7 @@ namespace IDE_UITest.UI
             ToLearnMoreHyperLink.DrawHighlight();
             ToLearnMoreHyperLink.Click();
         }
+
         internal void VerifyDocumentHyperlinkAndCancelNewProfileBtn()
         {
             SwitchToDataSharingCategory();

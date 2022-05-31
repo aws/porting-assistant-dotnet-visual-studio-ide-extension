@@ -23,7 +23,6 @@ namespace PortingAssistantExtensionTelemetry.Utils
         private static bool IsFileLocked(FileInfo file)
         {
             FileStream stream = null;
-
             try
             {
                 stream = file.Open
@@ -76,29 +75,13 @@ namespace PortingAssistantExtensionTelemetry.Utils
             string profile,
             bool enabledDefaultCredentials,
             string paVersion,
-            TelemetryConfiguration telemetryConfiguration
+            TelemetryConfiguration telemetryConfiguration,
+            AWSCredentials awsCredentials,
+            ILogger logger
             )
         {
             try
             {
-                var outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (Porting Assistant IDE Extension) (" + paVersion + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
-                var logConfiguration = new LoggerConfiguration().Enrich.FromLogContext()
-                    .MinimumLevel.Warning()
-                    .WriteTo.File(
-                        telemetryConfiguration.LogFilePath,
-                        rollingInterval: RollingInterval.Day,
-                        rollOnFileSizeLimit: true,
-                        outputTemplate: outputTemplate);
-
-                Log.Logger = logConfiguration.CreateLogger();
-
-                AWSCredentials awsCredentials = GetAWSCredentials(profile, enabledDefaultCredentials);
-
-                if (awsCredentials == null)
-                {
-                    Log.Logger.Error("Log Upload Failed due to Invalid Credentials");
-                    return false;
-                }
 
                 var region = telemetryConfiguration.Region;
                 dynamic requestMetadata = new JObject();
@@ -132,16 +115,24 @@ namespace PortingAssistantExtensionTelemetry.Utils
             }
             catch (Exception ex)
             {
-                Log.Logger.Error("Log Upload Failed: " + ex.Message);
+                logger.Error("Log Upload Failed: " + ex.Message);
                 return false;
             }
         }
 
-        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, bool shareMetric, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile, bool enabledDefaultCredentials, string paVersion)
+        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, bool shareMetric, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile, bool enabledDefaultCredentials, string paVersion, ILogger logger)
         {
             try
             {
                 if (!shareMetric) return;
+
+                AWSCredentials awsCredentials = GetAWSCredentials(profile, enabledDefaultCredentials);
+                if (awsCredentials == null)
+                {
+                    logger.Error("Log Upload Failed. Could not retrieve any AWS Credentials");
+                    return;
+                }
+
                 // Get files in directory and filter based on Suffix
                 string[] fileEntries = Directory.GetFiles(teleConfig.LogsPath).Where(f =>
                   teleConfig.Suffix.ToArray().Any(x => f.EndsWith(x))
@@ -212,14 +203,28 @@ namespace PortingAssistantExtensionTelemetry.Utils
                                     if (logs.Count >= 1000)
                                     {
                                         // logs.TrimToSize();
-                                        success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, enabledDefaultCredentials, paVersion, teleConfig).Result;
+                                        success = PutLogData(logName,
+                                                JsonConvert.SerializeObject(logs),
+                                                profile,
+                                                enabledDefaultCredentials,
+                                                paVersion,
+                                                teleConfig,
+                                                awsCredentials,
+                                                logger).Result;
                                         if (success) { logs = new ArrayList(); };
                                     }
                                 }
 
                                 if (logs.Count != 0)
                                 {
-                                    success = PutLogData(logName, JsonConvert.SerializeObject(logs), profile, enabledDefaultCredentials, paVersion, teleConfig).Result;
+                                    success = PutLogData(logName,
+                                            JsonConvert.SerializeObject(logs),
+                                            profile,
+                                            enabledDefaultCredentials,
+                                            paVersion,
+                                            teleConfig,
+                                            awsCredentials,
+                                            logger).Result;
                                 }
                                 if (success)
                                 {
@@ -234,7 +239,7 @@ namespace PortingAssistantExtensionTelemetry.Utils
             }
             catch (Exception ex)
             {
-                Log.Logger.Error("Log Upload Failed: " + ex.Message);
+                logger.Error("Log Upload Failed: " + ex.Message);
             }
         }
     }

@@ -110,6 +110,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 SolutionName = Path.GetFileName(solutionFile);
                 string pipeName = Guid.NewGuid().ToString();
                 // It's intended that we don't await for RunAssessmentAsync function for too long.
+                
                 CommandsCommon.RunAssessmentAsync(solutionFile, pipeName);
                 PipeUtils.StartListenerConnection(pipeName, GetAssessmentCompletionTasks(this.package, SolutionName));
             }

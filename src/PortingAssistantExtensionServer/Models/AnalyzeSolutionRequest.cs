@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PortingAssistantExtensionServer.Models
 {
-    class AnalyzeSolutionRequest : IRequest<AnalyzeSolutionResponse>
+    public class AnalyzeSolutionRequest : IRequest<AnalyzeSolutionResponse>
     {
         public string solutionFilePath { get; set; }
         public Dictionary<string, List<string>> metaReferences { get; set; }

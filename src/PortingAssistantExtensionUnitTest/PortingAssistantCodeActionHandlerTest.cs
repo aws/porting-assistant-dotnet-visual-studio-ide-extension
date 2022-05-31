@@ -8,18 +8,19 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtensionServer;
 using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
+using PortingAssistantExtensionServer.Services;
 using PortingAssistantExtensionServer.TextDocumentModels;
-using PortingAssistantExtensionTelemetry.Interface;
+using PortingAssistantExtensionUnitTest.Common;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Range = OmniSharp.Extensions.LanguageServer.Protocol.Models.Range;
+using TestParameters = PortingAssistantExtensionUnitTest.Common.TestParameters;
 
 namespace PortingAssistantExtensionUnitTest
 {
@@ -34,10 +35,10 @@ namespace PortingAssistantExtensionUnitTest
         private Mock<ITextDocumentLanguageServer> _textDocumentLanguageServer;
 
         private Mock<ILogger<AnalysisService>> _analysisLoggerMock;
+        private Mock<ILogger<PortingService>> _portingLoggerMock;
         private Mock<IPortingAssistantClient> _clientMock;
-        private Mock<ITelemetryCollector> _telemetryMock;
         private AnalysisService _analysisService;
-
+        private PortingService _portingService;
         private static readonly string _testSolutionPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestSolution", "TestProject", "TestCodeFile.cs");
         private CodeFileDocument _codeFileDocument = new CodeFileDocument(DocumentUri.FromFileSystemPath(_testSolutionPath));
 
@@ -78,7 +79,7 @@ namespace PortingAssistantExtensionUnitTest
             },
             Range = new Range
             {
-                Start = new Position { Character = 0, Line = 4},
+                Start = new Position { Character = 0, Line = 4 },
                 End = new Position { Character = 21, Line = 4 }
             }
         };
@@ -88,11 +89,13 @@ namespace PortingAssistantExtensionUnitTest
         {
             _clientMock = new Mock<IPortingAssistantClient>();
             _analysisLoggerMock = new Mock<ILogger<AnalysisService>>();
-            _telemetryMock = new Mock<ITelemetryCollector>();
+            _portingLoggerMock = new Mock<ILogger<PortingService>>();
             _textDocumentLanguageServer = new Mock<ITextDocumentLanguageServer>();
 
             _analysisService = new AnalysisService(_analysisLoggerMock.Object,
-                _clientMock.Object, _telemetryMock.Object);
+                _clientMock.Object);
+            _portingService = new PortingService(_portingLoggerMock.Object,
+                _clientMock.Object);
 
             _languageServer = new Mock<ILanguageServerFacade>();
             _logger = new Mock<ILogger<PortingAssistantTextSyncHandler>>();
@@ -100,7 +103,7 @@ namespace PortingAssistantExtensionUnitTest
             _loggerSolutionHandler = new Mock<ILogger<SolutionAssessmentHandler>>();
 
             _solutionAssessmentHandler = new SolutionAssessmentHandler(_loggerSolutionHandler.Object, _languageServer.Object,
-               _analysisService);
+               _analysisService, _portingService);
             _portingAssistantTextSyncHandler = new PortingAssistantTextSyncHandler(_languageServer.Object, _analysisService,
                 _logger.Object);
 

@@ -12,6 +12,9 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionTelemetry;
 using System.Text.Json;
+using System.Net.Http;
+using PortingAssistantExtensionTelemetry.Utils;
+using PortingAssistantExtensionServer.Common;
 
 namespace PortingAssistantExtensionServer
 {
@@ -30,25 +33,34 @@ namespace PortingAssistantExtensionServer
                 var config = args[0];
                 var stdInPipeName = args.Length == 1 ? Common.Constants.stdDebugInPipeName : args[1];
                 var stdOutPipeName = args.Length == 1 ? Common.Constants.stdDebugOutPipeName : args[2];
-                Common.PALanguageServerConfiguration.ExtensionVersion = args.Length == 1 ? "0.0.0.0" : args[3];
+                Common.PALanguageServerConfiguration.ExtensionVersion = args.Length == 1 ? "0.0.0" : args[3];
+                var vsClientVersion = args.Length == 1 ? Common.Constants.VS_UNKNOWN : args[4];
+                Common.PALanguageServerConfiguration.VisualStudioVersion = GetVSVersion(vsClientVersion);
+                PALanguageServerConfiguration.VisualStudioFullVersion = vsClientVersion;
+                Console.WriteLine($"Porting Assistant Version is {Common.PALanguageServerConfiguration.ExtensionVersion}");
+                Console.WriteLine($"Visual Studio Version is {Common.PALanguageServerConfiguration.VisualStudioVersion}");
                 var portingAssistantConfiguration = JsonSerializer.Deserialize<PortingAssistantIDEConfiguration>(File.ReadAllText(config));
+                
                 var outputTemplate = Common.Constants.DefaultOutputTemplate;
-                var isConsole = args.Length == 4 && args[3].Equals("--console");
-                if (args.Length == 4 && !args[3].Equals("--console"))
+                var isConsole = args.Length == 5 && args[4].Equals("--console");
+                if (args.Length == 5 && !args[4].Equals("--console"))
                 {
                     outputTemplate = "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] (Porting Assistant IDE Extension) (" + args[3] + ") {SourceContext}: {Message:lj}{NewLine}{Exception}";
                 }
                 Serilog.Formatting.Display.MessageTemplateTextFormatter tf = new Serilog.Formatting.Display.MessageTemplateTextFormatter(outputTemplate, CultureInfo.InvariantCulture);
                 var logConfiguration = new LoggerConfiguration().Enrich.FromLogContext()
                     .MinimumLevel.Warning()
-                    .WriteTo.RollingFile(
+                    .WriteTo.File(
                         portingAssistantConfiguration.TelemetryConfiguration.LogFilePath,
+                        rollingInterval: RollingInterval.Day,
+                        rollOnFileSizeLimit: true,
                         outputTemplate: outputTemplate);
                 if (isConsole)
                 {
                     logConfiguration = logConfiguration.WriteTo.Console();
                 }
                 Log.Logger = logConfiguration.CreateLogger();
+                TelemetryCollector.Builder(Log.Logger, portingAssistantConfiguration.TelemetryConfiguration.MetricsFilePath);
                 var (input, output) = await CreateNamedPipe(stdInPipeName, stdOutPipeName);
                 var portingAssisstantLanguageServer = new PortingAssistantLanguageServer(
                     loggingBuilder => loggingBuilder
@@ -60,9 +72,15 @@ namespace PortingAssistantExtensionServer
                     portingAssistantConfiguration
                     );
                 await portingAssisstantLanguageServer.StartAsync();
-                LogWatcher logWatcher = new LogWatcher(portingAssistantConfiguration.TelemetryConfiguration, Common.PALanguageServerConfiguration.AWSProfileName, "portingassistant-ide-");
-                logWatcher.Start();
 
+                var logTimer = new System.Timers.Timer();
+                
+                logTimer.Interval = Convert.ToDouble(portingAssistantConfiguration.TelemetryConfiguration.LogTimerInterval);
+                var lastReadTokenFile = Path.Combine(portingAssistantConfiguration.TelemetryConfiguration.LogsPath, "lastToken.json");
+                logTimer.Elapsed += (source, e) => LogUploadUtils.OnTimedEvent(source, e, PALanguageServerConfiguration.EnabledMetrics, portingAssistantConfiguration.TelemetryConfiguration, lastReadTokenFile, Common.PALanguageServerConfiguration.AWSProfileName, Common.PALanguageServerConfiguration.EnabledDefaultCredentials, Common.PALanguageServerConfiguration.ExtensionVersion, Log.Logger);
+                logTimer.AutoReset = true;
+                logTimer.Enabled = true;
+                
                 await portingAssisstantLanguageServer.WaitForShutdownAsync();
 
                 if (portingAssisstantLanguageServer.IsSeverStarted() && !_isConnected)
@@ -71,9 +89,9 @@ namespace PortingAssistantExtensionServer
                     Environment.Exit(0);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Log.Logger.Error("Porting Assistant Extension failed with error:", e);
+                Log.Logger.Error(ex, "Porting Assistant Extension failed with error: ");
                 Environment.Exit(1);
             }
             finally
@@ -99,6 +117,22 @@ namespace PortingAssistantExtensionServer
                 Console.WriteLine("Connected");
             }
             return (pipeline1.Input, pipeline2.Output);
+        }
+
+        private static string GetVSVersion(string vsClientVersion)
+        {
+            
+            try
+            {
+                var vs2022 = Version.Parse("17.0");
+                var version = Version.Parse(vsClientVersion);
+                if (version.CompareTo(vs2022) >= 0) return Common.Constants.VS2022;
+                else return Common.Constants.VS2019;
+            }
+            catch (Exception)
+            {
+                return Common.Constants.VS_UNKNOWN;
+            }
         }
     }
 }

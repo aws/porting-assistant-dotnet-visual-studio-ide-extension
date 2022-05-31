@@ -1,0 +1,77 @@
+﻿<ui:DialogWindow x:Class="PortingAssistantVSExtensionClient.Dialogs.AddProfileDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:local="clr-namespace:PortingAssistantVSExtensionClient.Dialogs"
+             mc:Ignorable="d" Height="688" Width="550">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock HorizontalAlignment="Stretch" Margin="20,10,10,10" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0">
+            <Run Text="Credential Setup" FontWeight="Bold" FontSize="16" ></Run>
+            <LineBreak></LineBreak>
+            <LineBreak></LineBreak>
+            <BulletDecorator>
+                <BulletDecorator.Bullet>
+                    <Ellipse Height="5"  Width="5" Margin="10,0,10,0" Fill="Black"/>
+                </BulletDecorator.Bullet>
+            </BulletDecorator>
+            <Hyperlink NavigateUri="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html#cli-quick-configuration" Click="Hyperlink_Click"> Login to the IAM Users page in the AWS Console</Hyperlink>
+            <LineBreak></LineBreak>
+            <BulletDecorator>
+                <BulletDecorator.Bullet>
+                    <Ellipse Height="5"  Width="5" Margin="10,0,10,0" Fill="Black"/>
+                </BulletDecorator.Bullet>
+            </BulletDecorator>
+            <Run Text="Add a new IAM user account with programmatic access."></Run>
+            <LineBreak></LineBreak>
+            <BulletDecorator>
+                <BulletDecorator.Bullet>
+                    <Ellipse Height="5"  Width="5" Margin="10,0,10,0" Fill="Black"/>
+                </BulletDecorator.Bullet>
+            </BulletDecorator>
+            <Run Text="Attach an administrator or power user policy to the user. "></Run>
+            <LineBreak></LineBreak>
+            <BulletDecorator>
+                <BulletDecorator.Bullet>
+                    <Ellipse Height="5"  Width="5" Margin="10,0,10,0" Fill="Black"/>
+                </BulletDecorator.Bullet>
+            </BulletDecorator>
+            <Run Text="Copy and paste the credentials into the fields below, or download the csv file containing "></Run>
+            <LineBreak></LineBreak>
+            <Run Text="         the credentials and use the import button to locate and load the credentials from the "></Run>
+            <LineBreak></LineBreak>
+            <Run Text="         downlaoded file."></Run>
+        </TextBlock>
+        <Label Content="Profile Name" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Top" Width="150" Height="30" Grid.Column="0" Grid.Row="1"/>
+        <TextBox x:Name="ProfileName" HorizontalAlignment="Left"  Margin="30,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Height="30" Grid.Column="0" Grid.Row="1" IsEnabled="True" AutomationProperties.HelpText="Please enter profile name"/>
+        <Label x:Name="WarningProfileName"  Content="" HorizontalAlignment="Left" Margin="30,60,0,0" VerticalAlignment="Top" Width="480" Height="30" FontSize="10" Foreground="Red"  Grid.Column="0" Grid.Row="1"/>
+        <Label Content="AWS Access Key ID" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Top" Width="150" Height="30" Grid.Column="0" Grid.Row="2" AutomationProperties.HelpText="Please enter AWS access key ID"/>
+        <TextBox x:Name="AccesskeyID" HorizontalAlignment="Left" Margin="30,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Height="30" Grid.Column="0" Grid.Row="2"/>
+        <Label x:Name="WarningAccessKeyID"  Content="" HorizontalAlignment="Left" Margin="30,60,0,0" VerticalAlignment="Top" FontSize="10" Width="480" Foreground="Red" Height="30" Grid.Column="0" Grid.Row="2"/>
+        <Label Content="AWS Secret Access Key" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Top" Width="150" Height="30" Grid.Column="0" Grid.Row="3"/>
+        <TextBox x:Name="secretAccessKey" HorizontalAlignment="Left"  Margin="30,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Height="30" Grid.Column="0" Grid.Row="3" AutomationProperties.HelpText="Please enter AWS secret access key"/>
+        <Label x:Name="WarningSecretKey" Content="" HorizontalAlignment="Left" Margin="30,60,0,0" VerticalAlignment="Top" Width="480" Height="30" Foreground="Red" FontSize="10" Grid.Column="0" Grid.Row="3"/>
+        <Label Content="AWS Session Token (Optional)" HorizontalAlignment="Left" Margin="30,0,0,0" VerticalAlignment="Top" Width="176" Height="30" Grid.Column="0" Grid.Row="4"/>
+        <Label Content="Allows you to create profiles with short term credentials."  HorizontalAlignment="Left" Margin="30,20,0,0" VerticalAlignment="Top" Width="455" Height="30" Grid.Column="0" Grid.Row="4"/>
+        <TextBox x:Name="sessionToken" HorizontalAlignment="Left" Margin="30,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="480" Height="129" Grid.Column="0" Grid.Row="4" AutomationProperties.HelpText="Please enter AWS session token"/>
+        <Label x:Name="WarningValidation" Content="" HorizontalAlignment="Left" Margin="30,5,0,0" VerticalAlignment="Top" Width="280" Height="30" Foreground="Red" FontSize="10" Grid.Column="0" Grid.Row="7"/>
+        <Button Content="Cancel" HorizontalAlignment="Right" Margin="10,10,110,10" VerticalAlignment="Bottom" Width="90" Height="30" Background="{x:Null}" BorderThickness="0" Click="Button_Click_1" Grid.Column="0" Grid.Row="8"/>
+        <Button Content="Save Profile" HorizontalAlignment="Right" Margin="10,10,20,10" VerticalAlignment="Bottom" Width="90" Height="30" Click="Button_Click" Grid.Column="0" Grid.Row="8"/>
+    </Grid>
+</ui:DialogWindow>

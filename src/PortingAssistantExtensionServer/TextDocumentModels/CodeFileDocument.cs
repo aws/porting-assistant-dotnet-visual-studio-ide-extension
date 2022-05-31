@@ -35,7 +35,7 @@ namespace PortingAssistantExtensionServer.TextDocumentModels
 
         public string GetProjectFile()
         {
-            var currentDir = Directory.GetParent(this.NormalizedPath).FullName;
+            var currentDir = Directory.GetParent(this.NormalizedPath)?.FullName;
             var projectFile = "";
 
             while (!string.IsNullOrEmpty(currentDir))
@@ -47,7 +47,7 @@ namespace PortingAssistantExtensionServer.TextDocumentModels
                 }
                 else
                 {
-                    currentDir = Directory.GetParent(currentDir).FullName;
+                    currentDir = Directory.GetParent(currentDir)?.FullName;
                 }
             }
             return projectFile;

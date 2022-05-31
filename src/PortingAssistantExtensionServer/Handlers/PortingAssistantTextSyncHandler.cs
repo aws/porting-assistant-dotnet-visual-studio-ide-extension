@@ -12,6 +12,7 @@ using System.IO;
 using PortingAssistantExtensionServer.TextDocumentModels;
 using Microsoft.Extensions.Logging;
 using System;
+using PortingAssistantExtensionServer.Services;
 
 namespace PortingAssistantExtensionServer.Handlers
 {
@@ -123,6 +124,9 @@ namespace PortingAssistantExtensionServer.Handlers
 
         private async void Process(CodeFileDocument document)
         {
+            if (document == null || document.DocumentUri == null) {
+                return;
+            }
             try
             {
                 var diagnostics = _solutionAnalysisService.GetDiagnosticsAsync(document.DocumentUri);
@@ -140,7 +144,7 @@ namespace PortingAssistantExtensionServer.Handlers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Incremental assessment failed with error:", ex);
+                _logger.LogError(ex, "Incremental assessment failed with error: ");
             }
         }
     }

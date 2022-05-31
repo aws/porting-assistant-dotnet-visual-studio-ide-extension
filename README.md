@@ -31,8 +31,8 @@ for tracking bugs and feature requests.
 
 We require the following:
 
-* Visual Studio 2019
-* .NET Core 3.1
+* Visual Studio 2019 or later
+* .NET 6
 
 ### Getting started with development
 
@@ -41,7 +41,9 @@ We require the following:
 * Run git config core.hooksPath hooks
 * Load the solution `PortingAssistantVSExtension.sln` using Visual Studio or Rider. 
 * Create a "Run/Debug" Configuration for the "PortingAssistantVSExtension.sln" solution.
-* Select 'Set Startup Projects'>'Multiple Startup Project' and set both PortingAssistantExtensionServer and PortingAssistantVSExtensionClient as startup projects.
+* Select 'Set Startup Projects'>'Multiple Startup Project' and set one of the following combinations as startup projects: 
+  * PortingAssistantExtensionServer and PortingAssistantVSExtensionClient2019
+  * PortingAssistantExtensionServer and PortingAssistantVSExtensionClient2022
 * Provide command line arguments for configuration, then run the application.
 * It should start a new Visual Studio Client with the Extension setup.
 * Open the solution to analyze/port in the new Visual Studio Client.
@@ -53,7 +55,7 @@ We require the following:
 
 [Porting Assistant for .NET Datastore](https://github.com/aws/porting-assistant-dotnet-datastore): The repository containing the data set and recommendations used in compatibility assessment.
 
-[Code translation assistant](https://github.com/aws/cta): The repository used to apply code translations
+[Code translation assistant](https://github.com/aws/cta): The repository used to apply code translations.
 
 
 ## Contributing

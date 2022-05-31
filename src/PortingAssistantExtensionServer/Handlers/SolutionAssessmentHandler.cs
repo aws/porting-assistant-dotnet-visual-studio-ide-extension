@@ -8,6 +8,7 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Protocol.Document;
 using System.Linq;
 using System.Collections.Generic;
+using PortingAssistantExtensionServer.Services;
 
 namespace PortingAssistantExtensionServer.Handlers
 {
@@ -17,21 +18,26 @@ namespace PortingAssistantExtensionServer.Handlers
     {
         private readonly ILogger<ISolutionAssessmentHandler> _logger;
         private readonly AnalysisService _analysisService;
+        private readonly PortingService _portingService;
         private readonly ILanguageServerFacade _languageServer;
         public SolutionAssessmentHandler(ILogger<SolutionAssessmentHandler> logger,
             ILanguageServerFacade languageServer,
-            AnalysisService analysisService)
+            AnalysisService analysisService,
+            PortingService portingService
+            )
         {
             _logger = logger;
             _languageServer = languageServer;
             _analysisService = analysisService;
+            _portingService = portingService;
         }
 
         public async Task<AnalyzeSolutionResponse> Handle(AnalyzeSolutionRequest request, CancellationToken cancellationToken)
         {
             var solutionAnalysisResult = _analysisService.AssessSolutionAsync(request);
             var diagnostics = await _analysisService.GetDiagnosticsAsync(solutionAnalysisResult);
-            
+            await _portingService.GetPackageAnalysisResultAsync(solutionAnalysisResult);
+
             foreach (var diagnostic in diagnostics)
             {
                 IList<Diagnostic> diag = new List<Diagnostic>();
@@ -52,10 +58,20 @@ namespace PortingAssistantExtensionServer.Handlers
                 });
             }
 
+            var solutionAnalysisResultResolved = await solutionAnalysisResult.ConfigureAwait(true);
+
+            foreach(var p in solutionAnalysisResultResolved.ProjectAnalysisResults)
+            {
+                _logger.LogInformation("Feature Type: " + p.FeatureType);
+            }
+
+            var hasWebForms = solutionAnalysisResultResolved.ProjectAnalysisResults.Any(p => p.FeatureType == "WebForms");
+
             return new AnalyzeSolutionResponse()
             {
                 incompatibleAPis = 1,
-                incompatiblePacakges = 1
+                incompatiblePacakges = 1,
+                hasWebFormsProject = solutionAnalysisResultResolved.ProjectAnalysisResults.Any(p => p.FeatureType == "WebForms")
             };
         }
     }

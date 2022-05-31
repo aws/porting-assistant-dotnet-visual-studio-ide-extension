@@ -4,7 +4,6 @@ using OmniSharp.Extensions.LanguageServer.Protocol;
 using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using PortingAssistant.Client.Client;
 using PortingAssistant.Client.Model;
-using PortingAssistantExtensionTelemetry.Interface;
 using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionServer.TextDocumentModels;
@@ -20,31 +19,29 @@ using Codelyzer.Analysis.Model;
 using Constants = PortingAssistantExtensionServer.Common.Constants;
 using System.IO.Pipes;
 using System.Runtime.CompilerServices;
-using PortingAssistantExtensionServer.Services;
+using PortingAssistantExtensionTelemetry;
 
 [assembly: InternalsVisibleTo("PortingAssistantExtensionUnitTest")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
-namespace PortingAssistantExtensionServer
+namespace PortingAssistantExtensionServer.Services
 {
     internal class AnalysisService : BaseService, IDisposable
     {
         private AnalyzeSolutionRequest _request;
         private readonly ILogger<AnalysisService> _logger;
         private readonly IPortingAssistantClient _client;
-        private readonly ITelemetryCollector _telemetry;
         public Dictionary<int, IList<TextChange>> CodeActions;
         public Dictionary<DocumentUri, ProjectAnalysisResult> FileToProjectAnalyssiResult;
 
         public ImmutableDictionary<DocumentUri, CodeFileDocument> _openDocuments = ImmutableDictionary<DocumentUri, CodeFileDocument>.Empty.WithComparers(DocumentUri.Comparer);
+        public string runId { get; private set; }
 
         public AnalysisService(
             ILogger<AnalysisService> logger,
-            IPortingAssistantClient client,
-            ITelemetryCollector telemetry)
+            IPortingAssistantClient client)
         {
             _logger = logger;
             _client = client;
-            _telemetry = telemetry;
             CodeActions = new Dictionary<int, IList<TextChange>>();
             FileToProjectAnalyssiResult = new Dictionary<DocumentUri, ProjectAnalysisResult>();
         }
@@ -58,19 +55,27 @@ namespace PortingAssistantExtensionServer
                 // Clean up the existing result before run full assessment
                 Cleanup();
                 _request = request;
-                var startTime = DateTime.Now.Millisecond;
+                var startTime = DateTime.Now;
+                runId = Guid.NewGuid().ToString();
+                var triggerType = "InitialRequest";
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
-                _telemetry.SolutionAssessmentCollect(
-                    solutionAnalysisResult,
-                    _request.settings.TargetFramework,
-                    PALanguageServerConfiguration.ExtensionVersion,
-                    DateTime.Now.Millisecond - startTime);
+
+                Collector.SolutionAssessmentCollect(
+                solutionAnalysisResult,
+                runId,
+                triggerType,
+                _request.settings.TargetFramework,
+                PALanguageServerConfiguration.ExtensionVersion,
+                PALanguageServerConfiguration.VisualStudioVersion,
+                DateTime.Now.Subtract(startTime).TotalMilliseconds,
+                PALanguageServerConfiguration.VisualStudioFullVersion,
+                PALanguageServerConfiguration.EnabledDefaultCredentials);
                 CreateClientConnectionAsync(request.PipeName);
                 return solutionAnalysisResult;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError($"Analyze solution {request.solutionFilePath} with error ", e);
+                _logger.LogError(ex, $"Analyze solution {request.solutionFilePath} with error: ");
                 return new SolutionAnalysisResult
                 {
                     ProjectAnalysisResults = new List<ProjectAnalysisResult> {
@@ -79,7 +84,8 @@ namespace PortingAssistantExtensionServer
                             PreportMetaReferences = new List<string>(),
                             MetaReferences = new List<string>(),
                             ExternalReferences = new ExternalReferences(),
-                            ProjectRules = new RootNodes()
+                            ProjectRules = new RootNodes(),
+                            PackageAnalysisResults = new Dictionary<PackageVersionPair, Task<PackageAnalysisResult>>()
                         }
                     },
                 };
@@ -117,19 +123,31 @@ namespace PortingAssistantExtensionServer
                     });
                 }
 
-                foreach (var sourceFileAnalysisResult in result)
+                var triggerType = "ContinuousAssessmentRequest";
+                var allActions = result.SelectMany(a => a.RecommendedActions);
+                var selectedApis = result.SelectMany(s => s.ApiAnalysisResults);
+
+                allActions.ToList().ForEach(action =>
                 {
-                    _telemetry.FileAssessmentCollect(
-                        sourceFileAnalysisResult,
-                        _request.settings.TargetFramework,
-                        PALanguageServerConfiguration.ExtensionVersion);
-                }
+                    var selectedApi = selectedApis.FirstOrDefault(s => s.CodeEntityDetails.TextSpan.Equals(action.TextSpan));
+                    selectedApi?.Recommendations?.RecommendedActions?.Add(action);
+                });
+
+                Collector.FileAssessmentCollect(
+                    selectedApis,
+                    runId,
+                    triggerType,
+                    _request.settings.TargetFramework,
+                    PALanguageServerConfiguration.ExtensionVersion,
+                    PALanguageServerConfiguration.VisualStudioVersion,
+                    PALanguageServerConfiguration.VisualStudioFullVersion
+                    );
 
                 return result;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError("incremental assessment failed with error: ", e);
+                _logger.LogError(ex, "incremental assessment failed with error: ");
                 return new List<SourceFileAnalysisResult>
                     {
                         new SourceFileAnalysisResult
@@ -158,8 +176,13 @@ namespace PortingAssistantExtensionServer
 
                 foreach (var projectAnalysisResult in solutionAnalysisResult.ProjectAnalysisResults)
                 {
+                    if (string.IsNullOrEmpty(projectAnalysisResult.ProjectFilePath))
+                    {
+                        // Very likely AssessSolutionAsync has encountered exception and returned empty SolutionAnalysisResult.
+                        continue;
+                    }
                     var projectFileUri = DocumentUri.FromFileSystemPath(projectAnalysisResult.ProjectFilePath);
-                    if (!FileToProjectAnalyssiResult.ContainsKey(projectFileUri))
+                    if (projectFileUri != null && !FileToProjectAnalyssiResult.ContainsKey(projectFileUri))
                     {
                         FileToProjectAnalyssiResult.Add(projectFileUri, new ProjectAnalysisResult
                         {
@@ -170,22 +193,39 @@ namespace PortingAssistantExtensionServer
                         });
                     }
 
+                    int numberOfExceptions = 0;
                     foreach (var sourceFileAnalysisResult in projectAnalysisResult.SourceFileAnalysisResults)
                     {
-                        var sourceFileUri = DocumentUri.FromFileSystemPath(sourceFileAnalysisResult.SourceFilePath);
-                        var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
-                        if (!FileToFirstDiagnostics.ContainsKey(sourceFileUri))
+                        if (string.IsNullOrEmpty(sourceFileAnalysisResult.SourceFilePath))
                         {
-                            FileToFirstDiagnostics.Add(sourceFileUri, diagnostics);
+                            continue;
+                        }
+                        try
+                        {
+                            var sourceFileUri = DocumentUri.FromFileSystemPath(sourceFileAnalysisResult.SourceFilePath);
+                            if (sourceFileUri != null && !FileToFirstDiagnostics.ContainsKey(sourceFileUri))
+                            {
+                                var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
+                                FileToFirstDiagnostics.Add(sourceFileUri, diagnostics);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            numberOfExceptions++;
+                            _logger.LogError(ex, string.Format("Get diagnostic failed {0} times with error: ", numberOfExceptions));
+                            if (numberOfExceptions > Constants.maxNumberOfGetDiagnosticExceptions)
+                            {
+                                throw new Exception("Get diagnostic exceeded maximum number of exceptions allowed");
+                            }
                         }
                     }
                 }
 
                 return FileToFirstDiagnostics;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError("get diagnostics failed with error ", e);
+                _logger.LogError(ex, "get diagnostics failed with error: ");
                 return new Dictionary<DocumentUri, IList<Diagnostic>>();
             }
         }
@@ -219,9 +259,9 @@ namespace PortingAssistantExtensionServer
                                     case RecommendedActionType.ReplacePackage:
                                         return $"Replace Source Package { package.PackageId}-{package.Version} with " + r.Description;
                                     case RecommendedActionType.ReplaceApi:
-                                        return "Replace API with " + r.Description;
+                                        return r.Description;
                                     case RecommendedActionType.ReplaceNamespace:
-                                        return "Replace namespace with " + r.Description;
+                                        return r.Description;
                                     case RecommendedActionType.NoRecommendation:
                                         break;
                                     default:
@@ -229,7 +269,7 @@ namespace PortingAssistantExtensionServer
                                 }
                                 return "";
                             });
-                        var message = $"Porting Assistant: {name} is incompatible for target framework {_request.settings.TargetFramework} " + String.Join(", ", rcommnadation);
+                        var message = $"Porting Assistant: {name} is incompatible for target framework {_request.settings.TargetFramework} " + string.Join(", ", rcommnadation);
                         var range = GetRange(api.CodeEntityDetails.TextSpan);
                         var location = new Location()
                         {
@@ -250,9 +290,9 @@ namespace PortingAssistantExtensionServer
                         };
                         diagnostics.Add(diagnostic);
                     }
-                    catch (Exception e)
+                    catch (Exception ex)
                     {
-                        _logger.LogError("Add API diagnostic failed with error ", e);
+                        _logger.LogError(ex, "Add API diagnostic failed with error: ");
                     }
                 }
             }
@@ -284,7 +324,7 @@ namespace PortingAssistantExtensionServer
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Add porting action diagnostic failed with error", ex);
+                    _logger.LogError(ex, "Add porting action diagnostic failed with error: ");
                 }
             }
 
@@ -295,9 +335,22 @@ namespace PortingAssistantExtensionServer
         public async Task<IList<Diagnostic>> GetDiagnosticsAsync(DocumentUri fileUri)
         {
             _openDocuments.TryGetValue(fileUri, out var document);
+            var triggerType = "ContinuousAssessmentRequest";
             var result = await AssessFileAsync(document, false);
             var sourceFileAnalysisResult = result.FirstOrDefault();
-            return GetDiagnostics(sourceFileAnalysisResult);
+            var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
+
+            Collector.ContinuousAssessmentCollect(
+                sourceFileAnalysisResult,
+                runId,
+                triggerType,
+                _request.settings.TargetFramework,
+                PALanguageServerConfiguration.ExtensionVersion,
+                PALanguageServerConfiguration.VisualStudioVersion,
+                diagnostics.Count,
+                PALanguageServerConfiguration.VisualStudioFullVersion);
+
+            return diagnostics;
         }
 
         public void UpdateCodeAction(string message, Range range, string documentPath, IList<TextChange> textChanges)

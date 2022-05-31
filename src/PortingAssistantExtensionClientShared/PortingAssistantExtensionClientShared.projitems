@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>90359de2-01a5-4346-b513-4b057de45ef8</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>PortingAssistantExtensionClientShared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\AutoAssessmentCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandsCommon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\ContactSupportCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\DisplaySettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\DocumentCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\ProjectPortingCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\SolutionAssessmentCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\SolutionPortingCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ExternalUrls.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\LanguageServerStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\PAGlobalService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TargetFrameWorkType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\UserSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Dialogs\AddProfileDialog.xaml.cs">
+      <DependentUpon>AddProfileDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Dialogs\PortingDialog.xaml.cs">
+      <DependentUpon>PortingDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Dialogs\SelectTargetDialog.xaml.cs">
+      <DependentUpon>SelectTargetDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Dialogs\WelcomeDialog.xaml.cs">
+      <DependentUpon>WelcomeDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Models\AnalyzeSolutionRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\AnalyzeSolutionResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ProjectFilePortingRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ProjectFilePortingResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\TelemetryConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UpdateSettingsRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Options\DataSharingOption.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Options\DataSharingOptionPage.xaml.cs">
+      <DependentUpon>DataSharingOptionPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Options\GeneralOption.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Options\OptionPageControl.xaml.cs">
+      <DependentUpon>OptionPageControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)PortingAssistantLanguageClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PortingAssistantVSExtensionClientPackage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\AwsUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\CredentialsNotifications.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\NotificationUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\PipeUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\SolutionUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\TelemetryClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\TelemetryConfig.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\TelemetryRequest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Dialogs\AddProfileDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Dialogs\PortingDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Dialogs\SelectTargetDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Dialogs\WelcomeDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Options\DataSharingOptionPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Options\OptionPageControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>

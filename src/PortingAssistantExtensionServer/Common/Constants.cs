@@ -9,6 +9,9 @@
         public const string DiagnosticSource = "Porting Assistant";
         public const string DiagnosticCode = "PA0001";
         public const string DiagnosticWithActionCode = "PA0002";
-
+        public const string VS2019 = "VS2019";
+        public const string VS2022 = "VS2022";
+        public const string VS_UNKNOWN = "VS_UNKNOWN";
+        public const int maxNumberOfGetDiagnosticExceptions = 5;
     }
 }

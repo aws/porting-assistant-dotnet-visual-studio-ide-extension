@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PortingAssistantExtensionUnitTest.Common.TestSolution.TestProject
+namespace PortingAssistantExtensionUnitTest.TestSolution.TestProject
 {
     class TestCodeFile
     {

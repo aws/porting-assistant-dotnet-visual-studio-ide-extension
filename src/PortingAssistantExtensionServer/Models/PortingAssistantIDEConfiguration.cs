@@ -7,8 +7,8 @@ namespace PortingAssistantExtensionServer.Models
     public class PortingAssistantIDEConfiguration
     {
         public PortingAssistantConfiguration PortingAssistantConfiguration { get; set; }
-        
-        public TelemetryConfiguration TelemetryConfiguration { get; set; }
+
+        public PortingAssistantTelemetryConfiguration TelemetryConfiguration { get; set; }
 
     }
 }

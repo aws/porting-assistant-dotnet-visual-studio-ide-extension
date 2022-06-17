@@ -61,7 +61,8 @@ namespace PortingAssistantExtensionTelemetry
                     numReferences = projectAnalysisResult.ProjectReferences.Count,
                     isBuildFailed = projectAnalysisResult.IsBuildFailed,
                     compatibilityResult = projectAnalysisResult.ProjectCompatibilityResult,
-                    VisualStudioClientFullVersion = visualStudioFullVersion
+                    VisualStudioClientFullVersion = visualStudioFullVersion,
+                    projectLanguage = GetProjectLanguage(projectAnalysisResult.ProjectFilePath)
                 };
                 TelemetryCollector.Collect<ProjectMetrics>(projectMetrics);
 
@@ -172,6 +173,19 @@ namespace PortingAssistantExtensionTelemetry
                 sBuilder.Append(data[i].ToString("x2"));
             }
             return sBuilder.ToString();
+        }
+
+        private static string GetProjectLanguage(string projectFilePath)
+        {
+            if (projectFilePath.EndsWith(".csproj"))
+            {
+                return "csharp";
+            }
+            if (projectFilePath.EndsWith(".vbproj"))
+            {
+                return "visualbasic";
+            }
+            return "invalid";
         }
     }
 }

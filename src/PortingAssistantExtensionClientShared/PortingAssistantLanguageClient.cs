@@ -39,7 +39,21 @@ namespace PortingAssistantVSExtensionClient
         internal static FileExtensionToContentTypeDefinition CsFileExtensionDefinition;
     }
 
+    class VisualBasicContentDefinition
+    {
+        [Export]
+        [Name("VisualBasicFileType")]
+        [BaseDefinition("Basic")]
+        internal static ContentTypeDefinition VbContentTypeDefinition;
+
+        [Export]
+        [FileExtension(".vb")]
+        [ContentType("VisualBasicFileType")]
+        internal static FileExtensionToContentTypeDefinition VbFileExtensionDefinition;
+    }
+
     [ContentType("CSharpFileType")]
+    [ContentType("VisualBasicFileType")]
     [Export(typeof(ILanguageClient))]
     [Guid(PortingAssistantLanguageClient.PackageGuidString)]
     class PortingAssistantLanguageClient : AsyncPackage, ILanguageClient, ILanguageClientCustomMessage2

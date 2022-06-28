@@ -14,5 +14,6 @@ namespace PortingAssistantExtensionTelemetry.Model
         public string projectType { get; set; }
         public List<String> sourceFrameworks { get; set; }
         public ProjectCompatibilityResult compatibilityResult { get; set; }
+        public string projectLanguage { get; set;  }
     }
 }

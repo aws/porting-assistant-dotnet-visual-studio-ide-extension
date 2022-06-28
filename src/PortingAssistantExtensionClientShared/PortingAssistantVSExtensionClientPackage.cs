@@ -29,10 +29,10 @@ namespace PortingAssistantVSExtensionClient
     /// </remarks>
     [ProvideAutoLoad(PortingAssistantVSExtensionClientPackage.UIContextGuid, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideUIContextRule(PortingAssistantVSExtensionClientPackage.UIContextGuid,
-    name: "Support Csharp",
-    expression: "CSharp",
-    termNames: new[] { "CSharp" },
-    termValues: new[] { "HierSingleSelectionName:.cs$" })]
+    name: "Support Csharp and VisualBasic",
+    expression: "CSharp | VisualBasic",
+    termNames: new[] { "CSharp", "VisualBasic" },
+    termValues: new[] { "HierSingleSelectionName:.cs$", "HierSingleSelectionName:.vb$" })]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(PortingAssistantVSExtensionClientPackage.PackageGuid)]
     [ProvideMenuResource("Menus.ctmenu", 1)]

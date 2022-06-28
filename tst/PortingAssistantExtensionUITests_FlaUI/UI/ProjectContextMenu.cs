@@ -1,0 +1,30 @@
+﻿using FlaUI.Core;
+using FlaUI.Core.AutomationElements;
+
+namespace IDE_UITest.UI
+{
+    public class ProjectContextMenu : ElementBase
+    {
+        public ProjectContextMenu(FrameworkAutomationElementBase frameworkAutomationElement) : base(frameworkAutomationElement)
+        {
+        }
+
+        private Menu popUpMContextMenu => WaitForElement(() => FindFirstDescendant(e => e.ByName("Project").
+           And(e.ByClassName("ContextMenu")).And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Menu)))).AsMenu();
+
+        public void ClickContextMenuByName(string name)
+        {
+            var menuItem = WaitForElement(() => popUpMContextMenu.FindFirstDescendant(e => e.ByName(name).
+               And(e.ByClassName("MenuItem")).And(e.ByControlType(FlaUI.Core.Definitions.ControlType.MenuItem)))).AsMenuItem();
+            menuItem.WaitUntilClickable();
+            menuItem.DrawHighlight();
+            menuItem.Click();
+        }
+
+        public MenuItem GetContextMenuItemByName(string name)
+        {
+            return popUpMContextMenu.FindFirstDescendant(e => e.ByName(name).
+               And(e.ByClassName("MenuItem")).And(e.ByControlType(FlaUI.Core.Definitions.ControlType.MenuItem))).AsMenuItem();
+        }
+    }
+}

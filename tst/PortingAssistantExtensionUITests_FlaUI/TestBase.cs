@@ -144,9 +144,6 @@ namespace IDE_UITest
                               ThrowOnTimeout = true,
                               TimeoutMessage = "Cannot find main window " + name,
                           }).AsWindow().As<VSMainView>();
-
-
-
             return vsMainView;
         }
 

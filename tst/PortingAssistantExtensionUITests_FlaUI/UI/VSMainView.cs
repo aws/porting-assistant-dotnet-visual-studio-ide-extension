@@ -308,6 +308,176 @@ namespace IDE_UITest.UI
             viewMenuItemByName.Invoke();
         }
 
+        public void RunFullSolutionPortingFromExtensionMenu()
+        {
+            WaitTillAssessmentFinished();
+            ClickRunFullSolutionPortingFromExtensionMenu();
+            ClickPortConfirmation();
+            WaitTillPortingFinished();
+        }
+
+        private void ClickRunFullSolutionPortingFromExtensionMenu()
+        {
+            var paExtensionMenuItem = SelectPAExtensionMenu();
+            var runFullSolutionPortingMenuItem = paExtensionMenuItem.Items.Find(e => e.Name == Constants.RunFullSolutionPortingMenuItem).AsMenuItem();
+            Assert.NotNull(runFullSolutionPortingMenuItem);
+            runFullSolutionPortingMenuItem.DrawHighlight();
+            runFullSolutionPortingMenuItem.Invoke();
+        }
+
+        public void RunSingleProjectPortingFromExtensionMenu()
+        {
+            WaitTillAssessmentFinished();
+            ClickRunSingleProjectPortingFromExtensionMenu();
+            ClickPortConfirmation();
+            WaitTillPortingFinished();
+        }
+
+        private void ClickRunSingleProjectPortingFromExtensionMenu()
+        {
+            var projectTreeItem = GetProjectFromSolutionExployer();
+            projectTreeItem.DrawHighlight();
+            projectTreeItem.Select();
+            var paExtensionMenuItem = SelectPAExtensionMenu();
+            var runSingleProjectPortingMenuItem = paExtensionMenuItem.Items.Find(e => e.Name == Constants.RunSingleProjectPortingMenuItem).AsMenuItem();
+            Assert.NotNull(runSingleProjectPortingMenuItem);
+            runSingleProjectPortingMenuItem.DrawHighlight();
+            runSingleProjectPortingMenuItem.Invoke();
+        }
+
+        public void RunFullSolutionPortingFromSolutionExplorer()
+        {
+            SolutionContextMenu contextMenu = GetSolutionExplorerContextMenu();
+            contextMenu.ClickContextMenuByName(Constants.RunFullSolutionPortingMenuItem);
+            ClickPortConfirmation();
+            WaitTillPortingFinished();
+        }
+
+        public void RunSingleProjectPortingFromSolutionExplorer()
+        {
+            ProjectContextMenu contextMenu = GetProjectExplorerContextMenu();
+            contextMenu.ClickContextMenuByName(Constants.RunSingleProjectPortingMenuItem);
+            ClickPortConfirmation();
+            WaitTillPortingFinished();
+        }
+
+        public void RunFullSolutionPortingFromProjectMenu()
+        {
+            WaitTillAssessmentFinished();
+            ClickRunFullSolutionPortingFromProjectMenu();
+            ClickPortConfirmation();
+            WaitTillPortingFinished();
+        }
+
+        private void ClickRunFullSolutionPortingFromProjectMenu()
+        {
+            var projecteMenuItem = GetMenuItemByName("Project");
+            projecteMenuItem.DrawHighlight();
+            projecteMenuItem.Invoke();
+            var runFullSolutionPortingMenuItem = projecteMenuItem.Items.Find(e => e.Name == Constants.RunFullSolutionPortingMenuItem).AsMenuItem();
+            runFullSolutionPortingMenuItem.DrawHighlight();
+            runFullSolutionPortingMenuItem.Invoke();
+        }
+
+        public void RunSingleProjectPortingFromProjectMenu()
+        {
+            WaitTillAssessmentFinished();
+            ClickRunSingleProjectPortingFromProjectMenu();
+            ClickPortConfirmation();
+            WaitTillPortingFinished();
+        }
+
+        private void ClickRunSingleProjectPortingFromProjectMenu()
+        {
+            var projectTreeItem = GetProjectFromSolutionExployer();
+            projectTreeItem.DrawHighlight();
+            projectTreeItem.Select();
+            var projecteMenuItem = GetMenuItemByName("Project");
+            projecteMenuItem.DrawHighlight();
+            projecteMenuItem.Invoke();
+            var runFullSolutionPortingMenuItem = projecteMenuItem.Items.Find(e => e.Name == Constants.RunSingleProjectPortingMenuItem).AsMenuItem();
+            runFullSolutionPortingMenuItem.DrawHighlight();
+            runFullSolutionPortingMenuItem.Invoke();
+        }
+
+        private TreeItem GetProjectFromSolutionExployer()
+        {
+            var solutionExplorerPane = WaitForElement(() => DockRootPane.FindFirstChild(e => e.ByName("Solution Explorer").
+                And(e.ByClassName("ViewPresenter")))).AsWindow();
+            solutionExplorerPane.DrawHighlight();
+            var solutionExplorerGenericPane = WaitForElement(() => solutionExplorerPane.FindFirstChild(e => e.ByName("Solution Explorer").
+                And(e.ByClassName("GenericPane"))), 10).AsWindow();
+            solutionExplorerGenericPane.WaitUntilEnabled();
+            Tree solutionTree = WaitForElement(() => solutionExplorerGenericPane.FindFirstChild(e => e.ByAutomationId("SolutionExplorer").
+                    And(e.ByClassName("TreeView"))), 10).AsTree();
+            TreeItem solutionTreeItem = solutionTree.FindFirstChild(e => e.ByClassName("TreeViewItem")).AsTreeItem();
+            TreeItem projectTreeItem = solutionTreeItem.FindFirstChild(e => e.ByClassName("TreeViewItem")).AsTreeItem();
+            return projectTreeItem;
+        }
+
+        private void ClickPortConfirmation()
+        {
+            var PortConfirmationWindow = WaitForElement(() => FindFirstChild(e => e.ByClassName("Window")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))), 10).AsWindow();
+            PortConfirmationWindow.DrawHighlight();
+
+            var ApplyPortActionCheck = WaitForElement(() => PortConfirmationWindow.FindFirstChild(e => e.ByAutomationId("ApplyPortActionCheck")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.CheckBox))), 10).AsCheckBox();
+            ApplyPortActionCheck.DrawHighlight();
+            ApplyPortActionCheck.Toggle();
+
+            var PortButton = WaitForElement(() => PortConfirmationWindow.FindFirstChild(e => e.ByName("Port")
+                .And(e.ByClassName("Button"))), 10).AsButton();
+            PortButton.DrawHighlight();
+            PortButton.Click();
+        }
+
+        private void WaitTillPortingFinished(int timeoutSec = 120)
+        {
+            var PortResultWindow = Retry.Find(() => FindFirstChild(e => e.ByControlType(FlaUI.Core.Definitions.ControlType.Window)
+                .And(e.ByLocalizedControlType("dialog"))),
+                new RetrySettings
+                {
+                    Timeout = TimeSpan.FromSeconds(timeoutSec),
+                    Interval = TimeSpan.FromSeconds(5),
+                    ThrowOnTimeout = true,
+                    TimeoutMessage = $"Fail to finish porting within {timeoutSec} seconds"
+                });
+            PortResultWindow.DrawHighlight();
+            var PortResultButton = WaitForElement(() => PortResultWindow.FindFirstChild(e => e.ByName("OK")
+                .And(e.ByClassName("Button"))), 10).AsButton();
+            PortResultButton.DrawHighlight();
+            PortResultButton.Invoke();
+        }
+
+        private ProjectContextMenu GetProjectExplorerContextMenu()
+        {
+            TreeItem projectTreeItem = GetProjectFromSolutionExployer();
+            projectTreeItem.WaitUntilEnabled();
+            ProjectContextMenu contextMenu = null;
+
+            Retry.WhileFalse(() =>
+            {
+                projectTreeItem.Click();
+                projectTreeItem.WaitUntilEnabled();
+                projectTreeItem.WaitUntilClickable();
+                projectTreeItem.RightClick();
+                bool found = false;
+                contextMenu = WaitForElement(() => Parent.FindFirstChild(e => e.ByClassName("Popup").
+                            And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))).As<ProjectContextMenu>(), out found);
+                if (!found) return false;
+                contextMenu.WaitUntilEnabled();
+                contextMenu.DrawHighlight();
+                var menuItem = contextMenu.GetContextMenuItemByName(Constants.RunSingleProjectPortingMenuItem);
+                if (menuItem == null) return false;
+                return true;
+            }, timeout: TimeSpan.FromSeconds(40), interval: TimeSpan.FromSeconds(3), throwOnTimeout: true,
+            timeoutMessage: $"Fail to get contextMenu after right click project name in solution explorer."
+            );
+
+            return contextMenu;
+        }
+
         public GetStartedWindow OpenStartUpView()
         {
             ClickRunAssessFromMenu("Analyze");
@@ -315,7 +485,7 @@ namespace IDE_UITest.UI
               And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))),
                 new RetrySettings
                 {
-                    Timeout = TimeSpan.FromSeconds(1200),
+                    Timeout = TimeSpan.FromSeconds(120),
                     Interval = TimeSpan.FromSeconds(5),
                     ThrowOnTimeout = false
                 }).As<GetStartedWindow>();
@@ -333,7 +503,7 @@ namespace IDE_UITest.UI
                     Interval = TimeSpan.FromSeconds(5),
                     ThrowOnTimeout = false
                 }).As<Window>();
-            if(selectTargetFrameworkWindow != null)
+            if (selectTargetFrameworkWindow != null)
             {
                 var targetFrameworkComboBox = WaitForElement(() => selectTargetFrameworkWindow.FindFirstDescendant(
                     e => e.ByAutomationId("TargetFrameWorkDropDown").And(e.ByControlType(FlaUI.Core.Definitions.ControlType.ComboBox)))).AsComboBox();
@@ -351,6 +521,139 @@ namespace IDE_UITest.UI
                 okBtn.DrawHighlight();
                 okBtn.Invoke();
             }
+        }
+
+        public void PublishProject(string publishLocation, string solutionPath)
+        {
+            ProjectContextMenu contextMenu = GetProjectExplorerContextMenu();
+            contextMenu.ClickContextMenuByName("Publish...");
+
+            var publishDialog = Retry.Find(() => FindFirstChild(e => e.ByName("Publish")
+            .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))),
+                new RetrySettings
+                {
+                    Timeout = TimeSpan.FromSeconds(120),
+                    ThrowOnTimeout = true,
+                    TimeoutMessage = "Fail to open publish setting dialog"
+                }).As<PublishDialog>();
+            publishDialog.SelectPublishTargetType();
+            publishDialog.SelectPublishTargetLocation(publishLocation);
+            var profilesControl = WaitForPublishButton(solutionPath);
+            var publishBtn = WaitForElement(() => profilesControl.FindFirstChild(e => e.ByAutomationId("PublishButton")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Button))).AsButton(), 10);
+            publishBtn.Invoke();
+            WaitForPublishFinished(profilesControl);
+        }
+
+        internal void WaitForPublishFinished(AutomationElement profilesControl)
+        {
+            var profileControl = WaitForElement(() => profilesControl.FindFirstChild(e => e.ByClassName("ProfileControl")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Custom))), 10);
+            Retry.WhileFalse(() =>
+            {
+                var SuccessfullyPublishedNotice = WaitForElement(() => profileControl.FindFirstChild(e => e.ByAutomationId("ThisControl").
+                     And(e.ByClassName("PublishStateContainerControl"))), 10).AsTree();
+                return SuccessfullyPublishedNotice != null && SuccessfullyPublishedNotice.Name.StartsWith("Successfully");
+            }, timeout: TimeSpan.FromSeconds(60), throwOnTimeout: true, timeoutMessage: "Fail to publish the project");
+        }
+
+        internal AutomationElement WaitForPublishButton(string solutionPath)
+        {
+            var documentGroupTab = Retry.Find(() => FindFirstDescendant(e => e.ByClassName("DocumentGroup").
+              And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Tab))),
+                new RetrySettings
+                {
+                    Timeout = TimeSpan.FromSeconds(60),
+                    Interval = TimeSpan.FromSeconds(1),
+                    ThrowOnTimeout = true,
+                    TimeoutMessage = $"Fail to Get Publish Button!"
+                }).AsButton();
+
+            var publishTabItemName = $"{Path.GetFileNameWithoutExtension(solutionPath)}: Publish";
+            var publishTabItem = WaitForElement(() => documentGroupTab.FindFirstChild(e => e.ByName(publishTabItemName)
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.TabItem))), 10);
+            var publishPane = WaitForElement(() => publishTabItem.FindFirstChild(e => e.ByName(publishTabItemName)
+                .And(e.ByClassName("ViewPresenter"))), 10);
+            var publishGenericPane = WaitForElement(() => publishPane.FindFirstChild(e => e.ByName(publishTabItemName)
+                .And(e.ByClassName("GenericPane"))), 10);
+
+            return WaitForElement(() => publishGenericPane.FindFirstDescendant(e => e.ByClassName("ProfilesControl")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Custom))), 30);
+        }
+
+        public void TestProjectOnAWSValidation()
+        {
+            var testOnAWSWindow = ClickTestOnAWSFromExtensionMenu();
+            testOnAWSWindow.CheckAWSProfileValidation();
+            testOnAWSWindow = ClickTestOnAWSFromExtensionMenu();
+            testOnAWSWindow.CheckBuildArtifactsDirectoryValidation("");
+            testOnAWSWindow = ClickTestOnAWSFromExtensionMenu();
+            testOnAWSWindow.CheckBuildArtifactsDirectoryValidation("C:\\Invalid");
+            testOnAWSWindow = ClickTestOnAWSFromExtensionMenu();
+            testOnAWSWindow.CheckDeploymentNameValidation("a");
+            testOnAWSWindow = ClickTestOnAWSFromExtensionMenu();
+            testOnAWSWindow.CheckDeploymentNameValidation("@@@@");
+        }
+
+        internal TestOnAWSWindow ClickTestOnAWSFromExtensionMenu()
+        {
+            var paExtensionMenuItem = SelectPAExtensionMenu();
+            var testOnAWSMenuItem = paExtensionMenuItem.Items.Find(e => e.Name == Constants.TestOnAWSMenuItem).AsMenuItem();
+            Assert.NotNull(testOnAWSMenuItem);
+            testOnAWSMenuItem.DrawHighlight();
+            testOnAWSMenuItem.Invoke();
+            return WaitForElement(() => FindFirstChild(e => e.ByName("Porting Assistant - Test on AWS (private beta)")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))), 10).As<TestOnAWSWindow>();
+        }
+
+        public void RunTestProjectOnAWS(string publishLocation)
+        {
+            var testOnAWSWindow = ClickTestOnAWSFromExtensionMenu();
+            testOnAWSWindow.RunDeploymentWithValidValues(publishLocation);
+        }
+
+        public void WaitForDeploymentFinish()
+        {
+            var deployingInfoBarControl = Retry.Find(() => FindFirstChild(e => e.ByAutomationId("InfoBarControl").
+              And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Pane))),
+                new RetrySettings
+                {
+                    Timeout = TimeSpan.FromSeconds(600),
+                    Interval = TimeSpan.FromSeconds(10),
+                    ThrowOnTimeout = true,
+                    TimeoutMessage = $"Fail to Deploy the Project!"
+                });
+            deployingInfoBarControl.DrawHighlight();
+            var hideButton = WaitForElement(() => deployingInfoBarControl.FindFirstChild(e => e.ByAutomationId("HideButton")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Button))).AsButton(), 10);
+            hideButton.DrawHighlight();
+            hideButton.Invoke();
+            var deployedInfoBarControl = Retry.Find(() => FindFirstChild(e => e.ByAutomationId("InfoBarControl").
+              And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Pane))),
+                new RetrySettings
+                {
+                    Timeout = TimeSpan.FromSeconds(600),
+                    Interval = TimeSpan.FromSeconds(10),
+                    ThrowOnTimeout = true,
+                    TimeoutMessage = $"Fail to Deploy the Project!"
+                });
+            deployedInfoBarControl.DrawHighlight();
+        }
+
+        public void CheckCurrentlyDeployedApplications()
+        {
+            var paExtensionMenuItem = SelectPAExtensionMenu();
+            var viewRunningApplicationOnAWSMenuItem = paExtensionMenuItem.Items.Find(e => e.Name == Constants.ViewRunningApplicationsOnAWSMenuItem).AsMenuItem();
+            Assert.NotNull(viewRunningApplicationOnAWSMenuItem);
+            viewRunningApplicationOnAWSMenuItem.DrawHighlight();
+            viewRunningApplicationOnAWSMenuItem.Invoke();
+            var applicationsRunningOnAWSWindow = WaitForElement(() => FindFirstChild(e => e.ByName("Applications Running on AWS")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.Window))), 10).AsWindow();
+            var deploymentTable = WaitForElement(() => applicationsRunningOnAWSWindow.FindFirstChild(e => e.ByAutomationId("DeploymentTable")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.DataGrid))), 10);
+            var deploymentItem = WaitForElement(() => deploymentTable.FindFirstChild(e => e.ByName("PortingAssistantVSExtensionClient.Dialogs.DeploymentDetail")
+                .And(e.ByControlType(FlaUI.Core.Definitions.ControlType.DataItem))), 10);
+            deploymentItem.DrawHighlight();
         }
     }
 }

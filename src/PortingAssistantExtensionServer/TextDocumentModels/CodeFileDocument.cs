@@ -40,7 +40,8 @@ namespace PortingAssistantExtensionServer.TextDocumentModels
 
             while (!string.IsNullOrEmpty(currentDir))
             {
-                projectFile = Directory.EnumerateFiles(currentDir, "*.csproj").FirstOrDefault();
+                projectFile = Directory.EnumerateFiles(currentDir, "*.csproj").FirstOrDefault() ??
+                              Directory.EnumerateFiles(currentDir, "*.vbproj").FirstOrDefault();
                 if (projectFile != null)
                 {
                     return projectFile;

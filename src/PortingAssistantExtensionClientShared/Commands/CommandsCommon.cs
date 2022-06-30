@@ -70,15 +70,17 @@ namespace PortingAssistantVSExtensionClient.Commands
                 await NotificationUtils.UseStatusBarProgressAsync(1, 2, "Check Porting Assistant Status.....");
                 var serverStatus = await UserSettings.Instance.GetLanguageServerStatusAsync();
                 await NotificationUtils.UseStatusBarProgressAsync(2, 2, "");
-                if (serverStatus == LanguageServerStatus.NOT_RUNNING)
+                int retryInterval = 3000;
+                for (int retry = 0; retry < 3 ; retry++)
                 {
-                    NotificationUtils.ShowInfoMessageBox(PAGlobalService.Instance.Package, "Porting Assistant cannot be activated. Please open any .cs/.vb file if its not already opened.", "Porting Assistant can not be activated.");
-                    return false;
+
+                    if (serverStatus == LanguageServerStatus.NOT_RUNNING)
+                    {
+                        System.Threading.Thread.Sleep(retryInterval);
+                    }
+                    else return true;
                 }
-                else
-                {
-                    return true;
-                }
+                return false;
 
             }catch(Exception ex)
             {

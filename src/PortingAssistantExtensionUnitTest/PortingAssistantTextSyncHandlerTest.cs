@@ -51,6 +51,8 @@ namespace PortingAssistantExtensionUnitTest
         private static readonly string _testSolutionPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestSolution", "TestProject", "TestCodeFile.cs");
         private CodeFileDocument _codeFileDocument = new CodeFileDocument(DocumentUri.FromFileSystemPath(_testSolutionPath));
 
+        private static readonly string _testVbPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "TestSolution", "TestVbProject", "TestClass.vb");
+
         private readonly DidChangeTextDocumentParams _didChangeTextDocumentParams = new DidChangeTextDocumentParams
         {
             TextDocument = new VersionedTextDocumentIdentifier
@@ -249,6 +251,11 @@ namespace PortingAssistantExtensionUnitTest
             var result = _portingAssistantTextSyncHandler.GetTextDocumentAttributes(DocumentUri.FromFileSystemPath(_testSolutionPath));
 
             Assert.AreEqual(result.LanguageId, "CSharpFileType");
+            Assert.AreEqual(_portingAssistantTextSyncHandler
+                    .GetTextDocumentAttributes(
+                        DocumentUri.FromFileSystemPath(_testVbPath))
+                    .LanguageId,
+                "VisualBasicFileType");
         }
 
         [Test]

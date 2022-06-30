@@ -32,4 +32,8 @@
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Content>
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="TestSolution\TestVbProject\TestClass.vb" />
+  </ItemGroup>
 </Project>

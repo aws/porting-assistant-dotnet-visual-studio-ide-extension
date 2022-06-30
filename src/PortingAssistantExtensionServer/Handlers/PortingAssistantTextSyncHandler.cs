@@ -62,6 +62,11 @@ namespace PortingAssistantExtensionServer.Handlers
             {
                 return new TextDocumentAttributes(uri, "CSharpFileType");
             }
+
+            if (uri.Path.EndsWith(".vb"))
+            {
+                return new TextDocumentAttributes(uri, "VisualBasicFileType");
+            }
             return null;
         }
 

@@ -52,7 +52,7 @@ namespace PortingAssistantVSExtensionClient
         internal static FileExtensionToContentTypeDefinition VbFileExtensionDefinition;
     }
 
-    class PAcContentDefinition
+    class PAContentDefinition
     {
         [Export]
         [Name("ini")]

@@ -98,7 +98,11 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             try
             {
-                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
+                if (!await CommandsCommon.CheckLanguageServerStatusAsync())
+                {
+                    NotificationUtils.ShowInfoMessageBox(PAGlobalService.Instance.Package, "Porting Assistant cannot be activated. Please open any .cs/.vb file if its not already opened.", "Porting Assistant can not be activated.");
+                    return;
+                }
                 if (!CommandsCommon.SetupPage()) return;
                 if (!UserSettings.Instance.SolutionAssessed)
                 {

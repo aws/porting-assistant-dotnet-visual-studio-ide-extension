@@ -1,4 +1,7 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using EnvDTE;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Dialogs;
 using PortingAssistantVSExtensionClient.Models;
@@ -98,7 +101,15 @@ namespace PortingAssistantVSExtensionClient.Commands
             
             try
             {
-                if (!await CommandsCommon.CheckLanguageServerStatusAsync()) return;
+                var solutionFile = await CommandsCommon.GetSolutionPathAsync();
+#if Dev16
+                VS19LSPTrigger(solutionFile) ;
+#endif
+                if (!await CommandsCommon.CheckLanguageServerStatusAsync())
+                {
+                    NotificationUtils.ShowInfoMessageBox(PAGlobalService.Instance.Package, "Porting Assistant cannot be activated. Please open any .cs/.vb file if its not already opened.", "Porting Assistant can not be activated.");
+                    return;
+                }
                 if (!CommandsCommon.SetupPage()) return;
                 // Verify Target framework selection before disabling all commands.
                 if (UserSettings.Instance.TargetFramework.Equals(TargetFrameworkType.NO_SELECTION))
@@ -106,7 +117,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                     if (!SelectTargetDialog.EnsureExecute()) return;
                 }
                 CommandsCommon.EnableAllCommand(false);
-                var solutionFile = await CommandsCommon.GetSolutionPathAsync();
+                
                 SolutionName = Path.GetFileName(solutionFile);
                 string pipeName = Guid.NewGuid().ToString();
                 // It's intended that we don't await for RunAssessmentAsync function for too long.
@@ -147,6 +158,28 @@ namespace PortingAssistantVSExtensionClient.Commands
                 }
             }
             return CompletionTask;
+        }
+
+        private async void VS19LSPTrigger(string solutionFile)
+        {
+            try
+            {
+                var openFile = Path.Combine(Path.GetDirectoryName(solutionFile), "pa.ini");
+                if (!File.Exists(openFile))
+                {
+                    using (File.Create(openFile)) ;
+                }
+                var dte = await PAGlobalService.Instance.GetDTEServiceAsync();
+                dte.ItemOperations.OpenFile(openFile);
+                await CommandsCommon.CheckLanguageServerStatusAsync();
+            }
+            catch (Exception ex)
+            {
+                NotificationUtils.ShowErrorMessageBox(package, 
+                    $"failed to load porting assistant in visual studio 2019 due to {ex.Message}", 
+                    "failed to load porting assistant");
+            }
+            
         }
     }
 }

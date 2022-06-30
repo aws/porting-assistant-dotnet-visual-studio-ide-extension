@@ -43,7 +43,7 @@ namespace PortingAssistantVSExtensionClient
     {
         [Export]
         [Name("VisualBasicFileType")]
-        [BaseDefinition("Basic")]
+        [BaseDefinition("Code")]
         internal static ContentTypeDefinition VbContentTypeDefinition;
 
         [Export]
@@ -52,8 +52,23 @@ namespace PortingAssistantVSExtensionClient
         internal static FileExtensionToContentTypeDefinition VbFileExtensionDefinition;
     }
 
-    [ContentType("CSharpFileType")]
-    [ContentType("VisualBasicFileType")]
+    class PAcContentDefinition
+    {
+        [Export]
+        [Name("ini")]
+        [BaseDefinition(CodeRemoteContentDefinition.CodeRemoteContentTypeName)]
+        internal static ContentTypeDefinition IniContentTypeDefinition;
+
+        [Export]
+        [FileExtension(".ini")]
+        [ContentType("ini")]
+        internal static FileExtensionToContentTypeDefinition IniFileExtensionDefinition;
+    }
+
+    [ContentType("CSharpFileType"), ContentType("VisualBasicFileType")]
+#if Dev16
+    [ContentType("ini")]
+#endif
     [Export(typeof(ILanguageClient))]
     [Guid(PortingAssistantLanguageClient.PackageGuidString)]
     class PortingAssistantLanguageClient : AsyncPackage, ILanguageClient, ILanguageClientCustomMessage2

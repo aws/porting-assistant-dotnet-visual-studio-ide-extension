@@ -199,5 +199,9 @@ namespace PortingAssistantVSExtensionClient.Options
         {
             System.Diagnostics.Process.Start(Common.ExternalUrls.DefaultSDKCreds);
         }
+        private void Hyperlink_Click_4(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(Common.ExternalUrls.ClientRelease);
+        }
     }
 }

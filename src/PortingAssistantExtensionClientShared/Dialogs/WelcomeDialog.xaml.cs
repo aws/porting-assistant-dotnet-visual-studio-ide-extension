@@ -246,5 +246,10 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
             Close();
         }
+
+        private void Hyperlink_Click_6(object sender, System.Windows.RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(ExternalUrls.ClientRelease);
+        }
     }
 }

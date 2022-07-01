@@ -43,7 +43,7 @@ namespace PortingAssistantVSExtensionClient
     {
         [Export]
         [Name("VisualBasicFileType")]
-        [BaseDefinition("Code")]
+        [BaseDefinition("Basic")]
         internal static ContentTypeDefinition VbContentTypeDefinition;
 
         [Export]

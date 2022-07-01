@@ -335,6 +335,7 @@ namespace PortingAssistantExtensionServer.Services
         public async Task<IList<Diagnostic>> GetDiagnosticsAsync(DocumentUri fileUri)
         {
             _openDocuments.TryGetValue(fileUri, out var document);
+            if (document == null) return null;
             var triggerType = "ContinuousAssessmentRequest";
             var result = await AssessFileAsync(document, false);
             var sourceFileAnalysisResult = result.FirstOrDefault();

@@ -135,6 +135,7 @@ namespace PortingAssistantExtensionServer.Handlers
             try
             {
                 var diagnostics = _solutionAnalysisService.GetDiagnosticsAsync(document.DocumentUri);
+                if (diagnostics == null) return;
                 await diagnostics.ContinueWith(t =>
                 {
                     if (t.IsCompleted)

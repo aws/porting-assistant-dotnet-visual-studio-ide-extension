@@ -13,7 +13,6 @@ namespace PortingAssistantExtensionIntegTests
     class AssessmentTests
     {
         public const string NETCOREAPP31 = "netcoreapp3.1";
-        //public const string NET50 = "net5.0";
         public const string NET60 = "net6.0";
         private string tempProjectRoot;
         private List<string[]> testProjectInfoList = new List<string[]>();
@@ -154,7 +153,7 @@ namespace PortingAssistantExtensionIntegTests
         }
 
         [Test]
-        public async Task TestMvcMusicStoreNet50Async()
+        public async Task TestMvcMusicStoreNet60Async()
         {
             InitializeTestResource("MvcMusicStore.zip");
             string[] projectInfo = testProjectInfoList.FindLast(t => t[0].Equals("MvcMusicStore"));
@@ -271,7 +270,7 @@ namespace PortingAssistantExtensionIntegTests
                 var currentResults = await client.AssessSolutionAsync(targetFramework);
 
                 /* Uncomment this method to save the results in a json file*/
-                SaveResults(jsonFile, currentResults);
+                //SaveResults(jsonFile, currentResults);
                 
                 Boolean result = VerifyResults(jsonFile, currentResults);
                 Console.WriteLine("Verification Result: " + result);

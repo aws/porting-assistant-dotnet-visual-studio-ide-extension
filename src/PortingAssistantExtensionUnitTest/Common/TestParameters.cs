@@ -209,5 +209,13 @@ namespace PortingAssistantExtensionUnitTest.Common
             },
             Version = null
         };
+
+        public static readonly SolutionAnalysisResult TestSolutionAnalysisResult2 = new SolutionAnalysisResult()
+        {
+            Errors = null,
+            FailedProjects = new List<string>(),
+            ProjectAnalysisResults = null,
+            SolutionDetails = null,
+        };
     }
 }

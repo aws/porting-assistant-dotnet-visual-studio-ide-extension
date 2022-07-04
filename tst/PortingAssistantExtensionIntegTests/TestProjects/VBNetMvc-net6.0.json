@@ -1,0 +1,72 @@
+{
+  "FileCompatResults": {
+    "BundleConfig.vb": [
+      {
+        "fileName": "BundleConfig.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overloads Sub Add(bundle As System.Web.Optimization.Bundle) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 6,
+            "Character": 8
+          },
+          "End": {
+            "Line": 7,
+            "Character": 53
+          }
+        }
+      }
+    ],
+    "FilterConfig.vb": [
+      {
+        "fileName": "FilterConfig.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overloads Sub Add(filter As Object) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 6,
+            "Character": 8
+          },
+          "End": {
+            "Line": 6,
+            "Character": 47
+          }
+        }
+      }
+    ],
+    "RouteConfig.vb": [
+      {
+        "fileName": "RouteConfig.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Sub IgnoreRoute(url As String) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 10,
+            "Character": 8
+          },
+          "End": {
+            "Line": 10,
+            "Character": 56
+          }
+        }
+      }
+    ],
+    "HomeController.vb": [
+      {
+        "fileName": "HomeController.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Protected Friend Overloads Function View() As System.Web.Mvc.ViewResult is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 4,
+            "Character": 15
+          },
+          "End": {
+            "Line": 4,
+            "Character": 21
+          }
+        }
+      }
+    ]
+  }
+}

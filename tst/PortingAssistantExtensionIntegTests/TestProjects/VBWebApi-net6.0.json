@@ -1,0 +1,310 @@
+{
+  "FileCompatResults": {
+    "BundleConfig.vb": [
+      {
+        "fileName": "BundleConfig.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overloads Sub Add(bundle As System.Web.Optimization.Bundle) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 6,
+            "Character": 8
+          },
+          "End": {
+            "Line": 7,
+            "Character": 52
+          }
+        }
+      }
+    ],
+    "FilterConfig.vb": [
+      {
+        "fileName": "FilterConfig.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overloads Sub Add(filter As Object) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 6,
+            "Character": 8
+          },
+          "End": {
+            "Line": 6,
+            "Character": 47
+          }
+        }
+      }
+    ],
+    "RouteConfig.vb": [
+      {
+        "fileName": "RouteConfig.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Sub IgnoreRoute(url As String) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 10,
+            "Character": 8
+          },
+          "End": {
+            "Line": 10,
+            "Character": 56
+          }
+        }
+      }
+    ],
+    "WebApiConfig.vb": [
+      {
+        "fileName": "WebApiConfig.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Sub MapHttpAttributeRoutes() is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 10,
+            "Character": 8
+          },
+          "End": {
+            "Line": 10,
+            "Character": 39
+          }
+        }
+      }
+    ],
+    "ApiDescriptionExtensions.vb": [
+      {
+        "fileName": "ApiDescriptionExtensions.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overloads Function Split(ParamArray separator As Char()) As String() is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 16,
+            "Character": 39
+          },
+          "End": {
+            "Line": 16,
+            "Character": 55
+          }
+        }
+      }
+    ],
+    "HelpPageConfig.vb": [
+      {
+        "fileName": "HelpPageConfig.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: HttpConfiguration is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 31,
+            "Character": 38
+          },
+          "End": {
+            "Line": 31,
+            "Character": 55
+          }
+        }
+      }
+    ],
+    "HelpController.vb": [
+      {
+        "fileName": "HelpController.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overloads Default Property Item(key As String) As Object is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 37,
+            "Character": 12
+          },
+          "End": {
+            "Line": 37,
+            "Character": 45
+          }
+        }
+      }
+    ],
+    "HelpPageAreaRegistration.vb": [
+      {
+        "fileName": "HelpPageAreaRegistration.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overloads Function MapRoute(name As String, url As String, defaults As Object) As System.Web.Routing.Route is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 15,
+            "Character": 12
+          },
+          "End": {
+            "Line": 15,
+            "Character": 157
+          }
+        }
+      }
+    ],
+    "HelpPageConfigurationExtensions.vb": [
+      {
+        "fileName": "HelpPageConfigurationExtensions.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overloads Sub Replace(serviceType As System.Type, service As Object) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 28,
+            "Character": 12
+          },
+          "End": {
+            "Line": 28,
+            "Character": 91
+          }
+        }
+      }
+    ],
+    "ModelDescriptionGenerator.vb": [
+      {
+        "fileName": "ModelDescriptionGenerator.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Function GetDocumentationProvider() As System.Web.Http.Description.IDocumentationProvider is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 84,
+            "Character": 97
+          },
+          "End": {
+            "Line": 84,
+            "Character": 139
+          }
+        }
+      }
+    ],
+    "ModelNameHelper.vb": [
+      {
+        "fileName": "ModelNameHelper.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Function GetCustomAttribute(Of Areas.HelpPage.ModelDescriptions.ModelNameAttribute)() As Areas.HelpPage.ModelDescriptions.ModelNameAttribute is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 12,
+            "Character": 59
+          },
+          "End": {
+            "Line": 12,
+            "Character": 107
+          }
+        }
+      }
+    ],
+    "HelpPageApiModel.vb": [
+      {
+        "fileName": "HelpPageApiModel.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Description is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 3,
+            "Character": 24
+          },
+          "End": {
+            "Line": 3,
+            "Character": 35
+          }
+        }
+      }
+    ],
+    "HelpPageSampleGenerator.vb": [
+      {
+        "fileName": "HelpPageSampleGenerator.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Sub Add(item As System.Func(Of Areas.HelpPage.HelpPageSampleGenerator, System.Type, Object)) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 34,
+            "Character": 12
+          },
+          "End": {
+            "Line": 34,
+            "Character": 75
+          }
+        }
+      }
+    ],
+    "HelpPageSampleKey.vb": [
+      {
+        "fileName": "HelpPageSampleKey.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overrides Function Equals(other As Object) As Boolean is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 162,
+            "Character": 16
+          },
+          "End": {
+            "Line": 162,
+            "Character": 64
+          }
+        }
+      }
+    ],
+    "ObjectGenerator.vb": [
+      {
+        "fileName": "ObjectGenerator.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overridable Overloads Function MakeGenericType(ParamArray typeArguments As System.Type()) As System.Type is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 109,
+            "Character": 49
+          },
+          "End": {
+            "Line": 109,
+            "Character": 101
+          }
+        }
+      }
+    ],
+    "XmlDocumentationProvider.vb": [
+      {
+        "fileName": "XmlDocumentationProvider.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Function ToArray() As String() is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 94,
+            "Character": 53
+          },
+          "End": {
+            "Line": 94,
+            "Character": 130
+          }
+        }
+      }
+    ],
+    "Global.asax.vb": [
+      {
+        "fileName": "Global.asax.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Shared Overloads Sub Configure(configurationCallback As System.Action(Of System.Web.Http.HttpConfiguration)) is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 8,
+            "Character": 8
+          },
+          "End": {
+            "Line": 8,
+            "Character": 70
+          }
+        }
+      }
+    ],
+    "HomeController.vb": [
+      {
+        "fileName": "HomeController.vb",
+        "compatCode": "PA0001",
+        "message": "Porting Assistant: Public Overloads Default Property Item(key As String) As Object is incompatible for target framework net6.0 ",
+        "Range": {
+          "Start": {
+            "Line": 4,
+            "Character": 8
+          },
+          "End": {
+            "Line": 4,
+            "Character": 25
+          }
+        }
+      }
+    ]
+  }
+}

@@ -70,7 +70,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 await NotificationUtils.UseStatusBarProgressAsync(1, 2, "Check Porting Assistant Status.....");
                 var serverStatus = await UserSettings.Instance.GetLanguageServerStatusAsync();
                 await NotificationUtils.UseStatusBarProgressAsync(2, 2, "");
-                int retryInterval = 3000;
+                int retryInterval = 500;
                 for (int retry = 0; retry < 3 ; retry++)
                 {
 

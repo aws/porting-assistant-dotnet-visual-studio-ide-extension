@@ -76,8 +76,6 @@
 			<!-- analyze menu -->
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="SolutionAssessmentCommandId" priority="0x0301" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PADiagGroup" />
-				<CommandFlag>DynamicVisibility</CommandFlag>
-				<CommandFlag>DefaultInvisible</CommandFlag>
 				<Strings>
 					<ButtonText>Run Full Assessment with Porting Assistant</ButtonText>
 					<LocCanonicalName>.PortingAssistant.RunFullAssessment</LocCanonicalName>
@@ -85,8 +83,6 @@
 			</Button>
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidAutoAssessmentCommand" priority="0x0302" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PADiagGroup" />
-				<CommandFlag>DynamicVisibility</CommandFlag>
-				<CommandFlag>DefaultInvisible</CommandFlag>
 				<Strings>
 					<ButtonText>Enable Incremental Assessments with Porting Assistant</ButtonText>
 					<LocCanonicalName>.PortingAssistant.EnableIncrementalAssessment</LocCanonicalName>
@@ -96,8 +92,6 @@
 			<!-- project menu -->
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidSolutionPortingCommand" priority="0x0302" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PAProjMenuGroup" />
-				<CommandFlag>DynamicVisibility</CommandFlag>
-				<CommandFlag>DefaultInvisible</CommandFlag>
 				<Strings>
 					<ButtonText>Port Solution to .NET Core with Porting Assistant</ButtonText>
 					<LocCanonicalName>.PortingAssistant.PortSolution</LocCanonicalName>
@@ -105,8 +99,6 @@
 			</Button>
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidProjectPortingCommand" priority="0x0301" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PAProjMenuGroup" />
-				<CommandFlag>DynamicVisibility</CommandFlag>
-				<CommandFlag>DefaultInvisible</CommandFlag>
 				<Strings>
 					<ButtonText>Port Project to .NET Core with Porting Assistant</ButtonText>
 					<LocCanonicalName>.PortingAssistant.PortProject</LocCanonicalName>
@@ -142,32 +134,24 @@
 			<!-- porting assistant menu -->
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="SolutionAssessmentCommandId" priority="0x0301" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
-				<CommandFlag>DynamicVisibility</CommandFlag>
-				<CommandFlag>DefaultInvisible</CommandFlag>
 				<Strings>
 					<ButtonText>Run Full Assessment with Porting Assistant</ButtonText>
 				</Strings>
 			</Button>
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidAutoAssessmentCommand" priority="0x0302" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
-				<CommandFlag>DynamicVisibility</CommandFlag>
-				<CommandFlag>DefaultInvisible</CommandFlag>
 				<Strings>
 					<ButtonText>Enable Incremental Assessments with Porting Assistant</ButtonText>
 				</Strings>
 			</Button>
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidSolutionPortingCommand" priority="0x0303" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
-				<CommandFlag>DynamicVisibility</CommandFlag>
-				<CommandFlag>DefaultInvisible</CommandFlag>
 				<Strings>
 					<ButtonText>Port Solution to .NET Core with Porting Assistant</ButtonText>
 				</Strings>
 			</Button>
 			<Button guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="cmdidProjectPortingCommand" priority="0x0304" type="Button">
 				<Parent guid="guidPortingAssistantVSExtensionClientPackageCmdSet" id="PATopMenuGroup" />
-				<CommandFlag>DynamicVisibility</CommandFlag>
-				<CommandFlag>DefaultInvisible</CommandFlag>
 				<Strings>
 					<ButtonText>Port Project to .NET Core with Porting Assistant</ButtonText>
 				</Strings>

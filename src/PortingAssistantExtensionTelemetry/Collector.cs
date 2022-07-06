@@ -45,6 +45,8 @@ namespace PortingAssistantExtensionTelemetry
                 {
                     return;
                 }
+                var compatbilityResult = projectAnalysisResult.ProjectCompatibilityResult;
+                compatbilityResult.ProjectPath = GetHash(sha256hash, compatbilityResult.ProjectPath);
                 var projectMetrics = new ProjectMetrics
                 {
                     MetricsType = MetricsType.project,
@@ -60,7 +62,7 @@ namespace PortingAssistantExtensionTelemetry
                     numNugets = projectAnalysisResult.PackageReferences.Count,
                     numReferences = projectAnalysisResult.ProjectReferences.Count,
                     isBuildFailed = projectAnalysisResult.IsBuildFailed,
-                    compatibilityResult = projectAnalysisResult.ProjectCompatibilityResult,
+                    compatibilityResult = compatbilityResult,
                     VisualStudioClientFullVersion = visualStudioFullVersion,
                     projectLanguage = GetProjectLanguage(projectAnalysisResult.ProjectFilePath)
                 };

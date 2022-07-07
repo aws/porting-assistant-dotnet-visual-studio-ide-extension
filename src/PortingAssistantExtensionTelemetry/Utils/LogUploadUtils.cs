@@ -68,17 +68,13 @@ namespace PortingAssistantExtensionTelemetry.Utils
 
             return awsCredentials;
         }
-        private static async Task<bool> PutLogData
-            (
+
+        private static async Task<bool> PutLogData(
             string logName,
             string logData,
-            string profile,
-            bool enabledDefaultCredentials,
-            string paVersion,
             TelemetryConfiguration telemetryConfiguration,
             AWSCredentials awsCredentials,
-            ILogger logger
-            )
+            ILogger logger)
         {
             try
             {
@@ -120,7 +116,16 @@ namespace PortingAssistantExtensionTelemetry.Utils
             }
         }
 
-        public static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, bool shareMetric, TelemetryConfiguration teleConfig, string lastReadTokenFile, string profile, bool enabledDefaultCredentials, string paVersion, ILogger logger)
+        public static void OnTimedEvent(
+            object source,
+            System.Timers.ElapsedEventArgs e,
+            bool shareMetric,
+            TelemetryConfiguration teleConfig,
+            string lastReadTokenFile,
+            string profile,
+            bool enabledDefaultCredentials,
+            string paVersion,
+            ILogger logger)
         {
             try
             {
@@ -134,9 +139,12 @@ namespace PortingAssistantExtensionTelemetry.Utils
                 }
 
                 // Get files in directory and filter based on Suffix
-                string[] fileEntries = Directory.GetFiles(teleConfig.LogsPath).Where(f =>
-                  teleConfig.Suffix.ToArray().Any(x => f.EndsWith(x))
-                  ).ToArray();
+                string[] fileEntries = Directory
+                    .GetFiles(teleConfig.LogsPath)
+                    .Where(f =>
+                        teleConfig.Suffix.ToArray().Any(x => f.EndsWith(x)))
+                    .ToArray();
+
                 // Get or Create fileLineNumberMap
                 var fileLineNumberMap = new Dictionary<string, int>();
                 if (File.Exists(lastReadTokenFile))
@@ -163,75 +171,100 @@ namespace PortingAssistantExtensionTelemetry.Utils
                         continue;
                     }
 
-                    var logs = new ArrayList();
-
                     // Add new files to fileLineNumberMap
                     if (!fileLineNumberMap.ContainsKey(file))
                     {
                         fileLineNumberMap[file] = 0;
                     }
                     initLineNumber = fileLineNumberMap[file];
-                    FileInfo fileInfo = new FileInfo(file);
-                    var success = false;
-                    if (!IsFileLocked(fileInfo))
+                    FileInfo fileInfo = new(file);
+                    if (IsFileLocked(fileInfo))
                     {
-                        using (FileStream fs = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        continue;
+                    }
+
+                    using (FileStream fs = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    {
+                        using (StreamReader reader = new(fs))
                         {
-                            using (StreamReader reader = new StreamReader(fs))
+                            string line = null;
+                            int currLineNumber = 0;
+                            for (; currLineNumber < initLineNumber; currLineNumber++)
                             {
-                                string line = null;
-                                int currLineNumber = 0;
-                                for (; currLineNumber < initLineNumber; currLineNumber++)
-                                {
-                                    line = reader.ReadLine();
-                                    if (line == null)
-                                    {
-                                        return;
-                                    }
-                                }
-
                                 line = reader.ReadLine();
-
-                                // If put-log api works keep sending logs else wait and do it next time
-                                while (line != null && logs.Count <= 1000)
+                                if (line == null)
                                 {
-                                    currLineNumber++;
-                                    logs.Add(line);
-                                    line = reader.ReadLine();
+                                    return;
+                                }
+                            }
 
-                                    // send 1000 lines of logs each time when there are large files
-                                    if (logs.Count >= 1000)
+                            // According to Amazon API Gateway, HTTP API payload size is capped at 10MB.
+                            // https://docs.aws.amazon.com/apigateway/latest/developerguide/limits.html
+                            // Sometimes the log line is large and total of 1000 lines will exceed that limit.
+                            // Use the payload size instead of line count to resolve that constrain.
+                            // We don't want to use all 10MB for the payload, set the limit to 2MB for each log upload.
+                            const int uploadLogBatchMaxSize = 2097152; // (Math.Pow(2, 20) * 10 / 5) = 2MB.
+                            var success = false;
+                            long currentBatchPayloadSize = 0;
+                            line = reader.ReadLine();
+                            var logs = new ArrayList();
+                            // If put-log api works keep sending logs else wait and do it next time
+                            while (line != null && currentBatchPayloadSize <= uploadLogBatchMaxSize)
+                            {
+                                currLineNumber++;
+                                // Add previously read line into log.
+                                logs.Add(line);
+                                currentBatchPayloadSize += line.Length * sizeof(char);
+
+                                // Read next line and try to add into same payload logs.
+                                line = reader.ReadLine();
+                                if (line == null)
+                                {
+                                    break;
+                                }
+
+                                // Estimate if adding current line's size will exceed the 2MB cap,
+                                // Upload previously accumulated logs if so.
+                                if ((currentBatchPayloadSize + line.Length * sizeof(char)) >= uploadLogBatchMaxSize)
+                                {
+                                    success = PutLogData(
+                                        logName,
+                                        JsonConvert.SerializeObject(logs),
+                                        teleConfig,
+                                        awsCredentials,
+                                        logger)
+                                        .Result;
+
+                                    // If upload succeeded, reset logs and currentBatchPayloadSize for next iteration.
+                                    if (success)
                                     {
-                                        // logs.TrimToSize();
-                                        success = PutLogData(logName,
-                                                JsonConvert.SerializeObject(logs),
-                                                profile,
-                                                enabledDefaultCredentials,
-                                                paVersion,
-                                                teleConfig,
-                                                awsCredentials,
-                                                logger).Result;
-                                        if (success) { logs = new ArrayList(); };
+                                        logs = new ArrayList();
+                                        currentBatchPayloadSize = 0;
+                                    }
+                                    else // Upload faile then exit the while loop, and wait for next upload timer event.
+                                    {
+                                        break;
                                     }
                                 }
+                            }
 
-                                if (logs.Count != 0)
-                                {
-                                    success = PutLogData(logName,
-                                            JsonConvert.SerializeObject(logs),
-                                            profile,
-                                            enabledDefaultCredentials,
-                                            paVersion,
-                                            teleConfig,
-                                            awsCredentials,
-                                            logger).Result;
-                                }
-                                if (success)
-                                {
-                                    fileLineNumberMap[file] = currLineNumber;
-                                    string jsonString = JsonConvert.SerializeObject(fileLineNumberMap);
-                                    File.WriteAllText(lastReadTokenFile, jsonString);
-                                }
+                            // Try to upload if log size is smaller than 2MB, or retry the last failed upload before exit.
+                            if (logs.Count != 0)
+                            {
+                                success = PutLogData(
+                                    logName,
+                                    JsonConvert.SerializeObject(logs),
+                                    teleConfig,
+                                    awsCredentials,
+                                    logger)
+                                    .Result;
+                            }
+
+                            if (success)
+                            {
+                                fileLineNumberMap[file] = currLineNumber;
+                                string jsonString = JsonConvert.SerializeObject(fileLineNumberMap);
+                                File.WriteAllText(lastReadTokenFile, jsonString);
                             }
                         }
                     }

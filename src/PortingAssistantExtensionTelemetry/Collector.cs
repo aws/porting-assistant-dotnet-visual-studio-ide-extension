@@ -164,6 +164,26 @@ namespace PortingAssistantExtensionTelemetry
             });
         }
 
+        public static void ActivationCollect(
+            string extensionVersion,
+            string visualStudioVersion, string visualStudioFullVersion)
+        {
+            var timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm");
+
+            TelemetryCollector.Collect<AactivationMetric>(new AactivationMetric()
+            {
+
+                TimeStamp = timeStamp,
+                MetricsType = MetricsType.activation,
+                PortingAssistantExtensionVersion = extensionVersion,
+                VisualStudioClientVersion = visualStudioVersion,
+                TargetFramework = "",
+                RunId = "",
+                TriggerType = "",
+                VisualStudioClientFullVersion = visualStudioFullVersion
+            });
+        }
+
         private static string GetHash(HashAlgorithm hashAlgorithm, string input)
         {
             byte[] data = hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(input));

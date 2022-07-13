@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PortingAssistantExtensionTelemetry.Model
 {
-    public enum MetricsType
+    public class AactivationMetric : MetricsBase
     {
-        project,
-        solution,
-        api,
-        nuget,
-        codeFile,
-        activation
     }
 }

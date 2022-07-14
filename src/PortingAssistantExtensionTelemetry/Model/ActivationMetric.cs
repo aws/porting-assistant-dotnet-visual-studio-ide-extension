@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PortingAssistantExtensionTelemetry.Model
 {
-    public class AactivationMetric : MetricsBase
+    public class ActivationMetric : MetricsBase
     {
     }
 }

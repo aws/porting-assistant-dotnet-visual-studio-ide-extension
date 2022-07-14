@@ -172,7 +172,7 @@ namespace PortingAssistantExtensionTelemetry
         {
             var timeStamp = DateTime.Now.ToString("MM/dd/yyyy HH:mm");
 
-            TelemetryCollector.Collect<AactivationMetric>(new AactivationMetric()
+            TelemetryCollector.Collect<ActivationMetric>(new ActivationMetric()
             {
 
                 TimeStamp = timeStamp,

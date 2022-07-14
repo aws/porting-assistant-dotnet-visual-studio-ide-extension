@@ -72,6 +72,9 @@ namespace PortingAssistantExtensionServer
                     portingAssistantConfiguration
                     );
                 await portingAssisstantLanguageServer.StartAsync();
+                Collector.ActivationCollect(PALanguageServerConfiguration.ExtensionVersion, 
+                    PALanguageServerConfiguration.VisualStudioVersion, 
+                    PALanguageServerConfiguration.VisualStudioFullVersion);
 
                 var logTimer = new System.Timers.Timer();
                 

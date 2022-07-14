@@ -142,7 +142,6 @@ namespace PortingAssistantExtensionServer.Services
                     PALanguageServerConfiguration.VisualStudioVersion,
                     PALanguageServerConfiguration.VisualStudioFullVersion
                     );
-
                 return result;
             }
             catch (Exception ex)

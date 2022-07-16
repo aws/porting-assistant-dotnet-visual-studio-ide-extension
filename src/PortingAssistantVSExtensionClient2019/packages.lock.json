@@ -83,18 +83,18 @@
       },
       "Microsoft.VSSDK.BuildTools": {
         "type": "Direct",
-        "requested": "[16.10.31, )",
-        "resolved": "16.10.31",
-        "contentHash": "U/c6kSEDxlX8+0l6Odzev2Fuc3vgWr8C9QZ8KinGme/P/EH8FQVfDVnSoWkQMliNW6QthXBvGzrTzaXkmx14Qw==",
+        "requested": "[16.9.2021, )",
+        "resolved": "16.9.2021",
+        "contentHash": "U/X1m8liiQr8El1pp452clYm3ThEx4PE/Fx13fqCMgmC9YwXBHfcnneklhoCwbLKBxeZXkTyURtDCp3RFejmMQ==",
         "dependencies": {
           "Microsoft.VisualStudio.SDK.Analyzers": "15.8.33"
         }
       },
       "Newtonsoft.Json": {
         "type": "Direct",
-        "requested": "[10.0.1, )",
-        "resolved": "10.0.1",
-        "contentHash": "ebWzW9j2nwxQeBo59As2TYn7nYr9BHicqqCwHOD1Vdo+50HBtLPuqdiCYJcLdTRknpYis/DSEOQz5KmZxwrIAg=="
+        "requested": "[12.0.2, )",
+        "resolved": "12.0.2",
+        "contentHash": "rTK0s2EKlfHsQsH6Yx2smvcTCeyoDNgCW7FEYyV01drPlh2T243PR2DiDXqtC5N4GDm4Ma/lkxfW5a/4793vbA=="
       },
       "EnvDTE": {
         "type": "Transitive",

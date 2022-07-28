@@ -12,7 +12,6 @@ using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionTelemetry;
 using System.Text.Json;
-using System.Net.Http;
 using PortingAssistantExtensionTelemetry.Utils;
 using PortingAssistantExtensionServer.Common;
 
@@ -72,15 +71,20 @@ namespace PortingAssistantExtensionServer
                     portingAssistantConfiguration
                     );
                 await portingAssisstantLanguageServer.StartAsync();
-                Collector.ActivationCollect(PALanguageServerConfiguration.ExtensionVersion, 
-                    PALanguageServerConfiguration.VisualStudioVersion, 
+                Collector.ActivationCollect(PALanguageServerConfiguration.ExtensionVersion,
+                    PALanguageServerConfiguration.VisualStudioVersion,
                     PALanguageServerConfiguration.VisualStudioFullVersion);
 
                 var logTimer = new System.Timers.Timer();
                 
                 logTimer.Interval = Convert.ToDouble(portingAssistantConfiguration.TelemetryConfiguration.LogTimerInterval);
-                var lastReadTokenFile = Path.Combine(portingAssistantConfiguration.TelemetryConfiguration.LogsPath, "lastToken.json");
-                logTimer.Elapsed += (source, e) => LogUploadUtils.OnTimedEvent(source, e, PALanguageServerConfiguration.EnabledMetrics, portingAssistantConfiguration.TelemetryConfiguration, lastReadTokenFile, Common.PALanguageServerConfiguration.AWSProfileName, Common.PALanguageServerConfiguration.EnabledDefaultCredentials, Common.PALanguageServerConfiguration.ExtensionVersion, Log.Logger);
+                LogUploadUtils.InitializeUploader(
+                    PALanguageServerConfiguration.EnabledMetrics,
+                    portingAssistantConfiguration.TelemetryConfiguration,
+                    PALanguageServerConfiguration.AWSProfileName,
+                    PALanguageServerConfiguration.EnabledDefaultCredentials,
+                    Log.Logger);
+                logTimer.Elapsed += LogUploadUtils.OnTimedEvent;
                 logTimer.AutoReset = true;
                 logTimer.Enabled = true;
                 
@@ -99,6 +103,7 @@ namespace PortingAssistantExtensionServer
             }
             finally
             {
+                LogUploadUtils.WriteLogUploadErrors();
                 Log.CloseAndFlush();
             }
         }

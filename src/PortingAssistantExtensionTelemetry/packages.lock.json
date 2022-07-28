@@ -4,9 +4,9 @@
     "net6.0": {
       "PortingAssistant.Client.Common": {
         "type": "Direct",
-        "requested": "[2.3.9, )",
-        "resolved": "2.3.9",
-        "contentHash": "HksjQLCOx1RkoX3g6I4i5HCZvmwjlqLR7RCouC0s+5F5JTn4MDZzO8asxK78bcqkDiXtBjhSmJJxS/EMHK1zRg==",
+        "requested": "[2.4.2-alpha-g7b80e67d7c, )",
+        "resolved": "2.4.2-alpha-g7b80e67d7c",
+        "contentHash": "MkAO3QV7NkXqI+JsBrcQns7kIkseZTOF2W0KwfHCPF40cIKItcWN6AU53I5D7Gsf4f7r1/q44+djUirKOBQCSw==",
         "dependencies": {
           "CTA.Rules.PortCore": "2.4.66",
           "Newtonsoft.Json": "13.0.1",
@@ -16,14 +16,14 @@
       },
       "PortingAssistant.Client.Telemetry": {
         "type": "Direct",
-        "requested": "[2.3.9, )",
-        "resolved": "2.3.9",
-        "contentHash": "cHrDqI0jDpXIx+wteni0M28Z5GCSfWLoxGhd7cA0Z3Vv1aqXvNJBJxfqf6nmKQbwkAaccaUA4MrWpQTI+4Zh/w==",
+        "requested": "[2.4.2-alpha-g7b80e67d7c, )",
+        "resolved": "2.4.2-alpha-g7b80e67d7c",
+        "contentHash": "6JydVoYGzWmlcqPaYKFC1vlfWialCq1rUKzlAyUZVp7M1f57ginFEBCfCCl3rKugIYeuFl6EH3NrtP38hsCxqg==",
         "dependencies": {
           "AWSSDK.APIGateway": "3.7.2.70",
           "AWSSDK.Core": "3.7.7",
           "Newtonsoft.Json": "13.0.1",
-          "PortingAssistant.Client.Common": "2.3.9",
+          "PortingAssistant.Client.Common": "2.4.2-alpha-g7b80e67d7c",
           "Serilog": "2.10.0",
           "Serilog.Sinks.File": "5.0.0"
         }

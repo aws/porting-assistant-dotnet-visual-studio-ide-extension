@@ -21,7 +21,7 @@ namespace PortingAssistantExtensionTelemetry.Utils
             return "";
         }
 
-        private static Uploader _uploader;
+        public static Uploader Uploader;
 
         public static void InitializeUploader(bool shareMetric,
             TelemetryConfiguration config,
@@ -33,7 +33,7 @@ namespace PortingAssistantExtensionTelemetry.Utils
                 config,
                 out ITelemetryClient client,
                 enabledDefaultCredentials);
-            _uploader = new Uploader(config, client, logger, shareMetric)
+            Uploader = new Uploader(config, client, logger, shareMetric)
             {
                 GetLogName = GetLogName
             };
@@ -42,12 +42,12 @@ namespace PortingAssistantExtensionTelemetry.Utils
         public static void OnTimedEvent(object source,
             System.Timers.ElapsedEventArgs e)
         {
-            _uploader.Run();
+            Uploader.Run();
         }
 
         public static void WriteLogUploadErrors()
         {
-            _uploader.WriteLogUploadErrors();
+            Uploader.WriteLogUploadErrors();
         }
     }
 }

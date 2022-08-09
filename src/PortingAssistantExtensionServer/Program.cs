@@ -53,7 +53,8 @@ namespace PortingAssistantExtensionServer
                         portingAssistantConfiguration.TelemetryConfiguration.LogFilePath,
                         rollingInterval: RollingInterval.Day,
                         rollOnFileSizeLimit: true,
-                        outputTemplate: outputTemplate);
+                        outputTemplate: outputTemplate,
+                        fileSizeLimitBytes: 1000000);
                 if (isConsole)
                 {
                     logConfiguration = logConfiguration.WriteTo.Console();

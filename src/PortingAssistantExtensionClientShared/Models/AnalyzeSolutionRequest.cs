@@ -10,6 +10,7 @@ namespace PortingAssistantVSExtensionClient.Models
         public AnalyzerSettings settings { get; set; }
         public string PipeName { get; set; }
         public bool ContiniousEnabled { get; set; }
+        public string workspaceConfig { get; set; }
     }
 	public class AnalyzerSettings
 	{

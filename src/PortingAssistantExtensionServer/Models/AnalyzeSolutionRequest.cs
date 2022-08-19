@@ -10,6 +10,7 @@ namespace PortingAssistantExtensionServer.Models
         public Dictionary<string, List<string>> metaReferences { get; set; }
         public AnalyzerSettings settings { get; set; }
         public string PipeName { get; set; }
+        public string workspaceConfig { get; set; }
         public override string ToString()
         {
             return $"SolutionPath: {this.solutionFilePath}, " +

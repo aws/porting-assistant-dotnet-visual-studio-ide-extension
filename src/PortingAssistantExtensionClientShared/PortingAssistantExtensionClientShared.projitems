@@ -41,6 +41,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\ProjectFilePortingResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\TelemetryConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UpdateSettingsRequest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\WorkspaceConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Options\DataSharingOption.cs">
       <SubType>Component</SubType>
     </Compile>

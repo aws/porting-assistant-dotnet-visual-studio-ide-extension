@@ -105,7 +105,7 @@ namespace PortingAssistantVSExtensionClient.Commands
             return await SolutionUtils.GetMetadataReferencesAsync(dte);
         }
         
-        public static async System.Threading.Tasks.Task RunAssessmentAsync(string SolutionFile, string pipeName)
+        public static async System.Threading.Tasks.Task RunAssessmentAsync(string SolutionFile, string pipeName, string workspace = null)
         {
             var metaReferences = await CommandsCommon.GetMetaReferencesAsync();
             var analyzeSolutionRequest = new AnalyzeSolutionRequest()
@@ -113,6 +113,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 solutionFilePath = SolutionFile,
                 metaReferences = metaReferences,
                 PipeName = pipeName,
+                workspaceConfig = workspace,
                 settings = new AnalyzerSettings()
                 {
                     TargetFramework = UserSettings.Instance.TargetFramework.ToString(),

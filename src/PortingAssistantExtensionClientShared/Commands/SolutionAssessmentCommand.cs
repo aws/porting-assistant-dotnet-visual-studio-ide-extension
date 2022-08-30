@@ -1,7 +1,13 @@
 ﻿using EnvDTE;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Newtonsoft.Json;
+using PortingAssistantExtensionClientShared.Models;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Dialogs;
 using PortingAssistantVSExtensionClient.Models;
@@ -12,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using Task = System.Threading.Tasks.Task;
 
 namespace PortingAssistantVSExtensionClient.Commands
@@ -101,6 +108,16 @@ namespace PortingAssistantVSExtensionClient.Commands
             
             try
             {
+                Workspace workspace = null;
+                var componentModel = (IComponentModel)await package.GetServiceAsync(typeof(SComponentModel));
+                string serializedWorkspace = null;
+
+                if (componentModel != null)
+                {
+                    workspace = componentModel.GetService<VisualStudioWorkspace>();
+                    serializedWorkspace = ConstructAndSerializeAdhocWorkspace(workspace);
+                }
+
                 var solutionFile = await CommandsCommon.GetSolutionPathAsync();
 #if Dev16
                 VS19LSPTrigger(solutionFile) ;
@@ -121,7 +138,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 SolutionName = Path.GetFileName(solutionFile);
                 string pipeName = Guid.NewGuid().ToString();
                 // It's intended that we don't await for RunAssessmentAsync function for too long.
-                CommandsCommon.RunAssessmentAsync(solutionFile, pipeName);
+                CommandsCommon.RunAssessmentAsync(solutionFile, pipeName, serializedWorkspace);
                 PipeUtils.StartListenerConnection(pipeName, GetAssessmentCompletionTasks(this.package, SolutionName));
             }
             catch (Exception ex)
@@ -180,6 +197,51 @@ namespace PortingAssistantVSExtensionClient.Commands
                     "failed to load porting assistant");
             }
             
+        }
+
+        public string ConstructAndSerializeAdhocWorkspace(Workspace workspace)
+        {
+            try
+            {
+                WorkspaceConfiguration workspaceConfig = new WorkspaceConfiguration();
+                workspaceConfig.workspace = string.Empty;
+                workspaceConfig.solution = new SolutionConfig();
+                workspaceConfig.solution.projects = new List<ProjectConfig>();
+                Dictionary<string, string> projectMapping = workspace.CurrentSolution.Projects.ToDictionary(p => p.Id.Id.ToString(), p => p.FilePath);
+                foreach (var curProject in workspace.CurrentSolution.Projects)
+                {
+                    ProjectConfig project = new ProjectConfig();
+                    project.documents = new List<DocumentConfig>();
+                    List<DocumentInfo> docInfoLst = new List<DocumentInfo>();
+
+                    foreach (var doc in curProject.Documents)
+                    {
+                        var document = new DocumentConfig();
+                        document.documentId = doc.Id.Id.ToString();
+                        document.assemblyName = curProject.AssemblyName;
+                        document.filePath = doc.FilePath;
+                        project.documents.Add(document);
+                    }
+
+                    project.projectId = curProject.Id.Id.ToString();
+                    project.assemblyName = curProject.AssemblyName;
+                    project.language = curProject.Language;
+                    project.filePath = curProject.FilePath;
+                    project.outputFilePath = curProject.OutputFilePath;
+                    project.projectReferences = new List<string>();
+                    project.metadataReferencesFilePath = curProject.MetadataReferences.ToList().Select(x => x.Display).ToList();
+                    project.analyzerReferences = null;
+                    project.parseOptions = null;
+                    project.compilationOptions = null;
+                    workspaceConfig.solution.projects.Add(project);
+                }
+
+                return JsonConvert.SerializeObject(workspaceConfig);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

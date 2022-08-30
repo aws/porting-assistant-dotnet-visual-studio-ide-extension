@@ -58,7 +58,7 @@ namespace PortingAssistantExtensionServer.Services
                 var startTime = DateTime.Now;
                 runId = Guid.NewGuid().ToString();
                 var triggerType = "InitialRequest";
-                var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
+                var solutionAnalysisResult = await _client.AnalyzeSolutionAsyncUsingVSWorkspace(request.solutionFilePath, request.settings, request.workspaceConfig);
 
                 Collector.SolutionAssessmentCollect(
                 solutionAnalysisResult,

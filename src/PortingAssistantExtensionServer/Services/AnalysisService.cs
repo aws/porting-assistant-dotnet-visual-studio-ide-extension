@@ -61,16 +61,16 @@ namespace PortingAssistantExtensionServer.Services
                 var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
 
                 Collector.SolutionAssessmentCollect(
-                solutionAnalysisResult,
-                runId,
-                triggerType,
-                _request.settings.TargetFramework,
-                PALanguageServerConfiguration.ExtensionVersion,
-                PALanguageServerConfiguration.VisualStudioVersion,
-                DateTime.Now.Subtract(startTime).TotalMilliseconds,
-                PALanguageServerConfiguration.VisualStudioFullVersion,
-                PALanguageServerConfiguration.EnabledDefaultCredentials);
-                CreateClientConnectionAsync(request.PipeName);
+                    solutionAnalysisResult,
+                    runId,
+                    triggerType,
+                    _request.settings.TargetFramework,
+                    PALanguageServerConfiguration.ExtensionVersion,
+                    PALanguageServerConfiguration.VisualStudioVersion,
+                    DateTime.Now.Subtract(startTime).TotalMilliseconds,
+                    PALanguageServerConfiguration.VisualStudioFullVersion,
+                    PALanguageServerConfiguration.EnabledDefaultCredentials);
+
                 return solutionAnalysisResult;
             }
             catch (Exception ex)
@@ -89,6 +89,10 @@ namespace PortingAssistantExtensionServer.Services
                         }
                     },
                 };
+            }
+            finally
+            {
+                CreateClientConnectionAsync(request.PipeName);
             }
         }
 

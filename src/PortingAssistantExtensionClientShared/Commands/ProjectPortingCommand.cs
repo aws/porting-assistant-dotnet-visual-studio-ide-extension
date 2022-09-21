@@ -145,13 +145,20 @@ namespace PortingAssistantVSExtensionClient.Commands
                 try
                 {
                     var successfulMessage = $"The project has been ported to {targetFramework}" + (UserSettings.Instance.ApplyPortAction? $".{Environment.NewLine}Code changes have been applied" : "");
-                    NotificationUtils.ShowInfoMessageBox(package, successfulMessage, "Porting successful");
+                    NotificationUtils.ShowInfoMessageBox(
+                        package,
+                        successfulMessage,
+                        "Porting successful");
+
                     await NotificationUtils.ShowInfoBarAsync(package, successfulMessage);
                     await NotificationUtils.UseStatusBarProgressAsync(2, 2, successfulMessage);
                 }
                 catch (Exception ex)
                 {
-                    NotificationUtils.ShowErrorMessageBox(package, $"Porting failed for {selectedProject} due to {ex.Message}", "Porting failed");
+                    NotificationUtils.ShowErrorMessageBox(
+                        package,
+                        $"Porting failed for {selectedProject} due to {ex.Message}",
+                        "Porting failed");
                 }
                 finally
                 {

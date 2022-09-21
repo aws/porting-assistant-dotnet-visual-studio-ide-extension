@@ -82,7 +82,6 @@ namespace PortingAssistantExtensionServer.Services
                 };
                 _logger.LogInformation($"start porting ${request} .....");
                 var results = _client.ApplyPortingChanges(portingRequst);
-                CreateClientConnectionAsync(request.PipeName);
                 _logger.LogInformation($"porting success ${request.SolutionPath}");
                 return new ProjectFilePortingResponse()
                 {
@@ -100,6 +99,10 @@ namespace PortingAssistantExtensionServer.Services
                     messages = new List<string>() { ex.Message },
                     SolutionPath = request.SolutionPath
                 };
+            }
+            finally
+            {
+                CreateClientConnectionAsync(request.PipeName);
             }
         }
 

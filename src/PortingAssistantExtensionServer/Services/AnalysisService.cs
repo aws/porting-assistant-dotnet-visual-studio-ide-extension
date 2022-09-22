@@ -49,51 +49,51 @@ namespace PortingAssistantExtensionServer.Services
 
         public async Task<SolutionAnalysisResult> AssessSolutionAsync(AnalyzeSolutionRequest request)
         {
+            var solutionAnalysisResult = new SolutionAnalysisResult();
+            var triggerType = "InitialRequest";
+            var startTime = DateTime.Now;
+            bool assessCompleted = false;
+
             try
             {
-
                 // Clean up the existing result before run full assessment
                 Cleanup();
                 _request = request;
-                var startTime = DateTime.Now;
                 runId = Guid.NewGuid().ToString();
-                var triggerType = "InitialRequest";
-                var solutionAnalysisResult = await _client.AnalyzeSolutionAsync(request.solutionFilePath, request.settings);
-
-                Collector.SolutionAssessmentCollect(
-                    solutionAnalysisResult,
-                    runId,
-                    triggerType,
-                    _request.settings.TargetFramework,
-                    PALanguageServerConfiguration.ExtensionVersion,
-                    PALanguageServerConfiguration.VisualStudioVersion,
-                    DateTime.Now.Subtract(startTime).TotalMilliseconds,
-                    PALanguageServerConfiguration.VisualStudioFullVersion,
-                    PALanguageServerConfiguration.EnabledDefaultCredentials);
-
-                return solutionAnalysisResult;
+                solutionAnalysisResult = await _client.AnalyzeSolutionAsync(
+                    request.solutionFilePath,
+                    request.settings);
+                assessCompleted = true;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Analyze solution {request.solutionFilePath} with error: ");
-                return new SolutionAnalysisResult
-                {
-                    ProjectAnalysisResults = new List<ProjectAnalysisResult> {
-                        new ProjectAnalysisResult
-                        {
-                            PreportMetaReferences = new List<string>(),
-                            MetaReferences = new List<string>(),
-                            ExternalReferences = new ExternalReferences(),
-                            ProjectRules = new RootNodes(),
-                            PackageAnalysisResults = new Dictionary<PackageVersionPair, Task<PackageAnalysisResult>>()
-                        }
-                    },
-                };
             }
-            finally
+
+            if (assessCompleted)
             {
-                CreateClientConnectionAsync(request.PipeName);
+                try
+                {
+                    Collector.SolutionAssessmentCollect(
+                        solutionAnalysisResult,
+                        runId,
+                        triggerType,
+                        _request.settings.TargetFramework,
+                        PALanguageServerConfiguration.ExtensionVersion,
+                        PALanguageServerConfiguration.VisualStudioVersion,
+                        DateTime.Now.Subtract(startTime).TotalMilliseconds,
+                        PALanguageServerConfiguration.VisualStudioFullVersion,
+                        PALanguageServerConfiguration.EnabledDefaultCredentials);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Analyze solution {request.solutionFilePath} succeeded, but failed at Collector.SolutionAssessmentCollect(). ");
+                }
             }
+
+            // TODO: notify client if assessment is successful or failed, and what to return if partialy failed?
+            CreateClientConnectionAsync(request.PipeName);
+            return solutionAnalysisResult;
         }
 
         public async Task<List<SourceFileAnalysisResult>> AssessFileAsync(CodeFileDocument codeFile, bool actionsOnly = false)

@@ -11,15 +11,29 @@ namespace PortingAssistantExtensionTelemetry
     public static class Collector
     {
         public static void SolutionAssessmentCollect(
-            SolutionAnalysisResult result, string runId, string triggerType,
-            string targetFramework, string extensionVersion,
-            string visualStudioVersion, double time,
+            SolutionAnalysisResult result,
+            string runId,
+            string triggerType,
+            string targetFramework,
+            string extensionVersion,
+            string visualStudioVersion,
+            double time,
             string visualStudioFullVersion,
             bool useDefaultCredentials)
         {
+            if (result == null)
+            {
+                return;
+            }
+
             var sha256hash = SHA256.Create();
             var date = DateTime.Now;
             var solutionDetail = result.SolutionDetails;
+            if (solutionDetail == null)
+            {
+                return;
+            }
+
             // Solution Metrics
             var solutionMetrics = new SolutionMetrics
             {
@@ -40,7 +54,7 @@ namespace PortingAssistantExtensionTelemetry
             };
             TelemetryCollector.Collect<SolutionMetrics>(solutionMetrics);
 
-            result.ProjectAnalysisResults.ForEach(projectAnalysisResult => {
+            result.ProjectAnalysisResults?.ForEach(projectAnalysisResult => {
                 if (projectAnalysisResult == null) 
                 {
                     return;
@@ -71,7 +85,7 @@ namespace PortingAssistantExtensionTelemetry
             });
 
             //nuget metrics
-            result.ProjectAnalysisResults.ForEach(project =>
+            result.ProjectAnalysisResults?.ForEach(project =>
             {
                 foreach (var nuget in project.PackageAnalysisResults)
                 {

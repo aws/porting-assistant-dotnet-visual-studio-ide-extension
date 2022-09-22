@@ -145,12 +145,17 @@ namespace PortingAssistantVSExtensionClient.Commands
                         await PortingAssistantLanguageClient.UpdateUserSettingsAsync();
                     }
                     await NotificationUtils.UseStatusBarProgressAsync(2, 2, "Assessment successful");
-                    await NotificationUtils.ShowInfoBarAsync(this.package, "Assessment successful. You can view the assessment results in the error list or view the green highlights in your source code.");
+                    await NotificationUtils.ShowInfoBarAsync(
+                        this.package,
+                        "Assessment successful. You can view the assessment results in the error list or view the green highlights in your source code.");
                     UserSettings.Instance.SolutionAssessed = true;
                 }
                 catch (Exception ex)
                 {
-                    NotificationUtils.ShowErrorMessageBox(package, $"Assessment failed for {solutionName} due to {ex.Message}", "Assessment failed");
+                    NotificationUtils.ShowErrorMessageBox(
+                        package,
+                        $"Assessment failed for {solutionName} due to {ex.Message}",
+                        "Assessment failed");
                 }
                 finally
                 {

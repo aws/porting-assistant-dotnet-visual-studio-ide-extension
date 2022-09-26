@@ -203,10 +203,11 @@ namespace PortingAssistantVSExtensionClient.Utils
                     ConfigurationFileName);
                 var TelemetryConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(ConfigurationPath)).TelemetryConfiguration;
 
-                if ((awsCredentials == null || !await AwsUtils.VerifyUserAsync("", awsCredentials, TelemetryConfiguration)) &&  AwsUtils.IsCredsNotificationDismissed) 
+                if (!UserSettings.Instance.ValidatedShortTermCredentials && (awsCredentials == null || !await AwsUtils.VerifyUserAsync(string.Empty, awsCredentials, TelemetryConfiguration)))
                 {
                     var creds = new CredentialsNotifications();
                     await creds.ShowCredentialsInfoBarAsync(PAGlobalService.Instance.AsyncServiceProvider, "AWS Credentials associated with Porting Assistant for .NET may have Expired. Please refresh credentials.");
+                    UserSettings.Instance.ValidatedShortTermCredentials = true;
                     return false;
                 }
             }  

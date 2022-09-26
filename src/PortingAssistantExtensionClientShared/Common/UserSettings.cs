@@ -29,6 +29,7 @@ namespace PortingAssistantVSExtensionClient.Options
         public bool SolutionAssessed;
         public bool SolutionHasWebFormsProject;
         public bool EnabledDefaultCredentials;
+        public bool ValidatedShortTermCredentials;
 
         private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
         
@@ -46,6 +47,7 @@ namespace PortingAssistantVSExtensionClient.Options
             this._languageServerStatus.SetResult(LanguageServerStatus.NOT_RUNNING);
             this.SolutionAssessed = false;
             this.EnabledDefaultCredentials = false;
+            this.ValidatedShortTermCredentials = false;
         }
 
         public void SetLanguageServerStatus(LanguageServerStatus status)

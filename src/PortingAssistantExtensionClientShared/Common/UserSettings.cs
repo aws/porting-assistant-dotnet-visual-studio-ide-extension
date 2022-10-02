@@ -29,6 +29,7 @@ namespace PortingAssistantVSExtensionClient.Options
         public bool SolutionAssessed;
         public bool SolutionHasWebFormsProject;
         public bool EnabledDefaultCredentials;
+        public bool UseVisualStudioWorkspace;
 
         private TaskCompletionSource<LanguageServerStatus> _languageServerStatus;
         
@@ -46,6 +47,7 @@ namespace PortingAssistantVSExtensionClient.Options
             this._languageServerStatus.SetResult(LanguageServerStatus.NOT_RUNNING);
             this.SolutionAssessed = false;
             this.EnabledDefaultCredentials = false;
+            this.UseVisualStudioWorkspace = true;   // Enabled by default.
         }
 
         public void SetLanguageServerStatus(LanguageServerStatus status)
@@ -111,6 +113,7 @@ namespace PortingAssistantVSExtensionClient.Options
             Write("TargetFramework", TargetFramework);
             Write("ApplyPortAction", ApplyPortAction);
             Write("EnabledDefaultCredentials", EnabledDefaultCredentials);
+            Write("UseVisualStudioWorkspace", UseVisualStudioWorkspace);
         }
 
         public void LoadingAllSettings()
@@ -119,6 +122,7 @@ namespace PortingAssistantVSExtensionClient.Options
             EnabledMetrics = (bool)Read("EnabledMetrics", true);
             EnabledContinuousAssessment = (bool)Read("EnabledContinuousAssessment", false);
             EnabledDefaultCredentials = (bool)Read("EnabledDefaultCredentials", false);
+            UseVisualStudioWorkspace = (bool)Read("UseVisualStudioWorkspace", true);
             AWSProfileName = (string)Read("AWSProfileName", "");
             ApplyPortAction = (bool)Read("ApplyPortAction", false);
             TargetFramework = (string)Read("TargetFramework", TargetFrameworkType.NO_SELECTION);

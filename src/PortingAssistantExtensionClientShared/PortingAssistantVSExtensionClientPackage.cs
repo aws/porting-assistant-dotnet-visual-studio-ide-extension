@@ -46,6 +46,8 @@ namespace PortingAssistantVSExtensionClient
         public const string UIContextGuid = "de87fa2f-6efb-4005-9ae1-cf01be4977ae";
         #region Package Members
 
+        public static PortingAssistantVSExtensionClientPackage Instance { get; private set; }
+
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -57,6 +59,7 @@ namespace PortingAssistantVSExtensionClient
         {
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
+            Instance = this;
             PAGlobalService.Create(this, this);
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             await PortingAssistantVSExtensionClient.Commands.SolutionAssessmentCommand.InitializeAsync(this);

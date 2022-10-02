@@ -22,12 +22,24 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortingAssistantVSExtension
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortingAssistantVSExtensionClient2022", "PortingAssistantVSExtensionClient2022\PortingAssistantVSExtensionClient2022.csproj", "{1D66ECB9-5E4A-47F0-BD62-10C4B291FDEF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codelyzer.Analysis.Common", "..\..\codelyzer\src\Analysis\Codelyzer.Analysis.Common\Codelyzer.Analysis.Common.csproj", "{17DC272B-35D1-4F30-BF95-9A75B07921E3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Codelyzer.Analysis", "..\..\codelyzer\src\Analysis\Codelyzer.Analysis\Codelyzer.Analysis.csproj", "{EF690584-845E-4D60-B945-B5B5ECA97F91}"
+	ProjectSection(ProjectDependencies) = postProject
+		{17DC272B-35D1-4F30-BF95-9A75B07921E3} = {17DC272B-35D1-4F30-BF95-9A75B07921E3}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistant.Client.Common", "..\..\porting-assistant-dotnet-client\src\PortingAssistant.Client.Common\PortingAssistant.Client.Common.csproj", "{74CD4895-D96C-44C5-950C-C2528912620E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistant.Client.Client", "..\..\porting-assistant-dotnet-client\src\PortingAssistant.Client.Client\PortingAssistant.Client.Client.csproj", "{F5C4D5A2-C0D2-4912-BF87-89EDC663662C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistant.Client.Analysis", "..\..\porting-assistant-dotnet-client\src\PortingAssistant.Client.Analysis\PortingAssistant.Client.Analysis.csproj", "{F957AC8D-283B-4A28-8163-28DCACFD3482}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistant.Client.Telemetry", "..\..\porting-assistant-dotnet-client\src\PortingAssistant.Client.Telemetry\PortingAssistant.Client.Telemetry.csproj", "{EEBD1B13-6597-47A9-927E-9D55DFE1AA0C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CTA.Rules.PortCore", "..\..\cta\src\CTA.Rules.PortCore\CTA.Rules.PortCore.csproj", "{B8ED9F06-81B9-4907-88FC-ED880E18783D}"
+EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fddc}*SharedItemsImports = 4
-		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fdef}*SharedItemsImports = 4
-		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{90359de2-01a5-4346-b513-4b057de45ef8}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
@@ -83,11 +95,72 @@ Global
 		{1D66ECB9-5E4A-47F0-BD62-10C4B291FDEF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1D66ECB9-5E4A-47F0-BD62-10C4B291FDEF}.Release|x86.ActiveCfg = Release|x86
 		{1D66ECB9-5E4A-47F0-BD62-10C4B291FDEF}.Release|x86.Build.0 = Release|x86
+		{17DC272B-35D1-4F30-BF95-9A75B07921E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17DC272B-35D1-4F30-BF95-9A75B07921E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17DC272B-35D1-4F30-BF95-9A75B07921E3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{17DC272B-35D1-4F30-BF95-9A75B07921E3}.Debug|x86.Build.0 = Debug|Any CPU
+		{17DC272B-35D1-4F30-BF95-9A75B07921E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17DC272B-35D1-4F30-BF95-9A75B07921E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17DC272B-35D1-4F30-BF95-9A75B07921E3}.Release|x86.ActiveCfg = Release|Any CPU
+		{17DC272B-35D1-4F30-BF95-9A75B07921E3}.Release|x86.Build.0 = Release|Any CPU
+		{EF690584-845E-4D60-B945-B5B5ECA97F91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF690584-845E-4D60-B945-B5B5ECA97F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF690584-845E-4D60-B945-B5B5ECA97F91}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF690584-845E-4D60-B945-B5B5ECA97F91}.Debug|x86.Build.0 = Debug|Any CPU
+		{EF690584-845E-4D60-B945-B5B5ECA97F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF690584-845E-4D60-B945-B5B5ECA97F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF690584-845E-4D60-B945-B5B5ECA97F91}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF690584-845E-4D60-B945-B5B5ECA97F91}.Release|x86.Build.0 = Release|Any CPU
+		{74CD4895-D96C-44C5-950C-C2528912620E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74CD4895-D96C-44C5-950C-C2528912620E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74CD4895-D96C-44C5-950C-C2528912620E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{74CD4895-D96C-44C5-950C-C2528912620E}.Debug|x86.Build.0 = Debug|Any CPU
+		{74CD4895-D96C-44C5-950C-C2528912620E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74CD4895-D96C-44C5-950C-C2528912620E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74CD4895-D96C-44C5-950C-C2528912620E}.Release|x86.ActiveCfg = Release|Any CPU
+		{74CD4895-D96C-44C5-950C-C2528912620E}.Release|x86.Build.0 = Release|Any CPU
+		{F5C4D5A2-C0D2-4912-BF87-89EDC663662C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5C4D5A2-C0D2-4912-BF87-89EDC663662C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5C4D5A2-C0D2-4912-BF87-89EDC663662C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F5C4D5A2-C0D2-4912-BF87-89EDC663662C}.Debug|x86.Build.0 = Debug|Any CPU
+		{F5C4D5A2-C0D2-4912-BF87-89EDC663662C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5C4D5A2-C0D2-4912-BF87-89EDC663662C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5C4D5A2-C0D2-4912-BF87-89EDC663662C}.Release|x86.ActiveCfg = Release|Any CPU
+		{F5C4D5A2-C0D2-4912-BF87-89EDC663662C}.Release|x86.Build.0 = Release|Any CPU
+		{F957AC8D-283B-4A28-8163-28DCACFD3482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F957AC8D-283B-4A28-8163-28DCACFD3482}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F957AC8D-283B-4A28-8163-28DCACFD3482}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F957AC8D-283B-4A28-8163-28DCACFD3482}.Debug|x86.Build.0 = Debug|Any CPU
+		{F957AC8D-283B-4A28-8163-28DCACFD3482}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F957AC8D-283B-4A28-8163-28DCACFD3482}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F957AC8D-283B-4A28-8163-28DCACFD3482}.Release|x86.ActiveCfg = Release|Any CPU
+		{F957AC8D-283B-4A28-8163-28DCACFD3482}.Release|x86.Build.0 = Release|Any CPU
+		{EEBD1B13-6597-47A9-927E-9D55DFE1AA0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEBD1B13-6597-47A9-927E-9D55DFE1AA0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEBD1B13-6597-47A9-927E-9D55DFE1AA0C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EEBD1B13-6597-47A9-927E-9D55DFE1AA0C}.Debug|x86.Build.0 = Debug|Any CPU
+		{EEBD1B13-6597-47A9-927E-9D55DFE1AA0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEBD1B13-6597-47A9-927E-9D55DFE1AA0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEBD1B13-6597-47A9-927E-9D55DFE1AA0C}.Release|x86.ActiveCfg = Release|Any CPU
+		{EEBD1B13-6597-47A9-927E-9D55DFE1AA0C}.Release|x86.Build.0 = Release|Any CPU
+		{B8ED9F06-81B9-4907-88FC-ED880E18783D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8ED9F06-81B9-4907-88FC-ED880E18783D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8ED9F06-81B9-4907-88FC-ED880E18783D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B8ED9F06-81B9-4907-88FC-ED880E18783D}.Debug|x86.Build.0 = Debug|Any CPU
+		{B8ED9F06-81B9-4907-88FC-ED880E18783D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8ED9F06-81B9-4907-88FC-ED880E18783D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8ED9F06-81B9-4907-88FC-ED880E18783D}.Release|x86.ActiveCfg = Release|Any CPU
+		{B8ED9F06-81B9-4907-88FC-ED880E18783D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A9D6A4D-B535-4A98-BD2F-F56ACF430F09}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fddc}*SharedItemsImports = 4
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fdef}*SharedItemsImports = 4
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{90359de2-01a5-4346-b513-4b057de45ef8}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

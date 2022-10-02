@@ -5,15 +5,20 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace PortingAssistantExtensionTelemetry
 {
     public static class Collector
     {
         public static void SolutionAssessmentCollect(
-            SolutionAnalysisResult result, string runId, string triggerType,
-            string targetFramework, string extensionVersion,
-            string visualStudioVersion, double time,
+            SolutionAnalysisResult result,
+            string runId,
+            string triggerType,
+            string targetFramework,
+            string extensionVersion,
+            string visualStudioVersion,
+            double time,
             string visualStudioFullVersion,
             bool useDefaultCredentials)
         {
@@ -71,11 +76,21 @@ namespace PortingAssistantExtensionTelemetry
             });
 
             //nuget metrics
-            result.ProjectAnalysisResults.ForEach(project =>
+            result.ProjectAnalysisResults.ForEach(async project =>
             {
+                if (project == null)
+                {
+                    return;
+                }
+
                 foreach (var nuget in project.PackageAnalysisResults)
                 {
-                    nuget.Value.Wait();
+                    var nugetResult = await nuget.Value;
+                    if (nugetResult == null)
+                    {
+                        continue;
+                    }
+
                     var nugetMetrics = new NugetMetrics
                     {
                         MetricsType = MetricsType.nuget,
@@ -85,9 +100,9 @@ namespace PortingAssistantExtensionTelemetry
                         VisualStudioClientVersion = visualStudioVersion,
                         TargetFramework = targetFramework,
                         TimeStamp = date.ToString("MM/dd/yyyy HH:mm"),
-                        pacakgeName = nuget.Value.Result.PackageVersionPair.PackageId,
-                        packageVersion = nuget.Value.Result.PackageVersionPair.Version,
-                        compatibility = nuget.Value.Result.CompatibilityResults[targetFramework].Compatibility,
+                        pacakgeName = nugetResult.PackageVersionPair.PackageId,
+                        packageVersion = nugetResult.PackageVersionPair.Version,
+                        compatibility = nugetResult.CompatibilityResults[targetFramework].Compatibility,
                         VisualStudioClientFullVersion = visualStudioFullVersion
                     };
                     TelemetryCollector.Collect<NugetMetrics>(nugetMetrics);

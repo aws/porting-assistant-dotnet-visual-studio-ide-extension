@@ -1,4 +1,6 @@
-﻿using PortingAssistantVSExtensionClient.Common;
+﻿using Microsoft.VisualStudio.Shell;
+using PortingAssistantVSExtensionClient.Commands;
+using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.IO;
@@ -13,33 +15,9 @@ namespace PortingAssistantVSExtensionClient.Options
     /// </summary>
     public partial class OptionPageControl : UserControl
     {
-
-
-
         public OptionPageControl()
         {
             InitializeComponent();
-            ClearCache.IsEnabled = true;
-            ClearCache.Foreground = Brushes.Blue;
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-                string solutionPath = PAGlobalService.DTE2.Value.Solution.FullName;
-                var tmpPath = SolutionUtils.GetTempDirectory(solutionPath);
-                Directory.Delete(tmpPath, recursive:true);
-            }
-            catch (Exception)
-            {
-            }
-            finally
-            {
-                ClearCache.IsEnabled = false;
-                ClearCache.Foreground = Brushes.Gray;
-            }
         }
     }
 }

@@ -6,10 +6,10 @@
 	<PropertyGroup>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 	</PropertyGroup>
-
 	<ItemGroup>
-		<PackageReference Include="PortingAssistant.Client.Telemetry" Version="2.4.2-alpha-g7b80e67d7c" />
-		<PackageReference Include="PortingAssistant.Client.Common" Version="2.4.2-alpha-g7b80e67d7c" />
+	  <ProjectReference Include="..\..\..\porting-assistant-dotnet-client\src\PortingAssistant.Client.Client\PortingAssistant.Client.Client.csproj" />
+	  <ProjectReference Include="..\..\..\porting-assistant-dotnet-client\src\PortingAssistant.Client.Common\PortingAssistant.Client.Common.csproj" />
+	  <ProjectReference Include="..\..\..\porting-assistant-dotnet-client\src\PortingAssistant.Client.Telemetry\PortingAssistant.Client.Telemetry.csproj" />
 	</ItemGroup>
 
 </Project>

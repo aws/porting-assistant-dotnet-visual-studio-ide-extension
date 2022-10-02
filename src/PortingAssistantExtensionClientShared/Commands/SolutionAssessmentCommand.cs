@@ -118,6 +118,8 @@ namespace PortingAssistantVSExtensionClient.Commands
                     serializedWorkspace = ConstructAndSerializeAdhocWorkspace(workspace);
                 }
 
+                int allDocuments = workspace.CurrentSolution.Projects.Sum(v => v.Documents.Count());
+
                 var solutionFile = await CommandsCommon.GetSolutionPathAsync();
 #if Dev16
                 VS19LSPTrigger(solutionFile) ;
@@ -203,23 +205,38 @@ namespace PortingAssistantVSExtensionClient.Commands
         {
             try
             {
-                WorkspaceConfiguration workspaceConfig = new WorkspaceConfiguration();
-                workspaceConfig.workspace = string.Empty;
-                workspaceConfig.solution = new SolutionConfig();
-                workspaceConfig.solution.projects = new List<ProjectConfig>();
-                Dictionary<string, string> projectMapping = workspace.CurrentSolution.Projects.ToDictionary(p => p.Id.Id.ToString(), p => p.FilePath);
+                WorkspaceConfiguration workspaceConfig = new WorkspaceConfiguration
+                {
+                    workspace = string.Empty,
+                    solution = new SolutionConfig
+                    {
+                        projects = new List<ProjectConfig>()
+                    }
+                };
+
+                HashSet<string> projectPathList = new HashSet<string>();
                 foreach (var curProject in workspace.CurrentSolution.Projects)
                 {
-                    ProjectConfig project = new ProjectConfig();
-                    project.documents = new List<DocumentConfig>();
-                    List<DocumentInfo> docInfoLst = new List<DocumentInfo>();
+                    if (ShouldSkipProject(projectPathList, curProject.FilePath))
+                    {
+                        continue;
+                    }
 
+                    projectPathList.Add(curProject.FilePath);
+                    ProjectConfig project = new ProjectConfig
+                    {
+                        documents = new List<DocumentConfig>()
+                    };
+
+                    List<DocumentInfo> docInfoLst = new List<DocumentInfo>();
                     foreach (var doc in curProject.Documents)
                     {
-                        var document = new DocumentConfig();
-                        document.documentId = doc.Id.Id.ToString();
-                        document.assemblyName = curProject.AssemblyName;
-                        document.filePath = doc.FilePath;
+                        var document = new DocumentConfig
+                        {
+                            documentId = doc.Id.Id.ToString(),
+                            assemblyName = curProject.AssemblyName,
+                            filePath = doc.FilePath
+                        };
                         project.documents.Add(document);
                     }
 
@@ -238,10 +255,26 @@ namespace PortingAssistantVSExtensionClient.Commands
 
                 return JsonConvert.SerializeObject(workspaceConfig);
             }
-            catch (Exception ex)
+            catch
             {
+                // Todo: log exception on IDE client side?
+                // For any reason this function failed, by returning null it falls back to default Analyze process using Buildalyzer.
                 return null;
             }
+        }
+
+        /// <summary>
+        /// If a projet is marked to support multiple target frameworks, then VisualStudioWorkspace will 
+        /// consider this as two items (different Ids) in workspace.CurrentSolution.Projects.
+        /// We don't support this scenario in assessment/port (An Item with same key exception).
+        /// Current solution is to use the first one and ignore any later occurrences based on the project file path.
+        /// </summary>
+        /// <param name="projectPathList"></param>
+        /// <param name="currentProjectId"></param>
+        /// <returns></returns>
+        private bool ShouldSkipProject(HashSet<string> projectPathList, string currentProjectPath)
+        {
+            return projectPathList.Contains(currentProjectPath);
         }
     }
 }

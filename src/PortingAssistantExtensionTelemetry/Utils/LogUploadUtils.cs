@@ -29,6 +29,7 @@ namespace PortingAssistantExtensionTelemetry.Utils
             bool enabledDefaultCredentials,
             ILogger logger)
         {
+            /*
             TelemetryClientFactory.TryGetClient(profile,
                 config,
                 out ITelemetryClient client,
@@ -37,17 +38,18 @@ namespace PortingAssistantExtensionTelemetry.Utils
             {
                 GetLogName = GetLogName
             };
+            */
         }
 
         public static void OnTimedEvent(object source,
             System.Timers.ElapsedEventArgs e)
         {
-            Uploader.Run();
+            Uploader?.Run();
         }
 
         public static void WriteLogUploadErrors()
         {
-            Uploader.WriteLogUploadErrors();
+            Uploader?.WriteLogUploadErrors();
         }
     }
 }

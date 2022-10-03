@@ -62,14 +62,19 @@ namespace PortingAssistantExtensionServer.Services
                 Cleanup();
                 _request = request;
 
-                //solutionAnalysisResult = await _client.AnalyzeSolutionAsync(
-                //    request.solutionFilePath,
-                //    request.settings);
-
-                solutionAnalysisResult = await _client.AnalyzeSolutionAsyncUsingVSWorkspace(
-                    request.solutionFilePath,
-                    request.settings,
-                    request.workspaceConfig);
+                if (string.IsNullOrEmpty(request.workspaceConfig))
+                {
+                    solutionAnalysisResult = await _client.AnalyzeSolutionAsync(
+                        request.solutionFilePath,
+                        request.settings);
+                }
+                else
+                {
+                    solutionAnalysisResult = await _client.AnalyzeSolutionAsyncUsingVSWorkspace(
+                        request.solutionFilePath,
+                        request.settings,
+                        request.workspaceConfig);
+                }
 
                 assessmentCompleted = true;
             }

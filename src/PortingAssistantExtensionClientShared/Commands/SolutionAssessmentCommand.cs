@@ -19,6 +19,7 @@ using System.ComponentModel.Design;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace PortingAssistantVSExtensionClient.Commands
@@ -108,18 +109,6 @@ namespace PortingAssistantVSExtensionClient.Commands
             
             try
             {
-                Workspace workspace = null;
-                var componentModel = (IComponentModel)await package.GetServiceAsync(typeof(SComponentModel));
-                string serializedWorkspace = null;
-
-                if (componentModel != null)
-                {
-                    workspace = componentModel.GetService<VisualStudioWorkspace>();
-                    serializedWorkspace = ConstructAndSerializeAdhocWorkspace(workspace);
-                }
-
-                int allDocuments = workspace.CurrentSolution.Projects.Sum(v => v.Documents.Count());
-
                 var solutionFile = await CommandsCommon.GetSolutionPathAsync();
 #if Dev16
                 VS19LSPTrigger(solutionFile) ;
@@ -140,6 +129,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                 SolutionName = Path.GetFileName(solutionFile);
                 string pipeName = Guid.NewGuid().ToString();
                 // It's intended that we don't await for RunAssessmentAsync function for too long.
+                var serializedWorkspace = await GetWorkspaceConfigAsync(this.package);
                 CommandsCommon.RunAssessmentAsync(solutionFile, pipeName, serializedWorkspace);
                 PipeUtils.StartListenerConnection(pipeName, GetAssessmentCompletionTasks(this.package, SolutionName));
             }
@@ -201,16 +191,30 @@ namespace PortingAssistantVSExtensionClient.Commands
             
         }
 
-        public string ConstructAndSerializeAdhocWorkspace(Workspace workspace)
+        private async Task<string> GetWorkspaceConfigAsync(AsyncPackage package)
+        {
+            if (!UserSettings.Instance.UseVisualStudioWorkspace)
+            {
+                return null;
+            }
+            else
+            {
+                var componentModel = (IComponentModel) await package.GetServiceAsync(typeof(SComponentModel));
+                var workspace = componentModel?.GetService<VisualStudioWorkspace>();
+                return ConstructAndSerializeAdhocWorkspace(workspace);
+            }
+        }
+
+        private string ConstructAndSerializeAdhocWorkspace(Workspace workspace)
         {
             try
             {
                 WorkspaceConfiguration workspaceConfig = new WorkspaceConfiguration
                 {
-                    workspace = string.Empty,
-                    solution = new SolutionConfig
+                    Workspace = string.Empty,
+                    Solution = new SolutionConfig
                     {
-                        projects = new List<ProjectConfig>()
+                        Projects = new List<ProjectConfig>()
                     }
                 };
 
@@ -225,7 +229,7 @@ namespace PortingAssistantVSExtensionClient.Commands
                     projectPathList.Add(curProject.FilePath);
                     ProjectConfig project = new ProjectConfig
                     {
-                        documents = new List<DocumentConfig>()
+                        Documents = new List<DocumentConfig>()
                     };
 
                     List<DocumentInfo> docInfoLst = new List<DocumentInfo>();
@@ -233,24 +237,24 @@ namespace PortingAssistantVSExtensionClient.Commands
                     {
                         var document = new DocumentConfig
                         {
-                            documentId = doc.Id.Id.ToString(),
-                            assemblyName = curProject.AssemblyName,
-                            filePath = doc.FilePath
+                            DocumentId = doc.Id.Id.ToString(),
+                            AssemblyName = curProject.AssemblyName,
+                            FilePath = doc.FilePath
                         };
-                        project.documents.Add(document);
+                        project.Documents.Add(document);
                     }
 
-                    project.projectId = curProject.Id.Id.ToString();
-                    project.assemblyName = curProject.AssemblyName;
-                    project.language = curProject.Language;
-                    project.filePath = curProject.FilePath;
-                    project.outputFilePath = curProject.OutputFilePath;
-                    project.projectReferences = new List<string>();
-                    project.metadataReferencesFilePath = curProject.MetadataReferences.ToList().Select(x => x.Display).ToList();
-                    project.analyzerReferences = null;
-                    project.parseOptions = null;
-                    project.compilationOptions = null;
-                    workspaceConfig.solution.projects.Add(project);
+                    project.ProjectId = curProject.Id.Id.ToString();
+                    project.AssemblyName = curProject.AssemblyName;
+                    project.Language = curProject.Language;
+                    project.FilePath = curProject.FilePath;
+                    project.OutputFilePath = curProject.OutputFilePath;
+                    project.ReferencedProjectIds = curProject.ProjectReferences.Select(v => v.ProjectId.Id.ToString()).ToList();
+                    project.MetadataReferencesFilePath = curProject.MetadataReferences.Select(x => x.Display).ToList();
+                    project.AnalyzerReferencePaths = curProject.AnalyzerReferences.Select(v => v.FullPath).ToList();
+                    project.ParseOptions = null;
+                    project.CompilationOptions = null;
+                    workspaceConfig.Solution.Projects.Add(project);
                 }
 
                 return JsonConvert.SerializeObject(workspaceConfig);

@@ -89,6 +89,13 @@ namespace PortingAssistantExtensionServer.Handlers
                 ? @"D:\work\VSWorkspace\ResultBuildalyzer\"
                 : @"D:\work\VSWorkspace\ResultVsWorkspace\";
 
+            var solutioPath = Path.Combine(rootPath, Path.GetFileNameWithoutExtension(request.solutionFilePath));
+            if (Directory.Exists(solutioPath))
+            {
+                Directory.Delete(solutioPath, true);
+            }
+            Directory.CreateDirectory(solutioPath);
+
             foreach (var project in solutionAnalysisResultResolved.ProjectAnalysisResults)
             {
                 if (project.PackageAnalysisResults != null)
@@ -110,16 +117,18 @@ namespace PortingAssistantExtensionServer.Handlers
 
                 if (project.SourceFileAnalysisResults != null)
                 {
-                    var projectOutputPath = Path.Combine(rootPath, $"{project.ProjectName}.json");
+                    var projectOutputPath = Path.Combine(solutioPath, $"{project.ProjectName}.json");
                     allResults.Clear();
 
                     foreach (var fileResult in project.SourceFileAnalysisResults)
                     {
-                        CompatibleItem compatibleAPIs = new();
-                        compatibleAPIs[Compatibility.COMPATIBLE] = new SortedSet<string>();
-                        compatibleAPIs[Compatibility.INCOMPATIBLE] = new SortedSet<string>();
-                        compatibleAPIs[Compatibility.UNKNOWN] = new SortedSet<string>();
-                        compatibleAPIs[Compatibility.DEPRECATED] = new SortedSet<string>();
+                        CompatibleItem compatibleAPIs = new()
+                        {
+                            [Compatibility.COMPATIBLE] = new SortedSet<string>(),
+                            [Compatibility.INCOMPATIBLE] = new SortedSet<string>(),
+                            [Compatibility.UNKNOWN] = new SortedSet<string>(),
+                            [Compatibility.DEPRECATED] = new SortedSet<string>()
+                        };
 
                         foreach (var apiResult in fileResult.ApiAnalysisResults)
                         {
@@ -131,9 +140,14 @@ namespace PortingAssistantExtensionServer.Handlers
                     }
 
                     string apiResultString = JsonConvert.SerializeObject(allResults, Formatting.Indented);
+                    var sortedReferences = project.MetaReferences.OrderBy(v => v);
+                    string allReferencesString = JsonConvert.SerializeObject(sortedReferences, Formatting.Indented);
+                    string allOutputString = $"{allReferencesString}\n{apiResultString}";
+
                     await File.WriteAllTextAsync(
                         projectOutputPath,
-                        apiResultString);
+                        allOutputString,
+                        cancellationToken);
 
                     var apiResults = project.SourceFileAnalysisResults
                         .SelectMany(codeAnalyzeResult => codeAnalyzeResult?.ApiAnalysisResults ?? Enumerable.Empty<ApiAnalysisResult>());
@@ -157,11 +171,6 @@ namespace PortingAssistantExtensionServer.Handlers
                     totalApis.UnionWith(totalApi);
                 }
             }
-
-            //string portableString = JsonConvert.SerializeObject(allResults, Formatting.Indented);
-            //await File.WriteAllTextAsync(
-            //    @"D:\work\VSWorkspace\vsWorkspaceResult.json",
-            //    portableString);
 
             Console.WriteLine($"Total nuget packages: {totalPackages.Count}, portables: {portablePackages.Count}, incompatibles: {incompatiblePackages.Count}");
             Console.WriteLine($"Total nuget packages: {totalApis.Count}, portables: {portableApis.Count}, incompatibles: {incompatibleApis.Count}");

@@ -249,7 +249,12 @@ namespace PortingAssistantVSExtensionClient.Commands
                     project.Language = curProject.Language;
                     project.FilePath = curProject.FilePath;
                     project.OutputFilePath = curProject.OutputFilePath;
-                    project.ReferencedProjectIds = curProject.ProjectReferences.Select(v => v.ProjectId.Id.ToString()).ToList();
+                    project.ReferencedProjectIds =
+                        GetProjectReferencesRecursive(
+                            workspace.CurrentSolution.Projects,
+                            curProject.ProjectReferences)
+                        .ToList();
+
                     project.MetadataReferencesFilePath = curProject.MetadataReferences.Select(x => x.Display).ToList();
                     project.AnalyzerReferencePaths = curProject.AnalyzerReferences.Select(v => v.FullPath).ToList();
                     project.ParseOptions = null;
@@ -265,6 +270,34 @@ namespace PortingAssistantVSExtensionClient.Commands
                 // For any reason this function failed, by returning null it falls back to default Analyze process using Buildalyzer.
                 return null;
             }
+        }
+
+        private HashSet<string> GetProjectReferencesRecursive(
+            IEnumerable<Microsoft.CodeAnalysis.Project> totalProjects,
+            IEnumerable<ProjectReference> referencedProjects)
+        {
+            HashSet<string> currentReferences = new HashSet<string>();
+
+            if (referencedProjects == null || referencedProjects.Count() == 0)
+            {
+                return currentReferences;
+            }
+
+            foreach(var referencedProject in referencedProjects)
+            {
+                var targetProjectId = referencedProject.ProjectId.Id;
+                currentReferences.Add(targetProjectId.ToString());
+                var targetProject = totalProjects.FirstOrDefault(v => v.Id.Id == targetProjectId);
+                // Referenced project is not loaded explicitly in the solution?
+                if (targetProject == null)
+                {
+                    continue;
+                }
+
+                currentReferences.UnionWith(GetProjectReferencesRecursive(totalProjects, targetProject.ProjectReferences));
+            }
+
+            return currentReferences;
         }
 
         /// <summary>

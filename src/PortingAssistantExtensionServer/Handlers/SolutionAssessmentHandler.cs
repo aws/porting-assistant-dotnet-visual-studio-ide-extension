@@ -14,6 +14,7 @@ using System;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.IO;
+using Codelyzer.Analysis.Model;
 
 namespace PortingAssistantExtensionServer.Handlers
 {
@@ -37,6 +38,43 @@ namespace PortingAssistantExtensionServer.Handlers
             _languageServer = languageServer;
             _analysisService = analysisService;
             _portingService = portingService;
+        }
+
+        public class ProjectSerializeResult
+        {
+            public List<string> AllReferences = new List<string>();
+            public CompatibleItem AllPackageResults { get; set; }
+            public SortedSet<string> ReferencedProjects = new();
+            public ExternalReferences ExternalReferences { get; set; }
+
+            public SortedDictionary<string, CompatibleItem> AllAPIResults = new();
+
+            public ProjectSerializeResult()
+            {
+                AllPackageResults = new()
+                {
+                    [Compatibility.COMPATIBLE] = new SortedSet<string>(),
+                    [Compatibility.INCOMPATIBLE] = new SortedSet<string>(),
+                    [Compatibility.UNKNOWN] = new SortedSet<string>(),
+                    [Compatibility.DEPRECATED] = new SortedSet<string>(),
+                };
+                ExternalReferences = new();
+            }
+        };
+
+        public class SolutionSerializeResult
+        {
+            public SortedSet<string> IncompatiblePackages = new SortedSet<string>();
+            public SortedSet<string> CompatiblePackages = new SortedSet<string>();
+            public SortedSet<string> UnknownPackages = new SortedSet<string>();
+            public SortedSet<string> DeprecatedPackages = new SortedSet<string>();
+            public SortedSet<string> TotalPackages = new SortedSet<string>();
+
+            public SortedSet<string> IncompatibleApis = new SortedSet<string>();
+            public SortedSet<string> CompatibleApis = new SortedSet<string>();
+            public SortedSet<string> UnknownApis = new SortedSet<string>();
+            public SortedSet<string> DeprecatedApis = new SortedSet<string>();
+            public SortedSet<string> TotalApis = new SortedSet<string>();
         }
 
         public async Task<AnalyzeSolutionResponse> Handle(AnalyzeSolutionRequest request, CancellationToken cancellationToken)
@@ -76,15 +114,8 @@ namespace PortingAssistantExtensionServer.Handlers
 
             var projectAnalyzeResult = solutionAnalysisResultResolved.ProjectAnalysisResults;
 
-            HashSet<PackageVersionPair> incompatiblePackages = new HashSet<PackageVersionPair>();
-            HashSet<PackageVersionPair> portablePackages = new HashSet<PackageVersionPair>();
-            HashSet<PackageVersionPair> totalPackages = new HashSet<PackageVersionPair>();
+            SolutionSerializeResult solutionResult = new();
 
-            HashSet<string> incompatibleApis = new HashSet<string>();
-            HashSet<string> portableApis = new HashSet<string>();
-            HashSet<string> totalApis = new HashSet<string>();
-
-            SortedDictionary<string, CompatibleItem> allResults = new();
             string rootPath = String.IsNullOrEmpty(request.workspaceConfig)
                 ? @"D:\work\VSWorkspace\ResultBuildalyzer\"
                 : @"D:\work\VSWorkspace\ResultVsWorkspace\";
@@ -98,27 +129,81 @@ namespace PortingAssistantExtensionServer.Handlers
 
             foreach (var project in solutionAnalysisResultResolved.ProjectAnalysisResults)
             {
+                ProjectSerializeResult currentProjectObject = new();
+
+                if (project.ProjectReferences != null)
+                {
+                    foreach (var reference in project.ProjectReferences)
+                    {
+                        currentProjectObject.ReferencedProjects.Add(reference.ReferencePath);
+                    }
+                }
+
+                if (project.ExternalReferences.NugetDependencies.Count > 0)
+                {
+                    currentProjectObject.ExternalReferences.NugetDependencies = project.ExternalReferences.NugetDependencies
+                        .OrderBy(s => s.Identity)
+                        .ToList();
+                }
+
+                if (project.ExternalReferences.NugetReferences.Count > 0)
+                {
+                    currentProjectObject.ExternalReferences.NugetReferences = project.ExternalReferences.NugetReferences
+                        .OrderBy(s => s.Identity)
+                        .ToList();
+                }
+
+                if (project.ExternalReferences.SdkReferences.Count > 0)
+                {
+                    currentProjectObject.ExternalReferences.SdkReferences = project.ExternalReferences.SdkReferences
+                        .OrderBy(s => s.Identity)
+                        .ToList();
+                }
+
+                if (project.ExternalReferences.ProjectReferences.Count > 0)
+                {
+                    currentProjectObject.ExternalReferences.ProjectReferences = project.ExternalReferences.ProjectReferences
+                        .OrderBy(s => s.Identity)
+                        .ToList();
+                }
+
                 if (project.PackageAnalysisResults != null)
                 {
-                    var portablesPkg = project.PackageAnalysisResults
+                    foreach(var packageResult in project.PackageAnalysisResults)
+                    {
+                        var packageValueResult = packageResult.Value.Result;
+                        currentProjectObject.AllPackageResults[packageValueResult.CompatibilityResults[request.settings.TargetFramework].Compatibility]
+                            .Add(packageValueResult.PackageVersionPair.ToString());
+                    }
+
+                    var incompatiblePkg = project.PackageAnalysisResults
                         .Select(p => p.Value.Result)
                         .Where(package => package.CompatibilityResults[request.settings.TargetFramework].Compatibility == Compatibility.INCOMPATIBLE)
-                        .Select(p => p.PackageVersionPair);
-                    var incomapatiblesPkg = project.PackageAnalysisResults
+                        .Select(p => p.PackageVersionPair.ToString());
+                    var comapatiblesPkg = project.PackageAnalysisResults
                         .Select(p => p.Value.Result)
-                        .Where(package => package.CompatibilityResults[request.settings.TargetFramework].Compatibility != Compatibility.COMPATIBLE)
-                        .Select(p => p.PackageVersionPair);
-                    var totalPkg = project.PackageAnalysisResults.Select(p => p.Value.Result.PackageVersionPair);
+                        .Where(package => package.CompatibilityResults[request.settings.TargetFramework].Compatibility == Compatibility.COMPATIBLE)
+                        .Select(p => p.PackageVersionPair.ToString());
+                    var unknownPkg = project.PackageAnalysisResults
+                        .Select(p => p.Value.Result)
+                        .Where(package => package.CompatibilityResults[request.settings.TargetFramework].Compatibility == Compatibility.UNKNOWN)
+                        .Select(p => p.PackageVersionPair.ToString());
+                    var deprecatedPkg = project.PackageAnalysisResults
+                        .Select(p => p.Value.Result)
+                        .Where(package => package.CompatibilityResults[request.settings.TargetFramework].Compatibility == Compatibility.DEPRECATED)
+                        .Select(p => p.PackageVersionPair.ToString());
+                    var totalPkg = project.PackageAnalysisResults.Select(p => p.Value.Result.PackageVersionPair.ToString());
 
-                    portablePackages.UnionWith(portablesPkg);
-                    incompatiblePackages.UnionWith(incomapatiblesPkg);
-                    totalPackages.UnionWith(totalPkg);
+                    solutionResult.CompatiblePackages.UnionWith(comapatiblesPkg);
+                    solutionResult.IncompatiblePackages.UnionWith(incompatiblePkg);
+                    solutionResult.UnknownPackages.UnionWith(unknownPkg);
+                    solutionResult.DeprecatedPackages.UnionWith(deprecatedPkg);
+                    solutionResult.TotalPackages.UnionWith(totalPkg);
                 }
 
                 if (project.SourceFileAnalysisResults != null)
                 {
                     var projectOutputPath = Path.Combine(solutioPath, $"{project.ProjectName}.json");
-                    allResults.Clear();
 
                     foreach (var fileResult in project.SourceFileAnalysisResults)
                     {
@@ -136,13 +221,11 @@ namespace PortingAssistantExtensionServer.Handlers
                                 .Add(apiResult.CodeEntityDetails.Signature);
                         }
 
-                        allResults[fileResult.SourceFilePath] = compatibleAPIs;
+                        currentProjectObject.AllAPIResults[fileResult.SourceFilePath] = compatibleAPIs;
                     }
 
-                    string apiResultString = JsonConvert.SerializeObject(allResults, Formatting.Indented);
-                    var sortedReferences = project.MetaReferences.OrderBy(v => v);
-                    string allReferencesString = JsonConvert.SerializeObject(sortedReferences, Formatting.Indented);
-                    string allOutputString = $"{allReferencesString}\n{apiResultString}";
+                    currentProjectObject.AllReferences = project.MetaReferences.OrderBy(v => v).ToList();
+                    string allOutputString = JsonConvert.SerializeObject(currentProjectObject, Formatting.Indented);
 
                     await File.WriteAllTextAsync(
                         projectOutputPath,
@@ -152,12 +235,20 @@ namespace PortingAssistantExtensionServer.Handlers
                     var apiResults = project.SourceFileAnalysisResults
                         .SelectMany(codeAnalyzeResult => codeAnalyzeResult?.ApiAnalysisResults ?? Enumerable.Empty<ApiAnalysisResult>());
 
-                    var portableApi = apiResults
+                    var incompatibleApi = apiResults
                         .Where(api => api.CompatibilityResults[request.settings.TargetFramework].Compatibility == Compatibility.INCOMPATIBLE)
                         .Select(api => api.CodeEntityDetails.Signature);
 
-                    var incompatibleApi = apiResults
-                        .Where(api => api.CompatibilityResults[request.settings.TargetFramework].Compatibility != Compatibility.COMPATIBLE)
+                    var compatibleApi = apiResults
+                        .Where(api => api.CompatibilityResults[request.settings.TargetFramework].Compatibility == Compatibility.COMPATIBLE)
+                        .Select(api => api.CodeEntityDetails.Signature);
+
+                    var unknownApi = apiResults
+                        .Where(api => api.CompatibilityResults[request.settings.TargetFramework].Compatibility == Compatibility.UNKNOWN)
+                        .Select(api => api.CodeEntityDetails.Signature);
+
+                    var deprecatedApi = apiResults
+                        .Where(api => api.CompatibilityResults[request.settings.TargetFramework].Compatibility == Compatibility.DEPRECATED)
                         .Select(api => api.CodeEntityDetails.Signature);
 
                     var totalApi = project.SourceFileAnalysisResults
@@ -166,23 +257,42 @@ namespace PortingAssistantExtensionServer.Handlers
                             .Where(signature => !string.IsNullOrEmpty(signature))
                             ?? Enumerable.Empty<string>());
 
-                    portableApis.UnionWith(portableApi);
-                    incompatibleApis.UnionWith(incompatibleApi);
-                    totalApis.UnionWith(totalApi);
+                    solutionResult.CompatibleApis.UnionWith(compatibleApi);
+                    solutionResult.IncompatibleApis.UnionWith(incompatibleApi);
+                    solutionResult.UnknownApis.UnionWith(unknownApi);
+                    solutionResult.DeprecatedApis.UnionWith(deprecatedApi);
+                    solutionResult.TotalApis.UnionWith(totalApi);
                 }
             }
 
-            Console.WriteLine($"Total nuget packages: {totalPackages.Count}, portables: {portablePackages.Count}, incompatibles: {incompatiblePackages.Count}");
-            Console.WriteLine($"Total nuget packages: {totalApis.Count}, portables: {portableApis.Count}, incompatibles: {incompatibleApis.Count}");
+            string solutionOutputString = JsonConvert.SerializeObject(solutionResult, Formatting.Indented);
+            string solutionOutputPath = Path.Combine(rootPath, Path.GetFileNameWithoutExtension(request.solutionFilePath) + ".json");
+            await File.WriteAllTextAsync(
+                solutionOutputPath,
+                solutionOutputString,
+                cancellationToken);
 
-             return new AnalyzeSolutionResponse()
+            Console.WriteLine(
+                $"Total nuget packages: {solutionResult.TotalPackages.Count}, " +
+                $"compatible: {solutionResult.CompatiblePackages.Count}, " +
+                $"incompatibles: {solutionResult.IncompatiblePackages.Count}, " +
+                $"unknown: {solutionResult.UnknownPackages.Count}, " +
+                $"deprecated: {solutionResult.DeprecatedPackages.Count}");
+            Console.WriteLine(
+                $"Total nuget packages: {solutionResult.TotalApis.Count}, " +
+                $"compatible: {solutionResult.CompatibleApis.Count}, " +
+                $"incompatibles: {solutionResult.IncompatibleApis.Count}, " +
+                $"unknown: {solutionResult.UnknownApis.Count}, " +
+                $"deprecated: {solutionResult.DeprecatedApis.Count}");
+
+            return new AnalyzeSolutionResponse()
             {
-                incompatibleNugetPackages = incompatiblePackages.Count,
-                portableNugetPackages = portablePackages.Count,
-                totalNugetPackages = totalPackages.Count,
-                incompatibleAPis = incompatibleApis.Count,
-                portableAPis = portableApis.Count,
-                totalApis = totalApis.Count,
+                incompatibleNugetPackages = solutionResult.IncompatiblePackages.Count,
+                portableNugetPackages = solutionResult.CompatiblePackages.Count,
+                totalNugetPackages = solutionResult.TotalPackages.Count,
+                incompatibleAPis = solutionResult.IncompatibleApis.Count,
+                portableAPis = solutionResult.CompatibleApis.Count,
+                totalApis = solutionResult.TotalApis.Count,
                 portableProjects = solutionAnalysisResultResolved.ProjectAnalysisResults?.Where(p => p.ProjectCompatibilityResult?.IsPorted ?? false).Count() ?? 0,
                 totalProjects = solutionAnalysisResultResolved.SolutionDetails?.Projects?.Count() ?? 0,
                 hasWebFormsProject = solutionAnalysisResultResolved.ProjectAnalysisResults?.Any(p => p.FeatureType == "WebForms") ?? false

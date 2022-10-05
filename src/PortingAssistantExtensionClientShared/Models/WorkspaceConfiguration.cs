@@ -25,7 +25,7 @@ namespace PortingAssistantExtensionClientShared.Models
         public string OutputFilePath { get; set; }
         public List<DocumentConfig> Documents { get; set; }
         public List<string> ReferencedProjectIds { get; set; }
-        public List<String> MetadataReferencesFilePath { get; set; }
+        public List<string> MetadataReferencesFilePath { get; set; }
         public List<string> AnalyzerReferencePaths { get; set; }
         public ParseOptions ParseOptions { get; set; }
         public CompilationOptions CompilationOptions { get; set; }

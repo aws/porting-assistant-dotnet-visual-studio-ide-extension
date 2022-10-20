@@ -32,12 +32,7 @@ namespace PortingAssistantVSExtensionClient.Options
         {
             base.OnActivate(e);
             LoadSettings();
-            if (_dataSharingoptionsPageControl.Profiles.SelectedItem == null
-                || _dataSharingoptionsPageControl.Profiles.SelectedItem.Equals(""))
-            {
-                _dataSharingoptionsPageControl.WarningBar.Content = "Profile is required";
-            }
-        }
+         }
         protected override void OnApply(PageApplyEventArgs args)
         {
             Save();
@@ -46,23 +41,10 @@ namespace PortingAssistantVSExtensionClient.Options
         void LoadSettings()
         {
             _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked = _userSettings.EnabledMetrics;
-            _dataSharingoptionsPageControl.InitalizeNamedProfile(_userSettings.AWSProfileName);
         }
 
         void Save()
         {
-            if (_dataSharingoptionsPageControl.AWSProfileSelect.IsChecked != null &&
-                (bool)_dataSharingoptionsPageControl.AWSProfileSelect.IsChecked)
-            {
-                _userSettings.AWSProfileName = (string)_dataSharingoptionsPageControl.Profiles.SelectedValue;
-                _userSettings.EnabledDefaultCredentials = false;
-            }
-            else
-            {
-                _userSettings.AWSProfileName = "DEFAULT_PROFILE";
-                _userSettings.EnabledDefaultCredentials = true;
-            }
-
             _userSettings.EnabledMetrics = _dataSharingoptionsPageControl.EnableMetricCheck.IsChecked ?? false;
             _userSettings.SaveAllSettings();
             PortingAssistantLanguageClient.UpdateUserSettingsAsync();

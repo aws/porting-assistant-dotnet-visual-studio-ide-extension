@@ -29,7 +29,6 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             _userSettings = UserSettings.Instance;
             InitializeComponent();
             initializeUI();
-            InitalizeNamedProfile(_userSettings.AWSProfileName);
             this.Title = "Get started";
 
             this.AssemblyPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -57,154 +56,19 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             return welcomeDialog.ClickResult;
         }
 
-        private void InitalizeNamedProfile(string newAddedProfile)
-        {
-            List<string> namedProfiles = AwsUtils.ListProfiles();
-            if (namedProfiles != null && namedProfiles.Count != 0)
-            {
-                Profiles.Items.Clear();
-                foreach (var namedProfile in namedProfiles)
-                {
-                    Profiles.Items.Add(namedProfile);
-                }
-            }
-            Profiles.SelectedItem = newAddedProfile;
-        }
+ 
 
-        private void SDKChain_Checked(Object sender, System.Windows.RoutedEventArgs e)
-        {
-            if (AwsProfileLabel != null && AwsProfileLabel.IsEnabled == true)
-            {
-                AwsProfileLabel.IsEnabled = false;
-            }
-            if (Profiles != null && Profiles.IsEnabled == true)
-            {
-                Profiles.IsEnabled = false;
-            }
-            if (AddProfileButton != null && AddProfileButton.IsEnabled == true)
-            {
-                AddProfileButton.IsEnabled = false;
-            }
-            if (WarningBar != null)
-            {
-                WarningBar.Content = "";
-            }
-
-            ThreadHelper.JoinableTaskFactory.Run(async delegate {
-                if (WarningBarDefaultCreds != null)
-                {
-                    WarningBarDefaultCreds.Content = "Validating Default AWS Credentials.";
-                }
-                var result = await ValidateSDKCredentialsAsync();
-                if (result.Contains("Success"))
-                {
-                    WarningBarDefaultCreds.Content = "AWS Access Key Id: " + result.Split(':')[1];
-                    return;
-                }
-                else
-                {
-                    if (result == "Default Credentials not Found in any provider." || result == "Default Credentials do not have valid permissions.")
-                    {
-                        WarningBarDefaultCreds.Content = result;
-                    }
-                }
-            });
-        }
-
-        private async Task<string> ValidateSDKCredentialsAsync()
-        {
-            var credentials = FallbackCredentialsFactory.GetCredentials();
-            if (credentials == null)
-            {
-                return "Default Credentials not Found in any provider.";
-            }
-            else
-            {
-                var immutableCredentials = await credentials.GetCredentialsAsync();
-                AwsCredential awsCredential = new AwsCredential(immutableCredentials.AccessKey, immutableCredentials.SecretKey, immutableCredentials.Token);
-                this.TelemetryConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(this.ConfigurationPath)).TelemetryConfiguration;
-
-                if (await AwsUtils.VerifyUserAsync("", awsCredential, this.TelemetryConfiguration))
-                {
-                    return "Success:" + awsCredential.AwsAccessKeyId;
-                }
-                else
-                {
-                    return "Default Credentials do not have valid permissions.";
-                }
-            }
-        }
-
-        private void AWSProfile_Checked(Object sender, System.Windows.RoutedEventArgs e)
-        {
-            if (AwsProfileLabel != null && AwsProfileLabel.IsEnabled == false)
-            {
-                AwsProfileLabel.IsEnabled = true;
-            }
-            if (Profiles != null && Profiles.IsEnabled == false)
-            {
-                Profiles.IsEnabled = true;
-            }
-            if (AddProfileButton != null && AddProfileButton.IsEnabled == false)
-            {
-                AddProfileButton.IsEnabled = true;
-            }
-            if (Profiles != null && (Profiles.SelectedItem == null || Profiles.SelectedItem.Equals("")))
-            {
-                WarningBar.Content = "Profile is required";
-            }
-            if (WarningBarDefaultCreds != null)
-            {
-                WarningBarDefaultCreds.Content = "";
-            }    
-        }
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (AWSProfileSelect.IsChecked != null &&
-               (bool)AWSProfileSelect.IsChecked)
-            {
-                if (Profiles.SelectedItem == null || Profiles.SelectedItem.Equals(""))
-                {
-                    WarningBar.Content = "Profile is required";
-                    return;
-                }
-            }
-            else
-            {
-                if (WarningBarDefaultCreds != null && !WarningBarDefaultCreds.Content.ToString().Contains("AWS Access Key Id:"))
-                {
-                    return;
-                }
-            }
             _userSettings.EnabledMetrics = AgreeToShare.IsChecked ?? false;
             _userSettings.ShowWelcomePage = false;
-            if (AWSProfileSelect.IsChecked != null &&
-                (bool)AWSProfileSelect.IsChecked)
-            {
-                _userSettings.AWSProfileName = (string)Profiles.SelectedValue;
-                _userSettings.EnabledDefaultCredentials = false;
-            }
-            else
-            {
-                _userSettings.AWSProfileName = "DEFAULT_PROFILE";
-                _userSettings.EnabledDefaultCredentials = true;
-            }
-            _userSettings.AWSProfileName = (string)Profiles.SelectedValue;
             _userSettings.SaveAllSettings();
             PortingAssistantLanguageClient.UpdateUserSettingsAsync();
             ClickResult = true;
             Close();
         }
 
-        private void Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
-        {
-            string newAddedProfile = AddProfileDialog.EnsureExecute();
-            if (!newAddedProfile.Equals(""))
-            {
-                InitalizeNamedProfile(newAddedProfile);
-            }
-        }
 
         private void Hyperlink_Click(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -217,39 +81,16 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             System.Diagnostics.Process.Start(ExternalUrls.CollectInfomation);
         }
 
-        private void Profiles_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            WarningBar.Content = "";
-        }
-
-        private void Hyperlink_Click_2(object sender, System.Windows.RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(ExternalUrls.Agreement);
-        }
-
         private void Hyperlink_Click_3(object sender, System.Windows.RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start(ExternalUrls.ServiceTerms);
         }
 
-        private void Hyperlink_Click_4(object sender, System.Windows.RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(ExternalUrls.SharedCredFile);
-        }
-
-        private void Hyperlink_Click_5(object sender, System.Windows.RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(ExternalUrls.DefaultSDKCreds);
-        }
 
         private void Button_Click_2(object sender, System.Windows.RoutedEventArgs e)
         {
             Close();
         }
 
-        private void Hyperlink_Click_6(object sender, System.Windows.RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(ExternalUrls.ClientRelease);
-        }
     }
 }

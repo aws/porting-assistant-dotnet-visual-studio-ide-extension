@@ -34,6 +34,13 @@ We require the following:
 * Visual Studio 2019 or later
 * .NET 6
 
+### Steps to build a dev vsix package
+* Build the solution using the release configuration
+* Find the dev vsix package in the bin\Release directory of the Visual Studio client version you are building for
+  * PortingAssistantVSExtensionClient2019\bin\Release
+  * PortingAssistantVSExtensionClient2022\bin\Release
+* Run the vsix to install the extension
+
 ### Getting started with development
 
 * Clone the Git repository.

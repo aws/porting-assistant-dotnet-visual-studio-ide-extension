@@ -18,13 +18,13 @@
       {
         "DisplayName": ".NET Core 3.1 (Microsoft LTS)",
         "VersionKey": "netcoreapp3.1",
-        "RequiredVisualStudioVersion": "",
+        "RequiredVisualStudioVersion": "16.0.0",
         "RecommendOrder": 2
       },
       {
         "DisplayName": ".NET 5 (Microsoft out of support)",
         "VersionKey": "net5.0",
-        "RequiredVisualStudioVersion": "",
+        "RequiredVisualStudioVersion": "16.0.0",
         "RecommendOrder": 3
       }
     ]

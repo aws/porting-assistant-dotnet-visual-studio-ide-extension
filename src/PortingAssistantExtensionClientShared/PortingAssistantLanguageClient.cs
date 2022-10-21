@@ -23,6 +23,11 @@ using System.Xml;
 using Task = System.Threading.Tasks.Task;
 using static System.Diagnostics.FileVersionInfo;
 using System.Text.RegularExpressions;
+using PortingAssistantVSExtensionClient.Models;
+using Newtonsoft.Json;
+using System.Net.Http;
+using PortingAssistantExtensionClientShared.Models;
+using PortingAssistantVSExtensionClient.Utils;
 
 namespace PortingAssistantVSExtensionClient
 {
@@ -81,7 +86,11 @@ namespace PortingAssistantVSExtensionClient
 
         public readonly string LanguageServerPath;
 
+        public readonly string IDEConfigurationPath;
+
         public readonly string ConfigurationPath;
+
+        public Version VisualStudioVersion { get; private set; }
 
         public const string PackageGuidString = "f41a71b0-3e17-4342-892d-aabc368ee8e8";
         public string Name => Common.Constants.ApplicationName;
@@ -105,6 +114,8 @@ namespace PortingAssistantVSExtensionClient
             set;
         }
 
+        public PortingAssistantIDEConfiguration ClientConfiguration { get; set; }
+
 
         [Import]
         internal IContentTypeRegistryService ContentTypeRegistryService { get; set; }
@@ -121,10 +132,11 @@ namespace PortingAssistantVSExtensionClient
                 AssemblyPath, 
                 Common.Constants.ApplicationServerLocation,
                 Common.Constants.ApplicationServerName);
-            this.ConfigurationPath = "\"" + Path.Combine(
+            this.IDEConfigurationPath = Path.Combine(
                 AssemblyPath,
                 Common.Constants.ResourceFolder,
-                ConfigurationFileName) + "\"";
+                ConfigurationFileName);
+            this.ConfigurationPath = "\"" + IDEConfigurationPath + "\"";
             Instance = this;
         }
 
@@ -166,6 +178,16 @@ namespace PortingAssistantVSExtensionClient
 
                 var stdInPipeName = Common.Constants.DebugInPipeName;
                 var stdOutPipeName = Common.Constants.DebugOutPipeName;
+                ClientConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(IDEConfigurationPath));
+                var supportedVersionsFromS3 = await AwsUtils.GetSupportedConfigurationAsync(SupportedVersionConfiguration.S3FilePath);
+                if (supportedVersionsFromS3 != null)
+                {
+                    ClientConfiguration.SupportedVersionConfiguration = supportedVersionsFromS3;
+                }
+
+                ClientConfiguration.SupportedVersionConfiguration.Versions.Sort();
+                VisualStudioVersion = await GetVisualStudioVersionAsync();
+
 #if DEBUG
                 var (debugreaderPipe, debugwriterPipe) = CreateConnectionPipe(stdInPipeName, stdOutPipeName);
                 await debugreaderPipe.WaitForConnectionAsync(token).ConfigureAwait(true);
@@ -253,7 +275,6 @@ namespace PortingAssistantVSExtensionClient
         }
 
         private string GetVisualStudioVersion()
-
         {
             FileVersionInfo versionInfo;
             try
@@ -266,6 +287,27 @@ namespace PortingAssistantVSExtensionClient
             var version = Regex.Match(versionInfo.FileVersion, @"D([\d\.]+)");
             return version.Success ? version.Groups[1].Value : null;
 
+        }
+
+        /// <summary>
+        /// This is the official way to get Visual Studio client version.
+        /// For more information, visit the VsixCommunity github:
+        /// https://github.com/VsixCommunity/Community.VisualStudio.Toolkit/blob/master/demo/VSSDK.TestExtension/ToolWindows/RunnerWindow.cs#L21
+        /// </summary>
+        /// <returns></returns>
+        private async Task<Version> GetVisualStudioVersionAsync()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            IVsShell shell = await ServiceProvider.GetGlobalServiceAsync<SVsShell, IVsShell>(swallowExceptions: false);
+            shell.GetProperty((int)__VSSPROPID5.VSSPROPID_ReleaseVersion, out object value);
+
+            if (value is string raw)
+            {
+                return Version.Parse(raw.Split(' ')[0]);
+            }
+
+            return null;
         }
 
 #if Dev17

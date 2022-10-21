@@ -16,6 +16,7 @@ using PortingAssistantVSExtensionClient.Options;
 using PortingAssistantVSExtensionClient.Common;
 using Microsoft.VisualStudio.Shell;
 using PortingAssistantExtensionClientShared.Utils;
+using PortingAssistantExtensionClientShared.Models;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
@@ -209,6 +210,28 @@ namespace PortingAssistantVSExtensionClient.Utils
                 }
             }  
             return true;
+        }
+
+        public static async Task<SupportedVersionConfiguration> GetSupportedConfigurationAsync(string configurationFileUrl)
+        {
+            SupportedVersionConfiguration result = null;
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    using (var stream = await httpClient.GetStreamAsync(configurationFileUrl))
+                    {
+                        var streamReader = new StreamReader(stream);
+                        result = JsonConvert.DeserializeObject<SupportedVersionConfiguration>(await streamReader.ReadToEndAsync());
+                    }
+                }
+            }
+            catch   // When failed to read from S3 config file, return null.
+            {
+
+            }
+
+            return result;
         }
     }
 }

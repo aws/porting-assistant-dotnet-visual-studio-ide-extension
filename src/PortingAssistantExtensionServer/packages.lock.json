@@ -28,7 +28,7 @@
         "type": "Direct",
         "requested": "[2.4.2-alpha-g7b80e67d7c, )",
         "resolved": "2.4.2-alpha-g7b80e67d7c",
-        "contentHash": "Kt4+uaUKB9gOo0s6adTR5eaiJ70vyRlCpsV9NmLmSZcVyP3wpJCYN5A2Xfaus0jUy95xQErPXOotHnCkgCNXTg==",
+        "contentHash": "gPMN21EuEDGOUYC+Z+BCiqpcy0GCpvfIx56RhRPWAdkj/Tl0LlObvkeygwW75lwx/cvzwCEyLTVMXk2IAwuKsg==",
         "dependencies": {
           "LibGit2Sharp": "0.26.2",
           "Microsoft.Extensions.Configuration.Json": "6.0.0",
@@ -43,7 +43,7 @@
         "type": "Direct",
         "requested": "[2.4.2-alpha-g7b80e67d7c, )",
         "resolved": "2.4.2-alpha-g7b80e67d7c",
-        "contentHash": "MkAO3QV7NkXqI+JsBrcQns7kIkseZTOF2W0KwfHCPF40cIKItcWN6AU53I5D7Gsf4f7r1/q44+djUirKOBQCSw==",
+        "contentHash": "Wl06tzfqiJvSLxFJPVuCLqkt8wnGFbNMXevUW2uD5gvKMhxB/C3vaae9+N65qtA7pH8y6wVokksfrZWCcC9ZdQ==",
         "dependencies": {
           "CTA.Rules.PortCore": "2.4.66",
           "Newtonsoft.Json": "13.0.1",
@@ -1054,7 +1054,7 @@
       "PortingAssistant.Client.Analysis": {
         "type": "Transitive",
         "resolved": "2.4.2-alpha-g7b80e67d7c",
-        "contentHash": "fXZMGXn9ITDb2R6qHMMq1+gGqAKb3GJcFmEi4ZSTddzFPCPmIO58a7/GxrVCB5FDKbDAk9s/q5+KsQb3bjWWrw==",
+        "contentHash": "xoBERV3IEus9uK9KzOnwsqQ72vagpMgTeuATyCAbauKzgZlQil+qipcyRmxJnemlh+07qcLmndCBWPn30LbaAw==",
         "dependencies": {
           "PortingAssistant.Client.Common": "2.4.2-alpha-g7b80e67d7c",
           "PortingAssistant.Client.NuGet": "2.4.2-alpha-g7b80e67d7c"
@@ -1063,7 +1063,7 @@
       "PortingAssistant.Client.NuGet": {
         "type": "Transitive",
         "resolved": "2.4.2-alpha-g7b80e67d7c",
-        "contentHash": "BXgzyxHNgh222ywQmuuiAdnTe11qQJO1/+hXBY+yonhBs8P/g1RLy0oHbx5ln8Tw1/5j1/ed1LoU+wwheom86g==",
+        "contentHash": "9V47I5o4YgDe7iI9I/ie5YmVJrFK4xNyF58vU6vfV/aR7ouCc2L9byeCSDlw8jLOhibm2124fpj/F5zoYJBwJQ==",
         "dependencies": {
           "AWSSDK.S3": "3.7.7.21",
           "Microsoft.Extensions.Http": "6.0.0",
@@ -1073,7 +1073,7 @@
       "PortingAssistant.Client.Porting": {
         "type": "Transitive",
         "resolved": "2.4.2-alpha-g7b80e67d7c",
-        "contentHash": "n6/3gfFXhVOmPKENebzln+Eyg0IwGHJ/0prPrsjCVl4rbgBxL5kgvr4qgT8Pq1r5oHqClabX0saP6e2V0avmuQ==",
+        "contentHash": "FtRZUuzMtOI+oTySXm6QYL3y3vynFel250zk5SjgM/bPy/pFgOqucmdldSe2+1KIiAQwwp7ogiIms73jA3VbzQ==",
         "dependencies": {
           "PortingAssistant.Client.Common": "2.4.2-alpha-g7b80e67d7c"
         }
@@ -1081,7 +1081,7 @@
       "PortingAssistant.Client.Telemetry": {
         "type": "Transitive",
         "resolved": "2.4.2-alpha-g7b80e67d7c",
-        "contentHash": "6JydVoYGzWmlcqPaYKFC1vlfWialCq1rUKzlAyUZVp7M1f57ginFEBCfCCl3rKugIYeuFl6EH3NrtP38hsCxqg==",
+        "contentHash": "MtcD2iBZsCABZVjw/Tc4TUOKyEdkuGqTknwXRUgZiasQm5BnWZww9RjoLw98pebvx3nh6I7+rXHPbXl/5QVaVg==",
         "dependencies": {
           "AWSSDK.APIGateway": "3.7.2.70",
           "AWSSDK.Core": "3.7.7",

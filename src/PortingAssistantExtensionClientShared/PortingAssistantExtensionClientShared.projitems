@@ -39,6 +39,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\AnalyzeSolutionResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ProjectFilePortingRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\ProjectFilePortingResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\SupportedVersionConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\TelemetryConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\UpdateSettingsRequest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Options\DataSharingOption.cs">

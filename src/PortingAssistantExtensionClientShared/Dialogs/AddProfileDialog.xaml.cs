@@ -17,20 +17,10 @@ namespace PortingAssistantVSExtensionClient.Dialogs
     public partial class AddProfileDialog : DialogWindow
     {
         public string ClickResult = "";
-        private readonly string AssemblyPath;
-        private readonly string ConfigurationFileName;
-        private readonly string ConfigurationPath;
-        private TelemetryConfiguration TelemetryConfiguration;
         public AddProfileDialog()
         {
             InitializeComponent();
             this.Title = "Add a Named Profile";
-            this.AssemblyPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            this.ConfigurationFileName = Environment.GetEnvironmentVariable("ConfigurationJson") ?? Common.Constants.DefaultConfigurationFile;
-            this.ConfigurationPath = Path.Combine(
-                AssemblyPath,
-                Common.Constants.ResourceFolder,
-                ConfigurationFileName);
         }
 
         public static string EnsureExecute()
@@ -55,7 +45,6 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             }
             try
             {
-                this.TelemetryConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(ConfigurationPath)).TelemetryConfiguration;
                 errors = AwsUtils.ValidateProfile(ProfileName.Text, credential);
                 if (errors.TryGetValue("profile", out string error1))
                 {
@@ -84,9 +73,18 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                 if (errors.Count == 0)
                 {
                     WarningValidation.Content = "validating AWS profile, please wait";
-                    var task = AwsUtils.ValidateProfile(ProfileName.Text, credential, TelemetryConfiguration);
-                    ThreadHelper.JoinableTaskFactory.Run(async delegate {
-                        var result = await AwsUtils.ValidateProfile(ProfileName.Text, credential, TelemetryConfiguration);
+                    var task = AwsUtils.ValidateProfile(
+                        ProfileName.Text,
+                        credential,
+                        PortingAssistantLanguageClient.Instance.ClientConfiguration.TelemetryConfiguration);
+
+                    ThreadHelper.JoinableTaskFactory.Run(async delegate
+                    {
+                        var result = await AwsUtils.ValidateProfile(
+                            ProfileName.Text,
+                            credential,
+                            PortingAssistantLanguageClient.Instance.ClientConfiguration.TelemetryConfiguration);
+
                         WarningValidation.Content = result;
                     });
                 }

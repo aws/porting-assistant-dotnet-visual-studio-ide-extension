@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PortingAssistantExtensionClientShared.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace PortingAssistantVSExtensionClient.Models
 {
     public class PortingAssistantIDEConfiguration
     {
+        public SupportedVersionConfiguration SupportedVersionConfiguration { get; set; }
         public TelemetryConfiguration TelemetryConfiguration { get; set; }
     }
     public class TelemetryConfiguration

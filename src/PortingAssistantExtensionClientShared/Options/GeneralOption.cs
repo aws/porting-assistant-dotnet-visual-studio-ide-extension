@@ -1,6 +1,8 @@
 ﻿using Microsoft.VisualStudio.Shell;
+using PortingAssistantExtensionClientShared.Models;
 using PortingAssistantVSExtensionClient.Common;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -22,13 +24,6 @@ namespace PortingAssistantVSExtensionClient.Options
         {
             _optionsPageControl = new OptionPageControl();
             _userSettings = UserSettings.Instance;
-            foreach (string framwork in TargetFrameworkType.ALL_SElECTION)
-            {
-                _optionsPageControl.TargeFrameworks.Items.Add(framwork);
-            }
-#if Dev16
-            _optionsPageControl.TargeFrameworks.Items.Remove(TargetFrameworkType.NET60);
-#endif
         }
 
         protected override UIElement Child { get { return _optionsPageControl; } }
@@ -45,18 +40,35 @@ namespace PortingAssistantVSExtensionClient.Options
 
         void LoadSettings()
         {
-            _optionsPageControl.TargeFrameworks.SelectedItem = _userSettings.TargetFramework;
-#if Dev16
-            if (_optionsPageControl.TargeFrameworks.SelectedItem != null && _optionsPageControl.TargeFrameworks.SelectedItem.Equals(TargetFrameworkType.NET60.ToString()))
+            _optionsPageControl.TargeFrameworks.Items.Clear();
+            // Sort based on recommended order.
+            foreach (var version in PortingAssistantLanguageClient.Instance.ClientConfiguration.SupportedVersionConfiguration.Versions)
             {
-                _optionsPageControl.TargeFrameworks.SelectedItem = TargetFrameworkType.NETCOREAPP31.ToString();
+                Version requiredVSVersion;
+                if (Version.TryParse(version.RequiredVisualStudioVersion, out requiredVSVersion) &&
+                    requiredVSVersion <= PortingAssistantLanguageClient.Instance.VisualStudioVersion)
+                {
+                    _optionsPageControl.TargeFrameworks.Items.Add(version.DisplayName);
+                }
             }
-#endif
+
+            _optionsPageControl.TargeFrameworks.SelectedItem = 
+                PortingAssistantLanguageClient
+                    .Instance
+                    .ClientConfiguration
+                    .SupportedVersionConfiguration
+                    .GetDisplayName(_userSettings.TargetFramework);
         }
 
         void Save()
         {
-            _userSettings.TargetFramework = (string)_optionsPageControl.TargeFrameworks.SelectedValue;
+            _userSettings.TargetFramework =
+                PortingAssistantLanguageClient
+                    .Instance
+                    .ClientConfiguration
+                    .SupportedVersionConfiguration
+                    .GetVersionKey((string)_optionsPageControl.TargeFrameworks.SelectedItem);
+
             _userSettings.UpdateTargetFramework();
         }
     }

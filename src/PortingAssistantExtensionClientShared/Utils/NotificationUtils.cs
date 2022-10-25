@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Threading;
 using EnvDTE;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Task = System.Threading.Tasks.Task;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
@@ -50,7 +51,7 @@ namespace PortingAssistantVSExtensionClient.Utils
             }
         }
 
-        public static async Task ShowToolRefactoringNotificationAsync(IAsyncServiceProvider serviceProvider)
+        public static async Task ShowToolRefactoringNotificationAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider serviceProvider)
         {
             string message = "Check out the new AWS Toolkit for .NET Refactoring Visual Studio extension for complete .NET modernization.";
             string downloadUrl = "https://marketplace.visualstudio.com/items?itemName=AWSTR.refactoringtoolkit2022";
@@ -58,7 +59,7 @@ namespace PortingAssistantVSExtensionClient.Utils
         }
 
 
-        public static async Task ShowInfoBarAsync(IAsyncServiceProvider ServiceProvider,
+        public static async Task ShowInfoBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider,
             string message)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();

@@ -58,6 +58,7 @@ namespace PortingAssistantVSExtensionClient
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             PAGlobalService.Create(this, this);
+            PAInfoBarService.Initialize(this);
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             await PortingAssistantVSExtensionClient.Commands.SolutionAssessmentCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.SolutionPortingCommand.InitializeAsync(this);
@@ -66,13 +67,7 @@ namespace PortingAssistantVSExtensionClient
             await PortingAssistantVSExtensionClient.Commands.DisplaySettings.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.ContactSupportCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.DocumentCommand.InitializeAsync(this);
-            var task = Task.Run(async () => {
-                for (; ; )
-                {
-                    await Task.Delay(900000);
-                    await AwsUtils.ValidateProfileAsync();
-                }
-            });
+            await NotificationUtils.ShowToolRefactoringNotificationAsync(this);
         }
     #endregion
     }

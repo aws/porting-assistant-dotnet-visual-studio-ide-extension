@@ -6,6 +6,9 @@ using Microsoft.VisualStudio.Imaging;
 using PortingAssistantVSExtensionClient.Common;
 using Microsoft.VisualStudio.Threading;
 using EnvDTE;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Task = System.Threading.Tasks.Task;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
@@ -48,8 +51,16 @@ namespace PortingAssistantVSExtensionClient.Utils
             }
         }
 
+        public static async Task ShowToolRefactoringNotificationAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider serviceProvider)
+        {
+            string message = "Check out the new AWS Toolkit for .NET Refactoring Visual Studio extension for complete .NET modernization.";
+            string downloadUrl = "https://marketplace.visualstudio.com/items?itemName=AWSTR.refactoringtoolkit2022";
+            PAInfoBarService.Instance.ShowInfoBar(message, KnownMonikers.StatusInformation, downloadUrl);
+        }
 
-        public static async System.Threading.Tasks.Task ShowInfoBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider, string message)
+
+        public static async Task ShowInfoBarAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider,
+            string message)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var shell = await ServiceProvider.GetServiceAsync(typeof(SVsShell)) as IVsShell;
@@ -60,13 +71,14 @@ namespace PortingAssistantVSExtensionClient.Utils
 
                 if (host != null)
                 {
-
-                    InfoBarModel infoBarModel = new InfoBarModel(message, KnownMonikers.StatusInformation, isCloseButtonVisible: true);
+                    var infoBarModel = new InfoBarModel(message,
+                            KnownMonikers.StatusInformation,
+                            isCloseButtonVisible: true);
                     var factory = await ServiceProvider.GetServiceAsync(typeof(SVsInfoBarUIFactory)) as IVsInfoBarUIFactory;
                     Assumes.Present(factory);
                     IVsInfoBarUIElement element = factory.CreateInfoBar(infoBarModel);
                     host.AddInfoBar(element);
-                }  
+                }
             }
         }
 

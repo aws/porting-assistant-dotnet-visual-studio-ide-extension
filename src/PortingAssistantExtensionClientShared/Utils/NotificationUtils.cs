@@ -54,17 +54,12 @@ namespace PortingAssistantVSExtensionClient.Utils
         {
             string message = "Check out the new AWS Toolkit for .NET Refactoring Visual Studio extension for complete .NET modernization.";
             string downloadUrl = "https://marketplace.visualstudio.com/items?itemName=AWSTR.refactoringtoolkit2022";
-            var actions = new List<IVsInfoBarActionItem>
-            {
-                new InfoBarHyperlink("Get the new extension", downloadUrl)
-            };
-            await ShowInfoBarAsync(serviceProvider, message, actions);
+            PAInfoBarService.Instance.ShowInfoBar(message, KnownMonikers.StatusInformation, downloadUrl);
         }
 
 
         public static async Task ShowInfoBarAsync(IAsyncServiceProvider ServiceProvider,
-            string message,
-            List<IVsInfoBarActionItem> actions = null)
+            string message)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             var shell = await ServiceProvider.GetServiceAsync(typeof(SVsShell)) as IVsShell;
@@ -75,12 +70,7 @@ namespace PortingAssistantVSExtensionClient.Utils
 
                 if (host != null)
                 {
-                    var infoBarModel = actions != null
-                        ? new InfoBarModel(message,
-                            actions,
-                            KnownMonikers.StatusInformation,
-                            isCloseButtonVisible: true)
-                        : new InfoBarModel(message,
+                    var infoBarModel = new InfoBarModel(message,
                             KnownMonikers.StatusInformation,
                             isCloseButtonVisible: true);
                     var factory = await ServiceProvider.GetServiceAsync(typeof(SVsInfoBarUIFactory)) as IVsInfoBarUIFactory;

@@ -21,6 +21,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Common\ExternalUrls.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\LanguageServerStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\PAGlobalService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\PAInfoBarService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\TargetFrameWorkType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\UserSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Dialogs\AddProfileDialog.xaml.cs">

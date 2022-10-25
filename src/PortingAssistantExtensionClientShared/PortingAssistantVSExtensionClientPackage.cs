@@ -66,13 +66,7 @@ namespace PortingAssistantVSExtensionClient
             await PortingAssistantVSExtensionClient.Commands.DisplaySettings.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.ContactSupportCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.DocumentCommand.InitializeAsync(this);
-            var task = Task.Run(async () => {
-                for (; ; )
-                {
-                    await Task.Delay(900000);
-                    await AwsUtils.ValidateProfileAsync();
-                }
-            });
+            await NotificationUtils.ShowToolRefactoringNotificationAsync(this);
         }
     #endregion
     }

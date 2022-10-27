@@ -34,12 +34,21 @@ We require the following:
 * Visual Studio 2019 or later
 * .NET 6
 
+### Steps to build a dev vsix package
+* Unload the Visual Studio Client project you do not want to build for. For example if you want to install on Visual Studio 2022, unload the Porting AssistantVSExtensionClient2019 project.
+* Build the solution using the release configuration
+* Find the dev vsix package in the bin\Release directory of the Visual Studio client version you are building for
+  * PortingAssistantVSExtensionClient2019\bin\Release
+  * PortingAssistantVSExtensionClient2022\bin\Release
+* Run the vsix to install the extension
+
 ### Getting started with development
 
 * Clone the Git repository.
 * Install git-secrets https://github.com/awslabs/git-secrets
 * Run git config core.hooksPath hooks
 * Load the solution `PortingAssistantVSExtension.sln` using Visual Studio or Rider. 
+* Unload the Visual Studio Client project you do not want to build for. For example if you want to install on Visual Studio 2022, unload the Porting AssistantVSExtensionClient2019 project.
 * Create a "Run/Debug" Configuration for the "PortingAssistantVSExtension.sln" solution.
 * Select 'Set Startup Projects'>'Multiple Startup Project' and set one of the following combinations as startup projects: 
   * PortingAssistantExtensionServer and PortingAssistantVSExtensionClient2019
@@ -74,6 +83,8 @@ Find all the .NET code samples, step-by-step guides, videos, blog content, tools
  
 [AWS Developer Blog - .NET](https://aws.amazon.com/blogs/developer/category/programing-language/dot-net/)
 Come see what .NET developers at AWS are up to!  Learn about new .NET software announcements, guides, and how-to's.
+
+[Learn more about developing extensions for Visual Studio](https://learn.microsoft.com/en-us/visualstudio/extensibility/starting-to-develop-visual-studio-extensions?view=vs-2022)
 
 ## Thank you
 * [Omnisharp](https://github.com/OmniSharp/csharp-language-server-protocol) - Omnisharp is an implementation of the Language Server Protocol written entirely in C# for .NET.

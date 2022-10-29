@@ -9,7 +9,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="PortingAssistant.Client.Telemetry" Version="2.4.2-alpha-g7b80e67d7c" />
-		<PackageReference Include="PortingAssistant.Client.Common" Version="2.4.2-alpha-g7b80e67d7c" />
+		<PackageReference Include="PortingAssistant.Client.Common" Version="2.5.4" />
 	</ItemGroup>
 
 </Project>

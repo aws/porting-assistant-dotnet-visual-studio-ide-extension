@@ -45,7 +45,7 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (TargetFrameWorkDropDown.SelectedValue.Equals(TargetFrameworkType.NO_SELECTION))
+            if (TargetFrameWorkDropDown.SelectedValue?.Equals(TargetFrameworkType.NO_SELECTION) != false)
             {
                 ChooseFrameworkLabel.Content = "Please make a selection of target framework!";
             }

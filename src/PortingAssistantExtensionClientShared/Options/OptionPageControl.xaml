@@ -59,8 +59,7 @@
                     Opacity="0.6"
                     Height="26">
                     Choose a target .NET Core to which to port your solution
-                    <Hyperlink
-                        NavigateUri="https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core">
+                    <Hyperlink Click="OnDotnetSupportedVersions">
                         Learn More
                     </Hyperlink>
                 </TextBlock>

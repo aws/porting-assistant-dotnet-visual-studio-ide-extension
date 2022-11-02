@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using PortingAssistantVSExtensionClient.Common;
+using System.Windows.Controls;
 
 namespace PortingAssistantVSExtensionClient.Options
 {
@@ -10,6 +11,11 @@ namespace PortingAssistantVSExtensionClient.Options
         public OptionPageControl()
         {
             InitializeComponent();
+        }
+
+        private void OnDotnetSupportedVersions(object sender, System.Windows.RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(ExternalUrls.DotNetSupportedVersions);
         }
     }
 }

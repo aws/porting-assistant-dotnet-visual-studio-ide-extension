@@ -18,5 +18,7 @@ namespace PortingAssistantVSExtensionClient.Common
         public const string SharedCredFile = "https://docs.aws.amazon.com/sdkref/latest/guide/file-location.html";
         public const string DefaultSDKCreds = "https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/creds-assign.html";
         public const string ClientRelease = "https://github.com/aws/porting-assistant-dotnet-client/releases";
+        
+        public const string DotNetSupportedVersions = "https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core";
     }
 }

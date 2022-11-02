@@ -4,18 +4,21 @@
     ".NETFramework,Version=v4.7.2": {
       "AWSSDK.APIGateway": {
         "type": "Direct",
-        "requested": "[3.7.2.11, )",
-        "resolved": "3.7.2.11",
-        "contentHash": "fEJLLhTSurWWkVGvC798XdGVYbQaLbAbNp7lOdEq+tt3ChmRz5nSqrK0lDkDP8NsBPyYJqRbxKkh7FyuacRhqg==",
+        "requested": "[3.7.2.49, )",
+        "resolved": "3.7.2.49",
+        "contentHash": "+pTiTdom5gUpU9bY54+JgOnb1ANsucJpJOhWNj57G3IlpyB2TrwTBngJ+Zfvjjh+LhIkY5+Lgr4dvEJAzXiEbw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.3.5, 4.0.0)"
+          "AWSSDK.Core": "[3.7.13.9, 4.0.0)"
         }
       },
-      "AWSSDK.Core": {
+      "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.3.5, )",
-        "resolved": "3.7.3.5",
-        "contentHash": "wu6s4geFWpSKuqg/UOx6DAdTnnTzoWQRsKOVCYae2ggzpadFJxwMIB7CSvw0r8CaIQNDKYr6Al3eKU+EA8jqbg=="
+        "requested": "[3.7.6, )",
+        "resolved": "3.7.6",
+        "contentHash": "8ES5XTygLRD0O8zqmjgLzlcRD+u8rCM1zx930oE5hWXiyVR18DiWK+FJmv8lVy0F79MlTlKf2m4ygSHcIOq1dA==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.13.9, 4.0.0)"
+        }
       },
       "Microsoft.VisualStudio.SDK": {
         "type": "Direct",
@@ -92,9 +95,14 @@
       },
       "Newtonsoft.Json": {
         "type": "Direct",
-        "requested": "[13.0.1, )",
-        "resolved": "13.0.1",
-        "contentHash": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A=="
+        "requested": "[12.0.2, )",
+        "resolved": "12.0.2",
+        "contentHash": "rTK0s2EKlfHsQsH6Yx2smvcTCeyoDNgCW7FEYyV01drPlh2T243PR2DiDXqtC5N4GDm4Ma/lkxfW5a/4793vbA=="
+      },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "3.7.13.19",
+        "contentHash": "i0L84RBDTCAORZCyzsaHnEKXQR/lhtIsTcVjvb+ZGeiwbO9eNcDjA7XOCFiE2VTrf2I1yxZXhI4KX9aTDK7jqQ=="
       },
       "EnvDTE": {
         "type": "Transitive",

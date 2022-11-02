@@ -1,4 +1,7 @@
-﻿using Amazon.Runtime;
+﻿using Amazon;
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Model;
 using Amazon.Runtime.CredentialManagement;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -6,21 +9,13 @@ using PortingAssistantVSExtensionClient.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Amazon;
 using PortingAssistantVSExtensionClient.Options;
 using PortingAssistantVSExtensionClient.Common;
-using Microsoft.VisualStudio.Shell;
-using PortingAssistantExtensionClientShared.Utils;
 using PortingAssistantExtensionClientShared.Models;
-using Amazon.Runtime.Internal.Util;
-using Amazon.S3;
-using Amazon.S3.Model;
-using System.Runtime.CompilerServices;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
@@ -245,7 +240,7 @@ namespace PortingAssistantVSExtensionClient.Utils
                 {
                     NotificationUtils.ShowErrorMessageBox(
                         PAGlobalService.Instance.Package,
-                        "Porting Assistant failed to configure supported versions. Please verify your internect connection and restart Visual Studio",
+                        $"Porting Assistant failed to configure supported versions. Please verify your internect connection and restart Visual Studio. \n {s3Exception}",
                         "Porting Assistant for .NET");
                 }
                 else
@@ -260,7 +255,7 @@ namespace PortingAssistantVSExtensionClient.Utils
             {
                 NotificationUtils.ShowErrorMessageBox(
                     PAGlobalService.Instance.Package,
-                    "Porting Assistant failed to configure supported versions. Please verify your internect connection and restart Visual Studio",
+                    $"Porting Assistant failed to configure supported versions. Please verify your internect connection and restart Visual Studio. \n{ex}",
                     "Porting Assistant for .NET");
             }
 

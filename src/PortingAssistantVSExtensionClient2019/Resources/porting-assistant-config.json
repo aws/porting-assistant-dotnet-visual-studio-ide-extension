@@ -7,9 +7,9 @@
     }
   },
   "TelemetryConfiguration": {
-    "InvokeUrl": "https://8cvsix1u33.execute-api.us-west-2.amazonaws.com/gamma",
-    "Region": "us-west-2",
-    "ServiceName": "encore",
+    "InvokeUrl": "",
+    "Region": "",
+    "ServiceName": "",
     "Description": "Porting Assistant for .NET Extension",
     "Suffix": [
       ".log",

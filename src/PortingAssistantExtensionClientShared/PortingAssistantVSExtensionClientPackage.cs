@@ -60,6 +60,9 @@ namespace PortingAssistantVSExtensionClient
             PAGlobalService.Create(this, this);
             PAInfoBarService.Initialize(this);
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            // We need to notify user if anything happened while trying to retreve supported version from S3.
+            // This can only be done after PAGlobalService is created.
+            await PortingAssistantLanguageClient.Instance.GetSupportedVersionsAsync();
             await PortingAssistantVSExtensionClient.Commands.SolutionAssessmentCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.SolutionPortingCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.ProjectPortingCommand.InitializeAsync(this);

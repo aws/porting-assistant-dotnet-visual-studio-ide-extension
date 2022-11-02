@@ -13,15 +13,8 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
             _userSettings = UserSettings.Instance;
             InitializeComponent();
-            foreach (string framwork in TargetFrameworkType.ALL_SElECTION)
-            {
-                TargetFrameWorkDropDown.Items.Add(framwork);
-            }
-#if Dev16
-            TargetFrameWorkDropDown.Items.Remove(TargetFrameworkType.NET60);
-#endif
-            TargetFrameWorkDropDown.SelectedValue = TargetFrameworkType.NO_SELECTION;
             this.Title = "Choose a Target Framework";
+            PrepareSupportedVersions();
         }
 
         public static bool EnsureExecute()
@@ -31,9 +24,28 @@ namespace PortingAssistantVSExtensionClient.Dialogs
             return selectTargetDialog.ClickResult;
         }
 
+        private void PrepareSupportedVersions()
+        {
+            TargetFrameWorkDropDown.Items.Clear();
+            // Sort based on recommended order.
+            if (PortingAssistantLanguageClient.Instance.SupportedVersionConfiguration?.Versions != null)
+            {
+                foreach (var version in PortingAssistantLanguageClient.Instance.SupportedVersionConfiguration.Versions)
+                {
+                    if (Version.TryParse(version.RequiredVisualStudioVersion, out Version requiredVSVersion) &&
+                        requiredVSVersion <= PortingAssistantLanguageClient.Instance.VisualStudioVersion)
+                    {
+                        TargetFrameWorkDropDown.Items.Add(version.DisplayName);
+                    }
+                }
+            }
+
+            TargetFrameWorkDropDown.SelectedItem = TargetFrameworkType.NO_SELECTION;
+        }
+
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (TargetFrameWorkDropDown.SelectedValue.Equals(TargetFrameworkType.NO_SELECTION))
+            if (TargetFrameWorkDropDown.SelectedValue?.Equals(TargetFrameworkType.NO_SELECTION) != false)
             {
                 ChooseFrameworkLabel.Content = "Please make a selection of target framework!";
             }

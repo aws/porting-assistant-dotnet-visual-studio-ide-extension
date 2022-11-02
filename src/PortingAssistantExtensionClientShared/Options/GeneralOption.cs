@@ -42,21 +42,22 @@ namespace PortingAssistantVSExtensionClient.Options
         {
             _optionsPageControl.TargeFrameworks.Items.Clear();
             // Sort based on recommended order.
-            foreach (var version in PortingAssistantLanguageClient.Instance.ClientConfiguration.SupportedVersionConfiguration.Versions)
+            if (PortingAssistantLanguageClient.Instance.SupportedVersionConfiguration?.Versions != null)
             {
-                Version requiredVSVersion;
-                if (Version.TryParse(version.RequiredVisualStudioVersion, out requiredVSVersion) &&
-                    requiredVSVersion <= PortingAssistantLanguageClient.Instance.VisualStudioVersion)
+                foreach (var version in PortingAssistantLanguageClient.Instance.SupportedVersionConfiguration.Versions)
                 {
-                    _optionsPageControl.TargeFrameworks.Items.Add(version.DisplayName);
+                    if (Version.TryParse(version.RequiredVisualStudioVersion, out Version requiredVSVersion) &&
+                        requiredVSVersion <= PortingAssistantLanguageClient.Instance.VisualStudioVersion)
+                    {
+                        _optionsPageControl.TargeFrameworks.Items.Add(version.DisplayName);
+                    }
                 }
             }
 
             _optionsPageControl.TargeFrameworks.SelectedItem = 
                 PortingAssistantLanguageClient
                     .Instance
-                    .ClientConfiguration
-                    .SupportedVersionConfiguration
+                    .SupportedVersionConfiguration?
                     .GetDisplayName(_userSettings.TargetFramework);
         }
 
@@ -65,8 +66,7 @@ namespace PortingAssistantVSExtensionClient.Options
             _userSettings.TargetFramework =
                 PortingAssistantLanguageClient
                     .Instance
-                    .ClientConfiguration
-                    .SupportedVersionConfiguration
+                    .SupportedVersionConfiguration?
                     .GetVersionKey((string)_optionsPageControl.TargeFrameworks.SelectedItem);
 
             _userSettings.UpdateTargetFramework();

@@ -114,7 +114,8 @@ namespace PortingAssistantVSExtensionClient
             set;
         }
 
-        public PortingAssistantIDEConfiguration ClientConfiguration { get; set; }
+        public TelemetryConfiguration TelemetryConfiguration { get; set; }
+        public SupportedVersionConfiguration SupportedVersionConfiguration { get; set; }
 
 
         [Import]
@@ -178,14 +179,8 @@ namespace PortingAssistantVSExtensionClient
 
                 var stdInPipeName = Common.Constants.DebugInPipeName;
                 var stdOutPipeName = Common.Constants.DebugOutPipeName;
-                ClientConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(IDEConfigurationPath));
-                var supportedVersionsFromS3 = await AwsUtils.GetSupportedConfigurationAsync(SupportedVersionConfiguration.S3FilePath);
-                if (supportedVersionsFromS3 != null)
-                {
-                    ClientConfiguration.SupportedVersionConfiguration = supportedVersionsFromS3;
-                }
 
-                ClientConfiguration.SupportedVersionConfiguration.Versions.Sort();
+                TelemetryConfiguration = JsonConvert.DeserializeObject<PortingAssistantIDEConfiguration>(File.ReadAllText(IDEConfigurationPath)).TelemetryConfiguration;
                 VisualStudioVersion = await GetVisualStudioVersionAsync();
 
 #if DEBUG
@@ -308,6 +303,11 @@ namespace PortingAssistantVSExtensionClient
             }
 
             return null;
+        }
+
+        public async Task GetSupportedVersionsAsync()
+        {
+            SupportedVersionConfiguration = await AwsUtils.GetSupportedConfigurationAsync();
         }
 
 #if Dev17

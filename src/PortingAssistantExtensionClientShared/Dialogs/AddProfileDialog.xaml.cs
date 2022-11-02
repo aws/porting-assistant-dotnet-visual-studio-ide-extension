@@ -76,14 +76,14 @@ namespace PortingAssistantVSExtensionClient.Dialogs
                     var task = AwsUtils.ValidateProfile(
                         ProfileName.Text,
                         credential,
-                        PortingAssistantLanguageClient.Instance.ClientConfiguration.TelemetryConfiguration);
+                        PortingAssistantLanguageClient.Instance.TelemetryConfiguration);
 
                     ThreadHelper.JoinableTaskFactory.Run(async delegate
                     {
                         var result = await AwsUtils.ValidateProfile(
                             ProfileName.Text,
                             credential,
-                            PortingAssistantLanguageClient.Instance.ClientConfiguration.TelemetryConfiguration);
+                            PortingAssistantLanguageClient.Instance.TelemetryConfiguration);
 
                         WarningValidation.Content = result;
                     });

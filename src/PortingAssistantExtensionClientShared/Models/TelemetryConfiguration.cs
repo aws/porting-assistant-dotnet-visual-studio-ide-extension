@@ -10,8 +10,12 @@ namespace PortingAssistantVSExtensionClient.Models
 {
     public class PortingAssistantIDEConfiguration
     {
-        public SupportedVersionConfiguration SupportedVersionConfiguration { get; set; }
         public TelemetryConfiguration TelemetryConfiguration { get; set; }
+
+        public PortingAssistantIDEConfiguration()
+        {
+            TelemetryConfiguration = new TelemetryConfiguration();
+        }
     }
     public class TelemetryConfiguration
     {

@@ -15,7 +15,7 @@ namespace PortingAssistantExtensionClientShared.Models
         public string DisplayName { get; set; }
         public string VersionKey { get; set; }
         public string RequiredVisualStudioVersion { get; set; }
-        public int RecommendOrder { get; set; }
+        public string RecommendOrder { get; set; }
 
         public SupportedVersion()
         { }
@@ -36,10 +36,12 @@ namespace PortingAssistantExtensionClientShared.Models
 
     public class SupportedVersionConfiguration
     {
-        public const string S3FilePath = "https://s3.us-west-2.amazonaws.com/mingxue-global-test/PAConfigurations/SupportedVersion.json";
+        public const string S3Region = "us-west-2";
+        public const string S3BucketName = "mingxue-global-test";
+        public const string S3File = "PAConfigurations/SupportedVersion.json";
+        public const string ExpectedBucketOwnerId = "412081997838";
         public string FormatVersion { get; set; }
         public List<SupportedVersion> Versions { get; set; }
-
         public SupportedVersionConfiguration()
         {
             Versions = new List<SupportedVersion>();

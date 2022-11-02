@@ -17,6 +17,10 @@ using PortingAssistantVSExtensionClient.Common;
 using Microsoft.VisualStudio.Shell;
 using PortingAssistantExtensionClientShared.Utils;
 using PortingAssistantExtensionClientShared.Models;
+using Amazon.Runtime.Internal.Util;
+using Amazon.S3;
+using Amazon.S3.Model;
+using System.Runtime.CompilerServices;
 
 namespace PortingAssistantVSExtensionClient.Utils
 {
@@ -212,23 +216,52 @@ namespace PortingAssistantVSExtensionClient.Utils
             return true;
         }
 
-        public static async Task<SupportedVersionConfiguration> GetSupportedConfigurationAsync(string configurationFileUrl)
+        public static async Task<SupportedVersionConfiguration> GetSupportedConfigurationAsync()
         {
-            SupportedVersionConfiguration result = null;
+            SupportedVersionConfiguration result = new SupportedVersionConfiguration();
             try
             {
-                using (var httpClient = new HttpClient())
+                using (var s3Client = new AmazonS3Client(RegionEndpoint.GetBySystemName(SupportedVersionConfiguration.S3Region)))
                 {
-                    using (var stream = await httpClient.GetStreamAsync(configurationFileUrl))
+                    GetObjectRequest request = new GetObjectRequest()
                     {
-                        var streamReader = new StreamReader(stream);
+                        BucketName = SupportedVersionConfiguration.S3BucketName,
+                        Key = SupportedVersionConfiguration.S3File,
+                        ExpectedBucketOwner = SupportedVersionConfiguration.ExpectedBucketOwnerId,
+                    };
+                    var response = await s3Client.GetObjectAsync(request);
+                    using (var streamReader = new StreamReader(response.ResponseStream))
+                    {
                         result = JsonConvert.DeserializeObject<SupportedVersionConfiguration>(await streamReader.ReadToEndAsync());
                     }
                 }
-            }
-            catch   // When failed to read from S3 config file, return null.
-            {
 
+                // Make sure to sort the version items before presenting to the UI.
+                result.Versions.Sort();
+            }
+            catch (AmazonS3Exception s3Exception)
+            {
+                if (s3Exception.StatusCode != HttpStatusCode.NotFound)
+                {
+                    NotificationUtils.ShowErrorMessageBox(
+                        PAGlobalService.Instance.Package,
+                        "Porting Assistant failed to configure supported versions. Please verify your internect connection and restart Visual Studio",
+                        "Porting Assistant for .NET");
+                }
+                else
+                {
+                    NotificationUtils.ShowErrorMessageBox(
+                        PAGlobalService.Instance.Package,
+                        "The supported version configuration file is not availabe, please reach out to aws-porting-assistant-support@amazon.com for support.",
+                        "Porting Assistant for .NET");
+                }
+            }
+            catch (Exception ex)
+            {
+                NotificationUtils.ShowErrorMessageBox(
+                    PAGlobalService.Instance.Package,
+                    "Porting Assistant failed to configure supported versions. Please verify your internect connection and restart Visual Studio",
+                    "Porting Assistant for .NET");
             }
 
             return result;

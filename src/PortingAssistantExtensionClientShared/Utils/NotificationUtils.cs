@@ -55,7 +55,8 @@ namespace PortingAssistantVSExtensionClient.Utils
         {
             string message = "Check out the new AWS Toolkit for .NET Refactoring Visual Studio extension for complete .NET modernization.";
             string downloadUrl = "https://marketplace.visualstudio.com/items?itemName=AWSTR.refactoringtoolkit2022";
-            PAInfoBarService.Instance.ShowInfoBar(message, KnownMonikers.StatusInformation, downloadUrl);
+            // disabled now, until further decisions on turning back. 
+            // PAInfoBarService.Instance.ShowInfoBar(message, KnownMonikers.StatusInformation, downloadUrl);
         }
 
 

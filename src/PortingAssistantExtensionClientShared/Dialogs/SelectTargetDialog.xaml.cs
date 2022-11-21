@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.PlatformUI;
 using PortingAssistantVSExtensionClient.Common;
 using PortingAssistantVSExtensionClient.Options;
+using PortingAssistantVSExtensionClient.Utils;
 using System;
 
 namespace PortingAssistantVSExtensionClient.Dialogs
@@ -13,15 +14,10 @@ namespace PortingAssistantVSExtensionClient.Dialogs
         {
             _userSettings = UserSettings.Instance;
             InitializeComponent();
-            foreach (string framwork in TargetFrameworkType.ALL_SElECTION)
-            {
-                TargetFrameWorkDropDown.Items.Add(framwork);
-            }
-#if Dev16
-            TargetFrameWorkDropDown.Items.Remove(TargetFrameworkType.NET60);
-#endif
-            TargetFrameWorkDropDown.SelectedValue = TargetFrameworkType.NO_SELECTION;
             this.Title = "Choose a Target Framework";
+
+            SupportedVersionsUtil.Instance.UpdateComboBox(TargetFrameWorkDropDown);
+            TargetFrameWorkDropDown.SelectedItem = TargetFrameworkType.NO_SELECTION;
         }
 
         public static bool EnsureExecute()
@@ -33,13 +29,17 @@ namespace PortingAssistantVSExtensionClient.Dialogs
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if (TargetFrameWorkDropDown.SelectedValue.Equals(TargetFrameworkType.NO_SELECTION))
+            if (TargetFrameWorkDropDown.SelectedValue?.Equals(TargetFrameworkType.NO_SELECTION) != false)
             {
                 ChooseFrameworkLabel.Content = "Please make a selection of target framework!";
             }
             else
             {
-                _userSettings.TargetFramework = (string)TargetFrameWorkDropDown.SelectedValue;
+                _userSettings.TargetFramework = SupportedVersionsUtil
+                    .Instance
+                    .SupportedVersionConfiguration?
+                    .GetVersionKey((string)TargetFrameWorkDropDown.SelectedValue);
+
                 _userSettings.UpdateTargetFramework();
                 ClickResult = true;
                 Close();

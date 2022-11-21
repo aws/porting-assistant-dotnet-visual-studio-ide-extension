@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using PortingAssistantVSExtensionClient.Common;
+using PortingAssistantVSExtensionClient.Utils;
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -22,13 +23,6 @@ namespace PortingAssistantVSExtensionClient.Options
         {
             _optionsPageControl = new OptionPageControl();
             _userSettings = UserSettings.Instance;
-            foreach (string framwork in TargetFrameworkType.ALL_SElECTION)
-            {
-                _optionsPageControl.TargeFrameworks.Items.Add(framwork);
-            }
-#if Dev16
-            _optionsPageControl.TargeFrameworks.Items.Remove(TargetFrameworkType.NET60);
-#endif
         }
 
         protected override UIElement Child { get { return _optionsPageControl; } }
@@ -45,17 +39,22 @@ namespace PortingAssistantVSExtensionClient.Options
 
         void LoadSettings()
         {
-            _optionsPageControl.TargeFrameworks.SelectedItem = _userSettings.TargetFramework;
-#if Dev16
-            if (_optionsPageControl.TargeFrameworks.SelectedItem != null && _optionsPageControl.TargeFrameworks.SelectedItem.Equals(TargetFrameworkType.NET60.ToString()))
-            {
-                _optionsPageControl.TargeFrameworks.SelectedItem = TargetFrameworkType.NETCOREAPP31.ToString();
-            }
-#endif
+            SupportedVersionsUtil.Instance.UpdateComboBox(_optionsPageControl.TargeFrameworks);
+                _optionsPageControl.TargeFrameworks.SelectedItem =
+                    SupportedVersionsUtil
+                        .Instance
+                        .SupportedVersionConfiguration?
+                        .GetDisplayName(_userSettings.TargetFramework);
         }
 
         void Save()
         {
+            _userSettings.TargetFramework =
+                SupportedVersionsUtil
+                    .Instance
+                    .SupportedVersionConfiguration?
+                    .GetVersionKey((string)_optionsPageControl.TargeFrameworks.SelectedItem);
+
             _userSettings.TargetFramework = (string)_optionsPageControl.TargeFrameworks.SelectedValue;
             _userSettings.UpdateTargetFramework();
         }

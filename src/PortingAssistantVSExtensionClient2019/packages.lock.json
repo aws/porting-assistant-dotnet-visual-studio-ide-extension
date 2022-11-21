@@ -17,6 +17,15 @@
         "resolved": "3.7.3.5",
         "contentHash": "wu6s4geFWpSKuqg/UOx6DAdTnnTzoWQRsKOVCYae2ggzpadFJxwMIB7CSvw0r8CaIQNDKYr6Al3eKU+EA8jqbg=="
       },
+      "AWSSDK.S3": {
+        "type": "Direct",
+        "requested": "[3.7.6, )",
+        "resolved": "3.7.6",
+        "contentHash": "8ES5XTygLRD0O8zqmjgLzlcRD+u8rCM1zx930oE5hWXiyVR18DiWK+FJmv8lVy0F79MlTlKf2m4ygSHcIOq1dA==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.5.2, 4.0.0)"
+        }
+      },
       "Microsoft.VisualStudio.SDK": {
         "type": "Direct",
         "requested": "[16.9.31025.194, )",

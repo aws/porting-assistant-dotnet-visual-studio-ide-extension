@@ -11,11 +11,14 @@
           "AWSSDK.Core": "[3.7.5.2, 4.0.0)"
         }
       },
-      "AWSSDK.Core": {
+      "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.5.2, )",
-        "resolved": "3.7.5.2",
-        "contentHash": "6usBRMq99R1E+5yU618leJ4p545AH7wXQxSEonPVx+gIlbGxqUrMrBe9bs3FwGVsUhWRo56PRnGLhaRu+kDtVQ=="
+        "requested": "[3.7.7.21, )",
+        "resolved": "3.7.7.21",
+        "contentHash": "imWi9mxESS47whvrhJWxt+KHyuS9ZSOZ1fsmQgGw+j8j4PeeN6N2lOcMuHBN5lPorbqmsV2JZ3UNp17gnrXPXA==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.7, 4.0.0)"
+        }
       },
       "Microsoft.VisualStudio.SDK": {
         "type": "Direct",
@@ -114,6 +117,11 @@
         "requested": "[4.5.0, )",
         "resolved": "4.5.0",
         "contentHash": "221clPs1445HkTBZPL+K9sDBdJRB8UN8rgjO3ztB0CQ26z//fmJXtlsr6whGatscsKGBrhJl5bwJuKSA8mwFOw=="
+      },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "3.7.7",
+        "contentHash": "oa2AMh0Fk5uQVfq5NR2P5WMqpzb7pY8rd94MUQ5vG8NUygpw1KfwX0h8jSYvhXy5lXagg2qQ+M/zNkDIAY5Lnw=="
       },
       "envdte": {
         "type": "Transitive",

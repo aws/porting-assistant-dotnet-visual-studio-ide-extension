@@ -27,9 +27,26 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Label Content="Choose a target .NET framework to which to port your solution" HorizontalAlignment="Left" Margin="5,10,0,0" Grid.Row="0" VerticalAlignment="Top" Width="455" Opacity="0.6" Height="26"/>
-                <ComboBox x:Name="TargeFrameworks" HorizontalAlignment="Left" Grid.Row="1" Margin="10,0,0,0" VerticalAlignment="Top" Width="300" Height="22"/>
-                <Button x:Name="ClearCache" Content="Clear assessment cache" HorizontalAlignment="Left" Grid.Row="1" Background="{x:Null}" BorderThickness="0" Cursor="Hand" Foreground="Blue" Margin="310,40,0,0" VerticalAlignment="Top" Width="139" Height="27" RenderTransformOrigin="0.964,0.741" Click="Button_Click"/>
+                <TextBlock
+                    HorizontalAlignment="Stretch"
+                    TextWrapping="Wrap"
+                    Margin="5,10,20,10"
+                    Grid.Row="0"
+                    VerticalAlignment="Top"
+                    Opacity="0.6">
+                    Choose a target .NET framework to which to port your solution
+                    <Hyperlink Click="OnDotnetSupportedVersions">
+                        Learn More
+                    </Hyperlink>
+                </TextBlock>
+                <ComboBox
+                    x:Name="TargeFrameworks"
+                    HorizontalAlignment="Left"
+                    Grid.Row="1"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Top"
+                    Width="300"
+                    Height="22"/>
             </Grid>
         </GroupBox>
         

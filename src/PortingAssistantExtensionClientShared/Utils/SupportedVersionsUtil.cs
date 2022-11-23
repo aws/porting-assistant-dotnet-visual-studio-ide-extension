@@ -107,9 +107,9 @@ namespace PortingAssistantVSExtensionClient.Utils
             string bucketName,
             string s3File,
             string expectedBucketOwnerId,
-            bool showDialog = true)
+            bool showDialog = false)
         {
-            SupportedVersionConfiguration result = new SupportedVersionConfiguration();
+            SupportedVersionConfiguration result = SupportedVersionConfiguration.GetDefaultConfiguration();
             string resultStatus = string.Empty;
             try
             {

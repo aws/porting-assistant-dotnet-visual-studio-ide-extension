@@ -39,26 +39,8 @@ namespace PortingAssistantVSExtensionClient.Utils
             {
                 if (_supportedVersionConfiguration == null)
                 {
-                    ThreadHelper.JoinableTaskFactory.Run(async () =>
-                    {
-                        // Reading from public S3, credentials are not needed.
-                        using (var s3Client = new AmazonS3Client(RegionEndpoint.GetBySystemName(SupportedVersionConfiguration.S3Region)))
-                        {
-                            var result = await GetSupportedConfigurationAsync(
-                                    s3Client,
-                                    SupportedVersionConfiguration.S3BucketName,
-                                    SupportedVersionConfiguration.S3File,
-                                    SupportedVersionConfiguration.ExpectedBucketOwnerId);
-
-                            _supportedVersionConfiguration = result.Item1;
-                            if (!string.IsNullOrEmpty(result.Item2))
-                            {
-                                Trace.WriteLine(result.Item2);
-                            }
-                        }
-                    });
+                    _supportedVersionConfiguration = SupportedVersionConfiguration.GetDefaultConfiguration();
                 }
-
                 return _supportedVersionConfiguration;
             }
         }

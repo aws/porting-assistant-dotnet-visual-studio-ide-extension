@@ -40,11 +40,11 @@ namespace PortingAssistantVSExtensionClient.Options
         void LoadSettings()
         {
             SupportedVersionsUtil.Instance.UpdateComboBox(_optionsPageControl.TargeFrameworks);
-                _optionsPageControl.TargeFrameworks.SelectedItem =
-                    SupportedVersionsUtil
-                        .Instance
-                        .SupportedVersionConfiguration?
-                        .GetDisplayName(_userSettings.TargetFramework);
+            _optionsPageControl.TargeFrameworks.SelectedItem =
+                SupportedVersionsUtil
+                    .Instance
+                    .SupportedVersionConfiguration?
+                    .GetDisplayName(_userSettings.TargetFramework);
         }
 
         void Save()
@@ -55,7 +55,6 @@ namespace PortingAssistantVSExtensionClient.Options
                     .SupportedVersionConfiguration?
                     .GetVersionKey((string)_optionsPageControl.TargeFrameworks.SelectedItem);
 
-            _userSettings.TargetFramework = (string)_optionsPageControl.TargeFrameworks.SelectedValue;
             _userSettings.UpdateTargetFramework();
         }
     }

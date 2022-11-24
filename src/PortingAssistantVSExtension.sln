@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33027.164
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionServer", "PortingAssistantExtensionServer\PortingAssistantExtensionServer.csproj", "{C5AB8561-6942-4447-B5BC-E9035F07C037}"
 EndProject
@@ -25,11 +25,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortingAssistantExtensionClientUnitTests", "PortingAssistantExtensionClientUnitTests\PortingAssistantExtensionClientUnitTests.csproj", "{385A9DA2-8567-4809-AB2B-745A49D32BB8}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fddc}*SharedItemsImports = 4
-		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fdef}*SharedItemsImports = 4
-		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{90359de2-01a5-4346-b513-4b057de45ef8}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
@@ -99,5 +94,10 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A9D6A4D-B535-4A98-BD2F-F56ACF430F09}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fddc}*SharedItemsImports = 4
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fdef}*SharedItemsImports = 4
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{90359de2-01a5-4346-b513-4b057de45ef8}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

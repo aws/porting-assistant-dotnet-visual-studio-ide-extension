@@ -55,7 +55,6 @@ namespace PortingAssistantVSExtensionClient.Options
                     .SupportedVersionConfiguration?
                     .GetVersionKey((string)_optionsPageControl.TargeFrameworks.SelectedItem);
 
-            _userSettings.TargetFramework = (string)_optionsPageControl.TargeFrameworks.SelectedValue;
             _userSettings.UpdateTargetFramework();
         }
     }

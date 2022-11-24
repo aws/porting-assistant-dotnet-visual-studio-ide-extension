@@ -84,63 +84,6 @@ namespace PortingAssistantVSExtensionClient.Utils
             return null;
         }
 
-        public async Task<(SupportedVersionConfiguration, string)> GetSupportedConfigurationAsync(
-            AmazonS3Client s3Client,
-            string bucketName,
-            string s3File,
-            string expectedBucketOwnerId,
-            bool showDialog = false)
-        {
-            SupportedVersionConfiguration result = SupportedVersionConfiguration.GetDefaultConfiguration();
-            string resultStatus = string.Empty;
-            try
-            {
-                GetObjectRequest request = new GetObjectRequest()
-                {
-                    BucketName = bucketName,
-                    Key = s3File,
-                    ExpectedBucketOwner = expectedBucketOwnerId,
-                };
-                var response = await s3Client.GetObjectAsync(request);
-                using (var streamReader = new StreamReader(response.ResponseStream))
-                {
-                    result = JsonConvert.DeserializeObject<SupportedVersionConfiguration>(await streamReader.ReadToEndAsync());
-                }
-
-                // Make sure to sort the version items before presenting to the UI.
-                result.Versions.Sort();
-            }
-            catch (AmazonS3Exception s3Exception)
-            {
-                if (s3Exception.StatusCode != HttpStatusCode.NotFound)
-                {
-                    resultStatus = $"Porting Assistant failed to read supported versions configuration, fall back to default values. " +
-                        $"Please verify your internect connection and restart Visual Studio. \n{s3Exception.Message}";
-                }
-                else
-                {
-                    resultStatus = $"The supported version configuration file is not available, fall back to default values. " +
-                        $"Please reach out to aws-toolkit-for-net-refactoring-support@amazon.com for support. \n{s3Exception.Message}";
-                }
-                // Fall back to default as sugguested by OBR.
-                result = SupportedVersionConfiguration.GetDefaultConfiguration();
-            }
-            catch (Exception ex)
-            {
-                resultStatus = $"Porting Assistant failed to configure supported versions, fall back to default values. " +
-                    $"Please verify your internect connection and restart Visual Studio. \n{ex.Message}";
-                // Fall back to default as sugguested by OBR.
-                result = SupportedVersionConfiguration.GetDefaultConfiguration();
-            }
-
-            if (!string.IsNullOrEmpty(resultStatus) && showDialog)
-            {
-                MessageBox.Show(resultStatus, "Porting Assistant for .NET");
-            }
-
-            return (result, resultStatus);
-        }
-
         public void UpdateComboBox(ComboBox frameworkComboBox)
         {
             frameworkComboBox.Items.Clear();

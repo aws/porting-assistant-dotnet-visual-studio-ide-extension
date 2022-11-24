@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33027.164
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PortingAssistantExtensionServer", "PortingAssistantExtensionServer\PortingAssistantExtensionServer.csproj", "{C5AB8561-6942-4447-B5BC-E9035F07C037}"
 EndProject
@@ -22,14 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortingAssistantVSExtension
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortingAssistantVSExtensionClient2022", "PortingAssistantVSExtensionClient2022\PortingAssistantVSExtensionClient2022.csproj", "{1D66ECB9-5E4A-47F0-BD62-10C4B291FDEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PortingAssistantExtensionClientUnitTests", "PortingAssistantExtensionClientUnitTests\PortingAssistantExtensionClientUnitTests.csproj", "{385A9DA2-8567-4809-AB2B-745A49D32BB8}"
-EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fddc}*SharedItemsImports = 4
-		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fdef}*SharedItemsImports = 4
-		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{90359de2-01a5-4346-b513-4b057de45ef8}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
@@ -85,19 +78,16 @@ Global
 		{1D66ECB9-5E4A-47F0-BD62-10C4B291FDEF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1D66ECB9-5E4A-47F0-BD62-10C4B291FDEF}.Release|x86.ActiveCfg = Release|x86
 		{1D66ECB9-5E4A-47F0-BD62-10C4B291FDEF}.Release|x86.Build.0 = Release|x86
-		{385A9DA2-8567-4809-AB2B-745A49D32BB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{385A9DA2-8567-4809-AB2B-745A49D32BB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{385A9DA2-8567-4809-AB2B-745A49D32BB8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{385A9DA2-8567-4809-AB2B-745A49D32BB8}.Debug|x86.Build.0 = Debug|Any CPU
-		{385A9DA2-8567-4809-AB2B-745A49D32BB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{385A9DA2-8567-4809-AB2B-745A49D32BB8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{385A9DA2-8567-4809-AB2B-745A49D32BB8}.Release|x86.ActiveCfg = Release|Any CPU
-		{385A9DA2-8567-4809-AB2B-745A49D32BB8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A9D6A4D-B535-4A98-BD2F-F56ACF430F09}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fddc}*SharedItemsImports = 4
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{1d66ecb9-5e4a-47f0-bd62-10c4b291fdef}*SharedItemsImports = 4
+		PortingAssistantExtensionClientShared\PortingAssistantExtensionClientShared.projitems*{90359de2-01a5-4346-b513-4b057de45ef8}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

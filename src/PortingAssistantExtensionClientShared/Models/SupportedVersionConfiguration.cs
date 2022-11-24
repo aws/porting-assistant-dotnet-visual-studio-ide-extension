@@ -37,10 +37,6 @@ namespace PortingAssistantVSExtensionClient.Models
 
     public class SupportedVersionConfiguration
     {
-        public const string S3Region = "us-west-2";
-        public const string S3BucketName = "aws.portingassistant.dotnet.datastore";
-        public const string S3File = "recommendationsync/ClientConfiguration/SupportedVersion.json";
-        public const string ExpectedBucketOwnerId = "015088035022";
         public string FormatVersion { get; set; }
         public List<SupportedVersion> Versions { get; set; }
         public SupportedVersionConfiguration()

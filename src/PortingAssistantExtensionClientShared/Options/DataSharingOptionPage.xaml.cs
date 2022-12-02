@@ -25,6 +25,7 @@ namespace PortingAssistantVSExtensionClient.Options
         private readonly string ConfigurationFileName;
         private readonly string ConfigurationPath;
         private TelemetryConfiguration TelemetryConfiguration;
+
         public DataSharingOptionPage()
         {
             InitializeComponent();
@@ -36,7 +37,21 @@ namespace PortingAssistantVSExtensionClient.Options
                 Common.Constants.ResourceFolder,
                 ConfigurationFileName);
 
+            if (!AwsUtils.DoHaveProfile())
+            {
+                DataUsageShareBox.Visibility = Visibility.Hidden;
+                EnableMetricCheckBox.Visibility = Visibility.Hidden;
+                NoProfileBox.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DataUsageShareBox.Visibility = Visibility.Visible;
+                EnableMetricCheckBox.Visibility = Visibility.Visible;
+                NoProfileBox.Visibility = Visibility.Hidden;
+            }
         }
+
+
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {

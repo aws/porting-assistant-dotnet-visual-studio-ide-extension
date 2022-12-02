@@ -48,6 +48,18 @@ namespace PortingAssistantVSExtensionClient.Utils
             return sharedProfile.ListProfileNames();
         }
 
+        public static bool DoHaveProfile()
+        {
+            if (sharedProfile.ListProfileNames().Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         public static void SaveProfile(string profileName, AwsCredential credential)
         {

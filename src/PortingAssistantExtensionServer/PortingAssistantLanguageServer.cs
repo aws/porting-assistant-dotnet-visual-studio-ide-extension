@@ -5,9 +5,11 @@ using OmniSharp.Extensions.LanguageServer.Protocol.Models;
 using OmniSharp.Extensions.LanguageServer.Protocol.Server;
 using OmniSharp.Extensions.LanguageServer.Server;
 using PortingAssistant.Client.Client;
+using PortingAssistantExtensionServer.Common;
 using PortingAssistantExtensionServer.Handlers;
 using PortingAssistantExtensionServer.Models;
 using PortingAssistantExtensionServer.Services;
+using PortingAssistantExtensionTelemetry;
 using System;
 using System.Collections.Immutable;
 using System.IO.Pipelines;
@@ -78,6 +80,9 @@ namespace PortingAssistantExtensionServer
                     return Task.CompletedTask;
                 });
             }).ConfigureAwait(false);
+            Collector.ActivationCollect(PALanguageServerConfiguration.ExtensionVersion,
+                PALanguageServerConfiguration.VisualStudioVersion,
+                PALanguageServerConfiguration.VisualStudioFullVersion);
             _started = true;
         }
 

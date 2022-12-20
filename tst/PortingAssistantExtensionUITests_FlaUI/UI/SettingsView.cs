@@ -82,7 +82,7 @@ namespace IDE_UITest.UI
         {
             var tfOptions = GetTargetFrameworkOptions().Select(i => i.Name).ToList();
             var expectedOptions2019 = new List<string>() { "netcoreapp3.1", "net5.0" };
-            var expectedOptions2022 = new List<string>() { "netcoreapp3.1", "net5.0", "net6.0" };
+            var expectedOptions2022 = new List<string>() { ".NET Core 3.1 (Microsoft LTS)", ".NET 5 (Microsoft out of support)", ".NET 6 (Microsoft LTS)", ".NET 7 (Standard Term Support)" };
             switch (vsVersion) {
                 case Constants.Version.VS2019:
                     Assert.True(expectedOptions2019.All(tfOptions.Contains), 
@@ -90,7 +90,7 @@ namespace IDE_UITest.UI
                     break;
                 case Constants.Version.VS2022:
                     Assert.True(expectedOptions2022.All(tfOptions.Contains),
-                        "Expect target framework option for visualstudio 2022 is netcoreapp3.1, net5 and net6");
+                        "Expect target framework option for visualstudio 2022 is netcoreapp3.1, net5, net6 and net7");
                     break;
             }
         }

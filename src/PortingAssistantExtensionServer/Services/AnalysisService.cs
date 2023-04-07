@@ -102,6 +102,11 @@ namespace PortingAssistantExtensionServer.Services
             {
                 var projectFile = codeFile.GetProjectFile();
                 var fileUri = DocumentUri.FromFileSystemPath(projectFile);
+                if (fileUri == null || !this.FileToProjectAnalyssiResult.ToList().Any(i => DocumentUri.FromFileSystemPath(i.Key.Path) == fileUri))
+                {
+                    Console.WriteLine("End of solution reached or file not part of assessed solution");
+                    return new List<SourceFileAnalysisResult>();
+                }
                 var projectAnalysisResult = FileToProjectAnalyssiResult.GetValueOrDefault(fileUri, new ProjectAnalysisResult
                 {
                     PreportMetaReferences = new List<string>(),
@@ -341,6 +346,7 @@ namespace PortingAssistantExtensionServer.Services
             if (document == null) return null;
             var triggerType = "ContinuousAssessmentRequest";
             var result = await AssessFileAsync(document, false);
+            if (result.Count == 0) return null;
             var sourceFileAnalysisResult = result.FirstOrDefault();
             var diagnostics = GetDiagnostics(sourceFileAnalysisResult);
 

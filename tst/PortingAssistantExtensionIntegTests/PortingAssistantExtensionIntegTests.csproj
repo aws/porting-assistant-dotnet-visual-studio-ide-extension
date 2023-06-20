@@ -22,8 +22,8 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.10.0" />
     <PackageReference Include="OmniSharp.Extensions.LanguageClient" Version="0.18.3" />
     <PackageReference Include="OmniSharp.Extensions.LanguageServer" Version="0.18.3" />
-    <PackageReference Include="PortingAssistant.Client.Client" Version="2.11.1-alpha-g9c284489b2" />
-    <PackageReference Include="PortingAssistant.Client.Telemetry" Version="2.11.1-alpha-g9c284489b2" />
+    <PackageReference Include="PortingAssistant.Client.Client" Version="2.11.8" />
+    <PackageReference Include="PortingAssistant.Client.Telemetry" Version="2.11.8" />
   </ItemGroup>
 
   <ItemGroup>

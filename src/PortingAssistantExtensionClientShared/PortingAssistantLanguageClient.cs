@@ -271,8 +271,7 @@ namespace PortingAssistantVSExtensionClient
 #if Dev17
         public Task<InitializationFailureContext> OnServerInitializeFailedAsync(ILanguageClientInitializationInfo initializationState)
         {
-            var error = initializationState;
-            return (Task<InitializationFailureContext>)Task.CompletedTask;
+            return Task.FromResult(new InitializationFailureContext() { FailureMessage = initializationState.InitializationException?.Message });
         }
 #endif
     }

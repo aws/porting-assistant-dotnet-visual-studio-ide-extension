@@ -7,6 +7,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Task = System.Threading.Tasks.Task;
+using Microsoft.VisualStudio.Imaging;
 
 namespace PortingAssistantVSExtensionClient
 {
@@ -44,6 +45,7 @@ namespace PortingAssistantVSExtensionClient
     {
         const string PackageGuid = "89507157-95b2-4fa0-beac-c5d42bdaa734";
         public const string UIContextGuid = "de87fa2f-6efb-4005-9ae1-cf01be4977ae";
+        private static bool infoBarShown = false;
         #region Package Members
 
         /// <summary>
@@ -67,6 +69,17 @@ namespace PortingAssistantVSExtensionClient
             await PortingAssistantVSExtensionClient.Commands.DisplaySettings.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.ContactSupportCommand.InitializeAsync(this);
             await PortingAssistantVSExtensionClient.Commands.DocumentCommand.InitializeAsync(this);
+            
+            // Show AWS Transform info bar once when extension starts
+            if (!infoBarShown)
+            {
+                infoBarShown = true;
+                PAInfoBarService.Instance?.ShowInfoBar(
+                    "New - Modernize faster with AWS Transform - Agentic AI powered scale and speed",
+                    KnownMonikers.StatusInformation,
+                    "https://aws.amazon.com/transform/net/"
+                );
+            }
         }
     #endregion
     }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -9,7 +9,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="PortingAssistant.Client.Client" Version="2.11.1-alpha-g9c284489b2" />
-		<PackageReference Include="PortingAssistant.Client.Telemetry" Version="2.11.1-alpha-g9c284489b2" />
+		<PackageReference Include="PortingAssistant.Client.Telemetry" Version="3.0.19" />
 		<PackageReference Include="PortingAssistant.Client.Common" Version="2.11.1-alpha-g9c284489b2" />
 	</ItemGroup>
 
